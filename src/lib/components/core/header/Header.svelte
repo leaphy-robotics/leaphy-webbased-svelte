@@ -3,11 +3,9 @@
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
     import Uploader from "../popups/popups/Uploader.svelte";
-    import { arduino } from "@leaphy-robotics/leaphy-blocks";
     import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
-    import ContextMenu from "$components/ui/ContextMenu.svelte";
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faFile, faFloppyDisk, faFolder, faGraduationCap } from "@fortawesome/free-solid-svg-icons";
+    import { faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap } from "@fortawesome/free-solid-svg-icons";
     import appState, { Screen } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { workspace } from "$state/blockly.svelte";
@@ -70,12 +68,20 @@
     <ContextItem icon={faFloppyDisk} name={"Save as..."} onclick={saveProjectAs} />
     <ContextItem icon={faGraduationCap} name={"Examples"} onclick={console.log} />
 {/snippet}
+{#snippet moreContext()}
+    {#snippet languageContext()}
+        <ContextItem name={"English"} onclick={console.log} />
+    {/snippet}
+
+    <ContextItem icon={faGlobe} name={"Language"} context={languageContext} />
+{/snippet}
 
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
         {#if appState.screen !== Screen.START}
             <Button name={"My Project"} mode={"outlined"} context={projectContext} />
+            <Button name={"More..."} mode={"outlined"} context={moreContext} />
             <Button name={"Connect"} mode={"outlined"} onclick={connect} />
         {/if}
     </div>

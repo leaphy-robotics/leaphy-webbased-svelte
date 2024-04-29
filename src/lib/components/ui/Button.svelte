@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { onDestroy, onMount, type Snippet } from "svelte";
+    import { onDestroy, onMount, setContext, type Snippet } from "svelte";
     import ContextMenu from "./ContextMenu.svelte";
+    import { writable } from "svelte/store";
 
     interface Props {
         name: string,
@@ -11,29 +12,16 @@
     let { name, mode, onclick = onContext, context }: Props = $props()
 
     let btn: HTMLButtonElement = $state()
-    let contextShowing = $state(false)
-    let opening = false
+
+    const open = setContext('open', writable(false))
     function onContext() {
         if (!context) return
 
-        opening = true
-        contextShowing = !contextShowing
+        open.update(() => true)
     }
-
-    function close() {
-        if (opening) return opening = false
-        contextShowing = false
-    }
-
-    onMount(() => {
-        document.body.addEventListener('click', close)
-    })
-    onDestroy(() => {
-        document.body.removeEventListener('click', close)
-    })
 </script>
 
-{#if contextShowing}
+{#if $open}
     <ContextMenu source={btn} content={context} />
 {/if}
 
