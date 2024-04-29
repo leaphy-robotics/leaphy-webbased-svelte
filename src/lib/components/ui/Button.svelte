@@ -7,9 +7,10 @@
         name: string,
         onclick?: () => void,
         context?: Snippet,
-        mode: "primary"|"secondary"|"outlined"|"accent"
+        mode: "primary"|"secondary"|"outlined"|"accent",
+        bold?: boolean
     }
-    let { name, mode, onclick = onContext, context }: Props = $props()
+    let { name, mode, onclick = onContext, context, bold }: Props = $props()
 
     let btn: HTMLButtonElement = $state()
 
@@ -34,6 +35,7 @@
     class:secondary={mode === 'secondary'} 
     class:outlined={mode === 'outlined'}
     class:accent={mode === 'accent'}
+    class:bold={bold}
 >
     {name}
 </button>
@@ -62,5 +64,9 @@
     .accent {
         background: var(--accent);
         color: var(--on-accent);
+    }
+    .bold {
+        font-weight: bolder;
+        font-size: 1.1em;
     }
 </style>
