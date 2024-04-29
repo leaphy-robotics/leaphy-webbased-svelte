@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { setupWorkspace } from "$domain/blockly/blockly";
+    import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
     import workspaceState, { sidePanel } from "$state/workspace.svelte";
     import { popups } from "$state/popup.svelte";
     import { arduino } from "@leaphy-robotics/leaphy-blocks";
@@ -10,6 +10,8 @@
     import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
     import Code from "../panels/Code.svelte";
     import { workspace } from "$state/blockly.svelte"
+    import { locale } from "svelte-i18n";
+    import { serialization } from "blockly";
 
     let element: HTMLDivElement;
     onMount(() => {
@@ -18,6 +20,20 @@
         workspaceState.code = arduino.workspaceToCode($workspace)
       })
     });
+
+    locale.subscribe(locale => {
+        setLocale(workspaceState.robot, locale)
+        
+        if ($workspace && element) {
+            const content = serialization.workspaces.save($workspace)
+            $workspace.dispose()
+
+            workspace.update(() => setupWorkspace(workspaceState.robot, element, content))
+            $workspace.addChangeListener(() => {
+                workspaceState.code = arduino.workspaceToCode($workspace)
+            })
+        }
+    })
 
     function openSerial() {
         popups.open({

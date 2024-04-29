@@ -2,6 +2,7 @@
     box-sizing: border-box;
 
     --background: #fff;
+    --on-background: #000;
     --background-tint: #f1f1f1;
     --primary: #06778f;
     --primary-dark-tint: #035e72;

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { _, locale } from 'svelte-i18n'
+
     import leaphyLogo from "$assets/leaphy-logo.svg";
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
@@ -59,36 +61,42 @@
         });
         await writable.close()
     }
+
+    function setLocale(language: string) {
+        locale.set(language)
+        localStorage.setItem('language', language)
+    }
 </script>
 
 {#snippet projectContext()}
-    <ContextItem icon={faFile} name={"New"} onclick={newProject} />
-    <ContextItem icon={faFolder} name={"Open"} onclick={openProject} />
-    <ContextItem icon={faFloppyDisk} name={"Save"} onclick={saveProject} disabled={!$handle} />
-    <ContextItem icon={faFloppyDisk} name={"Save as..."} onclick={saveProjectAs} />
-    <ContextItem icon={faGraduationCap} name={"Examples"} onclick={console.log} />
+    <ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} />
+    <ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} />
+    <ContextItem icon={faFloppyDisk} name={$_("SAVE")} onclick={saveProject} disabled={!$handle} />
+    <ContextItem icon={faFloppyDisk} name={$_("SAVEAS")} onclick={saveProjectAs} />
+    <ContextItem icon={faGraduationCap} name={$_("EXAMPLES")} onclick={console.log} />
 {/snippet}
 {#snippet moreContext()}
     {#snippet languageContext()}
-        <ContextItem name={"English"} onclick={() => console.log('hello')} />
+        <ContextItem selected={$locale === 'en'} name={"English"} onclick={() => setLocale('en')} />
+        <ContextItem selected={$locale === 'nl'} name={"Nederlands"} onclick={() => setLocale('nl')} />
     {/snippet}
 
-    <ContextItem icon={faGlobe} name={"Language"} context={languageContext} />
+    <ContextItem icon={faGlobe} name={$_("LANGUAGE")} context={languageContext} />
 {/snippet}
 
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
         {#if appState.screen !== Screen.START}
-            <Button name={"My Project"} mode={"outlined"} context={projectContext} />
-            <Button name={"More..."} mode={"outlined"} context={moreContext} />
-            <Button name={"Connect"} mode={"outlined"} onclick={connect} />
+            <Button name={$_("PROJECT")} mode={"outlined"} context={projectContext} />
+            <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
+            <Button name={$_("CHOOSE_ROBOT")} mode={"outlined"} onclick={connect} />
         {/if}
     </div>
 
     <div class="comp">
         {#if appState.screen !== Screen.START}
-            <Button name={"Upload"} mode={"accent"} onclick={upload} />
+            <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
         {/if}
     </div>
 </div>

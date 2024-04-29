@@ -10,9 +10,10 @@
         name: string,
         onclick?: () => void,
         context?: Snippet,
-        disabled?: boolean
+        disabled?: boolean,
+        selected?: boolean
     }
-    let { icon, name, onclick, context, disabled = false }: Props = $props()
+    let { icon, name, onclick, context, disabled = false, selected = false }: Props = $props()
 
     let element = $state<HTMLDivElement>()
     let contextShowing = $state(false)
@@ -50,7 +51,7 @@
         <ContextMenu anchor="right-start" source={element} content={context} />
     {/if}
 
-    <tr class="item" onclick={interact} onmousemove={hover} class:disabled={disabled} >
+    <tr class="item" onclick={interact} onmousemove={hover} class:disabled={disabled} class:selected={selected} >
         <td class="icon">
             {#if icon}<Fa {icon} />{/if}
         </td>
@@ -83,5 +84,9 @@
     .disabled {
         background: var(--background) !important;
         opacity: 0.5;
+    }
+
+    .selected {
+        color: var(--primary);
     }
 </style>

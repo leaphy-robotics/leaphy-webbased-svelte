@@ -30,6 +30,7 @@
     "@leaphy-robotics/leaphy-blocks": "3.0.0",
     "blockly": "^10.4.3",
     "monaco-editor": "^0.48.0",
-    "svelte-fa": "^4.0.2"
+    "svelte-fa": "^4.0.2",
+    "svelte-i18n": "^4.0.0"
   }
 }

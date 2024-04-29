@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { _ } from "svelte-i18n";
     import { log } from "$state/workspace.svelte";
     import { tick } from "svelte";
     import Windowed from "../Windowed.svelte";
@@ -34,11 +35,11 @@
     {/each}
 </div>
 <form onsubmit={send}>
-    <TextInput placeholder={"Send to robot"} bind:value={value} mode={"primary"} rounded={false} />
+    <TextInput placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")} bind:value={value} mode={"primary"} rounded={false} />
 </form>
 {/snippet}
 
-<Windowed title={"Show output on screen"} {content} />
+<Windowed title={$_("SERIAL_OUTPUT")} {content} />
 
 <style>
     .content {

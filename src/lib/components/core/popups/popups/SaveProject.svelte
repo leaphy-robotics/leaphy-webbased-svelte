@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { _ } from "svelte-i18n";
     import Button from "$components/ui/Button.svelte";
     import TextInput from "$components/ui/TextInput.svelte";
     import { popups, type PopupState } from "$state/popup.svelte";
@@ -37,11 +38,11 @@
 </script>
 
 <form class="content" onsubmit={onsubmit}>
-    <h2>Save Project</h2>
-    <TextInput bind:value={value} placeholder={"Give your download a name"} mode={"secondary"} rounded={true} />
+    <h2>{$_("SAVEAS")}</h2>
+    <TextInput bind:value={value} placeholder={$_("GIVE_FILENAME")} mode={"secondary"} rounded={true} />
     <div class="actions">
-        <Button onclick={cancel} mode={"secondary"} name={"Cancel"} />
-        <Button onclick={save} mode={"primary"} name={"Save"} />
+        <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
+        <Button onclick={save} mode={"primary"} name={$_("SAVE")} />
     </div>
 </form>
 

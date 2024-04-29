@@ -91,15 +91,17 @@ function loadToolbox(robot: RobotDevice): ToolboxDefinition {
   };
 }
 
-export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement) {
-  const translation = translations['en'];
+export function setLocale(robot: RobotDevice, locale: string) {
+  const translation = translations[locale];
   Blockly.setLocale(translation)
   if (robot.type === RobotType.L_FLITZ_NANO) {
     translation.ARD_SERVO_WRITE = translation.ARD_SERVO_ARM_WRITE;
   } else {
     translation.ARD_SERVO_WRITE = translation.ARD_SERVO_REGULAR_WRITE;
   }
+}
 
+export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement, content?: { [key: string]: any }) {
   PinSelectorField.processPinMappings(robot)
 
   const workspace = Blockly.inject(element, {
@@ -116,7 +118,7 @@ export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement) {
     }
   });
 
-  Blockly.serialization.workspaces.load({
+  Blockly.serialization.workspaces.load(content || {
       blocks: {
           languageVersion: 0,
           blocks: [
