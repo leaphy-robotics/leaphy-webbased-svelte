@@ -70,7 +70,7 @@
 {/snippet}
 {#snippet moreContext()}
     {#snippet languageContext()}
-        <ContextItem name={"English"} onclick={console.log} />
+        <ContextItem name={"English"} onclick={() => console.log('hello')} />
     {/snippet}
 
     <ContextItem icon={faGlobe} name={"Language"} context={languageContext} />
