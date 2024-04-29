@@ -10,7 +10,7 @@
 
     const popupState = getContext<Writable<PopupState>>('state')
     function close() {
-        localStorage.setItem('credits', true)
+        localStorage.setItem('credits', 'true')
         popups.close($popupState.id)
     }
 </script>

@@ -257,3 +257,9 @@ export const robots = robotListing
     robots[robot.id] = robot;
     return robots;
   }, {} as Robots);
+
+export function inFilter(robot: RobotDevice, filter: number[]) {
+  if (filter.includes(-robot.type)) return false;
+
+  return filter.includes(robot.type);
+}

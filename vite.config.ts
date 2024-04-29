@@ -30,7 +30,8 @@ export default defineConfig({
       $components: path.resolve(__dirname, './src/lib/components'),
       $assets: path.resolve(__dirname, './src/assets'),
       $domain: path.resolve(__dirname, './src/lib/domain'),
-      $state: path.resolve(__dirname, './src/lib/state')
+      $state: path.resolve(__dirname, './src/lib/state'),
+      $examples: path.resolve(__dirname, './src/lib/examples')
     }
   }
 })

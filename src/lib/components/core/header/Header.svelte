@@ -12,6 +12,7 @@
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
+    import Examples from '../popups/popups/Examples.svelte';
 
     async function upload() {
         popups.open({
@@ -50,7 +51,6 @@
     }
 
     async function saveProject() {
-        console.log($handle)
         if (!$handle) return
 
         const writable = await $handle.createWritable()
@@ -60,6 +60,14 @@
             position: 0,
         });
         await writable.close()
+    }
+
+    function examples() {
+        popups.open({
+            component: Examples,
+            data: {},
+            allowInteraction: true
+        })
     }
 
     function setLocale(language: string) {
@@ -73,7 +81,7 @@
     <ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} />
     <ContextItem icon={faFloppyDisk} name={$_("SAVE")} onclick={saveProject} disabled={!$handle} />
     <ContextItem icon={faFloppyDisk} name={$_("SAVEAS")} onclick={saveProjectAs} />
-    <ContextItem icon={faGraduationCap} name={$_("EXAMPLES")} onclick={console.log} />
+    <ContextItem icon={faGraduationCap} name={$_("EXAMPLES")} onclick={examples} />
 {/snippet}
 {#snippet moreContext()}
     {#snippet languageContext()}

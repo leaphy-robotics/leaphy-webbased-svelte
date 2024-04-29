@@ -5,7 +5,8 @@
       "$components/*": ["./src/lib/components/*"],
       "$assets/*": ["./src/lib/assets/*"],
       "$domain/*": ["./src/lib/domain/*"],
-      "$state/*": ["./src/lib/state/*"]
+      "$state/*": ["./src/lib/state/*"],
+      "$examples/*": ["./src/lib/examples/*"]
     },
 
     "target": "ESNext",

@@ -10,7 +10,7 @@ import {
 import PinSelectorField from "./fields";
 import { LeaphyCategory } from "./category-ui/category";
 import { LeaphyToolbox } from "./category-ui/toolbox";
-import { type RobotDevice } from "$domain/robots";
+import { inFilter, type RobotDevice } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import toolbox from "./toolbox";
 import type {
@@ -54,17 +54,11 @@ Blockly.Extensions.registerMutator(
   ["controls_if_elseif", "controls_if_else"],
 );
 
-function shouldShow(robot: RobotDevice, filter: number[]) {
-  if (filter.includes(-robot.type)) return false;
-
-  return filter.includes(robot.type);
-}
-
 function loadToolbox(robot: RobotDevice): ToolboxDefinition {
   return {
     kind: "categoryToolbox",
     contents: toolbox
-      .filter(({ robots }) => (robots ? shouldShow(robot, robots) : true))
+      .filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
       .map((category) => {
         const result: Record<string, any> = {
           kind: "category",
@@ -78,7 +72,7 @@ function loadToolbox(robot: RobotDevice): ToolboxDefinition {
 
         result.contents = category.groups.flatMap((group) => {
           return group
-            .filter(({ robots }) => (robots ? shouldShow(robot, robots) : true))
+            .filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
             .flatMap((block) => [
               { kind: "sep", gap: "8" },
               { kind: "block", ...block },
