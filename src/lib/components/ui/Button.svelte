@@ -57,7 +57,7 @@
         color: var(--on-secondary);
     }
     .outlined {
-        border: 1px solid var(--primary-dark-tint);
+        border: 1px solid var(--accent);
         color: var(--on-primary);
     }
     .accent {
