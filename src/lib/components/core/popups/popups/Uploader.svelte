@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { _ } from "svelte-i18n";
+
     import Button from "$components/ui/Button.svelte";
     import ProgressBar from "$components/ui/ProgressBar.svelte";
-    import { Prompt, port, robot } from "$state/workspace.svelte"
+    import { Prompt, SUPPORTED_VENDOR_IDS, port, robot } from "$state/workspace.svelte"
     import { getContext, onMount } from "svelte";
     import { type PopupState, popups } from "$state/popup.svelte"
     import { type Writable } from "svelte/store";
+    import { usbRequest } from "$state/upload.svelte";
 
     interface Props {
       source: string
@@ -75,17 +78,37 @@
     function close() {
         popups.close($popupState.id)
     }
+
+    async function connectUSB() {
+        const [device] = await navigator.usb.getDevices()
+        if (device) return usbRequest.respond(device)
+
+        usbRequest.respond(await navigator.usb.requestDevice({ 
+            filters: SUPPORTED_VENDOR_IDS.map(
+                (vendor) => ({
+                    vendorId: vendor,
+                }),
+            ),
+        }))
+    }
 </script>
 
 <div class="content" class:error={!!error}>
-    <h2 class="state">{currentState}</h2>
-    {#if error}
-        <code class="error-result">{error}</code>
-    {/if}
-    {#if done}
-        <Button name={"Go back to editor"} mode={"primary"} onclick={close} />
+    {#if $usbRequest}
+        <h2 class="state">{$_("RECONNECT")}</h2>
+        <div class="info">{$_("RECONNECT_INFO")}</div>
+        <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
     {:else}
-        <ProgressBar {progress} />
+        <h2 class="state">{currentState}</h2>
+
+        {#if error}
+            <code class="error-result">{error}</code>
+        {/if}
+        {#if done}
+            <Button name={"Go back to editor"} mode={"primary"} onclick={close} />
+        {:else}
+            <ProgressBar {progress} />
+        {/if}
     {/if}
 </div>
 
