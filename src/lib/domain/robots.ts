@@ -39,7 +39,6 @@ export interface RobotDevice extends BaseRobot {
   programmer: Programmer,
   libraries: string[],
   fqbn: string,
-  modes: ComponentType[];
 }
 export interface RobotListing extends BaseRobot {
   variants: RobotDevice[][];
@@ -96,7 +95,6 @@ export const robotListing: Robot[][] = [
             name: "Flitz Uno",
             libraries: DEFAULT_LIBRARIES,
             icon: flitzIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
           {
             ...baseNano,
@@ -105,7 +103,6 @@ export const robotListing: Robot[][] = [
             name: "Flitz Nano",
             libraries: DEFAULT_LIBRARIES,
             icon: flitzIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
         ],
       ],
@@ -123,7 +120,6 @@ export const robotListing: Robot[][] = [
             name: "Original Uno",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: originalIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
           {
             ...baseNano,
@@ -132,7 +128,6 @@ export const robotListing: Robot[][] = [
             name: "Original Nano",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: originalIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
         ],
         [
@@ -143,7 +138,6 @@ export const robotListing: Robot[][] = [
             name: "Original Nano ESP32",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: originalIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
           {
             ...baseNanoRP2040,
@@ -152,7 +146,6 @@ export const robotListing: Robot[][] = [
             name: "Original Nano RP2040",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: originalIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
         ],
       ],
@@ -164,7 +157,6 @@ export const robotListing: Robot[][] = [
       name: "Leaphy Click",
       libraries: DEFAULT_LIBRARIES,
       icon: clickIcon,
-      modes: [Mode.BLOCKS, Mode.ADVANCED],
     },
   ],
   [
@@ -181,7 +173,6 @@ export const robotListing: Robot[][] = [
             name: "Arduino Nano",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: nanoIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
         ],
         [
@@ -192,7 +183,6 @@ export const robotListing: Robot[][] = [
             name: "Arduino Nano ESP32",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: nanoIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
           {
             ...baseNanoRP2040,
@@ -201,7 +191,6 @@ export const robotListing: Robot[][] = [
             name: "Arduino Nano RP2040",
             libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
             icon: nanoIcon,
-            modes: [Mode.BLOCKS, Mode.ADVANCED],
           },
         ],
       ],
@@ -213,7 +202,6 @@ export const robotListing: Robot[][] = [
       name: "Arduino Uno",
       libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
       icon: unoIcon,
-      modes: [Mode.BLOCKS, Mode.ADVANCED],
     },
     {
 
@@ -225,7 +213,6 @@ export const robotListing: Robot[][] = [
       fqbn: "arduino:avr:mega",
       libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
       icon: megaIcon,
-      modes: [Mode.BLOCKS, Mode.ADVANCED],
     },
   ],
   [
@@ -244,7 +231,6 @@ export const robotListing: Robot[][] = [
       name: "MicroPython",
       libraries: [],
       icon: microPythonIcon,
-      modes: [Mode.ADVANCED],
     },
   ],
 ];

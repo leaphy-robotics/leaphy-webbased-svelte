@@ -132,3 +132,6 @@ export const handle = writable<FileSystemFileHandle|undefined>(undefined)
 export const robot = writable<RobotDevice>()
 export const mode = writable<ComponentType>(Mode.BLOCKS)
 export const code = writable<string>(defaultProgramCPP)
+export const saveState = writable<boolean>(true)
+
+code.subscribe(() => saveState.set(false))

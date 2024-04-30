@@ -7,7 +7,7 @@
 
     interface Props {
         name?: string,
-        icon?: IconDefinition,
+        icon?: IconDefinition|string,
         onclick?: () => void,
         context?: Snippet,
         mode: "primary"|"secondary"|"outlined"|"accent",
@@ -40,7 +40,13 @@
     class:accent={mode === 'accent'}
     class:bold={bold}
 >
-    {#if icon}<Fa {icon} />{/if}
+    {#if icon}
+        {#if typeof icon === "string"}
+            <img class="icon" src={icon} alt="Icon" />
+        {:else}
+            <Fa {icon} />
+        {/if}
+    {/if}
     {#if name}{name}{/if}
 </button>
 
@@ -54,6 +60,10 @@
         background: none;
         border: none;
         padding: 10px 15px;
+    }
+
+    .icon {
+        height: 1em;
     }
 
     .primary {

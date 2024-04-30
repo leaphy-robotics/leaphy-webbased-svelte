@@ -5,11 +5,12 @@
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
     import Uploader from "../popups/popups/Uploader.svelte";
-    import { Prompt, handle, port, code, mode, Mode, robot } from '$state/workspace.svelte'
+    import { Prompt, handle, port, code, mode, Mode, robot, saveState } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
+    import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faPen, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
+    import block from "$assets/block.svg"
     import { Screen, Theme, theme, selected, screen } from "$state/app.svelte"
-    import SaveProject from "../popups/popups/SaveProject.svelte";
+    import SaveProject from "../popups/popups/Prompt.svelte";
     import { audio, workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
     import Examples from '../popups/popups/Examples.svelte';
@@ -19,6 +20,8 @@
     import Workspace from '$components/workspace/Workspace.svelte';
     import Select from '$components/ui/Select.svelte';
     import { robots } from '$domain/robots';
+    import Advanced from '$components/workspace/advanced/Advanced.svelte';
+    import Warning from '../popups/popups/Warning.svelte';
 
     async function upload() {
         popups.open({
@@ -39,12 +42,35 @@
         screen.set(Screen.START)
     }
 
+    function serialize() {
+        if ($mode === Mode.BLOCKS) return JSON.stringify(serialization.workspaces.save($workspace))
+        else return $code
+    }
+
     async function saveProjectAs() {
-        popups.open({
+        const name = await popups.open({
             component: SaveProject,
-            data: {},
+            data: {
+                name: "SAVEAS",
+                placeholder: "GIVE_FILENAME",
+                confirm: "SAVE"
+            },
             allowInteraction: false
         })
+        if (!name) return
+
+        let extension = $robot.id
+        if ($mode === Mode.ADVANCED) extension = 'ino'
+
+        const url = URL.createObjectURL(new Blob([serialize()], { type: "text/plain" }))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${name}.${extension}`
+        link.click()
+        URL.revokeObjectURL(url);
+        link.remove()
+
+        saveState.set(true)
     }
 
     async function openProject() {
@@ -62,10 +88,11 @@
         const writable = await $handle.createWritable()
         await writable.write({
             type: "write",
-            data: JSON.stringify(serialization.workspaces.save($workspace)),
+            data: serialize(),
             position: 0,
         });
         await writable.close()
+        saveState.set(true)
     }
 
     function saveDynamic() {
@@ -140,6 +167,22 @@
 
         $workspace.undo(true)
     }
+
+    async function blocks() {
+        if (!$saveState) {
+            const ok = await popups.open({
+                component: Warning,
+                data: {
+                    title: "CONFIRMEDITORCHANGE_TITLE",
+                    message: "EDITORCHANGEINSTRUCTIONS"
+                },
+                allowInteraction: false
+            })
+            if (!ok) return
+        }
+
+        mode.set(Mode.BLOCKS)
+    }
 </script>
 
 {#snippet projectContext()}
@@ -194,6 +237,12 @@
 
     <div class="comp">
         {#if $screen === Screen.WORKSPACE}
+            {#if $mode === Mode.BLOCKS}
+                <Button mode={"outlined"} icon={faPen} name={$_("CODE")} onclick={() => mode.set(Mode.ADVANCED)} />
+            {:else if $mode === Mode.ADVANCED}
+                <Button mode={"outlined"} icon={block} name={$_("BLOCKS")} onclick={blocks} />
+            {/if}
+
             <Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
             <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
         {/if}

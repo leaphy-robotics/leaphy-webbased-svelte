@@ -13,7 +13,7 @@ export interface PopupState {
   id: string;
   popup: Popup;
   position: { x: number; y: number };
-  onclose: () => void
+  onclose: (value: any) => void
 }
 
 function createPopups() {
@@ -22,8 +22,8 @@ function createPopups() {
   return {
     subscribe,
     open(popup: Popup) {
-      let onclose: () => void
-      const promise = new Promise<void>(resolve => onclose = resolve)
+      let onclose: (value: any) => void
+      const promise = new Promise<any>(resolve => onclose = resolve)
       const state: PopupState = {
         id: crypto.randomUUID(),
         position: { x: 0, y: 0 },
@@ -39,11 +39,11 @@ function createPopups() {
         popups.map((e) => (e.id === popup ? { ...e, position } : e)),
       );
     },
-    close(popup: string) {
+    close(popup: string, value?: any) {
       update((popups) => popups.filter(e => {
         if (e.id !== popup) return true
 
-        e.onclose()
+        e.onclose(value)
         return false
       }))
     }

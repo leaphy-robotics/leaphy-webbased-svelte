@@ -9,26 +9,22 @@
     import { robot } from "$state/workspace.svelte"
     import { serialization } from "blockly";
 
-    let value = ""
+    interface Props {
+        name: string,
+        placeholder: string,
+        confirm: string
+    }
+    let { name, placeholder, confirm }: Props = $props()
+
+    let value = $state("")
     let popupState = getContext<Writable<PopupState>>('state')
     
     function cancel() {
-        popups.close($popupState.id)
+        popups.close($popupState.id, false)
     }
 
     function save() {
-        const state = serialization.workspaces.save($workspace);
-        const content = JSON.stringify(state)
-
-        const url = URL.createObjectURL(new Blob([content], { type: "text/plain" }))
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${value}.${$robot.id}`
-        link.click()
-        URL.revokeObjectURL(url);
-        link.remove()
-
-        popups.close($popupState.id)
+        popups.close($popupState.id, value)
     }
 
     function onsubmit(event: SubmitEvent) {
@@ -38,11 +34,11 @@
 </script>
 
 <form class="content" onsubmit={onsubmit}>
-    <h2>{$_("SAVEAS")}</h2>
-    <TextInput bind:value={value} placeholder={$_("GIVE_FILENAME")} mode={"secondary"} rounded={true} />
+    <h2>{$_(name)}</h2>
+    <TextInput bind:value={value} placeholder={$_(placeholder)} mode={"secondary"} rounded={true} />
     <div class="actions">
         <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
-        <Button onclick={save} mode={"primary"} name={$_("SAVE")} />
+        <Button onclick={save} mode={"primary"} name={$_(confirm)} />
     </div>
 </form>
 
