@@ -2,15 +2,18 @@
     import { onDestroy, onMount, setContext, type Snippet } from "svelte";
     import ContextMenu from "./ContextMenu.svelte";
     import { writable } from "svelte/store";
+    import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+    import Fa from "svelte-fa";
 
     interface Props {
-        name: string,
+        name?: string,
+        icon?: IconDefinition,
         onclick?: () => void,
         context?: Snippet,
         mode: "primary"|"secondary"|"outlined"|"accent",
         bold?: boolean
     }
-    let { name, mode, onclick = onContext, context, bold }: Props = $props()
+    let { name, mode, onclick = onContext, context, bold, icon }: Props = $props()
 
     let btn: HTMLButtonElement = $state()
 
@@ -37,11 +40,15 @@
     class:accent={mode === 'accent'}
     class:bold={bold}
 >
-    {name}
+    {#if icon}<Fa {icon} />{/if}
+    {#if name}{name}{/if}
 </button>
 
 <style>
     .btn {
+        display: flex;
+        gap: 5px;
+        align-items: center;
         cursor: pointer;
         border-radius: 20px;
         background: none;

@@ -7,7 +7,7 @@
     import Uploader from "../popups/popups/Uploader.svelte";
     import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestionCircle, faSquarePollHorizontal, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
+    import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
     import appState, { Screen, Theme, theme } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { audio, workspace } from "$state/blockly.svelte";
@@ -65,6 +65,12 @@
         await writable.close()
     }
 
+    function saveDynamic() {
+        if ($handle) return saveProject()
+
+        saveProjectAs()
+    }
+
     function examples() {
         popups.open({
             component: Examples,
@@ -119,6 +125,18 @@
         a.click();
         URL.revokeObjectURL(url)
     }
+
+    function undo() {
+        if (!$workspace) return
+
+        $workspace.undo(false)
+    }
+
+    function redo() {
+        if (!$workspace) return
+
+        $workspace.undo(true)
+    }
 </script>
 
 {#snippet projectContext()}
@@ -163,6 +181,14 @@
 
     <div class="comp">
         {#if appState.screen !== Screen.START}
+            <Button mode={"outlined"} icon={faUndo} onclick={undo} />
+            <Button mode={"outlined"} icon={faRedo} onclick={redo} />
+        {/if}
+    </div>
+
+    <div class="comp">
+        {#if appState.screen !== Screen.START}
+            <Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
             <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
         {/if}
     </div>
