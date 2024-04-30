@@ -5,18 +5,14 @@
     import { popups, type PopupState } from "$state/popup.svelte";
     import { getContext } from "svelte";
     import type { Writable } from "svelte/store";
-    import { workspace } from "$state/blockly.svelte";
-    import { robot } from "$state/workspace.svelte"
-    import { serialization } from "blockly";
 
     interface Props {
         name: string,
         placeholder: string,
-        confirm: string
+        confirm: string,
+        value?: string
     }
-    let { name, placeholder, confirm }: Props = $props()
-
-    let value = $state("")
+    let { name, placeholder, confirm, value = "" }: Props = $props()
     let popupState = getContext<Writable<PopupState>>('state')
     
     function cancel() {
@@ -35,7 +31,7 @@
 
 <form class="content" onsubmit={onsubmit}>
     <h2>{$_(name)}</h2>
-    <TextInput bind:value={value} placeholder={$_(placeholder)} mode={"secondary"} rounded={true} />
+    <TextInput bind:value={value} placeholder={$_(placeholder)} mode={"secondary"} rounded={true} focus={true} />
     <div class="actions">
         <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
         <Button onclick={save} mode={"primary"} name={$_(confirm)} />

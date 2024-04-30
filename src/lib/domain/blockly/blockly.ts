@@ -21,6 +21,8 @@ import type {
 import { audio } from "$state/blockly.svelte";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import { Backpack } from "./backpack";
+import { popups } from "$state/popup.svelte";
+import Prompt from "$components/core/popups/popups/Prompt.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -56,6 +58,20 @@ Blockly.Extensions.registerMutator(
   null as unknown as undefined, // TODO(#6920)
   ["controls_if_elseif", "controls_if_else"],
 );
+
+Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
+  const name = await popups.open({
+    component: Prompt,
+    data: {
+      name: "NAME_VARIABLE_PROMPT_INPUT",
+      placeholder: "NAME_VARIABLE_PROMPT_INPUT",
+      value: defaultValue,
+      confirm: "OK_VARIABLE"
+    },
+    allowInteraction: false
+  })
+  if (name) callback(name)
+})
 
 let play = Blockly.WorkspaceAudio.prototype.play
 Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {

@@ -1,16 +1,22 @@
 <script lang="ts">
-    import type { Bindable } from "svelte";
+    import { onMount, type Bindable } from "svelte";
 
     interface Props {
         placeholder?: string,
         value: Bindable<string>,
         mode: "primary"|"secondary",
-        rounded: boolean
+        rounded: boolean,
+        focus?: boolean
     }
-    let { placeholder, value = $bindable(""), mode, rounded }: Props = $props()
+    let { placeholder, value = $bindable(""), mode, rounded, focus }: Props = $props()
+
+    let input: HTMLInputElement
+    onMount(() => {
+        if (focus) input.focus()
+    })
 </script>
 
-<input class="input" type="text" {placeholder} bind:value={value} class:primary={mode === "primary"} class:secondary={mode === "secondary"} class:rounded={rounded}>
+<input bind:this={input} class="input" type="text" {placeholder} bind:value={value} class:primary={mode === "primary"} class:secondary={mode === "secondary"} class:rounded={rounded}>
 
 <style>
     .input {
