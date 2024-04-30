@@ -37,7 +37,7 @@ body[data-color-scheme="dark"] {
     --on-secondary-muted: rgb(190, 190, 190);
     --accent: #32a5a9;
     --on-accent: #fff;
-    --text-muted: #d3d3d3;
+    --text-muted: #535361;
 }
 
 body {

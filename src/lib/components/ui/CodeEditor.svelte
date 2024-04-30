@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount, type Bindable } from "svelte";
     import * as monaco from 'monaco-editor'
+    import { Theme, theme } from "$state/app.svelte";
 
     interface Props {
         value: Bindable<string>
@@ -13,7 +14,7 @@
     let editor: monaco.editor.IStandaloneCodeEditor
     onMount(() => {
         editor = monaco.editor.create(element, {
-            theme: 'vs-light',
+            theme: $theme === Theme.DARK ? 'vs-dark' : 'vs-light',
             language: 'cpp',
             value: value as string,
             automaticLayout: true,
@@ -23,6 +24,11 @@
             ignoreUpdate = true
             value = editor.getValue()
         })
+    })
+
+    theme.subscribe(theme => {
+        if (!editor) return
+        monaco.editor.setTheme(theme === Theme.DARK ? 'vs-dark' : 'vs-light')
     })
 
     $effect(() => {
