@@ -1,20 +1,22 @@
-import type { Programmer } from "$domain/robots.types";
-import { usbRequest } from "$state/upload.svelte";
+import type { Programmer } from "$domain/robots.types"
+import PicoTool from "@leaphy-robotics/picotool-wasm";
 import { delay } from "./utils";
-import DFUUtil from "@leaphy-robotics/dfu-util-wasm";
+import { usbRequest } from "$state/upload.svelte";
 import base64 from "base64-js";
 import { port as portState } from "$state/workspace.svelte";
 
-const dfu = new DFUUtil("/dfu-util/");
+const pico = new PicoTool("/picotool/")
 
-export default class DFU implements Programmer {
+export default class Pico implements Programmer {
     async upload(port: SerialPort, response: Record<string, string>) {
+        await port.close()
+        await port.open({ baudRate: 1200 })
         await port.close()
         await delay(1000)
         await usbRequest.request()
 
         const sketch = base64.toByteArray(response["sketch"]);
-        await dfu.flash(sketch);
+        await pico.flash(sketch);
         await delay(1000)
 
         await portState.reconnect()

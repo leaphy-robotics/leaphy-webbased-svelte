@@ -27,6 +27,10 @@ export default defineConfig({
         src: "./node_modules/@leaphy-robotics/dfu-util-wasm/build/*",
         dest: 'dfu-util'
       },
+      {
+        src: "./node_modules/@leaphy-robotics/picotool-wasm/build/*",
+        dest: 'picotool'
+      },
     ]
   })],
   resolve: {

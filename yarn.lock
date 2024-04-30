@@ -372,6 +372,11 @@
   dependencies:
     blockly "^10.4.3"
 
+"@leaphy-robotics/picotool-wasm@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/picotool-wasm/-/picotool-wasm-1.0.2.tgz#648150c5e29204f063750e5348b66dae3f5db14a"
+  integrity sha512-ux3RyjjcHJopr/zOyTkEEtZTgzYTNd5zKNAMXvaVNDqRJIm9jCVTUytIpYPkUV7myXAt23jXl5dIVhsCiEDsqw==
+
 "@leaphy-robotics/webusb-ftdi@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/webusb-ftdi/-/webusb-ftdi-1.0.0.tgz#999a9de85cef82747f09b1dfa6e01374bd85ba07"

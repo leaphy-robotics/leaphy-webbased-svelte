@@ -12,6 +12,7 @@ import { RobotType, type Programmer } from "./robots.types";
 import AvrDude from "../programmers/AvrDude";
 import defaultCPP from "$assets/default-program.ino?raw"
 import DFU from "../programmers/DFU";
+import Pico from "../programmers/Pico";
 
 const DEFAULT_LIBRARIES = [
   "Leaphy Extensions",
@@ -78,7 +79,7 @@ const baseNanoESP32 = {
 const baseNanoRP2040 = {
   mapping: PinMapping.NANO,
   fqbn: "arduino:mbed_nano:nanorp2040connect",
-  programmer: new AvrDude('atmega328p')
+  programmer: new Pico()
 }
 
 export const robotListing: Robot[][] = [

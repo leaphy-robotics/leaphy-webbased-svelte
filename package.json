@@ -30,6 +30,7 @@
     "@leaphy-robotics/avrdude-webassembly": "^1.6.1",
     "@leaphy-robotics/dfu-util-wasm": "^1.0.2",
     "@leaphy-robotics/leaphy-blocks": "3.0.0",
+    "@leaphy-robotics/picotool-wasm": "^1.0.2",
     "@types/w3c-web-usb": "^1.0.10",
     "base64-js": "^1.5.1",
     "blockly": "^10.4.3",
