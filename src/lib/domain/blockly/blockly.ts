@@ -18,6 +18,7 @@ import type {
   ToolboxDefinition,
   ToolboxItemInfo,
 } from "blockly/core/utils/toolbox";
+import { audio } from "$state/blockly.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -53,6 +54,14 @@ Blockly.Extensions.registerMutator(
   null as unknown as undefined, // TODO(#6920)
   ["controls_if_elseif", "controls_if_else"],
 );
+
+let play = Blockly.WorkspaceAudio.prototype.play
+Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
+  audio.update(state => {
+    if (state) play.call(this, name, opt_volume)
+    return state
+  })
+}
 
 function loadToolbox(robot: RobotDevice): ToolboxDefinition {
   return {
