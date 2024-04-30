@@ -13,15 +13,15 @@ export default defineConfig({
       },
       {
         src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude.wasm',
-        dest: '/'
+        dest: ''
       },
       {
         src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude-worker.js',
-        dest: '/'
+        dest: ''
       },
       {
         src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude.conf',
-        dest: '/'
+        dest: ''
       },
       {
         src: "./node_modules/@leaphy-robotics/dfu-util-wasm/build/*",

@@ -15,7 +15,7 @@
     let popupState = getContext<Writable<PopupState>>("state")
     let { source }: Props = $props()
     let progress = $state(0)
-    let currentState = $state("Connecting...")
+    let currentState = $state("CONNECTING")
     let error = $state<string|null>(null)
     let done = $state(false)
 
@@ -26,7 +26,7 @@
     }
 
     async function compile() {
-        currentState = "Compiling..."
+        currentState = "COMPILATION_STARTED"
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
             method: "POST",
             headers: {
@@ -40,16 +40,21 @@
         })
         if (!res.ok) {
             const { detail } = await res.json()
-            throw new UploadError("Compile Error", detail)
+            throw new UploadError("COMPILATION_FAILED", detail)
         }
 
         return await res.json()
     }
 
     async function upload(res: Record<string, string>) {
-        currentState = "Uploading..."
-        port.reserve()
-        await $robot.programmer.upload($port, res)
+        currentState = "UPDATE_STARTED"
+        try {
+            port.reserve()
+            await $robot.programmer.upload($port, res)
+        } catch (e) {
+            console.log(e)
+            throw new UploadError("UPDATE_FAILED", e)
+        }
         port.release()
     }
 
@@ -64,7 +69,7 @@
             await upload(res)
 
             progress = 100
-            currentState = "Robot update complete"
+            currentState = "UPDATE_COMPLETE"
             done = true
         } catch (e) {
             if (e instanceof UploadError) {
@@ -99,7 +104,7 @@
         <div class="info">{$_("RECONNECT_INFO")}</div>
         <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
     {:else}
-        <h2 class="state">{currentState}</h2>
+        <h2 class="state">{$_(currentState)}</h2>
 
         {#if error}
             <code class="error-result">{error}</code>
