@@ -7,13 +7,14 @@
     import Uploader from "../popups/popups/Uploader.svelte";
     import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestion, faQuestionCircle, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
+    import { faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestion, faQuestionCircle, faSquarePollHorizontal, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
     import appState, { Screen, Theme, theme } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { audio, workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
     import Examples from '../popups/popups/Examples.svelte';
     import About from '../popups/popups/About.svelte';
+    import UploadLog from '../popups/popups/UploadLog.svelte';
 
     async function upload() {
         popups.open({
@@ -76,6 +77,14 @@
         localStorage.setItem('language', language)
     }
 
+    function log() {
+        popups.open({
+            component: UploadLog,
+            data: {},
+            allowInteraction: true
+        })
+    }
+
     function discord() {
         window.open('https://discord.com/invite/Yeg7Kkrq5W', '_blank').focus()
     }
@@ -117,6 +126,7 @@
     <ContextItem icon={faGlobe} name={$_("LANGUAGE")} context={languageContext} />
     <ContextItem icon={$theme === Theme.LIGHT ? faLightbulb : faMoon} name={$_("THEME")} context={themeContext} />
     <ContextItem icon={$audio ? faVolumeXmark : faVolumeHigh} name={$_($audio ? "SOUND_OFF" : "SOUND_ON")} onclick={() => audio.update(audio => !audio)} />
+    <ContextItem icon={faSquarePollHorizontal} name={$_("VIEW_LOG")} onclick={log} />
 {/snippet}
 
 <div class="header">

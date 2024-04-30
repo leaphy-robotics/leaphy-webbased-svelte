@@ -1,4 +1,5 @@
 import type { Programmer } from "$domain/robots.types";
+import { uploadLog } from "$state/workspace.svelte";
 import Module from '@leaphy-robotics/avrdude-webassembly/avrdude.js'
 
 const controllerArgs: Record<string, string> = {
@@ -63,6 +64,10 @@ export default class AvrDude implements Programmer {
         }
 
         if (window["writeStream"]) window["writeStream"].releaseLock();
+
+        const log = window["avrdudeLog"]
+        console.log(log)
+        uploadLog.set(log)
 
         if (race != 0) {
             if (race == -2) {

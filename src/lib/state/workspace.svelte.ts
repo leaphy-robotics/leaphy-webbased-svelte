@@ -23,6 +23,8 @@ interface LogItem {
   content: string
 }
 
+export const SUPPORTED_VENDOR_IDS = [0x1a86, 9025, 2341, 0x0403, 0x2e8a]
+
 let writer: WritableStreamDefaultWriter<Uint8Array>
 function createLogState() {
   const { subscribe, update } = writable<LogItem[]>([])
@@ -85,7 +87,11 @@ function createPortState() {
       }
       if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
 
-      const port = await navigator.serial.requestPort()
+      const port = await navigator.serial.requestPort({ 
+        filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
+          usbVendorId: vendor,
+        }))
+      })
       update(() => port)
       return port
     },
@@ -104,6 +110,22 @@ function createPortState() {
   }
 }
 export const port = createPortState()
+
+function createUploadLog() {
+  const { subscribe, update, set } = writable<string[]>([])
+  
+  return {
+    subscribe,
+    set,
+    add(item: string) {
+      update(log => [...log, item])
+    },
+    clear() {
+      update(() => [])
+    }
+  }
+}
+export const uploadLog = createUploadLog()
 
 export const sidePanel = writable<ComponentType|undefined>(undefined)
 
