@@ -15,7 +15,7 @@
 <style>
     .input {
         border: none;
-        padding: 5px;
+        padding: 5px 10px;
         margin: 0;
         width: 100%;
         outline: 0;

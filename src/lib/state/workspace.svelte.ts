@@ -150,5 +150,6 @@ export const robot = writable<RobotDevice>()
 export const mode = writable<ComponentType>(Mode.BLOCKS)
 export const code = writable<string>(defaultProgramCPP)
 export const saveState = writable<boolean>(true)
+export const installed = writable<[string, string][]>([])
 
 code.subscribe(() => saveState.set(false))

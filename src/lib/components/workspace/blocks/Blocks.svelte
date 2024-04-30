@@ -47,29 +47,10 @@
         $workspace.setTheme(getTheme(theme))
         $workspace.refreshTheme()
     })
-
-    function openSerial() {
-        popups.open({
-            component: SerialMonitor,
-            data: {},
-            allowInteraction: true
-        })
-    }
-
-    function openCode() {
-        if ($sidePanel === Code) sidePanel.set(undefined)
-        else sidePanel.set(Code)
-    }
 </script>
-
-{#snippet actions()}
-    <SideButton icon={faCode} onclick={openCode} />
-    <SideButton icon={faSquarePollHorizontal} onclick={openSerial} />
-{/snippet}
 
 <div class="environment">
     <div class="blockly" bind:this={element} ></div>
-    <SideBar buttons={actions} />
 </div>
 
 <style>

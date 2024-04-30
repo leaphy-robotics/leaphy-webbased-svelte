@@ -3,7 +3,7 @@
 
     import Button from "$components/ui/Button.svelte";
     import ProgressBar from "$components/ui/ProgressBar.svelte";
-    import { Prompt, SUPPORTED_VENDOR_IDS, port, robot } from "$state/workspace.svelte"
+    import { Prompt, SUPPORTED_VENDOR_IDS, installed, port, robot } from "$state/workspace.svelte"
     import { getContext, onMount } from "svelte";
     import { type PopupState, popups } from "$state/popup.svelte"
     import { type Writable } from "svelte/store";
@@ -35,7 +35,10 @@
             body: JSON.stringify({
                 source_code: source,
                 board: $robot.fqbn,
-                libraries: $robot.libraries
+                libraries: [
+                    ...$robot.libraries,
+                    ...$installed.map(([name, version]) => `${name}@${version}`)
+                ]
             })
         })
         if (!res.ok) {

@@ -17,9 +17,5 @@
         flex-direction: column;
         gap: 50px;
         padding: 20px;
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 99;
     }
 </style>
