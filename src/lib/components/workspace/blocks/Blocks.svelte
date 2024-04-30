@@ -68,7 +68,7 @@
 {/snippet}
 
 <div class="environment">
-    <div class="blockly" bind:this={element} />
+    <div class="blockly" bind:this={element} ></div>
     <SideBar buttons={actions} />
 </div>
 

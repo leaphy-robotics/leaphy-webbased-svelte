@@ -5,6 +5,9 @@ import { addMessages, init } from "svelte-i18n";
 import enTranslations from "./assets/translations/en.json";
 import nlTranslations from "./assets/translations/nl.json";
 import initMatomo from "./lib/matomo";
+import initSentry from "./lib/sentry";
+
+initSentry();
 
 addMessages("en", enTranslations);
 addMessages("nl", nlTranslations);

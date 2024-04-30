@@ -30,6 +30,7 @@
     "@leaphy-robotics/dfu-util-wasm": "^1.0.2",
     "@leaphy-robotics/leaphy-blocks": "3.0.0",
     "@leaphy-robotics/picotool-wasm": "^1.0.2",
+    "@sentry/svelte": "8.0.0-beta.5",
     "@types/w3c-web-usb": "^1.0.10",
     "base64-js": "^1.5.1",
     "blockly": "^10.4.3",

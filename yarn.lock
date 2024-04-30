@@ -468,6 +468,88 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.13.0.tgz#6abd79db7ff8d01a58865ba20a63cfd23d9e2a10"
   integrity sha512-UKXUQNbO3DOhzLRwHSpa0HnhhCgNODvfoPWv2FCXme8N/ANFfhIPMGuOT+QuKd16+B5yxZ0HdpNlqPvTMS1qfw==
 
+"@sentry-internal/browser-utils@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/browser-utils/-/browser-utils-8.0.0-beta.5.tgz#1af061f5cbed854ebf2cda18d3da15bca08afc9b"
+  integrity sha512-3+XhQPnOBpoukUX+N+gs6Klon7oH8esHG/J9K37ho8hH63A5JIobGNV/dhtzZTKXsS31qGu4X2PM3aA9jjKR+w==
+  dependencies:
+    "@sentry/core" "8.0.0-beta.5"
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+
+"@sentry-internal/feedback@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/feedback/-/feedback-8.0.0-beta.5.tgz#08457cd7e8a83ac45ca3c36d173bda149ed789e4"
+  integrity sha512-mqHBiBufJDEv5mZ7alRJpNRO38QVzLAxIdx7aYskiXi57/tPr8AWNkTRQQoDjckQjzgn+lgadYD8nJscSAdyrw==
+  dependencies:
+    "@sentry/core" "8.0.0-beta.5"
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+
+"@sentry-internal/replay-canvas@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay-canvas/-/replay-canvas-8.0.0-beta.5.tgz#98d1292f43d07289e85c81f3929a387405f03748"
+  integrity sha512-WBVptOKJUyrv5i39e9BBJ5XPIJLACtenR7PVgFsYm7XkDCaA6ctaK+JHkzWsEwjbEUctjQsxS7a/Bsu6lnBbSQ==
+  dependencies:
+    "@sentry-internal/replay" "8.0.0-beta.5"
+    "@sentry/core" "8.0.0-beta.5"
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+
+"@sentry-internal/replay@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/replay/-/replay-8.0.0-beta.5.tgz#f044b3d14a5a1e48283fa10c3c30a1face23a730"
+  integrity sha512-cOq52IEKrIBlp0iF0eLPtfDHC+AWrQraeWAJ4UEFprBIJt5oSZiYP5LIDPR4cmFfcFQ0mHaUg9lSdEmdhITn3Q==
+  dependencies:
+    "@sentry-internal/browser-utils" "8.0.0-beta.5"
+    "@sentry/core" "8.0.0-beta.5"
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+
+"@sentry/browser@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-8.0.0-beta.5.tgz#2cb93a56863c3fd5ab808bf624b7405b6aa24dd4"
+  integrity sha512-K0lHodd8HI/OLYec+N5cKLlsIu/MhR8R57OzNpU5gM1r+KlOrjhLaT1a49fqE+OLYSu5RnozwFLqxfqY6ePlww==
+  dependencies:
+    "@sentry-internal/browser-utils" "8.0.0-beta.5"
+    "@sentry-internal/feedback" "8.0.0-beta.5"
+    "@sentry-internal/replay" "8.0.0-beta.5"
+    "@sentry-internal/replay-canvas" "8.0.0-beta.5"
+    "@sentry/core" "8.0.0-beta.5"
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+
+"@sentry/core@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-8.0.0-beta.5.tgz#b68956a863c60af20a0a16ca83885124d6867cf5"
+  integrity sha512-DVPTRDMGAZXQY5AxQ3j24CnO0KKHQCZT7IP2ZtN4bVQd685inpSKNhVjNCOssI7zhV9QuW62mqbksJ2+JbBdPA==
+  dependencies:
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+
+"@sentry/svelte@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry/svelte/-/svelte-8.0.0-beta.5.tgz#3a6990a3cd88eb8e222aa27b8e9e65b184ab7d69"
+  integrity sha512-j/IsMrm0AqHwgTEFElS1LBJMGPPgmFxiPDkGlGh3twCzwSAI7XTsPLameTJI82wYmP7+qGFtD2imUOkIuRgrRA==
+  dependencies:
+    "@sentry/browser" "8.0.0-beta.5"
+    "@sentry/core" "8.0.0-beta.5"
+    "@sentry/types" "8.0.0-beta.5"
+    "@sentry/utils" "8.0.0-beta.5"
+    magic-string "^0.30.0"
+
+"@sentry/types@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-8.0.0-beta.5.tgz#1a877194f20ce867743bce514af2f8475f0a91c8"
+  integrity sha512-BRGvEDtPO5lj70ELF3gujH3z1evkMTOzzF7E+kG1pHzIARS6tSLZgaGsnVVKPA1AIbe7MQ2iWrtTlO1dZWQNpw==
+
+"@sentry/utils@8.0.0-beta.5":
+  version "8.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-8.0.0-beta.5.tgz#2e12e1bd39bb0175bd279e40841e182657cc89d8"
+  integrity sha512-irInCFhFDejT57iKH6lRCGZMSTRXlcRoExt2QZ84cISC96SgoR4q4kHLzmqsXEtSYD8aKCxnnMpWsYsDrg7wug==
+  dependencies:
+    "@sentry/types" "8.0.0-beta.5"
+
 "@sveltejs/vite-plugin-svelte-inspector@^2.0.0":
   version "2.0.0"
   resolved "https://registry.npmjs.org/@sveltejs/vite-plugin-svelte-inspector/-/vite-plugin-svelte-inspector-2.0.0.tgz"
@@ -1151,6 +1233,13 @@ lru-queue@^0.1.0:
   integrity sha512-BpdYkt9EvGl8OfWHDQPISVpcl5xZthb+XPsbELj5AQXxIC8IriDZIQYjBJPEm5rS420sjZ0TLEzRcq5KdBhYrQ==
   dependencies:
     es5-ext "~0.10.2"
+
+magic-string@^0.30.0:
+  version "0.30.10"
+  resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.30.10.tgz#123d9c41a0cb5640c892b041d4cfb3bd0aa4b39e"
+  integrity sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==
+  dependencies:
+    "@jridgewell/sourcemap-codec" "^1.4.15"
 
 magic-string@^0.30.5:
   version "0.30.8"
