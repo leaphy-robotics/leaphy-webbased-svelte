@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
-    import workspaceState, { sidePanel } from "$state/workspace.svelte";
+    import { sidePanel, robot, code } from "$state/workspace.svelte";
     import { popups } from "$state/popup.svelte";
     import { arduino } from "@leaphy-robotics/leaphy-blocks";
     import SideButton from "$components/ui/SideButton.svelte";
@@ -21,22 +21,22 @@
 
     let element: HTMLDivElement;
     onMount(() => {
-      workspace.update(() => setupWorkspace(workspaceState.robot, element, getTheme($theme)))
+      workspace.update(() => setupWorkspace($robot, element, getTheme($theme)))
       $workspace.addChangeListener(() => {
-        workspaceState.code = arduino.workspaceToCode($workspace)
+        code.set(arduino.workspaceToCode($workspace))
       })
     });
 
     locale.subscribe(locale => {
-        setLocale(workspaceState.robot, locale)
+        setLocale($robot, locale)
         
         if ($workspace && element) {
             const content = serialization.workspaces.save($workspace)
             $workspace.dispose()
 
-            workspace.update(() => setupWorkspace(workspaceState.robot, element, getTheme($theme), content))
+            workspace.update(() => setupWorkspace($robot, element, getTheme($theme), content))
             $workspace.addChangeListener(() => {
-                workspaceState.code = arduino.workspaceToCode($workspace)
+                code.set(arduino.workspaceToCode($workspace))
             })
         }
     })

@@ -1,6 +1,6 @@
 <script lang="ts">
     import CodeEditor from "$components/ui/CodeEditor.svelte";
-    import workspaceState from "$state/workspace.svelte"
+    import { code } from "$state/workspace.svelte"
 </script>
 
-<CodeEditor value={workspaceState.code} editable={false} />
+<CodeEditor value={$code} editable={false} />

@@ -1,7 +1,7 @@
 <script lang="ts">
     import Button from "$components/ui/Button.svelte";
     import ProgressBar from "$components/ui/ProgressBar.svelte";
-    import workspaceState, { Prompt, port } from "$state/workspace.svelte"
+    import { Prompt, port, robot } from "$state/workspace.svelte"
     import { getContext, onMount } from "svelte";
     import { type PopupState, popups } from "$state/popup.svelte"
     import { type Writable } from "svelte/store";
@@ -31,8 +31,8 @@
             },
             body: JSON.stringify({
                 source_code: source,
-                board: workspaceState.robot.fqbn,
-                libraries: workspaceState.robot.libraries
+                board: $robot.fqbn,
+                libraries: $robot.libraries
             })
         })
         if (!res.ok) {
@@ -46,7 +46,7 @@
     async function upload(res: Record<string, string>) {
         currentState = "Uploading..."
         port.reserve()
-        await workspaceState.robot.programmer.upload($port, res)
+        await $robot.programmer.upload($port, res)
         port.release()
     }
 

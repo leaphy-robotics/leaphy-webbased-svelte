@@ -1,7 +1,7 @@
 <script lang="ts">
     import CodeEditor from "$components/ui/CodeEditor.svelte";
     import { onDestroy, onMount } from "svelte";
-    import workspaceState, { sidePanel } from "$state/workspace.svelte"
+    import { sidePanel } from "$state/workspace.svelte"
 
     let width = $state(300)
 

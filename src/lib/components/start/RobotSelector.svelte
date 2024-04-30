@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Robot } from "$domain/robots";
-    import appState, { Screen } from "$state/app.svelte";
-    import workspaceState from "$state/workspace.svelte";
+    import { Screen, selected, screen } from "$state/app.svelte";
+    import { robot, mode } from "$state/workspace.svelte";
 
     interface Props {
         robots: Robot[][];
@@ -9,12 +9,12 @@
     }
     let { robots, secondary }: Props = $props();
 
-    function select(robot: Robot) {
-        if ("variants" in robot) return (appState.selected = robot);
+    function select(type: Robot) {
+        if ("variants" in type) return (selected.set(type));
 
-        workspaceState.robot = robot;
-        workspaceState.mode = robot.modes[0];
-        appState.screen = Screen.WORKSPACE;
+        robot.set(type);
+        mode.set(type.modes[0]);
+        screen.set(Screen.WORKSPACE)
     }
 </script>
 
@@ -25,7 +25,7 @@
                 <button
                     class="robot"
                     onclick={() => select(robot)}
-                    class:selected={appState.selected?.id === robot.id}
+                    class:selected={$selected?.id === robot.id}
                 >
                     <span class="icon">
                         <img class="image" src={robot.icon} alt={robot.name} />

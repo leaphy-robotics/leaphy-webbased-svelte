@@ -5,10 +5,10 @@
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
     import Uploader from "../popups/popups/Uploader.svelte";
-    import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
+    import { Prompt, handle, port, code } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
     import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
-    import appState, { Screen, Theme, theme } from "$state/app.svelte"
+    import { Screen, Theme, theme, selected, screen } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { audio, workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
@@ -21,7 +21,7 @@
         popups.open({
             component: Uploader,
             data: {
-                source: workspaceState.code
+                source: $code
             },
             allowInteraction: false
         })
@@ -32,8 +32,8 @@
     }
 
     async function newProject() {
-        appState.selected = null
-        appState.screen = Screen.START
+        selected.set(null)
+        screen.set(Screen.START)
     }
 
     async function saveProjectAs() {
@@ -171,7 +171,7 @@
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if appState.screen !== Screen.START}
+        {#if $screen !== Screen.START}
             <Button name={$_("PROJECT")} mode={"outlined"} context={projectContext} />
             <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
             <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
@@ -180,14 +180,14 @@
     </div>
 
     <div class="comp">
-        {#if appState.screen !== Screen.START}
+        {#if $screen !== Screen.START}
             <Button mode={"outlined"} icon={faUndo} onclick={undo} />
             <Button mode={"outlined"} icon={faRedo} onclick={redo} />
         {/if}
     </div>
 
     <div class="comp">
-        {#if appState.screen !== Screen.START}
+        {#if $screen !== Screen.START}
             <Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
             <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
         {/if}

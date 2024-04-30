@@ -20,9 +20,5 @@ theme.subscribe(theme => {
   localStorage.setItem('theme', theme)
 })
 
-class AppState {
-  screen = $state<ComponentType>(Screen.START);
-  selected = $state<RobotListing | null>(null);
-}
-
-export default new AppState();
+export const screen = writable<ComponentType>(Screen.START)
+export const selected = writable<RobotListing | null>(null)

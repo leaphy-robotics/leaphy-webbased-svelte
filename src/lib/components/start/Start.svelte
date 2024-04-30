@@ -1,14 +1,14 @@
 <script lang="ts">
     import { fly } from "svelte/transition";
     import { flip } from "svelte/animate";
-    import appState from "$state/app.svelte";
+    import { selected } from "$state/app.svelte";
     import { robotListing } from "$domain/robots";
     import RobotSelector from "$components/start/RobotSelector.svelte";
     import { cubicOut } from "svelte/easing";
 
     let selectors = $derived(
-        appState.selected
-            ? [robotListing, appState.selected.variants]
+        $selected
+            ? [robotListing, $selected.variants]
             : [robotListing],
     );
     let animationOptions = {

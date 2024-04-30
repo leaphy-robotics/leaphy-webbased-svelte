@@ -2,7 +2,7 @@
     import { _ } from "svelte-i18n";
     import Windowed from "../Windowed.svelte";
     import { inFilter } from "$domain/robots";
-    import workspaceState from "$state/workspace.svelte"
+    import { robot } from "$state/workspace.svelte"
     import { getContext, onMount } from "svelte";
     import { workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
@@ -17,7 +17,7 @@
     }
 
     let examples = $state<Example[]>([])
-    let visible = $derived(examples.filter(({ boards }) => inFilter(workspaceState.robot, boards)))
+    let visible = $derived(examples.filter(({ boards }) => inFilter($robot, boards)))
 
     async function getExamples() {
         examples = await Promise.all(

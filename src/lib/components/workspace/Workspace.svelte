@@ -1,11 +1,11 @@
 <script lang="ts">
     import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
-    import workspaceState, { sidePanel } from "$state/workspace.svelte";
+    import { sidePanel, mode } from "$state/workspace.svelte";
 </script>
 
 <div class="container">
     <div class="content">
-        <svelte:component this="{workspaceState.mode}" />
+        <svelte:component this="{$mode}" />
     </div>
     {#if $sidePanel}
         <SidePanel />
