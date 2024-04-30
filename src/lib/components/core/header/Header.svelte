@@ -7,7 +7,7 @@
     import Uploader from "../popups/popups/Uploader.svelte";
     import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestion, faQuestionCircle, faSquarePollHorizontal, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
+    import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestionCircle, faSquarePollHorizontal, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
     import appState, { Screen, Theme, theme } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { audio, workspace } from "$state/blockly.svelte";
@@ -15,6 +15,7 @@
     import Examples from '../popups/popups/Examples.svelte';
     import About from '../popups/popups/About.svelte';
     import UploadLog from '../popups/popups/UploadLog.svelte';
+    import JSZip from "jszip";
 
     async function upload() {
         popups.open({
@@ -99,6 +100,25 @@
             allowInteraction: true
         })
     }
+
+    async function drivers() {
+        const response = await fetch("https://api.github.com/repos/leaphy-robotics/leaphy-firmware/contents/drivers");
+        const data = await response.json();
+        const files = data.map(({ download_url }) => download_url);
+        const zip = new JSZip();
+
+        await Promise.all(files.map(async url => {
+            const res = await fetch(url)
+            zip.file(url.split("/").pop(), await res.blob())
+        }))
+        
+        const a = document.createElement("a");
+        const url = URL.createObjectURL(await zip.generateAsync({ type: "blob" }));
+        a.href = url;
+        a.download = "leaphy-drivers.zip";
+        a.click();
+        URL.revokeObjectURL(url)
+    }
 </script>
 
 {#snippet projectContext()}
@@ -127,6 +147,7 @@
     <ContextItem icon={$theme === Theme.LIGHT ? faLightbulb : faMoon} name={$_("THEME")} context={themeContext} />
     <ContextItem icon={$audio ? faVolumeXmark : faVolumeHigh} name={$_($audio ? "SOUND_OFF" : "SOUND_ON")} onclick={() => audio.update(audio => !audio)} />
     <ContextItem icon={faSquarePollHorizontal} name={$_("VIEW_LOG")} onclick={log} />
+    <ContextItem icon={faDownload} name={$_("DOWNLOAD_DRIVERS")} onclick={drivers} />
 {/snippet}
 
 <div class="header">
