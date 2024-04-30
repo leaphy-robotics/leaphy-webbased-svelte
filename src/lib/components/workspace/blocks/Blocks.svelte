@@ -57,8 +57,8 @@
     }
 
     function openCode() {
-        if ($sidePanel === Code) sidePanel.update(() => undefined)
-        else sidePanel.update(() => Code)
+        if ($sidePanel === Code) sidePanel.set(undefined)
+        else sidePanel.set(Code)
     }
 </script>
 

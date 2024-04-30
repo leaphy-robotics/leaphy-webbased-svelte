@@ -10,6 +10,7 @@ import { Mode } from "$state/workspace.svelte";
 import type { ComponentType } from "svelte";
 import { RobotType, type Programmer } from "./robots.types";
 import AvrDude from "../programmers/AvrDude";
+import defaultCPP from "$assets/default-program.ino?raw"
 
 const DEFAULT_LIBRARIES = [
   "Leaphy Extensions",
@@ -43,7 +44,12 @@ export interface RobotDevice extends BaseRobot {
 export interface RobotListing extends BaseRobot {
   variants: RobotDevice[][];
 }
-export type Robot = RobotDevice | RobotListing;
+export interface RobotMode extends BaseRobot {
+  mode: ComponentType,
+  defaultRobot: string,
+  defaultProgram: string
+}
+export type Robot = RobotDevice | RobotListing | RobotMode;
 
 export enum PinMapping {
   UNO,
@@ -224,13 +230,12 @@ export const robotListing: Robot[][] = [
   ],
   [
     {
-      ...baseUno,
       id: "l_cpp",
-      type: RobotType.L_CPP,
       name: "Leaphy C++",
-      libraries: DEFAULT_LIBRARIES.concat(["QMC5883LCompass", "Arduino_APDS9960"]),
       icon: cppIcon,
-      modes: [Mode.ADVANCED],
+      mode: Mode.ADVANCED,
+      defaultRobot: "l_uno",
+      defaultProgram: defaultCPP
     },
     {
       ...baseNanoRP2040,
@@ -245,12 +250,13 @@ export const robotListing: Robot[][] = [
 ];
 
 export type Robots = {
-  [identifier: string]: Robot;
+  [identifier: string]: RobotDevice;
 };
 export const robots = robotListing
   .flat()
   .flatMap((robot) => {
     if ("type" in robot) return robot;
+    if ("mode" in robot) return []
     return robot.variants.flat();
   })
   .reduce((robots, robot) => {

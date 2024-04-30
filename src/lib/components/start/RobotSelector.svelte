@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Robot } from "$domain/robots";
+    import { type Robot, robots as allRobots } from "$domain/robots";
     import { Screen, selected, screen } from "$state/app.svelte";
     import { robot, mode } from "$state/workspace.svelte";
 
@@ -11,6 +11,12 @@
 
     function select(type: Robot) {
         if ("variants" in type) return (selected.set(type));
+        if ("mode" in type) {
+            robot.set(allRobots[type.defaultRobot])
+            mode.set(type.mode)
+            screen.set(Screen.WORKSPACE)
+            return
+        }
 
         robot.set(type);
         mode.set(type.modes[0]);

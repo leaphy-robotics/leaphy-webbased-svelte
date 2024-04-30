@@ -3,6 +3,7 @@ import type {RobotDevice} from "$domain/robots";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import type {ComponentType} from "svelte";
+import defaultProgramCPP from "$assets/default-program.ino?raw"
 
 export const Mode = {
     BLOCKS: Blocks,
@@ -130,4 +131,4 @@ export const sidePanel = writable<ComponentType|undefined>(undefined)
 export const handle = writable<FileSystemFileHandle|undefined>(undefined)
 export const robot = writable<RobotDevice>()
 export const mode = writable<ComponentType>(Mode.BLOCKS)
-export const code = writable<string>("")
+export const code = writable<string>(defaultProgramCPP)

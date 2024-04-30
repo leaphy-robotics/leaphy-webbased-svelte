@@ -5,7 +5,7 @@
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
     import Uploader from "../popups/popups/Uploader.svelte";
-    import { Prompt, handle, port, code } from '$state/workspace.svelte'
+    import { Prompt, handle, port, code, mode, Mode, robot } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
     import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
     import { Screen, Theme, theme, selected, screen } from "$state/app.svelte"
@@ -16,6 +16,9 @@
     import About from '../popups/popups/About.svelte';
     import UploadLog from '../popups/popups/UploadLog.svelte';
     import JSZip from "jszip";
+    import Workspace from '$components/workspace/Workspace.svelte';
+    import Select from '$components/ui/Select.svelte';
+    import { robots } from '$domain/robots';
 
     async function upload() {
         popups.open({
@@ -171,7 +174,10 @@
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if $screen !== Screen.START}
+        {#if $screen === Screen.WORKSPACE && $mode === Mode.ADVANCED}
+            <Select options={Object.values(robots).map(device => ([device.name, device]))} bind:value={$robot} />
+        {/if}
+        {#if $screen === Screen.WORKSPACE}
             <Button name={$_("PROJECT")} mode={"outlined"} context={projectContext} />
             <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
             <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
@@ -180,14 +186,14 @@
     </div>
 
     <div class="comp">
-        {#if $screen !== Screen.START}
+        {#if $screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
             <Button mode={"outlined"} icon={faUndo} onclick={undo} />
             <Button mode={"outlined"} icon={faRedo} onclick={redo} />
         {/if}
     </div>
 
     <div class="comp">
-        {#if $screen !== Screen.START}
+        {#if $screen === Screen.WORKSPACE}
             <Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
             <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
         {/if}
