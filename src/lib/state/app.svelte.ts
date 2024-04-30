@@ -9,6 +9,17 @@ export const Screen = {
   WORKSPACE: Workspace,
 };
 
+export enum Theme {
+  LIGHT = 'light',
+  DARK = 'dark',
+}
+
+export const theme = writable<Theme>(localStorage.getItem('theme') as Theme || Theme.LIGHT)
+theme.subscribe(theme => {
+  document.body.setAttribute('data-color-scheme', theme)
+  localStorage.setItem('theme', theme)
+})
+
 class AppState {
   screen = $state<ComponentType>(Screen.START);
   selected = $state<RobotListing | null>(null);

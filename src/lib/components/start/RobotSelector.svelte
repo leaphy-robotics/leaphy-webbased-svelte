@@ -48,7 +48,7 @@
         gap: 50px;
     }
     .secondary {
-        background: #fff;
+        background: var(--background);
     }
 
     .row {
@@ -72,6 +72,7 @@
         padding: 0;
 
         transition: 0.1s ease;
+        color: var(--on-background);
     }
     .robot.selected,
     .robot:hover {
@@ -83,8 +84,8 @@
         align-items: center;
 
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        border: solid 1px #f1f1f1;
-        background: #fff;
+        border: solid 1px var(--background);
+        background: var(--robot);
         aspect-ratio: 1/1;
         width: 100%;
         border-radius: 0.375rem;

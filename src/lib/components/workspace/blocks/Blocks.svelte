@@ -11,11 +11,17 @@
     import Code from "../panels/Code.svelte";
     import { workspace } from "$state/blockly.svelte"
     import { locale } from "svelte-i18n";
-    import { serialization } from "blockly";
+    import { WorkspaceSvg, serialization } from "blockly";
+    import { Theme, theme } from "$state/app.svelte";
+    import { dark, light } from "$domain/blockly/theme";
+
+    function getTheme(theme: Theme) {
+        return theme === Theme.DARK ? dark : light
+    }
 
     let element: HTMLDivElement;
     onMount(() => {
-      workspace.update(() => setupWorkspace(workspaceState.robot, element))
+      workspace.update(() => setupWorkspace(workspaceState.robot, element, getTheme($theme)))
       $workspace.addChangeListener(() => {
         workspaceState.code = arduino.workspaceToCode($workspace)
       })
@@ -28,11 +34,18 @@
             const content = serialization.workspaces.save($workspace)
             $workspace.dispose()
 
-            workspace.update(() => setupWorkspace(workspaceState.robot, element, content))
+            workspace.update(() => setupWorkspace(workspaceState.robot, element, getTheme($theme), content))
             $workspace.addChangeListener(() => {
                 workspaceState.code = arduino.workspaceToCode($workspace)
             })
         }
+    })
+
+    theme.subscribe(theme => {
+        if (!$workspace || !($workspace instanceof WorkspaceSvg)) return
+
+        $workspace.setTheme(getTheme(theme))
+        $workspace.refreshTheme()
     })
 
     function openSerial() {

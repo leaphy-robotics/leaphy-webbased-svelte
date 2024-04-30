@@ -95,18 +95,13 @@ export function setLocale(robot: RobotDevice, locale: string) {
   }
 }
 
-export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement, content?: { [key: string]: any }) {
+export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement, theme: Blockly.Theme, content?: { [key: string]: any }) {
   PinSelectorField.processPinMappings(robot)
 
   const workspace = Blockly.inject(element, {
     renderer: "zelos",
     toolbox: loadToolbox(robot),
-    theme: Blockly.Theme.defineTheme("leaphy", {
-      name: "leaphy",
-      blockStyles: THEME.defaultBlockStyles,
-      categoryStyles: THEME.categoryStyles,
-      componentStyles: THEME.componentStyles,
-    }),
+    theme: theme,
     zoom: {
       startScale: .8
     }

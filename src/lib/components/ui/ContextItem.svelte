@@ -66,6 +66,7 @@
     .item {
         background: var(--background);
         height: 38px;
+        cursor: pointer;
     }
     .item:hover {
         background: var(--background-tint);
@@ -91,6 +92,6 @@
     }
 
     .selected {
-        color: var(--primary);
+        color: var(--primary-dark-tint);
     }
 </style>

@@ -7,8 +7,8 @@
     import Uploader from "../popups/popups/Uploader.svelte";
     import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faQuestion, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
-    import appState, { Screen } from "$state/app.svelte"
+    import { faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faQuestion, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+    import appState, { Screen, Theme, theme } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
@@ -108,9 +108,14 @@
         <ContextItem selected={$locale === 'en'} name={"English"} onclick={() => setLocale('en')} />
         <ContextItem selected={$locale === 'nl'} name={"Nederlands"} onclick={() => setLocale('nl')} />
     {/snippet}
+    {#snippet themeContext()}
+        <ContextItem selected={$theme === Theme.LIGHT} name={$_("LIGHT_THEME")} onclick={() => theme.set(Theme.LIGHT)} />
+        <ContextItem selected={$theme === Theme.DARK} name={$_("DARK_THEME")} onclick={() => theme.set(Theme.DARK)} />
+    {/snippet}
 
     <ContextItem icon={faQuestionCircle} name={$_("MORE_ABOUT")} onclick={about} />
     <ContextItem icon={faGlobe} name={$_("LANGUAGE")} context={languageContext} />
+    <ContextItem icon={$theme === Theme.LIGHT ? faLightbulb : faMoon} name={$_("THEME")} context={themeContext} />
 {/snippet}
 
 <div class="header">
