@@ -19,6 +19,8 @@ import type {
   ToolboxItemInfo,
 } from "blockly/core/utils/toolbox";
 import { audio } from "$state/blockly.svelte";
+import { BackpackChange } from "@blockly/workspace-backpack";
+import { Backpack } from "./backpack";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -136,6 +138,28 @@ export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement, them
   toolbox.getFlyout().autoClose = false;
   toolbox.selectItemByPosition(0)
   toolbox.refreshTheme();
+
+  const backpack = new Backpack(workspace);
+  Blockly.registry.unregister(
+      Blockly.registry.Type.SERIALIZER,
+      "backpack",
+  );
+
+  backpack.setContents(
+      JSON.parse(localStorage.getItem("backpack")) || [],
+  );
+  workspace.addChangeListener(
+      (event: Blockly.Events.Abstract) => {
+          if (!(event instanceof BackpackChange)) return;
+
+          localStorage.setItem(
+              "backpack",
+              JSON.stringify(backpack.getContents()),
+          );
+      },
+  );
+
+  backpack.init();
 
   return workspace
 }

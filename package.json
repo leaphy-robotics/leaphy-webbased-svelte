@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@blockly/field-bitmap": "^4.0.16",
+    "@blockly/workspace-backpack": "^5.3.7",
     "@floating-ui/dom": "^1.6.3",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@leaphy-robotics/avrdude-webassembly": "^1.6.1",

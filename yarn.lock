@@ -15,6 +15,11 @@
   resolved "https://registry.yarnpkg.com/@blockly/field-bitmap/-/field-bitmap-4.0.16.tgz#66eed79c078a14a6b446e6fb182060327d2ff512"
   integrity sha512-PKtJenlM2KWDIBMvLn+Fz9OLvVXQXIHSqeQZ22fES3FR7krTZiPnt1KamCJL5eRoKsgGKjP1siv4Wt0VsB3RNA==
 
+"@blockly/workspace-backpack@^5.3.7":
+  version "5.3.7"
+  resolved "https://registry.yarnpkg.com/@blockly/workspace-backpack/-/workspace-backpack-5.3.7.tgz#6e22059ef757b825246d2adfc2a1432a9a6ad0be"
+  integrity sha512-A7RbfIPC7B2YMIZvL3+lbC/MxGa59sq0uCMfZarFqm3uY6T5Fwp5fMkVWNoWcKjYolmSAOKCiB6ItJQKmpXZuw==
+
 "@esbuild/aix-ppc64@0.19.12":
   version "0.19.12"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.19.12.tgz#d1bc06aedb6936b3b6d313bf809a5a40387d2b7f"
