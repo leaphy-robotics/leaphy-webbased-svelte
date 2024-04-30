@@ -7,12 +7,13 @@
     import Uploader from "../popups/popups/Uploader.svelte";
     import workspaceState, { Prompt, handle, port } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
-    import { faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap } from "@fortawesome/free-solid-svg-icons";
+    import { faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faQuestion, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
     import appState, { Screen } from "$state/app.svelte"
     import SaveProject from "../popups/popups/SaveProject.svelte";
     import { workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
     import Examples from '../popups/popups/Examples.svelte';
+    import About from '../popups/popups/About.svelte';
 
     async function upload() {
         popups.open({
@@ -74,6 +75,21 @@
         locale.set(language)
         localStorage.setItem('language', language)
     }
+
+    function discord() {
+        window.open('https://discord.com/invite/Yeg7Kkrq5W', '_blank').focus()
+    }
+    function email() {
+        window.open('mailto:helpdesk@leaphy.org', '_blank').focus()
+    }
+
+    function about() {
+        popups.open({
+            component: About,
+            data: {},
+            allowInteraction: true
+        })
+    }
 </script>
 
 {#snippet projectContext()}
@@ -83,12 +99,17 @@
     <ContextItem icon={faFloppyDisk} name={$_("SAVEAS")} onclick={saveProjectAs} />
     <ContextItem icon={faGraduationCap} name={$_("EXAMPLES")} onclick={examples} />
 {/snippet}
+{#snippet helpContext()}
+    <ContextItem icon={faQuestionCircle} name={$_("HELP_FORUM")} onclick={discord} />
+    <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} />
+{/snippet}
 {#snippet moreContext()}
     {#snippet languageContext()}
         <ContextItem selected={$locale === 'en'} name={"English"} onclick={() => setLocale('en')} />
         <ContextItem selected={$locale === 'nl'} name={"Nederlands"} onclick={() => setLocale('nl')} />
     {/snippet}
 
+    <ContextItem icon={faQuestionCircle} name={$_("MORE_ABOUT")} onclick={about} />
     <ContextItem icon={faGlobe} name={$_("LANGUAGE")} context={languageContext} />
 {/snippet}
 
@@ -97,6 +118,7 @@
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
         {#if appState.screen !== Screen.START}
             <Button name={$_("PROJECT")} mode={"outlined"} context={projectContext} />
+            <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
             <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
             <Button name={$_("CHOOSE_ROBOT")} mode={"outlined"} onclick={connect} />
         {/if}

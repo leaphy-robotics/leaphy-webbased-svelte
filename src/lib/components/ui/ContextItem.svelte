@@ -55,10 +55,10 @@
         <td class="icon">
             {#if icon}<Fa {icon} />{/if}
         </td>
-        <td class="name">{name}</td>
-        {#if context}
-            <td class="icon"><Fa icon={faCaretRight} /></td>
-        {/if}
+        <td class="name">
+            {name}
+            {#if context}<Fa icon={faCaretRight} />{/if}
+        </td>
     </tr>
 </tbody>
 
@@ -78,7 +78,11 @@
     }
 
     .name {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 0 30px 0 0;
+        height: 38px;
     }
 
     .disabled {
