@@ -11,6 +11,7 @@ import type { ComponentType } from "svelte";
 import { RobotType, type Programmer } from "./robots.types";
 import AvrDude from "../programmers/AvrDude";
 import defaultCPP from "$assets/default-program.ino?raw"
+import DFU from "../programmers/DFU";
 
 const DEFAULT_LIBRARIES = [
   "Leaphy Extensions",
@@ -71,7 +72,7 @@ const baseNano = {
 const baseNanoESP32 = {
   mapping: PinMapping.NANO,
   fqbn: "arduino:esp32:nano_nora",
-  programmer: new AvrDude('atmega328p')
+  programmer: new DFU()
 }
 
 const baseNanoRP2040 = {

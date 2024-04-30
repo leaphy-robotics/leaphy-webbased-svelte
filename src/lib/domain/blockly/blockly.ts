@@ -111,6 +111,7 @@ export function setupWorkspace(robot: RobotDevice, element: HTMLDivElement, them
 
   const workspace = Blockly.inject(element, {
     renderer: "zelos",
+    media: "blockly-assets",
     toolbox: loadToolbox(robot),
     theme: theme,
     zoom: {

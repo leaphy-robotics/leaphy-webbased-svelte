@@ -96,6 +96,23 @@ function createPortState() {
       update(() => port)
       return port
     },
+    reconnect() {
+      return new Promise((resolve, reject) => {
+        let attempts = 0;
+        let interval = setInterval(async () => {
+            if (++attempts > 200) {
+                clearInterval(interval);
+                reject("Failed to reconnect");
+            }
+  
+            const port = await this.connect(Prompt.NEVER);
+            if (port) {
+                clearInterval(interval);
+                resolve(port);
+            }
+        }, 50);
+      })
+    },
     reserve() {
       reserved = true
 

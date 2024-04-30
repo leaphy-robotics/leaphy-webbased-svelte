@@ -23,6 +23,10 @@ export default defineConfig({
         src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude.conf',
         dest: '/'
       },
+      {
+        src: "./node_modules/@leaphy-robotics/dfu-util-wasm/build/*",
+        dest: 'dfu-util'
+      },
     ]
   })],
   resolve: {
@@ -32,6 +36,12 @@ export default defineConfig({
       $domain: path.resolve(__dirname, './src/lib/domain'),
       $state: path.resolve(__dirname, './src/lib/state'),
       $examples: path.resolve(__dirname, './src/lib/examples')
+    }
+  },
+  server: {
+    headers: {
+      "Cross-Origin-Embedder-Policy": "require-corp",
+      "Cross-Origin-Opener-Policy": "same-origin"
     }
   }
 })
