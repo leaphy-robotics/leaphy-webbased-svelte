@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import path from 'path'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { sentryVitePlugin } from "@sentry/vite-plugin";
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -32,7 +34,15 @@ export default defineConfig({
         dest: 'picotool'
       },
     ]
-  })],
+  }),
+  // Upload source maps to Sentry
+  sentryVitePlugin({
+    url: "https://leaphyeasybloqs.com:8443/",
+    project: "leaphy-webbased-svelte",
+    org: 'leaphy',
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+  })
+  ],
   resolve: {
     alias: {
       $components: path.resolve(__dirname, './src/lib/components'),
