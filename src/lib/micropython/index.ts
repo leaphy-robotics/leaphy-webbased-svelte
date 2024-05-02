@@ -3,6 +3,8 @@ import { popups } from "$state/popup.svelte"
 import { port } from "$state/workspace.svelte"
 import base64 from "base64-js"
 import { get } from "svelte/store"
+import { Commands } from "./commands"
+import { FileSystem } from "./filesystem"
 
 class StdoutEvent extends Event {
     static type = "stdout"
@@ -47,6 +49,8 @@ const decoder = new TextDecoder()
 const encoder = new TextEncoder()
 
 export default class MicroPythonIO {
+    public commands: Commands = new Commands(this)
+    public fs: FileSystem = new FileSystem(this)
     public port: SerialPort
     public reader: ReadableStreamDefaultReader<Uint8Array>
     public writer: WritableStreamDefaultWriter<Uint8Array>
@@ -97,6 +101,9 @@ export default class MicroPythonIO {
             
             return await this.enterREPLMode()
         }
+
+        console.log(this)
+        await this.commands.loadCommands()
     }
 
     runCode(code: string) {
