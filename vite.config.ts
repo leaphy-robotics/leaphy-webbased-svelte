@@ -47,5 +47,9 @@ export default defineConfig({
       "Cross-Origin-Embedder-Policy": "require-corp",
       "Cross-Origin-Opener-Policy": "same-origin"
     }
+  },
+  build: {
+    target: 'es2022',
+    sourcemap: true
   }
 })
