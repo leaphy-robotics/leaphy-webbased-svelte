@@ -39,7 +39,7 @@ jobs:
       - name: Clean up old images
         uses: actions/delete-package-versions@v5
         with:
-          package-name: "leaphy-webbased/leaphy-webbased-svelte"
+          package-name: "leaphy-webbased-svelte/leaphy-webbased-svelte"
           package-type: "container"
           min-versions-to-keep: 5
           delete-only-untagged-versions: "true"
