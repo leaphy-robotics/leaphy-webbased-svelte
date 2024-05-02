@@ -4,6 +4,7 @@ import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import type {ComponentType} from "svelte";
 import Python from "$components/workspace/python/Python.svelte";
+import MicroPythonIO from "../micropython";
 
 export const Mode = {
     BLOCKS: Blocks,
@@ -163,5 +164,6 @@ export const mode = writable<ComponentType>(Mode.BLOCKS)
 export const code = writable<string>("")
 export const saveState = writable<boolean>(true)
 export const installed = writable<[string, string][]>([])
+export const microPythonIO = writable<MicroPythonIO|undefined>()
 
 code.subscribe(() => saveState.set(false))
