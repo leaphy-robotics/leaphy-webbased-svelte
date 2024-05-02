@@ -11,6 +11,7 @@ import type { ComponentType } from "svelte";
 import { RobotType, type Programmer } from "./robots.types";
 import AvrDude from "../programmers/AvrDude";
 import defaultCPP from "$assets/default-program.ino?raw"
+import defaultPython from "$assets/default-program.py?raw"
 import DFU from "../programmers/DFU";
 import Pico from "../programmers/Pico";
 
@@ -232,7 +233,7 @@ export const robotListing: Robot[][] = [
       icon: microPythonIcon,
       mode: Mode.PYTHON,
       defaultRobot: "l_nano_rp2040",
-      defaultProgram: ""
+      defaultProgram: defaultPython
     },
   ],
 ];

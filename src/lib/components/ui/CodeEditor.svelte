@@ -4,10 +4,11 @@
     import { Theme, theme } from "$state/app.svelte";
 
     interface Props {
-        value: Bindable<string>
+        value: Bindable<string>,
+        language: string,
         editable?: boolean
     }
-    let { value = $bindable(""), editable = true }: Props = $props()
+    let { value = $bindable(""), editable = true, language }: Props = $props()
 
     let ignoreUpdate = false
     let element: HTMLDivElement
@@ -15,7 +16,7 @@
     onMount(() => {
         editor = monaco.editor.create(element, {
             theme: $theme === Theme.DARK ? 'vs-dark' : 'vs-light',
-            language: 'cpp',
+            language,
             value: value as string,
             automaticLayout: true,
             readOnly: !editable

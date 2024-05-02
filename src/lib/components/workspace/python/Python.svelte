@@ -8,7 +8,7 @@
 
 <div class="environment">
     <div class="editor">
-        <CodeEditor bind:value={$code} />
+        <CodeEditor bind:value={$code} language="python" />
     </div>
     <Terminal />
 </div>
