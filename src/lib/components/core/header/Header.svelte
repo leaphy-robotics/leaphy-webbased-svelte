@@ -5,7 +5,7 @@
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
     import Uploader from "../popups/popups/Uploader.svelte";
-    import { Prompt, handle, port, code, mode, Mode, robot, saveState } from '$state/workspace.svelte'
+    import { Prompt, handle, port, code, mode, Mode, robot, saveState, microPythonIO } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
     import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faPen, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
     import block from "$assets/block.svg"
@@ -189,6 +189,7 @@
         await port.connect(Prompt.MAYBE)
         const io = new MicroPythonIO()
         await io.enterREPLMode()
+        microPythonIO.set(io)
     }
 </script>
 

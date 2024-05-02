@@ -20,7 +20,8 @@
     "svelte-check": "^3.6.7",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
-    "vite": "^5.2.0"
+    "vite": "^5.2.0",
+    "vite-plugin-top-level-await": "^1.4.1"
   },
   "dependencies": {
     "@blockly/field-bitmap": "^4.0.16",
@@ -33,6 +34,7 @@
     "@leaphy-robotics/picotool-wasm": "1.0.3",
     "@sentry/svelte": "8.0.0-beta.5",
     "@types/w3c-web-usb": "^1.0.10",
+    "@xterm/xterm": "^5.5.0",
     "base64-js": "^1.5.1",
     "blockly": "^10.4.3",
     "jszip": "^3.10.1",
