@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { microPythonIO } from "$state/workspace.svelte";
+    import { microPythonIO, microPythonRun } from "$state/workspace.svelte";
     import { Terminal } from "@xterm/xterm";
+    import { get } from "svelte/store";
     import { onMount } from "svelte";
 
     const terminal = new Terminal()
@@ -9,40 +10,50 @@
         terminal.open(element)
     })
 
+    let line = ''
+    let historyPosition = 0
+    let history = [line]
+    let pos = 0
+
+    function render() {
+        if (get(microPythonIO).running) return
+        terminal.write(`\x1b[2K\r${PROMPT}${line}`)
+
+        // move cursor back to pos
+        const virtPos = line.length - pos
+        if (virtPos === 0) return
+        terminal.write(`\x1b[${virtPos}D`)
+    }
+
     const PROMPT = "$ "
     microPythonIO.subscribe(io => {
         if (!io) return
-
-        let line = ''
-        let historyPosition = 0
-        let history = [line]
-        let pos = 0
-
-        function render() {
-            if (io.running) return
-            terminal.write(`\x1b[2K\r${PROMPT}${line}`)
-
-            // move cursor back to pos
-            const virtPos = line.length - pos
-            if (virtPos === 0) return
-            terminal.write(`\x1b[${virtPos}D`)
-        }
         render()
 
         terminal.onData(data => {
+            if (io.running) {
+                return
+            }
+
             switch (data) {
                 case '\x1b[D': {
                     pos--
+                    if (pos < 0) pos = 0
+
                     break
                 }
                 case '\x1b[C': {
                     pos++
+                    if (pos > line.length) pos = line.length
+
                     break
                 }
                 case '\x1b[A': {
                     historyPosition--
                     if (historyPosition < 0) historyPosition = 0
                     line = history[historyPosition]
+                    pos = line.length
+                    if (pos < 0) pos = 0
 
                     break
                 }
@@ -53,11 +64,16 @@
                     }
                     line = history[historyPosition]
 
+                    pos = line.length
+                    if (pos < 0) pos = 0
+
                     break
                 }
                 case '\u007f': {
                     line = line.substring(0, pos-1) + line.substring(pos)
+
                     pos--
+                    if (pos < 0) pos = 0
 
                     break
                 }
@@ -102,6 +118,19 @@
             
             render()
         })
+    })
+
+    microPythonRun.subscribe(events => {
+        if (!events) return
+
+        terminal.write("\r\n")
+        events.addEventListener('stdout', (event) => {
+            terminal.write(event.data)
+        })
+        events.addEventListener('stderr', (event) => {
+            terminal.write(`\x1b[31m${event.data}\x1b[0m`)
+        })
+        events.addEventListener('done', render)
     })
 </script>
 

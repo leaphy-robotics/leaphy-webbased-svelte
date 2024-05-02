@@ -5,7 +5,7 @@
     import Button from "$components/ui/Button.svelte";
     import { popups } from "$state/popup.svelte";
     import Uploader from "../popups/popups/Uploader.svelte";
-    import { Prompt, handle, port, code, mode, Mode, robot, saveState, microPythonIO } from '$state/workspace.svelte'
+    import { Prompt, handle, port, code, mode, Mode, robot, saveState, microPythonIO, microPythonRun } from '$state/workspace.svelte'
     import ContextItem from "$components/ui/ContextItem.svelte";
     import { faDownload, faEnvelope, faFile, faFloppyDisk, faFolder, faGlobe, faGraduationCap, faLightbulb, faMoon, faPen, faQuestionCircle, faRedo, faSave, faSquarePollHorizontal, faUndo, faVolumeHigh, faVolumeXmark } from "@fortawesome/free-solid-svg-icons";
     import block from "$assets/block.svg"
@@ -23,6 +23,7 @@
     import Advanced from '$components/workspace/advanced/Advanced.svelte';
     import Warning from '../popups/popups/Warning.svelte';
     import MicroPythonIO from '../../../micropython';
+    import { get } from 'svelte/store';
 
     async function upload() {
         popups.open({
@@ -191,6 +192,11 @@
         await io.enterREPLMode()
         microPythonIO.set(io)
     }
+
+    function runPython() {
+        const io = get(microPythonIO)
+        microPythonRun.set(io.runCode(get(code)))
+    }
 </script>
 
 {#snippet projectContext()}
@@ -255,7 +261,11 @@
 
             <Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
             {#if $mode === Mode.PYTHON}
-                <Button name={$_("CONNECT_PYTHON_ROBOT")} mode={"accent"} onclick={connectPython} />
+                {#if $microPythonIO}
+                    <Button name={$_("RUN_CODE")} mode={"accent"} onclick={runPython} />
+                {:else}
+                    <Button name={$_("CONNECT_PYTHON_ROBOT")} mode={"accent"} onclick={connectPython} />
+                {/if}
             {:else}
                 <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
             {/if}

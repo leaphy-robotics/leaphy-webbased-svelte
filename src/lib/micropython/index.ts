@@ -28,7 +28,7 @@ class DoneEvent extends Event {
 
 type IOEvent = { type: "stdout" } & StdoutEvent | { type: "stderr" } & StderrEvent | { type: "done" } & DoneEvent
 
-class IOEventTarget extends EventTarget {
+export class IOEventTarget extends EventTarget {
     public addEventListener<
         T extends IOEvent['type'],
         E extends IOEvent & { type: T }
