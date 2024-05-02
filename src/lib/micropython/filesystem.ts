@@ -44,7 +44,26 @@ export class FileSystem {
         })
     }
 
+    async rmdir(path: string): Promise<void> {
+        const contents = await this.ls(path)
+        for (const file of contents) {
+            if (file.isDir) await this.rmdir(`${path}/${file.name}`)
+            else await this.rm(`${path}/${file.name}`)
+        }
+
+        await this.io.commands.execute('rmdir', {
+            path
+        })
+    }
+
     async write(path: string, content: string): Promise<void> {
+        const dir = path.split('/').slice(path.startsWith('/') ? 1 : 0, -1)
+        for (let i = 0; i <= dir.length; i++) {
+            const path = `/${dir.slice(0, i).join('/')}`
+            const exists = await this.exists(path)
+            if (!exists) await this.mkdir(path)
+        }
+
         await this.io.commands.execute('write', {
             path, content: btoa(content)
         })
