@@ -32,7 +32,9 @@
     {#if $mode === Mode.BLOCKS}
         <SideButton icon={faCode} onclick={openCode} />
     {/if}
-    <SideButton icon={faSquarePollHorizontal} onclick={openSerial} />
+    {#if $mode !== Mode.PYTHON}
+        <SideButton icon={faSquarePollHorizontal} onclick={openSerial} />
+    {/if}
     {#if $mode === Mode.ADVANCED}
         <SideButton icon={faBook} onclick={openLibraryManager} />
     {/if}

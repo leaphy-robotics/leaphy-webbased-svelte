@@ -227,12 +227,12 @@ export const robotListing: Robot[][] = [
       defaultProgram: defaultCPP
     },
     {
-      ...baseNanoRP2040,
       id: "l_python",
-      type: RobotType.L_MICROPYTHON,
       name: "MicroPython",
-      libraries: [],
       icon: microPythonIcon,
+      mode: Mode.PYTHON,
+      defaultRobot: "l_nano_rp2040",
+      defaultProgram: ""
     },
   ],
 ];

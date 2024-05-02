@@ -1,13 +1,14 @@
-import {writable} from "svelte/store";
+import {get, writable} from "svelte/store";
 import type {RobotDevice} from "$domain/robots";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import type {ComponentType} from "svelte";
-import defaultProgramCPP from "$assets/default-program.ino?raw"
+import Python from "$components/workspace/python/Python.svelte";
 
 export const Mode = {
     BLOCKS: Blocks,
-    ADVANCED: Advanced
+    ADVANCED: Advanced,
+    PYTHON: Python
 }
 
 export enum Prompt {
@@ -59,6 +60,8 @@ function createPortState() {
 
   let reserved: boolean = false
   let reader: ReadableStreamDefaultReader<Uint8Array>
+
+  let onReady: () => void
   subscribe(async port => {
     if (!port || reserved) return
     if (!port.readable || !port.writable) {
@@ -68,6 +71,8 @@ function createPortState() {
 
     writer = port.writable.getWriter()
     reader = port.readable.getReader()
+    onReady()
+
     while (port.readable && port.writable) {
       const { done, value } = await reader.read()
       if (done) break
@@ -78,21 +83,23 @@ function createPortState() {
 
   return {
     subscribe,
-    async connect(prompt: Prompt) {
+    ready: new Promise<void>(resolve => onReady = resolve),
+    async requestPort(prompt: Prompt) {
       if (prompt !== Prompt.ALWAYS) {
         const [port] = await navigator.serial.getPorts()
-        if (port) {
-          update(() => port)
-          return port
-        }
+        if (port) return port
       }
       if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
 
-      const port = await navigator.serial.requestPort({ 
+      return await navigator.serial.requestPort({ 
         filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
           usbVendorId: vendor,
         }))
       })
+    },
+    async connect(prompt: Prompt) {
+      this.ready = new Promise<void>(resolve => onReady = resolve)
+      const port = await this.requestPort(prompt)
       update(() => port)
       return port
     },
@@ -113,13 +120,18 @@ function createPortState() {
         }, 50);
       })
     },
-    reserve() {
+    async reserve() {
       reserved = true
 
-      reader.cancel()
-      reader.releaseLock()
+      const serialPort = get(port)
+      if (serialPort.readable.locked) {
+        await reader.cancel()
+        reader.releaseLock()
+      }
 
-      writer.releaseLock()
+      if (serialPort.writable.locked) {
+        writer.releaseLock()
+      }
     },
     release() {
       reserved = false
@@ -148,7 +160,7 @@ export const sidePanel = writable<ComponentType|undefined>(undefined)
 export const handle = writable<FileSystemFileHandle|undefined>(undefined)
 export const robot = writable<RobotDevice>()
 export const mode = writable<ComponentType>(Mode.BLOCKS)
-export const code = writable<string>(defaultProgramCPP)
+export const code = writable<string>("")
 export const saveState = writable<boolean>(true)
 export const installed = writable<[string, string][]>([])
 

@@ -10,10 +10,11 @@
     import { usbRequest } from "$state/upload.svelte";
 
     interface Props {
-      source: string
+      source?: string,
+      program?: Record<string, string>
     }
     let popupState = getContext<Writable<PopupState>>("state")
-    let { source }: Props = $props()
+    let { source, program }: Props = $props()
     let progress = $state(0)
     let currentState = $state("CONNECTING")
     let error = $state<string|null>(null)
@@ -52,7 +53,7 @@
     async function upload(res: Record<string, string>) {
         currentState = "UPDATE_STARTED"
         try {
-            port.reserve()
+            await port.reserve()
             await $robot.programmer.upload($port, res)
         } catch (e) {
             console.log(e)
@@ -66,7 +67,7 @@
             if (!$port) await port.connect(Prompt.MAYBE)
             progress += 100/3
 
-            const res = await compile()
+            const res = program || await compile()
             progress += 100/3
 
             await upload(res)

@@ -22,6 +22,7 @@
     import { robots } from '$domain/robots';
     import Advanced from '$components/workspace/advanced/Advanced.svelte';
     import Warning from '../popups/popups/Warning.svelte';
+    import MicroPythonIO from '../../../micropython';
 
     async function upload() {
         popups.open({
@@ -183,6 +184,12 @@
 
         mode.set(Mode.BLOCKS)
     }
+
+    async function connectPython() {
+        await port.connect(Prompt.MAYBE)
+        const io = new MicroPythonIO()
+        await io.enterREPLMode()
+    }
 </script>
 
 {#snippet projectContext()}
@@ -224,7 +231,9 @@
             <Button name={$_("PROJECT")} mode={"outlined"} context={projectContext} />
             <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
             <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
-            <Button name={$_("CHOOSE_ROBOT")} mode={"outlined"} onclick={connect} />
+            {#if $mode !== Mode.PYTHON}
+                <Button name={$_("CHOOSE_ROBOT")} mode={"outlined"} onclick={connect} />
+            {/if}
         {/if}
     </div>
 
@@ -244,7 +253,11 @@
             {/if}
 
             <Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
-            <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
+            {#if $mode === Mode.PYTHON}
+                <Button name={$_("CONNECT_PYTHON_ROBOT")} mode={"accent"} onclick={connectPython} />
+            {:else}
+                <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
+            {/if}
         {/if}
     </div>
 </div>
