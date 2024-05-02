@@ -20,7 +20,7 @@ The following should be installed:
 ### Running locally
 
 First install the dependencies by running `yarn intall`. This will take a while the first time.
-Then run `yarn start` to start the application.
+Then run `yarn dev` to start the website.
 
 ### Pull Requests
 
