@@ -1,13 +1,18 @@
 <script lang="ts">
     import { microPythonIO, microPythonRun } from "$state/workspace.svelte";
     import { Terminal } from "@xterm/xterm";
+    import { FitAddon } from '@xterm/addon-fit';
     import { get } from "svelte/store";
     import { onMount } from "svelte";
 
     const terminal = new Terminal()
+    const fitAddon = new FitAddon()
+    terminal.loadAddon(fitAddon)
+
     let element: HTMLDivElement
     onMount(() => {
         terminal.open(element)
+        fitAddon.fit()
     })
 
     let line = ''
@@ -134,9 +139,15 @@
     })
 </script>
 
-<div class="terminal" bind:this={element}></div>
+<div class="container">
+    <div class="terminal" bind:this={element}></div>
+</div>
 
 <style>
+    .container {
+        padding: 10px;
+        background: #000;
+    }
     .terminal {
         height: 300px;
     }

@@ -33,6 +33,7 @@
     "@leaphy-robotics/picotool-wasm": "1.0.3",
     "@sentry/svelte": "8.0.0-beta.5",
     "@types/w3c-web-usb": "^1.0.10",
+    "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "base64-js": "^1.5.1",
     "blockly": "^10.4.3",
