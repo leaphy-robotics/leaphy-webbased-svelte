@@ -73,6 +73,7 @@
 
                     const events = io.runCode(line)
                     line = ''
+                    pos = 0
 
                     events.addEventListener('stdout', (event) => {
                         terminal.write(event.data)
