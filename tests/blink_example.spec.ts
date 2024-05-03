@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
-import { goToHomePage } from "./utils";
 import consumers from "node:stream/consumers";
+import { expect, test } from "@playwright/test";
+import { goToHomePage } from "./utils";
 
 test.beforeEach(goToHomePage);
 
