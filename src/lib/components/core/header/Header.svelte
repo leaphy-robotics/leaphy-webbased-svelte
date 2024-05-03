@@ -54,6 +54,7 @@ import Warning from "../popups/popups/Warning.svelte";
 	import { FileHandle } from "$domain/handles";
 
 async function upload() {
+	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
 	popups.open({
 		component: Uploader,
 		data: {
