@@ -1,3 +1,4 @@
+import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte";
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import { popups } from "$state/popup.svelte";
 import { port } from "$state/workspace.svelte";
@@ -64,6 +65,14 @@ export default class MicroPythonIO {
 	public writer: WritableStreamDefaultWriter<Uint8Array>;
 	public running: boolean;
 
+	async initialize() {
+		await popups.open({
+			component: PythonUploader,
+			data: { io: this },
+			allowInteraction: false,
+		});
+	}
+
 	async getFirmware() {
 		const res = await fetch(
 			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
@@ -103,21 +112,11 @@ export default class MicroPythonIO {
 			this.writer.releaseLock();
 
 			port.release();
-			await popups.open({
-				component: Uploader,
-				data: { program: await this.getFirmware() },
-				allowInteraction: false,
-			});
-
-			return await this.enterREPLMode();
+			return false;
 		}
 
 		await this.commands.loadCommands();
-		await this.packageManager.flashLibrary(
-			"github:leaphy-robotics/leaphy-micropython/package.json",
-		);
-
-		console.log(this.fs);
+		return true;
 	}
 
 	runCode(code: string) {

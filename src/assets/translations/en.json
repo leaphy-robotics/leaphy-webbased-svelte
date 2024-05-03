@@ -109,5 +109,8 @@
 	"DONT_SHOW": "Don't show again",
 	"EXAMPLES": "Examples",
 	"CREATE_FILE": "Create file",
-	"CREATE_FOLDER": "Create folder"
+	"CREATE_FOLDER": "Create folder",
+	"DOWNLOADING_FIRMWARE": "Downloading firmware",
+	"UPLOADING_FIRMWARE": "Uploading firmware",
+	"INSTALLING_LIBRARIES": "Installing libraries"
 }

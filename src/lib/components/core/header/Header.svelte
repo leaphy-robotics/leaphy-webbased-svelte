@@ -233,7 +233,7 @@ async function blocks() {
 async function connectPython() {
 	await port.connect(Prompt.MAYBE);
 	const io = new MicroPythonIO();
-	await io.enterREPLMode();
+	await io.initialize();
 	microPythonIO.set(io);
 }
 
