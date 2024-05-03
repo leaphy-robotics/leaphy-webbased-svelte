@@ -22,7 +22,7 @@ const {
 	icon,
 }: Props = $props();
 
-const btn: HTMLButtonElement = $state();
+let btn: HTMLButtonElement = $state();
 
 const open = setContext("open", writable(false));
 function onContext() {

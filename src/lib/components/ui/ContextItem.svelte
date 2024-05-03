@@ -25,7 +25,7 @@ const {
 	selected = false,
 }: Props = $props();
 
-const element = $state<HTMLDivElement>();
+let element = $state<HTMLDivElement>();
 let contextShowing = $state(false);
 
 const open = getContext<Writable<boolean>>("open");

@@ -10,8 +10,8 @@ interface Props {
 }
 let { options, value = $bindable() }: Props = $props();
 
-const preview: HTMLButtonElement = $state();
-const content: HTMLDivElement = $state();
+let preview: HTMLButtonElement = $state();
+let content: HTMLDivElement = $state();
 
 let open = $state(false);
 let position = $state<{ x: number; y: number }>({ x: 0, y: 0 });

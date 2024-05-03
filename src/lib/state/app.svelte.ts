@@ -21,8 +21,11 @@ export interface Library {
 	versions: string[];
 }
 
+if (!["light", "dark"].includes(localStorage.getItem("theme"))) {
+	localStorage.setItem("theme", Theme.LIGHT)
+}
 export const theme = writable<Theme>(
-	(localStorage.getItem("theme") as Theme) || Theme.LIGHT,
+	(localStorage.getItem("theme") as Theme),
 );
 theme.subscribe((theme) => {
 	document.body.setAttribute("data-color-scheme", theme);

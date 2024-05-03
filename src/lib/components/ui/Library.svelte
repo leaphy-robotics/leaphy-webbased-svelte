@@ -11,7 +11,7 @@ interface Props {
 }
 const { library }: Props = $props();
 
-const version = $state(library.versions[0]);
+let version = $state(library.versions[0]);
 const isInstalled = $derived(
 	!!$installed.find(([name]) => name === library.name),
 );

@@ -12,7 +12,7 @@ interface Props {
 	confirm: string;
 	value?: string;
 }
-const { name, placeholder, confirm, value = "" }: Props = $props();
+let { name, placeholder, confirm, value = $bindable("") }: Props = $props();
 const popupState = getContext<Writable<PopupState>>("state");
 
 function cancel() {

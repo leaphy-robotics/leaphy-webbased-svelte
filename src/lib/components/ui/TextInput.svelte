@@ -8,7 +8,7 @@ interface Props {
 	rounded: boolean;
 	focus?: boolean;
 }
-const {
+let {
 	placeholder,
 	value = $bindable(""),
 	mode,

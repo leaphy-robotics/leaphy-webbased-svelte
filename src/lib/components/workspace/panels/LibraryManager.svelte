@@ -4,12 +4,9 @@ import { _ } from "svelte-i18n";
 import TextInput from "$components/ui/TextInput.svelte";
 import { onMount } from "svelte";
 import { libraries } from "$state/app.svelte";
-import Select from "$components/ui/Select.svelte";
-import Button from "$components/ui/Button.svelte";
-import { installed } from "$state/workspace.svelte";
 import Library from "$components/ui/Library.svelte";
 
-const filter = $state("");
+let filter = $state("");
 onMount(() => {
 	libraries.query();
 });
