@@ -1,37 +1,37 @@
 <script lang="ts">
-    import { computePosition } from "@floating-ui/dom";
-    import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-    import { tick } from "svelte";
-    import Fa from "svelte-fa";
+import { computePosition } from "@floating-ui/dom";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { tick } from "svelte";
+import Fa from "svelte-fa";
 
-    interface Props {
-        options: [string, any][];
-        value: any;
-    }
-    let { options, value = $bindable() }: Props = $props();
+interface Props {
+	options: [string, any][];
+	value: any;
+}
+let { options, value = $bindable() }: Props = $props();
 
-    let preview: HTMLButtonElement = $state();
-    let content: HTMLDivElement = $state();
+const preview: HTMLButtonElement = $state();
+const content: HTMLDivElement = $state();
 
-    let open = $state(false);
-    let position = $state<{ x: number; y: number }>({ x: 0, y: 0 });
+let open = $state(false);
+let position = $state<{ x: number; y: number }>({ x: 0, y: 0 });
 
-    function getName(value: any) {
-        return options.find(([_, data]) => data === value)[0];
-    }
+function getName(value: any) {
+	return options.find(([_, data]) => data === value)[0];
+}
 
-    async function onclick() {
-        open = !open;
-        if (!open) return;
-        await tick();
+async function onclick() {
+	open = !open;
+	if (!open) return;
+	await tick();
 
-        position = await computePosition(preview, content);
-    }
+	position = await computePosition(preview, content);
+}
 
-    function select(newValue: string) {
-        open = false;
-        value = newValue;
-    }
+function select(newValue: string) {
+	open = false;
+	value = newValue;
+}
 </script>
 
 <div class="select">

@@ -1,20 +1,20 @@
 <script lang="ts">
-    import type { PopupState } from "$state/popup.svelte";
-    import { setContext } from "svelte";
-    import Windowed from "./Windowed.svelte";
-    import { writable } from "svelte/store";
+import type { PopupState } from "$state/popup.svelte";
+import { setContext } from "svelte";
+import Windowed from "./Windowed.svelte";
+import { writable } from "svelte/store";
 
-    interface Props {
-        state: PopupState;
-    }
-    let { state: popupState }: Props = $props();
+interface Props {
+	state: PopupState;
+}
+const { state: popupState }: Props = $props();
 
-    let internalState = writable(popupState);
-    setContext("state", internalState);
+const internalState = writable(popupState);
+setContext("state", internalState);
 
-    $effect(() => {
-        internalState.update(() => popupState);
-    });
+$effect(() => {
+	internalState.update(() => popupState);
+});
 </script>
 
 <div class="container" class:full={!popupState.popup.allowInteraction}>

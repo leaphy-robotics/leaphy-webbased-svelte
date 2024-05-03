@@ -1,33 +1,30 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
+import { _ } from "svelte-i18n";
 
-    import type { Library } from "$state/app.svelte";
-    import { installed } from "$state/workspace.svelte";
-    import Select from "./Select.svelte";
-    import Button from "./Button.svelte";
+import type { Library } from "$state/app.svelte";
+import { installed } from "$state/workspace.svelte";
+import Select from "./Select.svelte";
+import Button from "./Button.svelte";
 
-    interface Props {
-        library: Library;
-    }
-    let { library }: Props = $props();
+interface Props {
+	library: Library;
+}
+const { library }: Props = $props();
 
-    let version = $state(library.versions[0]);
-    let isInstalled = $derived(
-        !!$installed.find(([name]) => name === library.name),
-    );
+const version = $state(library.versions[0]);
+const isInstalled = $derived(
+	!!$installed.find(([name]) => name === library.name),
+);
 
-    function interact() {
-        if (isInstalled)
-            return installed.update((libraries) =>
-                libraries.filter(([name]) => name !== library.name),
-            );
+function interact() {
+	if (isInstalled)
+		return installed.update((libraries) =>
+			libraries.filter(([name]) => name !== library.name),
+		);
 
-        installed.update((libraries) => [
-            ...libraries,
-            [library.name, version],
-        ]);
-        console.log($installed);
-    }
+	installed.update((libraries) => [...libraries, [library.name, version]]);
+	console.log($installed);
+}
 </script>
 
 <div class="library">

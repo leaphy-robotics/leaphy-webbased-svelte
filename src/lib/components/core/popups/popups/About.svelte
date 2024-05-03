@@ -1,15 +1,15 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import contribute from "$assets/contribute-foundation.png";
-    import Button from "$components/ui/Button.svelte";
-    import { getContext } from "svelte";
-    import { type Writable } from "svelte/store";
-    import { popups, type PopupState } from "$state/popup.svelte";
+import { _ } from "svelte-i18n";
+import contribute from "$assets/contribute-foundation.png";
+import Button from "$components/ui/Button.svelte";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
+import { popups, type PopupState } from "$state/popup.svelte";
 
-    const popupState = getContext<Writable<PopupState>>("state");
-    function close() {
-        popups.close($popupState.id);
-    }
+const popupState = getContext<Writable<PopupState>>("state");
+function close() {
+	popups.close($popupState.id);
+}
 </script>
 
 <div class="content">

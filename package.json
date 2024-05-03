@@ -11,6 +11,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.7.2",
     "@playwright/test": "^1.43.1",
     "@sentry/vite-plugin": "^2.16.1",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",

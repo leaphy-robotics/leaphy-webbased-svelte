@@ -1,23 +1,23 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import Button from "$components/ui/Button.svelte";
-    import { getContext } from "svelte";
-    import { popups, type PopupState } from "$state/popup.svelte";
-    import type { Writable } from "svelte/store";
+import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import { getContext } from "svelte";
+import { popups, type PopupState } from "$state/popup.svelte";
+import type { Writable } from "svelte/store";
 
-    interface Props {
-        title: string;
-        message: string;
-    }
-    let { title, message }: Props = $props();
+interface Props {
+	title: string;
+	message: string;
+}
+const { title, message }: Props = $props();
 
-    let popupState = getContext<Writable<PopupState>>("state");
-    function cancel() {
-        popups.close($popupState.id, false);
-    }
-    function ok() {
-        popups.close($popupState.id, true);
-    }
+const popupState = getContext<Writable<PopupState>>("state");
+function cancel() {
+	popups.close($popupState.id, false);
+}
+function ok() {
+	popups.close($popupState.id, true);
+}
 </script>
 
 <div class="content">

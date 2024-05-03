@@ -1,44 +1,44 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import Windowed from "../Windowed.svelte";
-    import { inFilter } from "$domain/robots";
-    import { robot } from "$state/workspace.svelte";
-    import { getContext, onMount } from "svelte";
-    import { workspace } from "$state/blockly.svelte";
-    import { serialization } from "blockly";
-    import { type Writable } from "svelte/store";
-    import { type PopupState, popups } from "$state/popup.svelte";
+import { _ } from "svelte-i18n";
+import Windowed from "../Windowed.svelte";
+import { inFilter } from "$domain/robots";
+import { robot } from "$state/workspace.svelte";
+import { getContext, onMount } from "svelte";
+import { workspace } from "$state/blockly.svelte";
+import { serialization } from "blockly";
+import type { Writable } from "svelte/store";
+import { type PopupState, popups } from "$state/popup.svelte";
 
-    interface Example {
-        name: string;
-        icon: string;
-        sketch: () => Promise<{ default: Record<string, any> }>;
-        boards: number[];
-    }
+interface Example {
+	name: string;
+	icon: string;
+	sketch: () => Promise<{ default: Record<string, any> }>;
+	boards: number[];
+}
 
-    let examples = $state<Example[]>([]);
-    let visible = $derived(
-        examples.filter(({ boards }) => inFilter($robot, boards)),
-    );
+let examples = $state<Example[]>([]);
+const visible = $derived(
+	examples.filter(({ boards }) => inFilter($robot, boards)),
+);
 
-    async function getExamples() {
-        examples = await Promise.all(
-            Object.values(import.meta.glob("$examples/*.ts")).map(
-                async (module: () => Promise<{ default: Example }>) => {
-                    const example = await module();
-                    return example.default;
-                },
-            ),
-        );
-    }
-    onMount(getExamples);
+async function getExamples() {
+	examples = await Promise.all(
+		Object.values(import.meta.glob("$examples/*.ts")).map(
+			async (module: () => Promise<{ default: Example }>) => {
+				const example = await module();
+				return example.default;
+			},
+		),
+	);
+}
+onMount(getExamples);
 
-    const popupState = getContext<Writable<PopupState>>("state");
-    async function loadExample(example: Example) {
-        popups.close($popupState.id);
-        const sketch = await example.sketch();
-        serialization.workspaces.load(sketch.default, $workspace);
-    }
+const popupState = getContext<Writable<PopupState>>("state");
+async function loadExample(example: Example) {
+	popups.close($popupState.id);
+	const sketch = await example.sketch();
+	serialization.workspaces.load(sketch.default, $workspace);
+}
 </script>
 
 {#snippet content()}

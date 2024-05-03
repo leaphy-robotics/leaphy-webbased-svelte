@@ -1,35 +1,35 @@
 <script lang="ts">
-    import { onDestroy, onMount, setContext, type Snippet } from "svelte";
-    import ContextMenu from "./ContextMenu.svelte";
-    import { writable } from "svelte/store";
-    import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-    import Fa from "svelte-fa";
+import { onDestroy, onMount, setContext, type Snippet } from "svelte";
+import ContextMenu from "./ContextMenu.svelte";
+import { writable } from "svelte/store";
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import Fa from "svelte-fa";
 
-    interface Props {
-        name?: string;
-        icon?: IconDefinition | string;
-        onclick?: () => void;
-        context?: Snippet;
-        mode: "primary" | "secondary" | "outlined" | "accent";
-        bold?: boolean;
-    }
-    let {
-        name,
-        mode,
-        onclick = onContext,
-        context,
-        bold,
-        icon,
-    }: Props = $props();
+interface Props {
+	name?: string;
+	icon?: IconDefinition | string;
+	onclick?: () => void;
+	context?: Snippet;
+	mode: "primary" | "secondary" | "outlined" | "accent";
+	bold?: boolean;
+}
+const {
+	name,
+	mode,
+	onclick = onContext,
+	context,
+	bold,
+	icon,
+}: Props = $props();
 
-    let btn: HTMLButtonElement = $state();
+const btn: HTMLButtonElement = $state();
 
-    const open = setContext("open", writable(false));
-    function onContext() {
-        if (!context) return;
+const open = setContext("open", writable(false));
+function onContext() {
+	if (!context) return;
 
-        open.update(() => true);
-    }
+	open.update(() => true);
+}
 </script>
 
 {#if $open}

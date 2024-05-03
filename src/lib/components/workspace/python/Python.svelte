@@ -1,7 +1,7 @@
 <script lang="ts">
-    import CodeEditor from "$components/ui/CodeEditor.svelte";
-    import { code } from "$state/workspace.svelte";
-    import Terminal from "./Terminal.svelte";
+import CodeEditor from "$components/ui/CodeEditor.svelte";
+import { code } from "$state/workspace.svelte";
+import Terminal from "./Terminal.svelte";
 </script>
 
 <div class="environment">

@@ -14,14 +14,14 @@ addMessages("en", enTranslations);
 addMessages("nl", nlTranslations);
 
 init({
-    fallbackLocale: "en",
-    initialLocale: localStorage.getItem("language"),
+	fallbackLocale: "en",
+	initialLocale: localStorage.getItem("language"),
 });
 
 initMatomo();
 
 const app = mount(App, {
-    target: document.getElementById("app")!,
+	target: document.getElementById("app"),
 });
 
 export default app;

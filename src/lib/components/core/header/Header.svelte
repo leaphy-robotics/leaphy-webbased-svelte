@@ -1,243 +1,239 @@
 <script lang="ts">
-    import { _, locale } from "svelte-i18n";
+import { _, locale } from "svelte-i18n";
 
-    import leaphyLogo from "$assets/leaphy-logo.svg";
-    import Button from "$components/ui/Button.svelte";
-    import { popups } from "$state/popup.svelte";
-    import Uploader from "../popups/popups/Uploader.svelte";
-    import {
-        Prompt,
-        handle,
-        port,
-        code,
-        mode,
-        Mode,
-        robot,
-        saveState,
-        microPythonIO,
-        microPythonRun,
-    } from "$state/workspace.svelte";
-    import ContextItem from "$components/ui/ContextItem.svelte";
-    import {
-        faDownload,
-        faEnvelope,
-        faFile,
-        faFloppyDisk,
-        faFolder,
-        faGlobe,
-        faGraduationCap,
-        faLightbulb,
-        faMoon,
-        faPen,
-        faQuestionCircle,
-        faRedo,
-        faSave,
-        faSquarePollHorizontal,
-        faUndo,
-        faVolumeHigh,
-        faVolumeXmark,
-    } from "@fortawesome/free-solid-svg-icons";
-    import block from "$assets/block.svg";
-    import { Screen, Theme, theme, selected, screen } from "$state/app.svelte";
-    import SaveProject from "../popups/popups/Prompt.svelte";
-    import { audio, workspace } from "$state/blockly.svelte";
-    import { serialization } from "blockly";
-    import Examples from "../popups/popups/Examples.svelte";
-    import About from "../popups/popups/About.svelte";
-    import UploadLog from "../popups/popups/UploadLog.svelte";
-    import JSZip from "jszip";
-    import Workspace from "$components/workspace/Workspace.svelte";
-    import Select from "$components/ui/Select.svelte";
-    import { robots } from "$domain/robots";
-    import Advanced from "$components/workspace/advanced/Advanced.svelte";
-    import Warning from "../popups/popups/Warning.svelte";
-    import MicroPythonIO from "../../../micropython";
-    import { get } from "svelte/store";
+import leaphyLogo from "$assets/leaphy-logo.svg";
+import Button from "$components/ui/Button.svelte";
+import { popups } from "$state/popup.svelte";
+import Uploader from "../popups/popups/Uploader.svelte";
+import {
+	Prompt,
+	handle,
+	port,
+	code,
+	mode,
+	Mode,
+	robot,
+	saveState,
+	microPythonIO,
+	microPythonRun,
+} from "$state/workspace.svelte";
+import ContextItem from "$components/ui/ContextItem.svelte";
+import {
+	faDownload,
+	faEnvelope,
+	faFile,
+	faFloppyDisk,
+	faFolder,
+	faGlobe,
+	faGraduationCap,
+	faLightbulb,
+	faMoon,
+	faPen,
+	faQuestionCircle,
+	faRedo,
+	faSave,
+	faSquarePollHorizontal,
+	faUndo,
+	faVolumeHigh,
+	faVolumeXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import block from "$assets/block.svg";
+import { Screen, Theme, theme, selected, screen } from "$state/app.svelte";
+import SaveProject from "../popups/popups/Prompt.svelte";
+import { audio, workspace } from "$state/blockly.svelte";
+import { serialization } from "blockly";
+import Examples from "../popups/popups/Examples.svelte";
+import About from "../popups/popups/About.svelte";
+import UploadLog from "../popups/popups/UploadLog.svelte";
+import JSZip from "jszip";
+import Workspace from "$components/workspace/Workspace.svelte";
+import Select from "$components/ui/Select.svelte";
+import { robots } from "$domain/robots";
+import Advanced from "$components/workspace/advanced/Advanced.svelte";
+import Warning from "../popups/popups/Warning.svelte";
+import MicroPythonIO from "../../../micropython";
+import { get } from "svelte/store";
 
-    async function upload() {
-        popups.open({
-            component: Uploader,
-            data: {
-                source: $code,
-            },
-            allowInteraction: false,
-        });
-    }
+async function upload() {
+	popups.open({
+		component: Uploader,
+		data: {
+			source: $code,
+		},
+		allowInteraction: false,
+	});
+}
 
-    async function connect() {
-        await port.connect(Prompt.ALWAYS);
-    }
+async function connect() {
+	await port.connect(Prompt.ALWAYS);
+}
 
-    async function newProject() {
-        selected.set(null);
-        screen.set(Screen.START);
-    }
+async function newProject() {
+	selected.set(null);
+	screen.set(Screen.START);
+}
 
-    function serialize() {
-        if ($mode === Mode.BLOCKS)
-            return JSON.stringify(serialization.workspaces.save($workspace));
-        else return $code;
-    }
+function serialize() {
+	if ($mode === Mode.BLOCKS)
+		return JSON.stringify(serialization.workspaces.save($workspace));
 
-    async function saveProjectAs() {
-        const name = await popups.open({
-            component: SaveProject,
-            data: {
-                name: "SAVEAS",
-                placeholder: "GIVE_FILENAME",
-                confirm: "SAVE",
-            },
-            allowInteraction: false,
-        });
-        if (!name) return;
+	return $code;
+}
 
-        let extension = $robot.id;
-        if ($mode === Mode.ADVANCED) extension = "ino";
+async function saveProjectAs() {
+	const name = await popups.open({
+		component: SaveProject,
+		data: {
+			name: "SAVEAS",
+			placeholder: "GIVE_FILENAME",
+			confirm: "SAVE",
+		},
+		allowInteraction: false,
+	});
+	if (!name) return;
 
-        const url = URL.createObjectURL(
-            new Blob([serialize()], { type: "text/plain" }),
-        );
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${name}.${extension}`;
-        link.click();
-        URL.revokeObjectURL(url);
-        link.remove();
+	let extension = $robot.id;
+	if ($mode === Mode.ADVANCED) extension = "ino";
 
-        saveState.set(true);
-    }
+	const url = URL.createObjectURL(
+		new Blob([serialize()], { type: "text/plain" }),
+	);
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = `${name}.${extension}`;
+	link.click();
+	URL.revokeObjectURL(url);
+	link.remove();
 
-    async function openProject() {
-        const [file] = await window.showOpenFilePicker();
-        if (!file) return;
+	saveState.set(true);
+}
 
-        handle.update(() => file);
-        const content = await file.getFile();
-        serialization.workspaces.load(
-            JSON.parse(await content.text()),
-            $workspace,
-        );
-    }
+async function openProject() {
+	const [file] = await window.showOpenFilePicker();
+	if (!file) return;
 
-    async function saveProject() {
-        if (!$handle) return;
+	handle.update(() => file);
+	const content = await file.getFile();
+	serialization.workspaces.load(JSON.parse(await content.text()), $workspace);
+}
 
-        const writable = await $handle.createWritable();
-        await writable.write({
-            type: "write",
-            data: serialize(),
-            position: 0,
-        });
-        await writable.close();
-        saveState.set(true);
-    }
+async function saveProject() {
+	if (!$handle) return;
 
-    function saveDynamic() {
-        if ($handle) return saveProject();
+	const writable = await $handle.createWritable();
+	await writable.write({
+		type: "write",
+		data: serialize(),
+		position: 0,
+	});
+	await writable.close();
+	saveState.set(true);
+}
 
-        saveProjectAs();
-    }
+function saveDynamic() {
+	if ($handle) return saveProject();
 
-    function examples() {
-        popups.open({
-            component: Examples,
-            data: {},
-            allowInteraction: true,
-        });
-    }
+	saveProjectAs();
+}
 
-    function setLocale(language: string) {
-        locale.set(language);
-        localStorage.setItem("language", language);
-    }
+function examples() {
+	popups.open({
+		component: Examples,
+		data: {},
+		allowInteraction: true,
+	});
+}
 
-    function log() {
-        popups.open({
-            component: UploadLog,
-            data: {},
-            allowInteraction: true,
-        });
-    }
+function setLocale(language: string) {
+	locale.set(language);
+	localStorage.setItem("language", language);
+}
 
-    function discord() {
-        window.open("https://discord.com/invite/Yeg7Kkrq5W", "_blank").focus();
-    }
-    function email() {
-        window.open("mailto:helpdesk@leaphy.org", "_blank").focus();
-    }
+function log() {
+	popups.open({
+		component: UploadLog,
+		data: {},
+		allowInteraction: true,
+	});
+}
 
-    function about() {
-        popups.open({
-            component: About,
-            data: {},
-            allowInteraction: true,
-        });
-    }
+function discord() {
+	window.open("https://discord.com/invite/Yeg7Kkrq5W", "_blank").focus();
+}
+function email() {
+	window.open("mailto:helpdesk@leaphy.org", "_blank").focus();
+}
 
-    async function drivers() {
-        const response = await fetch(
-            "https://api.github.com/repos/leaphy-robotics/leaphy-firmware/contents/drivers",
-        );
-        const data = await response.json();
-        const files = data.map(({ download_url }) => download_url);
-        const zip = new JSZip();
+function about() {
+	popups.open({
+		component: About,
+		data: {},
+		allowInteraction: true,
+	});
+}
 
-        await Promise.all(
-            files.map(async (url) => {
-                const res = await fetch(url);
-                zip.file(url.split("/").pop(), await res.blob());
-            }),
-        );
+async function drivers() {
+	const response = await fetch(
+		"https://api.github.com/repos/leaphy-robotics/leaphy-firmware/contents/drivers",
+	);
+	const data = await response.json();
+	const files = data.map(({ download_url }) => download_url);
+	const zip = new JSZip();
 
-        const a = document.createElement("a");
-        const url = URL.createObjectURL(
-            await zip.generateAsync({ type: "blob" }),
-        );
-        a.href = url;
-        a.download = "leaphy-drivers.zip";
-        a.click();
-        URL.revokeObjectURL(url);
-    }
+	await Promise.all(
+		files.map(async (url) => {
+			const res = await fetch(url);
+			zip.file(url.split("/").pop(), await res.blob());
+		}),
+	);
 
-    function undo() {
-        if (!$workspace) return;
+	const a = document.createElement("a");
+	const url = URL.createObjectURL(await zip.generateAsync({ type: "blob" }));
+	a.href = url;
+	a.download = "leaphy-drivers.zip";
+	a.click();
+	URL.revokeObjectURL(url);
+}
 
-        $workspace.undo(false);
-    }
+function undo() {
+	if (!$workspace) return;
 
-    function redo() {
-        if (!$workspace) return;
+	$workspace.undo(false);
+}
 
-        $workspace.undo(true);
-    }
+function redo() {
+	if (!$workspace) return;
 
-    async function blocks() {
-        if (!$saveState) {
-            const ok = await popups.open({
-                component: Warning,
-                data: {
-                    title: "CONFIRMEDITORCHANGE_TITLE",
-                    message: "EDITORCHANGEINSTRUCTIONS",
-                },
-                allowInteraction: false,
-            });
-            if (!ok) return;
-        }
+	$workspace.undo(true);
+}
 
-        mode.set(Mode.BLOCKS);
-    }
+async function blocks() {
+	if (!$saveState) {
+		const ok = await popups.open({
+			component: Warning,
+			data: {
+				title: "CONFIRMEDITORCHANGE_TITLE",
+				message: "EDITORCHANGEINSTRUCTIONS",
+			},
+			allowInteraction: false,
+		});
+		if (!ok) return;
+	}
 
-    async function connectPython() {
-        await port.connect(Prompt.MAYBE);
-        const io = new MicroPythonIO();
-        await io.enterREPLMode();
-        microPythonIO.set(io);
-    }
+	mode.set(Mode.BLOCKS);
+}
 
-    function runPython() {
-        const io = get(microPythonIO);
-        microPythonRun.set(io.runCode(get(code)));
-    }
+async function connectPython() {
+	await port.connect(Prompt.MAYBE);
+	const io = new MicroPythonIO();
+	await io.enterREPLMode();
+	microPythonIO.set(io);
+}
+
+function runPython() {
+	const io = get(microPythonIO);
+	microPythonRun.set(io.runCode(get(code)));
+}
 </script>
 
 {#snippet projectContext()}

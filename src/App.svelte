@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { screen } from "$state/app.svelte";
+import { screen } from "$state/app.svelte";
 
-    import Header from "$components/core/header/Header.svelte";
-    import Renderer from "$components/core/popups/Renderer.svelte";
+import Header from "$components/core/header/Header.svelte";
+import Renderer from "$components/core/popups/Renderer.svelte";
 </script>
 
 <div class="app">

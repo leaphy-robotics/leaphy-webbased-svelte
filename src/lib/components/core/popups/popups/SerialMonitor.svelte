@@ -1,28 +1,33 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import { log } from "$state/workspace.svelte";
-    import { tick } from "svelte";
-    import Windowed from "../Windowed.svelte";
-    import TextInput from "$components/ui/TextInput.svelte";
+import { _ } from "svelte-i18n";
+import { log } from "$state/workspace.svelte";
+import { tick } from "svelte";
+import Windowed from "../Windowed.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
 
-    let element: HTMLDivElement;
-    function formatDate(date: Date) {
-        return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}:${String(date.getMilliseconds()).padStart(3, "0")}`;
-    }
+let element: HTMLDivElement;
+function formatDate(date: Date) {
+	return `${date.getHours()}:${String(date.getMinutes()).padStart(
+		2,
+		"0",
+	)}:${String(date.getSeconds()).padStart(2, "0")}:${String(
+		date.getMilliseconds(),
+	).padStart(3, "0")}`;
+}
 
-    log.subscribe(async () => {
-        if (!element) return;
+log.subscribe(async () => {
+	if (!element) return;
 
-        await tick();
-        element.scroll({ top: element.scrollHeight, behavior: "smooth" });
-    });
+	await tick();
+	element.scroll({ top: element.scrollHeight, behavior: "smooth" });
+});
 
-    let value = "";
-    function send(event: SubmitEvent) {
-        event.preventDefault();
-        log.write(`${value}\n`);
-        value = "";
-    }
+let value = "";
+function send(event: SubmitEvent) {
+	event.preventDefault();
+	log.write(`${value}\n`);
+	value = "";
+}
 </script>
 
 {#snippet content()}
