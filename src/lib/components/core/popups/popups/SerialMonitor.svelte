@@ -1,8 +1,11 @@
 <script lang="ts">
 import TextInput from "$components/ui/TextInput.svelte";
+import WindowButton from "$components/ui/WindowButton.svelte";
 import { log } from "$state/workspace.svelte";
+import { faArrowDown, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 import { tick } from "svelte";
 import { _ } from "svelte-i18n";
+import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
 
 let element: HTMLDivElement;
@@ -28,8 +31,33 @@ function send(event: SubmitEvent) {
 	log.write(`${value}\n`);
 	value = "";
 }
+
+function download() {
+	const data: string[][] = [["date", "time", "data"]];
+
+	for (const item of get(log)) {
+		data.push([
+			item.date.toLocaleDateString("nl-NL"),
+			item.date.toLocaleTimeString("nl-NL"),
+			item.content,
+		]);
+	}
+
+	const content = data.map((e) => e.join(",")).join("\n");
+	const url = URL.createObjectURL(new Blob([content], { type: "text/plain" }));
+	const link = document.createElement("a");
+	link.href = url;
+	link.download = "serial_monitor_export.csv";
+	link.click();
+	URL.revokeObjectURL(url);
+	link.remove();
+}
 </script>
 
+{#snippet actions()}
+    <WindowButton icon={faArrowDown} onclick={download} />
+    <WindowButton icon={faTrash} onclick={log.clear} />
+{/snippet}
 {#snippet content()}
     <div class="content" bind:this={element}>
         {#each $log as item (item.id)}
@@ -49,7 +77,7 @@ function send(event: SubmitEvent) {
     </form>
 {/snippet}
 
-<Windowed title={$_("SERIAL_OUTPUT")} {content} />
+<Windowed title={$_("SERIAL_OUTPUT")} {content} {actions} />
 
 <style>
     .content {

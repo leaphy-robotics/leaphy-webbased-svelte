@@ -39,13 +39,16 @@ export const SUPPORTED_VENDOR_IDS = [0x1a86, 9025, 2341, 0x0403, 0x2e8a];
 
 let writer: WritableStreamDefaultWriter<Uint8Array>;
 function createLogState() {
-	const { subscribe, update } = writable<LogItem[]>([]);
+	const { subscribe, update, set } = writable<LogItem[]>([]);
 	let buffer = "";
 
 	return {
 		subscribe,
 		write(content: string) {
 			writer.write(new TextEncoder().encode(content));
+		},
+		clear() {
+			set([]);
 		},
 		enqueue(content: Uint8Array) {
 			buffer += new TextDecoder().decode(content);

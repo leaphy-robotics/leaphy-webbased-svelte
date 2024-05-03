@@ -10,10 +10,11 @@ import type { Writable } from "svelte/store";
 interface Props {
 	title: string;
 	content: Snippet;
+	actions?: Snippet;
 }
 
 const state = getContext<Writable<PopupState>>("state");
-const { content, title }: Props = $props();
+const { content, actions, title }: Props = $props();
 
 let x: number;
 let y: number;
@@ -53,7 +54,10 @@ onDestroy(() => {
 <div class="window">
     <div class="top" onmousedown={ondown}>
         <div class="title">{title}</div>
-        <WindowButton icon={faClose} onclick={close} />
+        <div class="actions">
+            <WindowButton icon={faClose} onclick={close} />
+            {#if actions}{@render actions()}{/if}
+        </div>
     </div>
     {@render content()}
 </div>
