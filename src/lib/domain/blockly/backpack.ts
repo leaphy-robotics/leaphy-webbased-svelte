@@ -1,4 +1,3 @@
-
 import { Backpack as BaseBackpack } from "@blockly/workspace-backpack";
 import Blockly from "blockly/core";
 

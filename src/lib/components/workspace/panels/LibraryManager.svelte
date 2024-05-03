@@ -9,17 +9,28 @@
     import { installed } from "$state/workspace.svelte";
     import Library from "$components/ui/Library.svelte";
 
-    let filter = $state('')
+    let filter = $state("");
     onMount(() => {
-        libraries.query()
-    })
+        libraries.query();
+    });
 
-    let visible = $derived($libraries.filter(({ name }) => name.toUpperCase().includes(filter.toUpperCase())).slice(0, 100))
+    let visible = $derived(
+        $libraries
+            .filter(({ name }) =>
+                name.toUpperCase().includes(filter.toUpperCase()),
+            )
+            .slice(0, 100),
+    );
 </script>
 
 <div class="content">
     <div class="header">
-        <TextInput mode={"primary"} rounded={true} placeholder={$_("SEARCH_PLACEHOLDER")} bind:value={filter} />
+        <TextInput
+            mode={"primary"}
+            rounded={true}
+            placeholder={$_("SEARCH_PLACEHOLDER")}
+            bind:value={filter}
+        />
     </div>
     <div class="libraries">
         {#each visible as library (library.name)}

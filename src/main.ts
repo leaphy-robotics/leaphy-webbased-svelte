@@ -1,4 +1,4 @@
-import "@xterm/xterm/css/xterm.css"
+import "@xterm/xterm/css/xterm.css";
 import "./app.css";
 import App from "./App.svelte";
 import { mount } from "svelte";
@@ -14,14 +14,14 @@ addMessages("en", enTranslations);
 addMessages("nl", nlTranslations);
 
 init({
-  fallbackLocale: "en",
-  initialLocale: localStorage.getItem("language"),
+    fallbackLocale: "en",
+    initialLocale: localStorage.getItem("language"),
 });
 
 initMatomo();
 
 const app = mount(App, {
-  target: document.getElementById("app")!,
+    target: document.getElementById("app")!,
 });
 
 export default app;

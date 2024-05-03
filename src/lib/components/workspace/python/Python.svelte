@@ -4,8 +4,6 @@
     import Terminal from "./Terminal.svelte";
 </script>
 
-
-
 <div class="environment">
     <div class="editor">
         <CodeEditor bind:value={$code} language="python" />

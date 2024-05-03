@@ -1,49 +1,59 @@
 <script lang="ts">
-    import { faCaretRight, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
+    import {
+        faCaretRight,
+        type IconDefinition,
+    } from "@fortawesome/free-solid-svg-icons";
     import { getContext, onDestroy, onMount, type Snippet } from "svelte";
     import Fa from "svelte-fa";
     import type { Writable } from "svelte/store";
     import ContextMenu from "./ContextMenu.svelte";
 
     interface Props {
-        icon?: IconDefinition,
-        name: string,
-        onclick?: () => void,
-        context?: Snippet,
-        disabled?: boolean,
-        selected?: boolean
+        icon?: IconDefinition;
+        name: string;
+        onclick?: () => void;
+        context?: Snippet;
+        disabled?: boolean;
+        selected?: boolean;
     }
-    let { icon, name, onclick, context, disabled = false, selected = false }: Props = $props()
+    let {
+        icon,
+        name,
+        onclick,
+        context,
+        disabled = false,
+        selected = false,
+    }: Props = $props();
 
-    let element = $state<HTMLDivElement>()
-    let contextShowing = $state(false)
+    let element = $state<HTMLDivElement>();
+    let contextShowing = $state(false);
 
-    let open = getContext<Writable<boolean>>('open')
+    let open = getContext<Writable<boolean>>("open");
     function interact() {
-        if (!onclick) return
+        if (!onclick) return;
 
-        open.update(() => false)
-        onclick()
+        open.update(() => false);
+        onclick();
     }
 
     function hover() {
-        if (!context) return
+        if (!context) return;
 
-        contextShowing = true
+        contextShowing = true;
     }
 
     function blur(event: MouseEvent) {
-        if (element.contains(event.target as HTMLElement)) return
+        if (element.contains(event.target as HTMLElement)) return;
 
-        contextShowing = false
+        contextShowing = false;
     }
 
     onMount(() => {
-        document.body.addEventListener('mousemove', blur)
-    })
+        document.body.addEventListener("mousemove", blur);
+    });
     onDestroy(() => {
-        document.body.removeEventListener('mousemove', blur)
-    })
+        document.body.removeEventListener("mousemove", blur);
+    });
 </script>
 
 <tbody bind:this={element}>
@@ -51,7 +61,13 @@
         <ContextMenu anchor="right-start" source={element} content={context} />
     {/if}
 
-    <tr class="item" onclick={interact} onmousemove={hover} class:disabled={disabled} class:selected={selected} >
+    <tr
+        class="item"
+        onclick={interact}
+        onmousemove={hover}
+        class:disabled
+        class:selected
+    >
         <td class="icon">
             {#if icon}<Fa {icon} />{/if}
         </td>
@@ -73,7 +89,7 @@
     }
 
     .icon {
-        padding: 10px 10px 10px 20px;;
+        padding: 10px 10px 10px 20px;
         color: var(--primary-dark-tint);
         text-align: center;
     }

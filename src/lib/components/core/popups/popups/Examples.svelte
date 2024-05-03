@@ -2,7 +2,7 @@
     import { _ } from "svelte-i18n";
     import Windowed from "../Windowed.svelte";
     import { inFilter } from "$domain/robots";
-    import { robot } from "$state/workspace.svelte"
+    import { robot } from "$state/workspace.svelte";
     import { getContext, onMount } from "svelte";
     import { workspace } from "$state/blockly.svelte";
     import { serialization } from "blockly";
@@ -10,31 +10,34 @@
     import { type PopupState, popups } from "$state/popup.svelte";
 
     interface Example {
-        name: string,
-        icon: string,
-        sketch: () => Promise<{ default: Record<string, any> }>,
-        boards: number[]
+        name: string;
+        icon: string;
+        sketch: () => Promise<{ default: Record<string, any> }>;
+        boards: number[];
     }
 
-    let examples = $state<Example[]>([])
-    let visible = $derived(examples.filter(({ boards }) => inFilter($robot, boards)))
+    let examples = $state<Example[]>([]);
+    let visible = $derived(
+        examples.filter(({ boards }) => inFilter($robot, boards)),
+    );
 
     async function getExamples() {
         examples = await Promise.all(
-            Object.values(import.meta.glob('$examples/*.ts'))
-                .map(async (module: () => Promise<{ default: Example}>) => {
-                    const example = await module()
-                    return example.default
-                })
-        )
+            Object.values(import.meta.glob("$examples/*.ts")).map(
+                async (module: () => Promise<{ default: Example }>) => {
+                    const example = await module();
+                    return example.default;
+                },
+            ),
+        );
     }
-    onMount(getExamples)
+    onMount(getExamples);
 
-    const popupState = getContext<Writable<PopupState>>('state')
+    const popupState = getContext<Writable<PopupState>>("state");
     async function loadExample(example: Example) {
-        popups.close($popupState.id)
-        const sketch = await example.sketch()
-        serialization.workspaces.load(sketch.default, $workspace)
+        popups.close($popupState.id);
+        const sketch = await example.sketch();
+        serialization.workspaces.load(sketch.default, $workspace);
     }
 </script>
 
@@ -42,7 +45,7 @@
     <div class="content">
         {#each visible as example}
             <button class="example" onclick={() => loadExample(example)}>
-                <img class="icon" src={example.icon} alt="">
+                <img class="icon" src={example.icon} alt="" />
                 <div class="name">{example.name}</div>
             </button>
         {/each}
@@ -56,7 +59,7 @@
         padding: 10px;
         gap: 10px;
         display: grid;
-        grid-template-columns: repeat(auto-fill,minmax(100px,1fr));
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
 
     .example {
@@ -70,7 +73,7 @@
         align-items: center;
         gap: 5px;
         padding: 10px;
-        transition: .3s ease;
+        transition: 0.3s ease;
         background: none;
         color: var(--on-background);
     }

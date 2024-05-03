@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { PopupState } from "$state/popup.svelte";
     import { setContext } from "svelte";
-    import Windowed from "./Windowed.svelte"
+    import Windowed from "./Windowed.svelte";
     import { writable } from "svelte/store";
 
     interface Props {
@@ -9,12 +9,12 @@
     }
     let { state: popupState }: Props = $props();
 
-    let internalState = writable(popupState)
-    setContext('state', internalState)
+    let internalState = writable(popupState);
+    setContext("state", internalState);
 
     $effect(() => {
-      internalState.update(() => popupState)
-    })
+        internalState.update(() => popupState);
+    });
 </script>
 
 <div class="container" class:full={!popupState.popup.allowInteraction}>
@@ -24,7 +24,10 @@
             style:left={`${popupState.position.x}px`}
             style:top={`${popupState.position.y}px`}
         >
-            <svelte:component this={popupState.popup.component} {...popupState.popup.data} />
+            <svelte:component
+                this={popupState.popup.component}
+                {...popupState.popup.data}
+            />
         </div>
     </div>
 </div>

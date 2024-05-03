@@ -6,37 +6,37 @@
     import { number } from "svelte-i18n";
 
     interface Props {
-        options: [string, any][],
-        value: Bindable<any>
+        options: [string, any][];
+        value: Bindable<any>;
     }
-    let { options, value = $bindable() }: Props = $props()
+    let { options, value = $bindable() }: Props = $props();
 
-    let preview: HTMLButtonElement = $state()
-    let content: HTMLDivElement = $state()
+    let preview: HTMLButtonElement = $state();
+    let content: HTMLDivElement = $state();
 
-    let open = $state(false)
-    let position = $state<{ x: number, y: number }>({ x: 0, y: 0 })
+    let open = $state(false);
+    let position = $state<{ x: number; y: number }>({ x: 0, y: 0 });
 
     function getName(value: any) {
-        return options.find(([_, data]) => data === value)[0]
+        return options.find(([_, data]) => data === value)[0];
     }
 
     async function onclick() {
-        open = !open
-        if (!open) return
-        await tick()
+        open = !open;
+        if (!open) return;
+        await tick();
 
-        position = await computePosition(preview, content)
+        position = await computePosition(preview, content);
     }
 
     function select(newValue: string) {
-        open = false
-        value = newValue
+        open = false;
+        value = newValue;
     }
 </script>
 
 <div class="select">
-    <button {onclick} class:open={open} bind:this={preview} class="preview">
+    <button {onclick} class:open bind:this={preview} class="preview">
         <div class="name">{getName(value)}</div>
         <div class="icon"><Fa icon={faCaretDown} /></div>
     </button>
@@ -44,7 +44,9 @@
         <div bind:this={content} class="popup">
             <div class="container">
                 {#each options as option (option[1])}
-                    <button onclick={() => select(option[1])} class="option">{option[0]}</button>
+                    <button onclick={() => select(option[1])} class="option"
+                        >{option[0]}</button
+                    >
                 {/each}
             </div>
         </div>
@@ -55,7 +57,8 @@
     .preview {
         width: 150px;
     }
-    .preview, .option {
+    .preview,
+    .option {
         position: relative;
         background: var(--primary-dark-tint);
         color: var(--on-primary);

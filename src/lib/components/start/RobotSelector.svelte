@@ -10,18 +10,18 @@
     let { robots, secondary }: Props = $props();
 
     function select(type: Robot) {
-        if ("variants" in type) return (selected.set(type));
+        if ("variants" in type) return selected.set(type);
         if ("mode" in type) {
-            code.set(type.defaultProgram)
-            robot.set(allRobots[type.defaultRobot])
-            mode.set(type.mode)
-            screen.set(Screen.WORKSPACE)
-            return
+            code.set(type.defaultProgram);
+            robot.set(allRobots[type.defaultRobot]);
+            mode.set(type.mode);
+            screen.set(Screen.WORKSPACE);
+            return;
         }
 
         robot.set(type);
         mode.set(Mode.BLOCKS);
-        screen.set(Screen.WORKSPACE)
+        screen.set(Screen.WORKSPACE);
     }
 </script>
 

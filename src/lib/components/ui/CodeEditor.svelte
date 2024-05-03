@@ -1,46 +1,46 @@
 <script lang="ts">
     import { onMount, type Bindable } from "svelte";
-    import * as monaco from 'monaco-editor'
+    import * as monaco from "monaco-editor";
     import { Theme, theme } from "$state/app.svelte";
 
     interface Props {
-        value: Bindable<string>,
-        language: string,
-        editable?: boolean
+        value: Bindable<string>;
+        language: string;
+        editable?: boolean;
     }
-    let { value = $bindable(""), editable = true, language }: Props = $props()
+    let { value = $bindable(""), editable = true, language }: Props = $props();
 
-    let ignoreUpdate = false
-    let element: HTMLDivElement
-    let editor: monaco.editor.IStandaloneCodeEditor
+    let ignoreUpdate = false;
+    let element: HTMLDivElement;
+    let editor: monaco.editor.IStandaloneCodeEditor;
     onMount(() => {
         editor = monaco.editor.create(element, {
-            theme: $theme === Theme.DARK ? 'vs-dark' : 'vs-light',
+            theme: $theme === Theme.DARK ? "vs-dark" : "vs-light",
             language,
             value: value as string,
             automaticLayout: true,
-            readOnly: !editable
-        })
+            readOnly: !editable,
+        });
         editor.getModel().onDidChangeContent(() => {
-            ignoreUpdate = true
-            value = editor.getValue()
-        })
-    })
+            ignoreUpdate = true;
+            value = editor.getValue();
+        });
+    });
 
-    theme.subscribe(theme => {
-        if (!editor) return
-        monaco.editor.setTheme(theme === Theme.DARK ? 'vs-dark' : 'vs-light')
-    })
+    theme.subscribe((theme) => {
+        if (!editor) return;
+        monaco.editor.setTheme(theme === Theme.DARK ? "vs-dark" : "vs-light");
+    });
 
     $effect(() => {
-        const newContent = value // marks value as dependency, do not remove
-        if (ignoreUpdate || !editor) { 
-            ignoreUpdate = false
-            return 
+        const newContent = value; // marks value as dependency, do not remove
+        if (ignoreUpdate || !editor) {
+            ignoreUpdate = false;
+            return;
         }
 
-        editor.getModel().setValue(newContent as string)
-    })
+        editor.getModel().setValue(newContent as string);
+    });
 </script>
 
 <div class="editor" bind:this={element}></div>

@@ -1,142 +1,146 @@
 <script lang="ts">
     import { microPythonIO, microPythonRun } from "$state/workspace.svelte";
     import { Terminal } from "@xterm/xterm";
-    import { FitAddon } from '@xterm/addon-fit';
+    import { FitAddon } from "@xterm/addon-fit";
     import { get } from "svelte/store";
     import { onMount } from "svelte";
 
-    const terminal = new Terminal()
-    const fitAddon = new FitAddon()
-    terminal.loadAddon(fitAddon)
+    const terminal = new Terminal();
+    const fitAddon = new FitAddon();
+    terminal.loadAddon(fitAddon);
 
-    let element: HTMLDivElement
+    let element: HTMLDivElement;
     onMount(() => {
-        terminal.open(element)
-        fitAddon.fit()
-    })
+        terminal.open(element);
+        fitAddon.fit();
+    });
 
-    let line = ''
-    let historyPosition = 0
-    let history = [line]
-    let pos = 0
+    let line = "";
+    let historyPosition = 0;
+    let history = [line];
+    let pos = 0;
 
     function render() {
-        if (get(microPythonIO).running) return
-        terminal.write(`\x1b[2K\r${PROMPT}${line}`)
+        if (get(microPythonIO).running) return;
+        terminal.write(`\x1b[2K\r${PROMPT}${line}`);
 
         // move cursor back to pos
-        const virtPos = line.length - pos
-        if (virtPos === 0) return
-        terminal.write(`\x1b[${virtPos}D`)
+        const virtPos = line.length - pos;
+        if (virtPos === 0) return;
+        terminal.write(`\x1b[${virtPos}D`);
     }
 
-    const PROMPT = "$ "
-    microPythonIO.subscribe(io => {
-        if (!io) return
-        render()
+    const PROMPT = "$ ";
+    microPythonIO.subscribe((io) => {
+        if (!io) return;
+        render();
 
-        terminal.onData(data => {
+        terminal.onData((data) => {
             if (io.running) {
-                return
+                return;
             }
 
             switch (data) {
-                case '\x1b[D': {
-                    pos--
-                    if (pos < 0) pos = 0
+                case "\x1b[D": {
+                    pos--;
+                    if (pos < 0) pos = 0;
 
-                    break
+                    break;
                 }
-                case '\x1b[C': {
-                    pos++
-                    if (pos > line.length) pos = line.length
+                case "\x1b[C": {
+                    pos++;
+                    if (pos > line.length) pos = line.length;
 
-                    break
+                    break;
                 }
-                case '\x1b[A': {
-                    historyPosition--
-                    if (historyPosition < 0) historyPosition = 0
-                    line = history[historyPosition]
-                    pos = line.length
-                    if (pos < 0) pos = 0
+                case "\x1b[A": {
+                    historyPosition--;
+                    if (historyPosition < 0) historyPosition = 0;
+                    line = history[historyPosition];
+                    pos = line.length;
+                    if (pos < 0) pos = 0;
 
-                    break
+                    break;
                 }
-                case '\x1b[B': {
-                    historyPosition++
+                case "\x1b[B": {
+                    historyPosition++;
                     if (historyPosition >= history.length) {
-                        historyPosition = history.length - 1
+                        historyPosition = history.length - 1;
                     }
-                    line = history[historyPosition]
+                    line = history[historyPosition];
 
-                    pos = line.length
-                    if (pos < 0) pos = 0
+                    pos = line.length;
+                    if (pos < 0) pos = 0;
 
-                    break
+                    break;
                 }
-                case '\u007f': {
-                    line = line.substring(0, pos-1) + line.substring(pos)
+                case "\u007f": {
+                    line = line.substring(0, pos - 1) + line.substring(pos);
 
-                    pos--
-                    if (pos < 0) pos = 0
+                    pos--;
+                    if (pos < 0) pos = 0;
 
-                    break
+                    break;
                 }
-                case '\u0003': {
-                    terminal.write("^C\n")
-                    line = ''
-                    pos = 0
+                case "\u0003": {
+                    terminal.write("^C\n");
+                    line = "";
+                    pos = 0;
 
-                    break
+                    break;
                 }
-                case '\r': {
-                    terminal.write('\r\n')
-                    historyPosition = history.length
-                    history.push('')
+                case "\r": {
+                    terminal.write("\r\n");
+                    historyPosition = history.length;
+                    history.push("");
 
-                    if (!line) break
-                    const events = io.runCode(line)
-                    line = ''
-                    pos = 0
+                    if (!line) break;
+                    const events = io.runCode(line);
+                    line = "";
+                    pos = 0;
 
-                    events.addEventListener('stdout', (event) => {
-                        terminal.write(event.data)
-                    })
-                    events.addEventListener('stderr', (event) => {
-                        terminal.write(`\x1b[31m${event.data}\x1b[0m`)
-                    })
-                    events.addEventListener('done', render)
+                    events.addEventListener("stdout", (event) => {
+                        terminal.write(event.data);
+                    });
+                    events.addEventListener("stderr", (event) => {
+                        terminal.write(`\x1b[31m${event.data}\x1b[0m`);
+                    });
+                    events.addEventListener("done", render);
 
-                    break
+                    break;
                 }
                 default: {
-                    if (data.length !== 1 || data.charCodeAt(0) < 32 || data.charCodeAt(0) > 126) {
-                        console.log(data)
-                        break
+                    if (
+                        data.length !== 1 ||
+                        data.charCodeAt(0) < 32 ||
+                        data.charCodeAt(0) > 126
+                    ) {
+                        console.log(data);
+                        break;
                     }
 
-                    line = line.substring(0, pos) + data + line.substring(pos)
-                    history[historyPosition] = line
-                    pos++
+                    line = line.substring(0, pos) + data + line.substring(pos);
+                    history[historyPosition] = line;
+                    pos++;
                 }
             }
-            
-            render()
-        })
-    })
 
-    microPythonRun.subscribe(events => {
-        if (!events) return
+            render();
+        });
+    });
 
-        terminal.write("\r\n")
-        events.addEventListener('stdout', (event) => {
-            terminal.write(event.data)
-        })
-        events.addEventListener('stderr', (event) => {
-            terminal.write(`\x1b[31m${event.data}\x1b[0m`)
-        })
-        events.addEventListener('done', render)
-    })
+    microPythonRun.subscribe((events) => {
+        if (!events) return;
+
+        terminal.write("\r\n");
+        events.addEventListener("stdout", (event) => {
+            terminal.write(event.data);
+        });
+        events.addEventListener("stderr", (event) => {
+            terminal.write(`\x1b[31m${event.data}\x1b[0m`);
+        });
+        events.addEventListener("done", render);
+    });
 </script>
 
 <div class="container">

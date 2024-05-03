@@ -3,102 +3,116 @@
 
     import Button from "$components/ui/Button.svelte";
     import ProgressBar from "$components/ui/ProgressBar.svelte";
-    import { Prompt, SUPPORTED_VENDOR_IDS, installed, port, robot } from "$state/workspace.svelte"
+    import {
+        Prompt,
+        SUPPORTED_VENDOR_IDS,
+        installed,
+        port,
+        robot,
+    } from "$state/workspace.svelte";
     import { getContext, onMount } from "svelte";
-    import { type PopupState, popups } from "$state/popup.svelte"
+    import { type PopupState, popups } from "$state/popup.svelte";
     import { type Writable } from "svelte/store";
     import { usbRequest } from "$state/upload.svelte";
 
     interface Props {
-      source?: string,
-      program?: Record<string, string>
+        source?: string;
+        program?: Record<string, string>;
     }
-    let popupState = getContext<Writable<PopupState>>("state")
-    let { source, program }: Props = $props()
-    let progress = $state(0)
-    let currentState = $state("CONNECTING")
-    let error = $state<string|null>(null)
-    let done = $state(false)
+    let popupState = getContext<Writable<PopupState>>("state");
+    let { source, program }: Props = $props();
+    let progress = $state(0);
+    let currentState = $state("CONNECTING");
+    let error = $state<string | null>(null);
+    let done = $state(false);
 
     class UploadError extends Error {
-        constructor(public name: string, public description: string) {
-            super()
+        constructor(
+            public name: string,
+            public description: string,
+        ) {
+            super();
         }
     }
 
     async function compile() {
-        currentState = "COMPILATION_STARTED"
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
+        currentState = "COMPILATION_STARTED";
+        const res = await fetch(
+            `${import.meta.env.VITE_BACKEND_URL}/compile/cpp`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    source_code: source,
+                    board: $robot.fqbn,
+                    libraries: [
+                        ...$robot.libraries,
+                        ...$installed.map(
+                            ([name, version]) => `${name}@${version}`,
+                        ),
+                    ],
+                }),
             },
-            body: JSON.stringify({
-                source_code: source,
-                board: $robot.fqbn,
-                libraries: [
-                    ...$robot.libraries,
-                    ...$installed.map(([name, version]) => `${name}@${version}`)
-                ]
-            })
-        })
+        );
         if (!res.ok) {
-            const { detail } = await res.json()
-            throw new UploadError("COMPILATION_FAILED", detail)
+            const { detail } = await res.json();
+            throw new UploadError("COMPILATION_FAILED", detail);
         }
 
-        return await res.json()
+        return await res.json();
     }
 
     async function upload(res: Record<string, string>) {
-        currentState = "UPDATE_STARTED"
+        currentState = "UPDATE_STARTED";
         try {
-            await port.reserve()
-            await $robot.programmer.upload($port, res)
+            await port.reserve();
+            await $robot.programmer.upload($port, res);
         } catch (e) {
-            console.log(e)
-            throw new UploadError("UPDATE_FAILED", e)
+            console.log(e);
+            throw new UploadError("UPDATE_FAILED", e);
         }
-        port.release()
+        port.release();
     }
 
     onMount(async () => {
         try {
-            if (!$port) await port.connect(Prompt.MAYBE)
-            progress += 100/3
+            if (!$port) await port.connect(Prompt.MAYBE);
+            progress += 100 / 3;
 
-            const res = program || await compile()
-            progress += 100/3
+            const res = program || (await compile());
+            progress += 100 / 3;
 
-            await upload(res)
+            await upload(res);
 
-            progress = 100
-            currentState = "UPDATE_COMPLETE"
-            done = true
+            progress = 100;
+            currentState = "UPDATE_COMPLETE";
+            done = true;
         } catch (e) {
             if (e instanceof UploadError) {
-                done = true
-                currentState = e.name
-                error = e.description
+                done = true;
+                currentState = e.name;
+                error = e.description;
             }
         }
-    })
+    });
 
     function close() {
-        popups.close($popupState.id)
+        popups.close($popupState.id);
     }
 
     async function connectUSB() {
-        const [device] = await navigator.usb.getDevices()
-        if (device) return usbRequest.respond(device)
+        const [device] = await navigator.usb.getDevices();
+        if (device) return usbRequest.respond(device);
 
-        usbRequest.respond(await navigator.usb.requestDevice({ 
-            filters: SUPPORTED_VENDOR_IDS.map(
-                (vendor) => ({
+        usbRequest.respond(
+            await navigator.usb.requestDevice({
+                filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
                     vendorId: vendor,
-                }),
-            ),
-        }))
+                })),
+            }),
+        );
     }
 </script>
 
@@ -114,7 +128,11 @@
             <code class="error-result">{error}</code>
         {/if}
         {#if done}
-            <Button name={"Go back to editor"} mode={"primary"} onclick={close} />
+            <Button
+                name={"Go back to editor"}
+                mode={"primary"}
+                onclick={close}
+            />
         {:else}
             <ProgressBar {progress} />
         {/if}
@@ -125,7 +143,7 @@
     h2 {
         margin: 0;
     }
-    
+
     .content {
         display: flex;
         flex-direction: column;

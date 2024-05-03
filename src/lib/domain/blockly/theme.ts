@@ -1,7 +1,7 @@
 import { Theme } from "blockly";
 
-export const dark = Theme.defineTheme('leaphy-dark', {
-    name: 'leaphy-dark',
+export const dark = Theme.defineTheme("leaphy-dark", {
+    name: "leaphy-dark",
     blockStyles: {
         leaphy_blocks: { colourPrimary: "#066c80", hat: "cap" },
         loop_blocks: { colourPrimary: "#69530d" },
@@ -29,9 +29,9 @@ export const dark = Theme.defineTheme('leaphy-dark', {
         scrollbarColour: "#9c9a9a",
         flyoutOpacity: 1,
     },
-}) 
+});
 
-export const light = Theme.defineTheme('leaphy-light', {
+export const light = Theme.defineTheme("leaphy-light", {
     blockStyles: {
         leaphy_blocks: { colourPrimary: "#06778f", hat: "cap" },
         loop_blocks: { colourPrimary: "#D9B53F" },
@@ -61,4 +61,4 @@ export const light = Theme.defineTheme('leaphy-light', {
         flyoutOpacity: 1,
     },
     name: "light",
-})
+});

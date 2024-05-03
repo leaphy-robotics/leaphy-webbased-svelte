@@ -3,10 +3,10 @@
     import Fa from "svelte-fa";
 
     interface Props {
-        icon: IconDefinition,
-        onclick: () => void
+        icon: IconDefinition;
+        onclick: () => void;
     }
-    let { icon, onclick }: Props = $props()
+    let { icon, onclick }: Props = $props();
 </script>
 
 <button class="side" {onclick}>

@@ -6,17 +6,17 @@
     import type { Writable } from "svelte/store";
 
     interface Props {
-        title: string,
-        message: string
+        title: string;
+        message: string;
     }
-    let { title, message }: Props = $props()
+    let { title, message }: Props = $props();
 
-    let popupState = getContext<Writable<PopupState>>("state")
+    let popupState = getContext<Writable<PopupState>>("state");
     function cancel() {
-        popups.close($popupState.id, false)
+        popups.close($popupState.id, false);
     }
     function ok() {
-        popups.close($popupState.id, true)
+        popups.close($popupState.id, true);
     }
 </script>
 

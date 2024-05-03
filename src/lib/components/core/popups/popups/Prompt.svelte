@@ -7,31 +7,37 @@
     import type { Writable } from "svelte/store";
 
     interface Props {
-        name: string,
-        placeholder: string,
-        confirm: string,
-        value?: string
+        name: string;
+        placeholder: string;
+        confirm: string;
+        value?: string;
     }
-    let { name, placeholder, confirm, value = "" }: Props = $props()
-    let popupState = getContext<Writable<PopupState>>('state')
-    
+    let { name, placeholder, confirm, value = "" }: Props = $props();
+    let popupState = getContext<Writable<PopupState>>("state");
+
     function cancel() {
-        popups.close($popupState.id, false)
+        popups.close($popupState.id, false);
     }
 
     function save() {
-        popups.close($popupState.id, value)
+        popups.close($popupState.id, value);
     }
 
     function onsubmit(event: SubmitEvent) {
-        event.preventDefault()
-        save()
+        event.preventDefault();
+        save();
     }
 </script>
 
-<form class="content" onsubmit={onsubmit}>
+<form class="content" {onsubmit}>
     <h2>{$_(name)}</h2>
-    <TextInput bind:value={value} placeholder={$_(placeholder)} mode={"secondary"} rounded={true} focus={true} />
+    <TextInput
+        bind:value
+        placeholder={$_(placeholder)}
+        mode={"secondary"}
+        rounded={true}
+        focus={true}
+    />
     <div class="actions">
         <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
         <Button onclick={save} mode={"primary"} name={$_(confirm)} />

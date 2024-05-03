@@ -7,9 +7,7 @@
     import { cubicOut } from "svelte/easing";
 
     let selectors = $derived(
-        $selected
-            ? [robotListing, $selected.variants]
-            : [robotListing],
+        $selected ? [robotListing, $selected.variants] : [robotListing],
     );
     let animationOptions = {
         easing: cubicOut,

@@ -2,9 +2,9 @@
     import type { Snippet } from "svelte";
 
     interface Props {
-        buttons: Snippet
+        buttons: Snippet;
     }
-    let { buttons }: Props = $props()
+    let { buttons }: Props = $props();
 </script>
 
 <div class="sidebar">

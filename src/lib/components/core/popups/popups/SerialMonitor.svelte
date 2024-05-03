@@ -5,38 +5,43 @@
     import Windowed from "../Windowed.svelte";
     import TextInput from "$components/ui/TextInput.svelte";
 
-    let element: HTMLDivElement
+    let element: HTMLDivElement;
     function formatDate(date: Date) {
-        return `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(3, '0')}`
+        return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}:${String(date.getMilliseconds()).padStart(3, "0")}`;
     }
 
     log.subscribe(async () => {
-        if (!element) return
-        
-        await tick()
-        element.scroll({ top: element.scrollHeight, behavior: 'smooth' })
-    })
+        if (!element) return;
 
-    let value = ''
+        await tick();
+        element.scroll({ top: element.scrollHeight, behavior: "smooth" });
+    });
+
+    let value = "";
     function send(event: SubmitEvent) {
-        event.preventDefault()
-        log.write(`${value}\n`)
-        value = ''
+        event.preventDefault();
+        log.write(`${value}\n`);
+        value = "";
     }
 </script>
 
 {#snippet content()}
-<div class="content" bind:this={element}>
-    {#each $log as item (item.id)}
-    <div class="item">
-        <div class="date">{formatDate(item.date)}</div>
-        <div class="text">{item.content}</div>
+    <div class="content" bind:this={element}>
+        {#each $log as item (item.id)}
+            <div class="item">
+                <div class="date">{formatDate(item.date)}</div>
+                <div class="text">{item.content}</div>
+            </div>
+        {/each}
     </div>
-    {/each}
-</div>
-<form onsubmit={send}>
-    <TextInput placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")} bind:value={value} mode={"primary"} rounded={false} />
-</form>
+    <form onsubmit={send}>
+        <TextInput
+            placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")}
+            bind:value
+            mode={"primary"}
+            rounded={false}
+        />
+    </form>
 {/snippet}
 
 <Windowed title={$_("SERIAL_OUTPUT")} {content} />
@@ -63,6 +68,6 @@
 
     .text {
         color: var(--primary-dark-tint);
-        font-family:'Courier New', Courier, monospace;
+        font-family: "Courier New", Courier, monospace;
     }
 </style>

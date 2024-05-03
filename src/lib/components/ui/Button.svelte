@@ -6,22 +6,29 @@
     import Fa from "svelte-fa";
 
     interface Props {
-        name?: string,
-        icon?: IconDefinition|string,
-        onclick?: () => void,
-        context?: Snippet,
-        mode: "primary"|"secondary"|"outlined"|"accent",
-        bold?: boolean
+        name?: string;
+        icon?: IconDefinition | string;
+        onclick?: () => void;
+        context?: Snippet;
+        mode: "primary" | "secondary" | "outlined" | "accent";
+        bold?: boolean;
     }
-    let { name, mode, onclick = onContext, context, bold, icon }: Props = $props()
+    let {
+        name,
+        mode,
+        onclick = onContext,
+        context,
+        bold,
+        icon,
+    }: Props = $props();
 
-    let btn: HTMLButtonElement = $state()
+    let btn: HTMLButtonElement = $state();
 
-    const open = setContext('open', writable(false))
+    const open = setContext("open", writable(false));
     function onContext() {
-        if (!context) return
+        if (!context) return;
 
-        open.update(() => true)
+        open.update(() => true);
     }
 </script>
 
@@ -29,16 +36,16 @@
     <ContextMenu source={btn} content={context} />
 {/if}
 
-<button 
+<button
     bind:this={btn}
-    {onclick} 
+    {onclick}
     type="button"
     class="btn"
-    class:primary={mode === 'primary'} 
-    class:secondary={mode === 'secondary'} 
-    class:outlined={mode === 'outlined'}
-    class:accent={mode === 'accent'}
-    class:bold={bold}
+    class:primary={mode === "primary"}
+    class:secondary={mode === "secondary"}
+    class:outlined={mode === "outlined"}
+    class:accent={mode === "accent"}
+    class:bold
 >
     {#if icon}
         {#if typeof icon === "string"}

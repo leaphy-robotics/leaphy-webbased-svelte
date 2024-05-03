@@ -1,4 +1,4 @@
-import * as Blockly from 'blockly/core';
+import * as Blockly from "blockly/core";
 
 /**
  * Class for a toolbox.
@@ -6,22 +6,27 @@ import * as Blockly from 'blockly/core';
  *
  * @alias Blockly.Toolbox
  */
-export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHideable,
-    Blockly.IKeyboardAccessible,
-    Blockly.IStyleable, Blockly.IToolbox {
+export class LeaphyToolbox
+    extends Blockly.DeleteArea
+    implements
+        Blockly.IAutoHideable,
+        Blockly.IKeyboardAccessible,
+        Blockly.IStyleable,
+        Blockly.IToolbox
+{
     /**
      * The unique ID for this component that is used to register with the
      * ComponentManager.
      */
-    override id = 'toolbox';
+    override id = "toolbox";
     protected toolboxDef_: Blockly.utils.toolbox.ToolboxInfo;
     private readonly horizontalLayout_: boolean;
 
     /** The html container for the toolbox. */
-    HtmlDiv: HTMLDivElement|null = null;
+    HtmlDiv: HTMLDivElement | null = null;
 
     /** The html container for the contents of a toolbox. */
-    protected contentsDiv_: HTMLDivElement|null = null;
+    protected contentsDiv_: HTMLDivElement | null = null;
 
     /** Whether the toolbox is visible. */
     protected isVisible_ = false;
@@ -37,15 +42,16 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
     RTL: boolean;
 
     /** The flyout for the toolbox. */
-    private flyout_: Blockly.IFlyout|null = null;
-    protected contentMap_: {[key: string]: Blockly.IToolboxItem};
+    private flyout_: Blockly.IFlyout | null = null;
+    protected contentMap_: { [key: string]: Blockly.IToolboxItem };
     toolboxPosition: Blockly.utils.toolbox.Position;
 
     /** The currently selected item. */
-    protected selectedItem_: Blockly.ISelectableToolboxItem|null = null;
+    protected selectedItem_: Blockly.ISelectableToolboxItem | null = null;
 
     /** The previously selected item. */
-    protected previouslySelectedItem_: Blockly.ISelectableToolboxItem|null = null;
+    protected previouslySelectedItem_: Blockly.ISelectableToolboxItem | null =
+        null;
 
     /**
      * Array holding info needed to unbind event handlers.
@@ -66,8 +72,9 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         /** The JSON describing the contents of this toolbox. */
         // any because:  Type 'ToolboxInfo | { contents: never[]; }'
         // is not assignable to type 'ToolboxInfo'.
-        this.toolboxDef_ = (workspace.options.languageTree || {'contents': []}) as
-            any;
+        this.toolboxDef_ = (workspace.options.languageTree || {
+            contents: [],
+        }) as any;
 
         /** Whether the toolbox should be laid out horizontally. */
         this.horizontalLayout_ = workspace.options.horizontalLayout;
@@ -100,15 +107,22 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         this.flyout_ = this.createFlyout_();
 
         this.HtmlDiv = this.createDom_(this.workspace_);
-        Blockly.utils.dom.insertAfter(this.flyout_.createDom('svg'), svg);
+        Blockly.utils.dom.insertAfter(this.flyout_.createDom("svg"), svg);
         this.setVisible(true);
         this.flyout_.init(workspace);
 
         this.render(this.toolboxDef_);
         const themeManager = workspace.getThemeManager();
         themeManager.subscribe(
-            this.HtmlDiv, 'toolboxBackgroundColour', 'background-color');
-        themeManager.subscribe(this.HtmlDiv, 'toolboxForegroundColour', 'color');
+            this.HtmlDiv,
+            "toolboxBackgroundColour",
+            "background-color",
+        );
+        themeManager.subscribe(
+            this.HtmlDiv,
+            "toolboxForegroundColour",
+            "color",
+        );
         this.workspace_.getComponentManager().addComponent({
             component: this,
             weight: 1,
@@ -133,7 +147,10 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
 
         this.contentsDiv_ = this.createContentsContainer_();
         this.contentsDiv_.tabIndex = 0;
-        Blockly.utils.aria.setRole(this.contentsDiv_, Blockly.utils.aria.Role.TREE);
+        Blockly.utils.aria.setRole(
+            this.contentsDiv_,
+            Blockly.utils.aria.Role.TREE,
+        );
         container.appendChild(this.contentsDiv_);
 
         svg.parentNode!.insertBefore(container, svg);
@@ -148,11 +165,14 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns The HTML container for the toolbox.
      */
     protected createContainer_(): HTMLDivElement {
-        const toolboxContainer = (document.createElement('div'));
-        toolboxContainer.setAttribute('layout', this.isHorizontal() ? 'h' : 'v');
-        Blockly.utils.dom.addClass(toolboxContainer, 'blocklyToolboxDiv');
-        Blockly.utils.dom.addClass(toolboxContainer, 'blocklyNonSelectable');
-        toolboxContainer.setAttribute('dir', this.RTL ? 'RTL' : 'LTR');
+        const toolboxContainer = document.createElement("div");
+        toolboxContainer.setAttribute(
+            "layout",
+            this.isHorizontal() ? "h" : "v",
+        );
+        Blockly.utils.dom.addClass(toolboxContainer, "blocklyToolboxDiv");
+        Blockly.utils.dom.addClass(toolboxContainer, "blocklyNonSelectable");
+        toolboxContainer.setAttribute("dir", this.RTL ? "RTL" : "LTR");
         return toolboxContainer;
     }
 
@@ -162,10 +182,10 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns The HTML container for the toolbox contents.
      */
     protected createContentsContainer_(): HTMLDivElement {
-        const contentsContainer = (document.createElement('div'));
-        Blockly.utils.dom.addClass(contentsContainer, 'blocklyToolboxContents');
+        const contentsContainer = document.createElement("div");
+        Blockly.utils.dom.addClass(contentsContainer, "blocklyToolboxContents");
         if (this.isHorizontal()) {
-            contentsContainer.style.flexDirection = 'row';
+            contentsContainer.style.flexDirection = "row";
         }
         return contentsContainer;
     }
@@ -178,16 +198,26 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      *     toolbox.
      */
     protected attachEvents_(
-        container: HTMLDivElement, contentsContainer: HTMLDivElement) {
+        container: HTMLDivElement,
+        contentsContainer: HTMLDivElement,
+    ) {
         // Clicking on toolbox closes popups.
         const clickEvent = Blockly.utils.browserEvents.conditionalBind(
-            container, 'click', this, this.onClick_,
-            /* opt_noCaptureIdentifier */ false);
+            container,
+            "click",
+            this,
+            this.onClick_,
+            /* opt_noCaptureIdentifier */ false,
+        );
         this.boundEvents_.push(clickEvent);
 
         const keyDownEvent = Blockly.utils.browserEvents.conditionalBind(
-            contentsContainer, 'keydown', this, this.onKeyDown_,
-            /* opt_noCaptureIdentifier */ false);
+            contentsContainer,
+            "keydown",
+            this,
+            this.onKeyDown_,
+            /* opt_noCaptureIdentifier */ false,
+        );
         this.boundEvents_.push(keyDownEvent);
     }
 
@@ -197,12 +227,17 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param e Click event to handle.
      */
     protected onClick_(e: MouseEvent) {
-        if (Blockly.utils.browserEvents.isRightButton(e) || e.target === this.HtmlDiv) {
+        if (
+            Blockly.utils.browserEvents.isRightButton(e) ||
+            e.target === this.HtmlDiv
+        ) {
             // Close flyout.
-            (Blockly.common.getMainWorkspace() as Blockly.WorkspaceSvg).hideChaff(false);
+            (
+                Blockly.common.getMainWorkspace() as Blockly.WorkspaceSvg
+            ).hideChaff(false);
         } else {
             const targetElement = e.target;
-            const itemId = (targetElement as Element).getAttribute('id');
+            const itemId = (targetElement as Element).getAttribute("id");
             if (itemId) {
                 const item = this.getToolboxItemById(itemId);
                 if (item!.isSelectable()) {
@@ -211,7 +246,9 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
                 }
             }
             // Just close popups.
-            (Blockly.common.getMainWorkspace() as Blockly.WorkspaceSvg).hideChaff(true);
+            (
+                Blockly.common.getMainWorkspace() as Blockly.WorkspaceSvg
+            ).hideChaff(true);
         }
         Blockly.Touch.clearTouchIdentifier();
     }
@@ -239,7 +276,8 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
             case Blockly.utils.KeyCodes.ENTER:
             case Blockly.utils.KeyCodes.SPACE:
                 if (this.selectedItem_ && this.selectedItem_.isCollapsible()) {
-                    const collapsibleItem = this.selectedItem_ as Blockly.ICollapsibleToolboxItem;
+                    const collapsibleItem = this
+                        .selectedItem_ as Blockly.ICollapsibleToolboxItem;
                     collapsibleItem.toggleExpanded();
                     handled = true;
                 }
@@ -272,27 +310,33 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
     protected createFlyout_(): Blockly.IFlyout {
         const workspace = this.workspace_;
         // TODO (#4247): Look into adding a makeFlyout method to Blockly Options.
-        const workspaceOptions = new Blockly.Options(({
-            'parentWorkspace': workspace,
-            'rtl': workspace.RTL,
-            'oneBasedIndex': workspace.options.oneBasedIndex,
-            'horizontalLayout': workspace.horizontalLayout,
-            'renderer': workspace.options.renderer,
-            'rendererOverrides': workspace.options.rendererOverrides,
-            'move': {
-                'scrollbars': true,
+        const workspaceOptions = new Blockly.Options({
+            parentWorkspace: workspace,
+            rtl: workspace.RTL,
+            oneBasedIndex: workspace.options.oneBasedIndex,
+            horizontalLayout: workspace.horizontalLayout,
+            renderer: workspace.options.renderer,
+            rendererOverrides: workspace.options.rendererOverrides,
+            move: {
+                scrollbars: true,
             },
-        } as Blockly.BlocklyOptions));
+        } as Blockly.BlocklyOptions);
         // Options takes in either 'end' or 'start'. This has already been parsed to
         // be either 0 or 1, so set it after.
         workspaceOptions.toolboxPosition = workspace.options.toolboxPosition;
         let FlyoutClass;
         if (workspace.horizontalLayout) {
             FlyoutClass = Blockly.registry.getClassFromOptions(
-                Blockly.registry.Type.FLYOUTS_HORIZONTAL_TOOLBOX, workspace.options, true);
+                Blockly.registry.Type.FLYOUTS_HORIZONTAL_TOOLBOX,
+                workspace.options,
+                true,
+            );
         } else {
             FlyoutClass = Blockly.registry.getClassFromOptions(
-                Blockly.registry.Type.FLYOUTS_VERTICAL_TOOLBOX, workspace.options, true);
+                Blockly.registry.Type.FLYOUTS_VERTICAL_TOOLBOX,
+                workspace.options,
+                true,
+            );
         }
         return new FlyoutClass!(workspaceOptions);
     }
@@ -313,7 +357,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         }
         this.contents_ = [];
         this.contentMap_ = Object.create(null);
-        this.renderContents_(toolboxDef['contents']);
+        this.renderContents_(toolboxDef["contents"]);
         this.position();
         this.handleToolboxItemResize();
     }
@@ -324,7 +368,9 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param toolboxDef Array holding objects containing information on the
      *     contents of the toolbox.
      */
-    protected renderContents_(toolboxDef: Blockly.utils.toolbox.ToolboxItemInfo[]) {
+    protected renderContents_(
+        toolboxDef: Blockly.utils.toolbox.ToolboxItemInfo[],
+    ) {
         // This is for performance reasons. By using document fragment we only have
         // to add to the DOM once.
         const fragment = document.createDocumentFragment();
@@ -343,18 +389,26 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param fragment The document fragment to add the child toolbox elements to.
      */
     private createToolboxItem_(
-        toolboxItemDef: Blockly.utils.toolbox.ToolboxItemInfo, fragment: DocumentFragment) {
-        let registryName = toolboxItemDef['kind'];
+        toolboxItemDef: Blockly.utils.toolbox.ToolboxItemInfo,
+        fragment: DocumentFragment,
+    ) {
+        let registryName = toolboxItemDef["kind"];
 
         // Categories that are collapsible are created using a class registered
         // under a different name.
-        if (registryName.toUpperCase() === 'CATEGORY' &&
-            Blockly.utils.toolbox.isCategoryCollapsible(toolboxItemDef as Blockly.utils.toolbox.CategoryInfo)) {
+        if (
+            registryName.toUpperCase() === "CATEGORY" &&
+            Blockly.utils.toolbox.isCategoryCollapsible(
+                toolboxItemDef as Blockly.utils.toolbox.CategoryInfo,
+            )
+        ) {
             registryName = Blockly.CollapsibleToolboxCategory.registrationName;
         }
 
         const ToolboxItemClass = Blockly.registry.getClass(
-            Blockly.registry.Type.TOOLBOX_ITEM, registryName.toLowerCase());
+            Blockly.registry.Type.TOOLBOX_ITEM,
+            registryName.toLowerCase(),
+        );
         if (ToolboxItemClass) {
             const toolboxItem = new ToolboxItemClass(toolboxItemDef, this);
             toolboxItem.init();
@@ -366,7 +420,9 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
             // Adds the ID to the HTML element that can receive a click.
             // This is used in onClick_ to find the toolboxItem that was clicked.
             if (toolboxItem.getClickTarget()) {
-                toolboxItem.getClickTarget()!.setAttribute('id', toolboxItem.getId());
+                toolboxItem
+                    .getClickTarget()!
+                    .setAttribute("id", toolboxItem.getId());
             }
         }
     }
@@ -380,7 +436,8 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         this.contents_.push(toolboxItem);
         this.contentMap_[toolboxItem.getId()] = toolboxItem;
         if (toolboxItem.isCollapsible()) {
-            const collapsibleItem = toolboxItem as Blockly.ICollapsibleToolboxItem;
+            const collapsibleItem =
+                toolboxItem as Blockly.ICollapsibleToolboxItem;
             const childToolboxItems = collapsibleItem.getChildToolboxItems();
             for (let i = 0; i < childToolboxItems.length; i++) {
                 const child = childToolboxItems[i];
@@ -429,7 +486,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns The component's bounding box. Null if drag target area should be
      *     ignored.
      */
-    override getClientRect(): Blockly.utils.Rect|null {
+    override getClientRect(): Blockly.utils.Rect | null {
         if (!this.HtmlDiv || !this.isVisible_) {
             return null;
         }
@@ -448,11 +505,16 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         // (e.g. toolboxes in mutators) then this code will need to be more complex.
         if (this.toolboxPosition === Blockly.utils.toolbox.Position.TOP) {
             return new Blockly.utils.Rect(-BIG_NUM, bottom, -BIG_NUM, BIG_NUM);
-        } else if (this.toolboxPosition === Blockly.utils.toolbox.Position.BOTTOM) {
+        } else if (
+            this.toolboxPosition === Blockly.utils.toolbox.Position.BOTTOM
+        ) {
             return new Blockly.utils.Rect(top, BIG_NUM, -BIG_NUM, BIG_NUM);
-        } else if (this.toolboxPosition === Blockly.utils.toolbox.Position.LEFT) {
+        } else if (
+            this.toolboxPosition === Blockly.utils.toolbox.Position.LEFT
+        ) {
             return new Blockly.utils.Rect(-BIG_NUM, BIG_NUM, -BIG_NUM, right);
-        } else {  // Right
+        } else {
+            // Right
             return new Blockly.utils.Rect(-BIG_NUM, BIG_NUM, left, BIG_NUM);
         }
     }
@@ -468,9 +530,12 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns Whether the element provided would be deleted if dropped on this
      *     area.
      */
-    override wouldDelete(element: Blockly.IDraggable, _couldConnect: boolean): boolean {
+    override wouldDelete(
+        element: Blockly.IDraggable,
+        _couldConnect: boolean,
+    ): boolean {
         if (element instanceof Blockly.BlockSvg) {
-            const block = (element);
+            const block = element;
             // Prefer dragging to the toolbox over connecting to other blocks.
             this.updateWouldDelete_(!block.getParent() && block.isDeletable());
         } else {
@@ -534,8 +599,9 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param addStyle Whether the style should be added or removed.
      */
     protected updateCursorDeleteStyle_(addStyle: boolean) {
-        const style =
-            this.wouldDelete_ ? 'blocklyToolboxDelete' : 'blocklyToolboxGrab';
+        const style = this.wouldDelete_
+            ? "blocklyToolboxDelete"
+            : "blocklyToolboxGrab";
         if (addStyle) {
             this.addStyle(style);
         } else {
@@ -549,7 +615,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param id The ID of the toolbox item.
      * @returns The toolbox item with the given ID, or null if no item exists.
      */
-    getToolboxItemById(id: string): Blockly.IToolboxItem|null {
+    getToolboxItemById(id: string): Blockly.IToolboxItem | null {
         return this.contentMap_[id] || null;
     }
 
@@ -576,7 +642,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      *
      * @returns The toolbox flyout.
      */
-    getFlyout(): Blockly.IFlyout|null {
+    getFlyout(): Blockly.IFlyout | null {
         return this.flyout_;
     }
 
@@ -594,7 +660,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      *
      * @returns The selected item, or null if no item is currently selected.
      */
-    getSelectedItem(): Blockly.ISelectableToolboxItem|null {
+    getSelectedItem(): Blockly.ISelectableToolboxItem | null {
         return this.selectedItem_;
     }
 
@@ -604,7 +670,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns The previously selected item, or null if no item was previously
      *     selected.
      */
-    getPreviouslySelectedItem(): Blockly. ISelectableToolboxItem|null {
+    getPreviouslySelectedItem(): Blockly.ISelectableToolboxItem | null {
         return this.previouslySelectedItem_;
     }
 
@@ -631,23 +697,25 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         }
 
         if (this.horizontalLayout_) {
-            toolboxDiv.style.left = '0';
-            toolboxDiv.style.height = 'auto';
-            toolboxDiv.style.width = '100%';
+            toolboxDiv.style.left = "0";
+            toolboxDiv.style.height = "auto";
+            toolboxDiv.style.width = "100%";
             this.height_ = toolboxDiv.offsetHeight;
             this.width_ = workspaceMetrics.viewWidth;
             if (this.toolboxPosition === Blockly.utils.toolbox.Position.TOP) {
-                toolboxDiv.style.top = '0';
-            } else {  // Bottom
-                toolboxDiv.style.bottom = '0';
+                toolboxDiv.style.top = "0";
+            } else {
+                // Bottom
+                toolboxDiv.style.bottom = "0";
             }
         } else {
             if (this.toolboxPosition === Blockly.utils.toolbox.Position.RIGHT) {
-                toolboxDiv.style.right = '0';
-            } else {  // Left
-                toolboxDiv.style.left = '0';
+                toolboxDiv.style.right = "0";
+            } else {
+                // Left
+                toolboxDiv.style.left = "0";
             }
-            toolboxDiv.style.height = '100%';
+            toolboxDiv.style.height = "100%";
             this.width_ = toolboxDiv.offsetWidth;
             this.height_ = workspaceMetrics.viewHeight;
         }
@@ -664,12 +732,14 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         // relative to the new absolute edge (ie toolbox edge).
         const workspace = this.workspace_;
         const rect = this.HtmlDiv!.getBoundingClientRect();
-        const newX = this.toolboxPosition === Blockly.utils.toolbox.Position.LEFT ?
-            workspace.scrollX + rect.width :
-            workspace.scrollX;
-        const newY = this.toolboxPosition === Blockly.utils.toolbox.Position.TOP ?
-            workspace.scrollY + rect.height :
-            workspace.scrollY;
+        const newX =
+            this.toolboxPosition === Blockly.utils.toolbox.Position.LEFT
+                ? workspace.scrollX + rect.width
+                : workspace.scrollX;
+        const newY =
+            this.toolboxPosition === Blockly.utils.toolbox.Position.TOP
+                ? workspace.scrollY + rect.height
+                : workspace.scrollY;
         workspace.translate(newX, newY);
 
         // Even though the div hasn't changed size, the visible workspace
@@ -704,8 +774,11 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * procedures.
      */
     refreshSelection() {
-        if (this.selectedItem_ && this.selectedItem_.isSelectable() &&
-            this.selectedItem_.getContents().length) {
+        if (
+            this.selectedItem_ &&
+            this.selectedItem_.isSelectable() &&
+            this.selectedItem_.getContents().length
+        ) {
             this.flyout_!.show(this.selectedItem_.getContents());
         }
     }
@@ -720,7 +793,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
             return;
         }
 
-        this.HtmlDiv!.style.display = isVisible ? 'block' : 'none';
+        this.HtmlDiv!.style.display = isVisible ? "block" : "none";
         this.isVisible_ = isVisible;
         // Invisible toolbox is ignored as drag targets and must have the drag
         // target updated.
@@ -745,25 +818,29 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      *
      * @param newItem The toolbox item to select.
      */
-    setSelectedItem(newItem: Blockly.IToolboxItem|null) {
+    setSelectedItem(newItem: Blockly.IToolboxItem | null) {
         const oldItem = this.selectedItem_;
 
-        if (!newItem && !oldItem || newItem && !newItem.isSelectable()) {
+        if ((!newItem && !oldItem) || (newItem && !newItem.isSelectable())) {
             return;
         }
         newItem = newItem as Blockly.ISelectableToolboxItem;
 
         // any because:  Argument of type 'IToolboxItem' is not
         // assignable to parameter of type 'ISelectableToolboxItem'.
-        if (this.shouldDeselectItem_(oldItem, newItem as any) &&
-            oldItem !== null) {
+        if (
+            this.shouldDeselectItem_(oldItem, newItem as any) &&
+            oldItem !== null
+        ) {
             this.deselectItem_(oldItem);
         }
 
         // any because:  Argument of type 'IToolboxItem' is not
         // assignable to parameter of type 'ISelectableToolboxItem'.
-        if (this.shouldSelectItem_(oldItem, newItem as any) &&
-            newItem !== null) {
+        if (
+            this.shouldSelectItem_(oldItem, newItem as any) &&
+            newItem !== null
+        ) {
             // any because:  Argument of type 'IToolboxItem' is not
             // assignable to parameter of type 'ISelectableToolboxItem'.
             this.selectItem_(oldItem, newItem as any);
@@ -785,12 +862,15 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns True if the old item should be deselected, false otherwise.
      */
     protected shouldDeselectItem_(
-        oldItem: Blockly. ISelectableToolboxItem|null,
-        newItem: Blockly. ISelectableToolboxItem|null): boolean {
+        oldItem: Blockly.ISelectableToolboxItem | null,
+        newItem: Blockly.ISelectableToolboxItem | null,
+    ): boolean {
         // Deselect the old item unless the old item is collapsible and has been
         // previously clicked on.
-        return oldItem !== null &&
-            (!oldItem.isCollapsible() || oldItem !== newItem);
+        return (
+            oldItem !== null &&
+            (!oldItem.isCollapsible() || oldItem !== newItem)
+        );
     }
 
     /**
@@ -801,8 +881,9 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @returns True if the new item should be selected, false otherwise.
      */
     protected shouldSelectItem_(
-        oldItem: Blockly. ISelectableToolboxItem|null,
-        newItem: Blockly. ISelectableToolboxItem|null): boolean {
+        oldItem: Blockly.ISelectableToolboxItem | null,
+        newItem: Blockly.ISelectableToolboxItem | null,
+    ): boolean {
         // Select the new item unless the old item equals the new item.
         return newItem !== null && newItem !== oldItem;
     }
@@ -813,12 +894,15 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param item The previously selected toolbox item which should be
      *     deselected.
      */
-    protected deselectItem_(item: Blockly. ISelectableToolboxItem) {
+    protected deselectItem_(item: Blockly.ISelectableToolboxItem) {
         this.selectedItem_ = null;
         this.previouslySelectedItem_ = item;
         item.setSelected(false);
         Blockly.utils.aria.setState(
-            this.contentsDiv_ as Element, Blockly.utils.aria.State.ACTIVEDESCENDANT, '');
+            this.contentsDiv_ as Element,
+            Blockly.utils.aria.State.ACTIVEDESCENDANT,
+            "",
+        );
     }
 
     /**
@@ -828,13 +912,17 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param newItem The newly selected toolbox item.
      */
     protected selectItem_(
-        oldItem: Blockly. ISelectableToolboxItem|null, newItem: Blockly. ISelectableToolboxItem) {
+        oldItem: Blockly.ISelectableToolboxItem | null,
+        newItem: Blockly.ISelectableToolboxItem,
+    ) {
         this.selectedItem_ = newItem;
         this.previouslySelectedItem_ = oldItem;
         newItem.setSelected(true);
         Blockly.utils.aria.setState(
-            this.contentsDiv_ as Element, Blockly.utils.aria.State.ACTIVEDESCENDANT,
-            newItem.getId());
+            this.contentsDiv_ as Element,
+            Blockly.utils.aria.State.ACTIVEDESCENDANT,
+            newItem.getId(),
+        );
     }
 
     /**
@@ -858,10 +946,14 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param newItem The newly selected toolbox item.
      */
     protected updateFlyout_(
-        oldItem: Blockly.ISelectableToolboxItem|null,
-        newItem: Blockly. ISelectableToolboxItem|null) {
-        if (!newItem || oldItem === newItem && !newItem.isCollapsible() ||
-            !newItem.getContents().length) {
+        oldItem: Blockly.ISelectableToolboxItem | null,
+        newItem: Blockly.ISelectableToolboxItem | null,
+    ) {
+        if (
+            !newItem ||
+            (oldItem === newItem && !newItem.isCollapsible()) ||
+            !newItem.getContents().length
+        ) {
             this.flyout_!.hide();
         } else {
             this.flyout_!.show(newItem.getContents());
@@ -876,16 +968,18 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
      * @param newItem The newly selected toolbox item.
      */
     private fireSelectEvent_(
-        oldItem: Blockly.ISelectableToolboxItem|null,
-        newItem: Blockly.ISelectableToolboxItem|null) {
+        oldItem: Blockly.ISelectableToolboxItem | null,
+        newItem: Blockly.ISelectableToolboxItem | null,
+    ) {
         const oldElement = oldItem && oldItem.getName();
         let newElement = newItem && newItem.getName();
         // In this case the toolbox closes, so the newElement should be null.
         if (oldItem === newItem) {
             newElement = null;
         }
-        const event = new (Blockly.Events.get(Blockly.Events.TOOLBOX_ITEM_SELECT))(
-            oldElement, newElement, this.workspace_.id);
+        const event = new (Blockly.Events.get(
+            Blockly.Events.TOOLBOX_ITEM_SELECT,
+        ))(oldElement, newElement, this.workspace_.id);
         Blockly.Events.fire(event);
     }
 
@@ -899,14 +993,18 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
             return false;
         }
 
-        if (this.selectedItem_.isCollapsible() &&
-            (this.selectedItem_ as Blockly.ICollapsibleToolboxItem).isExpanded()) {
-            const collapsibleItem = this.selectedItem_ as Blockly.ICollapsibleToolboxItem;
+        if (
+            this.selectedItem_.isCollapsible() &&
+            (this.selectedItem_ as Blockly.ICollapsibleToolboxItem).isExpanded()
+        ) {
+            const collapsibleItem = this
+                .selectedItem_ as Blockly.ICollapsibleToolboxItem;
             collapsibleItem.toggleExpanded();
             return true;
         } else if (
             this.selectedItem_.getParent() &&
-            this.selectedItem_.getParent()!.isSelectable()) {
+            this.selectedItem_.getParent()!.isSelectable()
+        ) {
             this.setSelectedItem(this.selectedItem_.getParent());
             return true;
         }
@@ -923,7 +1021,8 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
         if (!this.selectedItem_ || !this.selectedItem_.isCollapsible()) {
             return false;
         }
-        const collapsibleItem = this.selectedItem_ as Blockly.ICollapsibleToolboxItem;
+        const collapsibleItem = this
+            .selectedItem_ as Blockly.ICollapsibleToolboxItem;
         if (!collapsibleItem.isExpanded()) {
             collapsibleItem.toggleExpanded();
             return true;
@@ -983,7 +1082,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
 
     /** Disposes of this toolbox. */
     dispose() {
-        this.workspace_.getComponentManager().removeComponent('toolbox');
+        this.workspace_.getComponentManager().removeComponent("toolbox");
         this.flyout_!.dispose();
         for (let i = 0; i < this.contents_.length; i++) {
             const toolboxItem = this.contents_[i];
@@ -998,8 +1097,7 @@ export class LeaphyToolbox extends Blockly.DeleteArea implements Blockly.IAutoHi
 
         // any because:  Argument of type 'HTMLDivElement | null' is
         // not assignable to parameter of type 'Element'.
-        this.workspace_.getThemeManager().unsubscribe(
-            this.HtmlDiv as any);
+        this.workspace_.getThemeManager().unsubscribe(this.HtmlDiv as any);
         Blockly.utils.dom.removeNode(this.HtmlDiv);
     }
 }

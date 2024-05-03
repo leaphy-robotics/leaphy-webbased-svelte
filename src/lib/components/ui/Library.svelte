@@ -7,18 +7,26 @@
     import Button from "./Button.svelte";
 
     interface Props {
-        library: Library
+        library: Library;
     }
-    let { library }: Props = $props()
-    
-    let version = $state(library.versions[0])
-    let isInstalled = $derived(!!($installed.find(([name]) => name === library.name)))
+    let { library }: Props = $props();
+
+    let version = $state(library.versions[0]);
+    let isInstalled = $derived(
+        !!$installed.find(([name]) => name === library.name),
+    );
 
     function interact() {
-        if (isInstalled) return installed.update(libraries => libraries.filter(([name]) => name !== library.name))
-        
-        installed.update(libraries => [...libraries, [library.name, version]])
-        console.log($installed)
+        if (isInstalled)
+            return installed.update((libraries) =>
+                libraries.filter(([name]) => name !== library.name),
+            );
+
+        installed.update((libraries) => [
+            ...libraries,
+            [library.name, version],
+        ]);
+        console.log($installed);
     }
 </script>
 
@@ -29,8 +37,15 @@
     </div>
     <div class="description">{library.paragraph}</div>
     <div class="installer">
-        {#if !isInstalled}<Select options={library.versions.map(e => [e, e])} bind:value={version} />{/if}
-        <Button mode={"primary"} name={$_(isInstalled ? "UNINSTALL_LIBRARY" : "INSTALL_LIBRARY")} onclick={interact}  />
+        {#if !isInstalled}<Select
+                options={library.versions.map((e) => [e, e])}
+                bind:value={version}
+            />{/if}
+        <Button
+            mode={"primary"}
+            name={$_(isInstalled ? "UNINSTALL_LIBRARY" : "INSTALL_LIBRARY")}
+            onclick={interact}
+        />
     </div>
 </div>
 

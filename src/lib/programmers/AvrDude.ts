@@ -1,38 +1,45 @@
 import type { Programmer } from "$domain/robots.types";
 import { uploadLog } from "$state/workspace.svelte";
-import Module from '@leaphy-robotics/avrdude-webassembly/avrdude.js'
+import Module from "@leaphy-robotics/avrdude-webassembly/avrdude.js";
 
 const controllerArgs: Record<string, string> = {
     atmega328p:
         "avrdude -P /dev/null -V -v -p atmega328p -c stk500v1 -C /tmp/avrdude.conf -b 115200 -D -U flash:w:/tmp/program.hex:i",
     atmega2560:
         "avrdude -P /dev/null -V -v -p atmega2560 -c stk500v2 -C /tmp/avrdude.conf -b 115200 -D -U flash:w:/tmp/program.hex:i",
-}
+};
 
 export default class AvrDude implements Programmer {
-    private args: string
+    private args: string;
 
     constructor(controller: string) {
-        this.args = controllerArgs[controller]
+        this.args = controllerArgs[controller];
     }
 
-    async upload(port: SerialPort, response: Record<string, string>): Promise<void> {
+    async upload(
+        port: SerialPort,
+        response: Record<string, string>,
+    ): Promise<void> {
         const avrdude = await Module({
             locateFile: (path: string) => {
                 return `/${path}`;
             },
-        })
-        window["funcs"] = avrdude
+        });
+        window["funcs"] = avrdude;
 
         if (port.readable || port.writable) await port.close();
-        await port.open({ baudRate: 115200 })
-        window["activePort"] = port
+        await port.open({ baudRate: 115200 });
+        window["activePort"] = port;
 
-        const avrdudeConfig = await fetch("/avrdude.conf").then((res) => res.text())
-        avrdude.FS.writeFile("/tmp/avrdude.conf", avrdudeConfig)
+        const avrdudeConfig = await fetch("/avrdude.conf").then((res) =>
+            res.text(),
+        );
+        avrdude.FS.writeFile("/tmp/avrdude.conf", avrdudeConfig);
         avrdude.FS.writeFile("/tmp/program.hex", response["hex"]);
 
-        const disconnectPromise = new Promise((resolve) => port.addEventListener('disconnect', resolve));
+        const disconnectPromise = new Promise((resolve) =>
+            port.addEventListener("disconnect", resolve),
+        );
         const oldConsoleError = console.error;
         const workerErrorPromise = new Promise((resolve) => {
             console.error = (...data) => {
@@ -65,9 +72,9 @@ export default class AvrDude implements Programmer {
 
         if (window["writeStream"]) window["writeStream"].releaseLock();
 
-        const log = window["avrdudeLog"]
-        console.log(log)
-        uploadLog.set(log)
+        const log = window["avrdudeLog"];
+        console.log(log);
+        uploadLog.set(log);
 
         if (race != 0) {
             if (race == -2) {

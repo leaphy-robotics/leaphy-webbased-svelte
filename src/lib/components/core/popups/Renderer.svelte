@@ -4,13 +4,13 @@
     import Popup from "./Popup.svelte";
 
     onMount(async () => {
-        await setup()
-    })
+        await setup();
+    });
 </script>
 
 <div class="popupRoot">
     {#each $popups as state (state.id)}
-        <Popup state={state} />
+        <Popup {state} />
     {/each}
 </div>
 

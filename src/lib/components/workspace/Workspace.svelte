@@ -4,7 +4,11 @@
     import SideButton from "$components/ui/SideButton.svelte";
     import { popups } from "$state/popup.svelte";
     import { sidePanel, mode, Mode } from "$state/workspace.svelte";
-    import { faBook, faCode, faSquarePollHorizontal } from "@fortawesome/free-solid-svg-icons";
+    import {
+        faBook,
+        faCode,
+        faSquarePollHorizontal,
+    } from "@fortawesome/free-solid-svg-icons";
     import LibraryManager from "./panels/LibraryManager.svelte";
     import Code from "./panels/Code.svelte";
     import SideBar from "$components/ui/SideBar.svelte";
@@ -13,18 +17,18 @@
         popups.open({
             component: SerialMonitor,
             data: {},
-            allowInteraction: true
-        })
+            allowInteraction: true,
+        });
     }
 
     function openLibraryManager() {
-        if ($sidePanel === LibraryManager) sidePanel.set(undefined)
-        else sidePanel.set(LibraryManager)
+        if ($sidePanel === LibraryManager) sidePanel.set(undefined);
+        else sidePanel.set(LibraryManager);
     }
 
     function openCode() {
-        if ($sidePanel === Code) sidePanel.set(undefined)
-        else sidePanel.set(Code)
+        if ($sidePanel === Code) sidePanel.set(undefined);
+        else sidePanel.set(Code);
     }
 </script>
 
@@ -41,7 +45,7 @@
 {/snippet}
 
 <div class="content">
-    <svelte:component this="{$mode}" />
+    <svelte:component this={$mode} />
     <div class="container">
         <SideBar buttons={actions} />
         {#if $sidePanel}
