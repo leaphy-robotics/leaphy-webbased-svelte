@@ -7,7 +7,9 @@ function initSentry() {
 		dsn: import.meta.env.VITE_SENTRY_DSN,
 		integrations: [
 			Sentry.browserTracingIntegration(),
-			Sentry.replayIntegration(),
+			Sentry.replayIntegration({
+				maskAllText: false,
+			}),
 		],
 		// Performance Monitoring
 		tracesSampleRate: Number.parseFloat(
