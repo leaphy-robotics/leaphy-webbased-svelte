@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { popups, setup } from "$state/popup.svelte";
-    import { onMount } from "svelte";
-    import Popup from "./Popup.svelte";
+import { popups, setup } from "$state/popup.svelte";
+import { onMount } from "svelte";
+import Popup from "./Popup.svelte";
 
-    onMount(async () => {
-        await setup();
-    });
+onMount(async () => {
+	await setup();
+});
 </script>
 
 <div class="popupRoot">

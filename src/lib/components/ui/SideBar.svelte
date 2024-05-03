@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
+import type { Snippet } from "svelte";
 
-    interface Props {
-        buttons: Snippet;
-    }
-    let { buttons }: Props = $props();
+interface Props {
+	buttons: Snippet;
+}
+const { buttons }: Props = $props();
 </script>
 
 <div class="sidebar">

@@ -1,34 +1,35 @@
 <script lang="ts">
-    import CodeEditor from "$components/ui/CodeEditor.svelte";
-    import { onDestroy, onMount } from "svelte";
-    import { sidePanel } from "$state/workspace.svelte";
+import { onDestroy, onMount } from "svelte";
+import { sidePanel } from "$state/workspace.svelte";
 
-    let width = $state(300);
+let width = $state(300);
 
-    let x: number, dragging: boolean, initial: number;
-    function mousedown(event: MouseEvent) {
-        x = event.pageX;
-        initial = width;
-        dragging = true;
-    }
+let x: number;
+let dragging: boolean;
+let initial: number;
+function mousedown(event: MouseEvent) {
+	x = event.pageX;
+	initial = width;
+	dragging = true;
+}
 
-    function mousemove(event: MouseEvent) {
-        if (!dragging) return;
-        width = initial - (event.pageX - x);
-    }
+function mousemove(event: MouseEvent) {
+	if (!dragging) return;
+	width = initial - (event.pageX - x);
+}
 
-    function mouseup() {
-        dragging = false;
-    }
+function mouseup() {
+	dragging = false;
+}
 
-    onMount(() => {
-        document.body.addEventListener("mousemove", mousemove);
-        document.body.addEventListener("mouseup", mouseup);
-    });
-    onDestroy(() => {
-        document.body.removeEventListener("mousemove", mousemove);
-        document.body.removeEventListener("mouseup", mouseup);
-    });
+onMount(() => {
+	document.body.addEventListener("mousemove", mousemove);
+	document.body.addEventListener("mouseup", mouseup);
+});
+onDestroy(() => {
+	document.body.removeEventListener("mousemove", mousemove);
+	document.body.removeEventListener("mouseup", mouseup);
+});
 </script>
 
 <div class="panel" style:width={`${width}px`}>

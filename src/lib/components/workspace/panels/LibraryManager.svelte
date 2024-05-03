@@ -1,26 +1,24 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
+import { _ } from "svelte-i18n";
 
-    import TextInput from "$components/ui/TextInput.svelte";
-    import { onMount } from "svelte";
-    import { libraries } from "$state/app.svelte";
-    import Select from "$components/ui/Select.svelte";
-    import Button from "$components/ui/Button.svelte";
-    import { installed } from "$state/workspace.svelte";
-    import Library from "$components/ui/Library.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
+import { onMount } from "svelte";
+import { libraries } from "$state/app.svelte";
+import Select from "$components/ui/Select.svelte";
+import Button from "$components/ui/Button.svelte";
+import { installed } from "$state/workspace.svelte";
+import Library from "$components/ui/Library.svelte";
 
-    let filter = $state("");
-    onMount(() => {
-        libraries.query();
-    });
+const filter = $state("");
+onMount(() => {
+	libraries.query();
+});
 
-    let visible = $derived(
-        $libraries
-            .filter(({ name }) =>
-                name.toUpperCase().includes(filter.toUpperCase()),
-            )
-            .slice(0, 100),
-    );
+const visible = $derived(
+	$libraries
+		.filter(({ name }) => name.toUpperCase().includes(filter.toUpperCase()))
+		.slice(0, 100),
+);
 </script>
 
 <div class="content">

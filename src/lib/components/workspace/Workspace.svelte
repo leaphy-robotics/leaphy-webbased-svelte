@@ -1,35 +1,35 @@
 <script lang="ts">
-    import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
-    import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
-    import SideButton from "$components/ui/SideButton.svelte";
-    import { popups } from "$state/popup.svelte";
-    import { sidePanel, mode, Mode } from "$state/workspace.svelte";
-    import {
-        faBook,
-        faCode,
-        faSquarePollHorizontal,
-    } from "@fortawesome/free-solid-svg-icons";
-    import LibraryManager from "./panels/LibraryManager.svelte";
-    import Code from "./panels/Code.svelte";
-    import SideBar from "$components/ui/SideBar.svelte";
+import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
+import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
+import SideButton from "$components/ui/SideButton.svelte";
+import { popups } from "$state/popup.svelte";
+import { sidePanel, mode, Mode } from "$state/workspace.svelte";
+import {
+	faBook,
+	faCode,
+	faSquarePollHorizontal,
+} from "@fortawesome/free-solid-svg-icons";
+import LibraryManager from "./panels/LibraryManager.svelte";
+import Code from "./panels/Code.svelte";
+import SideBar from "$components/ui/SideBar.svelte";
 
-    function openSerial() {
-        popups.open({
-            component: SerialMonitor,
-            data: {},
-            allowInteraction: true,
-        });
-    }
+function openSerial() {
+	popups.open({
+		component: SerialMonitor,
+		data: {},
+		allowInteraction: true,
+	});
+}
 
-    function openLibraryManager() {
-        if ($sidePanel === LibraryManager) sidePanel.set(undefined);
-        else sidePanel.set(LibraryManager);
-    }
+function openLibraryManager() {
+	if ($sidePanel === LibraryManager) sidePanel.set(undefined);
+	else sidePanel.set(LibraryManager);
+}
 
-    function openCode() {
-        if ($sidePanel === Code) sidePanel.set(undefined);
-        else sidePanel.set(Code);
-    }
+function openCode() {
+	if ($sidePanel === Code) sidePanel.set(undefined);
+	else sidePanel.set(Code);
+}
 </script>
 
 {#snippet actions()}

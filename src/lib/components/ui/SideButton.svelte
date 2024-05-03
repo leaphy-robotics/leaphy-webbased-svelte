@@ -1,12 +1,12 @@
 <script lang="ts">
-    import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-    import Fa from "svelte-fa";
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import Fa from "svelte-fa";
 
-    interface Props {
-        icon: IconDefinition;
-        onclick: () => void;
-    }
-    let { icon, onclick }: Props = $props();
+interface Props {
+	icon: IconDefinition;
+	onclick: () => void;
+}
+const { icon, onclick }: Props = $props();
 </script>
 
 <button class="side" {onclick}>

@@ -1,30 +1,30 @@
 <script lang="ts">
-    import { type Robot, robots as allRobots } from "$domain/robots";
-    import { Screen, selected, screen } from "$state/app.svelte";
-    import { robot, mode, Mode, code } from "$state/workspace.svelte";
+import { type Robot, robots as allRobots } from "$domain/robots";
+import { Screen, selected, screen } from "$state/app.svelte";
+import { robot, mode, Mode, code } from "$state/workspace.svelte";
 
-    interface Props {
-        robots: Robot[][];
-        secondary: boolean;
-    }
-    let { robots, secondary }: Props = $props();
+interface Props {
+	robots: Robot[][];
+	secondary: boolean;
+}
+const { robots, secondary }: Props = $props();
 
-    function select(type: Robot) {
-        window._paq.push(["trackEvent", "SelectRobot", type.name]);
+function select(type: Robot) {
+  window._paq.push(["trackEvent", "SelectRobot", type.name]);
 
-        if ("variants" in type) return selected.set(type);
-        if ("mode" in type) {
-            code.set(type.defaultProgram);
-            robot.set(allRobots[type.defaultRobot]);
-            mode.set(type.mode);
-            screen.set(Screen.WORKSPACE);
-            return;
-        }
+  if ("variants" in type) return selected.set(type);
+  if ("mode" in type) {
+		code.set(type.defaultProgram);
+		robot.set(allRobots[type.defaultRobot]);
+		mode.set(type.mode);
+		screen.set(Screen.WORKSPACE);
+		return;
+	}
 
-        robot.set(type);
-        mode.set(Mode.BLOCKS);
-        screen.set(Screen.WORKSPACE);
-    }
+	robot.set(type);
+	mode.set(Mode.BLOCKS);
+	screen.set(Screen.WORKSPACE);
+}
 </script>
 
 <div class="selector" class:secondary>

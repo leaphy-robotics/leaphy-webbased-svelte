@@ -1,46 +1,39 @@
 <script lang="ts">
-    import {
-        getContext,
-        onDestroy,
-        onMount,
-        tick,
-        type Bindable,
-        type Snippet,
-    } from "svelte";
-    import { computePosition, type Placement } from "@floating-ui/dom";
-    import { type Writable } from "svelte/store";
+import { getContext, onDestroy, onMount, type Snippet } from "svelte";
+import { computePosition, type Placement } from "@floating-ui/dom";
+import type { Writable } from "svelte/store";
 
-    interface Props {
-        source: HTMLElement;
-        content: Snippet;
-        anchor?: Placement;
-    }
-    let { source, content, anchor = "bottom-start" }: Props = $props();
+interface Props {
+	source: HTMLElement;
+	content: Snippet;
+	anchor?: Placement;
+}
+const { source, content, anchor = "bottom-start" }: Props = $props();
 
-    const open = getContext<Writable<boolean>>("open");
+const open = getContext<Writable<boolean>>("open");
 
-    let element: HTMLTableElement;
-    let opening = true;
-    function close(event: MouseEvent) {
-        if (opening) return (opening = false);
-        if (element.contains(event.target as HTMLElement)) return;
+let element: HTMLTableElement;
+let opening = true;
+function close(event: MouseEvent) {
+	if (opening) return (opening = false);
+	if (element.contains(event.target as HTMLElement)) return;
 
-        open.update(() => false);
-    }
+	open.update(() => false);
+}
 
-    let position = $state<{ x: number; y: number }>();
-    onMount(async () => {
-        position = await computePosition(source, element as HTMLTableElement, {
-            strategy: "fixed",
-            placement: anchor,
-        });
+let position = $state<{ x: number; y: number }>();
+onMount(async () => {
+	position = await computePosition(source, element as HTMLTableElement, {
+		strategy: "fixed",
+		placement: anchor,
+	});
 
-        document.body.addEventListener("click", close);
-    });
+	document.body.addEventListener("click", close);
+});
 
-    onDestroy(() => {
-        document.body.removeEventListener("click", close);
-    });
+onDestroy(() => {
+	document.body.removeEventListener("click", close);
+});
 </script>
 
 <table

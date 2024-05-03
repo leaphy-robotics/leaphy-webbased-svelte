@@ -1,8 +1,8 @@
 <script lang="ts">
-    interface Props {
-        progress: number;
-    }
-    let { progress }: Props = $props();
+interface Props {
+	progress: number;
+}
+const { progress }: Props = $props();
 </script>
 
 <div class="bar">

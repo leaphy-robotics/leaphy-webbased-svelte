@@ -8,15 +8,15 @@ import { port as portState } from "$state/workspace.svelte";
 const dfu = new DFUUtil("/dfu-util/");
 
 export default class DFU implements Programmer {
-    async upload(port: SerialPort, response: Record<string, string>) {
-        await port.close();
-        await delay(1000);
-        await usbRequest.request();
+	async upload(port: SerialPort, response: Record<string, string>) {
+		await port.close();
+		await delay(1000);
+		await usbRequest.request();
 
-        const sketch = base64.toByteArray(response["sketch"]);
-        await dfu.flash(sketch);
-        await delay(1000);
+		const sketch = base64.toByteArray(response.sketch);
+		await dfu.flash(sketch);
+		await delay(1000);
 
-        await portState.reconnect();
-    }
+		await portState.reconnect();
+	}
 }

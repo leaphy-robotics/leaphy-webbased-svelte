@@ -1,32 +1,32 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import Button from "$components/ui/Button.svelte";
-    import TextInput from "$components/ui/TextInput.svelte";
-    import { popups, type PopupState } from "$state/popup.svelte";
-    import { getContext } from "svelte";
-    import type { Writable } from "svelte/store";
+import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
+import { popups, type PopupState } from "$state/popup.svelte";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
 
-    interface Props {
-        name: string;
-        placeholder: string;
-        confirm: string;
-        value?: string;
-    }
-    let { name, placeholder, confirm, value = "" }: Props = $props();
-    let popupState = getContext<Writable<PopupState>>("state");
+interface Props {
+	name: string;
+	placeholder: string;
+	confirm: string;
+	value?: string;
+}
+const { name, placeholder, confirm, value = "" }: Props = $props();
+const popupState = getContext<Writable<PopupState>>("state");
 
-    function cancel() {
-        popups.close($popupState.id, false);
-    }
+function cancel() {
+	popups.close($popupState.id, false);
+}
 
-    function save() {
-        popups.close($popupState.id, value);
-    }
+function save() {
+	popups.close($popupState.id, value);
+}
 
-    function onsubmit(event: SubmitEvent) {
-        event.preventDefault();
-        save();
-    }
+function onsubmit(event: SubmitEvent) {
+	event.preventDefault();
+	save();
+}
 </script>
 
 <form class="content" {onsubmit}>

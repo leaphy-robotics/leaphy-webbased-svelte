@@ -1,59 +1,59 @@
 <script lang="ts">
-    import {
-        faCaretRight,
-        type IconDefinition,
-    } from "@fortawesome/free-solid-svg-icons";
-    import { getContext, onDestroy, onMount, type Snippet } from "svelte";
-    import Fa from "svelte-fa";
-    import type { Writable } from "svelte/store";
-    import ContextMenu from "./ContextMenu.svelte";
+import {
+	faCaretRight,
+	type IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
+import { getContext, onDestroy, onMount, type Snippet } from "svelte";
+import Fa from "svelte-fa";
+import type { Writable } from "svelte/store";
+import ContextMenu from "./ContextMenu.svelte";
 
-    interface Props {
-        icon?: IconDefinition;
-        name: string;
-        onclick?: () => void;
-        context?: Snippet;
-        disabled?: boolean;
-        selected?: boolean;
-    }
-    let {
-        icon,
-        name,
-        onclick,
-        context,
-        disabled = false,
-        selected = false,
-    }: Props = $props();
+interface Props {
+	icon?: IconDefinition;
+	name: string;
+	onclick?: () => void;
+	context?: Snippet;
+	disabled?: boolean;
+	selected?: boolean;
+}
+const {
+	icon,
+	name,
+	onclick,
+	context,
+	disabled = false,
+	selected = false,
+}: Props = $props();
 
-    let element = $state<HTMLDivElement>();
-    let contextShowing = $state(false);
+const element = $state<HTMLDivElement>();
+let contextShowing = $state(false);
 
-    let open = getContext<Writable<boolean>>("open");
-    function interact() {
-        if (!onclick) return;
+const open = getContext<Writable<boolean>>("open");
+function interact() {
+	if (!onclick) return;
 
-        open.update(() => false);
-        onclick();
-    }
+	open.update(() => false);
+	onclick();
+}
 
-    function hover() {
-        if (!context) return;
+function hover() {
+	if (!context) return;
 
-        contextShowing = true;
-    }
+	contextShowing = true;
+}
 
-    function blur(event: MouseEvent) {
-        if (element.contains(event.target as HTMLElement)) return;
+function blur(event: MouseEvent) {
+	if (element.contains(event.target as HTMLElement)) return;
 
-        contextShowing = false;
-    }
+	contextShowing = false;
+}
 
-    onMount(() => {
-        document.body.addEventListener("mousemove", blur);
-    });
-    onDestroy(() => {
-        document.body.removeEventListener("mousemove", blur);
-    });
+onMount(() => {
+	document.body.addEventListener("mousemove", blur);
+});
+onDestroy(() => {
+	document.body.removeEventListener("mousemove", blur);
+});
 </script>
 
 <tbody bind:this={element}>
