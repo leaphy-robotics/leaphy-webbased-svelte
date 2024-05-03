@@ -109,5 +109,8 @@
 	"DONT_SHOW": "Niet opnieuw tonen",
 	"EXAMPLES": "Voorbeelden",
 	"CREATE_FILE": "Bestand aanmaken",
-	"CREATE_FOLDER": "Map aanmaken"
+	"CREATE_FOLDER": "Map aanmaken",
+	"DOWNLOADING_FIRMWARE": "Firmware downloaden",
+	"UPLOADING_FIRMWARE": "Firmware uploaden",
+	"INSTALLING_LIBRARIES": "Bibliotheken installeren"
 }

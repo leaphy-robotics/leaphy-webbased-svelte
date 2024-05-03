@@ -38,13 +38,10 @@ export class PackageManager {
 	}
 
 	async checkLibraryVersion(version: string, name: string) {
-		console.log(version, name);
 		if (!(await this.io.fs.exists(`${name}.json`))) return false;
 
-		console.log("exists");
 		try {
 			const contents = JSON.parse(atob(await this.io.fs.read(`${name}.json`)));
-			console.log(contents);
 
 			return version === contents.version;
 		} catch {
@@ -64,7 +61,7 @@ export class PackageManager {
 		const manifest = JSON.parse(await this.fetchMip(url));
 		const version = manifest.version;
 		if (await this.checkLibraryVersion(version, this.getLibraryName(url)))
-			return console.log("not installing");
+			return;
 
 		const files = manifest.urls;
 		const contents = await Promise.all(
