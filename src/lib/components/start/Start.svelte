@@ -1,10 +1,10 @@
 <script lang="ts">
-import { fly } from "svelte/transition";
-import { flip } from "svelte/animate";
-import { selected } from "$state/app.svelte";
-import { robotListing } from "$domain/robots";
 import RobotSelector from "$components/start/RobotSelector.svelte";
+import { robotListing } from "$domain/robots";
+import { selected } from "$state/app.svelte";
+import { flip } from "svelte/animate";
 import { cubicOut } from "svelte/easing";
+import { fly } from "svelte/transition";
 
 const selectors = $derived(
 	$selected ? [robotListing, $selected.variants] : [robotListing],

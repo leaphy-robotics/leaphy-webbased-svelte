@@ -1,8 +1,8 @@
 import "@xterm/xterm/css/xterm.css";
 import "./app.css";
-import App from "./App.svelte";
 import { mount } from "svelte";
 import { addMessages, init } from "svelte-i18n";
+import App from "./App.svelte";
 import enTranslations from "./assets/translations/en.json";
 import nlTranslations from "./assets/translations/nl.json";
 import initMatomo from "./lib/matomo";

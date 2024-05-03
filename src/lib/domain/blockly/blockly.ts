@@ -1,28 +1,28 @@
 import * as Blockly from "blockly";
 import "@blockly/field-bitmap";
+import Prompt from "$components/core/popups/popups/Prompt.svelte";
+import { type RobotDevice, inFilter } from "$domain/robots";
+import { RobotType } from "$domain/robots.types";
+import { audio } from "$state/blockly.svelte";
+import { popups } from "$state/popup.svelte";
+import { BackpackChange } from "@blockly/workspace-backpack";
 import {
-	blocks,
 	CATEGORIES,
 	EXTENSIONS,
 	THEME,
+	blocks,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
-import PinSelectorField from "./fields";
-import { LeaphyCategory } from "./category-ui/category";
-import { LeaphyToolbox } from "./category-ui/toolbox";
-import { inFilter, type RobotDevice } from "$domain/robots";
-import { RobotType } from "$domain/robots.types";
-import toolbox from "./toolbox";
 import type {
 	CategoryInfo,
 	ToolboxDefinition,
 	ToolboxItemInfo,
 } from "blockly/core/utils/toolbox";
-import { audio } from "$state/blockly.svelte";
-import { BackpackChange } from "@blockly/workspace-backpack";
 import { Backpack } from "./backpack";
-import { popups } from "$state/popup.svelte";
-import Prompt from "$components/core/popups/popups/Prompt.svelte";
+import { LeaphyCategory } from "./category-ui/category";
+import { LeaphyToolbox } from "./category-ui/toolbox";
+import PinSelectorField from "./fields";
+import toolbox from "./toolbox";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);

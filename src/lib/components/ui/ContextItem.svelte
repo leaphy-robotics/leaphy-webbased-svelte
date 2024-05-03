@@ -1,9 +1,9 @@
 <script lang="ts">
 import {
-	faCaretRight,
 	type IconDefinition,
+	faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { getContext, onDestroy, onMount, type Snippet } from "svelte";
+import { type Snippet, getContext, onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
 import type { Writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";
@@ -12,27 +12,28 @@ interface Props {
 	icon?: IconDefinition;
 	name: string;
 	onclick?: () => void;
-	context?: Snippet;
+	context?: Snippet<[Writable<boolean>]>;
 	disabled?: boolean;
 	selected?: boolean;
+	open: Writable<boolean>;
 }
-const {
+let {
 	icon,
 	name,
 	onclick,
 	context,
 	disabled = false,
 	selected = false,
+	open,
 }: Props = $props();
 
-const element = $state<HTMLDivElement>();
+let element = $state<HTMLDivElement>();
 let contextShowing = $state(false);
 
-const open = getContext<Writable<boolean>>("open");
 function interact() {
 	if (!onclick) return;
 
-	open.update(() => false);
+	open.set(false);
 	onclick();
 }
 
@@ -58,7 +59,7 @@ onDestroy(() => {
 
 <tbody bind:this={element}>
     {#if contextShowing}
-        <ContextMenu anchor="right-start" source={element} content={context} />
+        <ContextMenu anchor="right-start" source={element} content={context} {open} />
     {/if}
 
     <tr

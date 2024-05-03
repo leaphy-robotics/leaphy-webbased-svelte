@@ -1,17 +1,17 @@
 <script lang="ts">
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
+import SideBar from "$components/ui/SideBar.svelte";
 import SideButton from "$components/ui/SideButton.svelte";
 import { popups } from "$state/popup.svelte";
-import { sidePanel, mode, Mode } from "$state/workspace.svelte";
+import { Mode, mode, sidePanel } from "$state/workspace.svelte";
 import {
 	faBook,
 	faCode,
 	faSquarePollHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
-import LibraryManager from "./panels/LibraryManager.svelte";
 import Code from "./panels/Code.svelte";
-import SideBar from "$components/ui/SideBar.svelte";
+import LibraryManager from "./panels/LibraryManager.svelte";
 
 function openSerial() {
 	popups.open({

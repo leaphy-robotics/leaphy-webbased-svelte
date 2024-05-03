@@ -1,12 +1,12 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
-import Windowed from "../Windowed.svelte";
 import {
 	SUPPORTED_VENDOR_IDS,
 	log,
 	port,
 	uploadLog,
 } from "$state/workspace.svelte";
+import { _ } from "svelte-i18n";
+import Windowed from "../Windowed.svelte";
 </script>
 
 {#snippet content()}

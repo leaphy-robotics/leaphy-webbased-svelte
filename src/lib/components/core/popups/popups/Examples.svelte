@@ -1,13 +1,13 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
-import Windowed from "../Windowed.svelte";
 import { inFilter } from "$domain/robots";
-import { robot } from "$state/workspace.svelte";
-import { getContext, onMount } from "svelte";
 import { workspace } from "$state/blockly.svelte";
-import { serialization } from "blockly";
-import type { Writable } from "svelte/store";
 import { type PopupState, popups } from "$state/popup.svelte";
+import { robot } from "$state/workspace.svelte";
+import { serialization } from "blockly";
+import { getContext, onMount } from "svelte";
+import { _ } from "svelte-i18n";
+import type { Writable } from "svelte/store";
+import Windowed from "../Windowed.svelte";
 
 interface Example {
 	name: string;

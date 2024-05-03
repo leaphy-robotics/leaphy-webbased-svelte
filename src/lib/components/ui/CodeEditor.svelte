@@ -1,10 +1,10 @@
 <script lang="ts">
-import { onMount, type Bindable } from "svelte";
-import * as monaco from "monaco-editor";
 import { Theme, theme } from "$state/app.svelte";
+import * as monaco from "monaco-editor";
+import { onMount } from "svelte";
 
 interface Props {
-	value: Bindable<string>;
+	value: string;
 	language: string;
 	editable?: boolean;
 }

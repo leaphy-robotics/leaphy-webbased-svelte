@@ -1,22 +1,22 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
-import { sidePanel, robot, code } from "$state/workspace.svelte";
-import { popups } from "$state/popup.svelte";
-import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
+import SideBar from "$components/ui/SideBar.svelte";
 import SideButton from "$components/ui/SideButton.svelte";
+import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
+import { dark, light } from "$domain/blockly/theme";
+import { Theme, theme } from "$state/app.svelte";
+import { workspace } from "$state/blockly.svelte";
+import { popups } from "$state/popup.svelte";
+import { code, robot, sidePanel } from "$state/workspace.svelte";
 import {
 	faCode,
 	faSquarePollHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
-import SideBar from "$components/ui/SideBar.svelte";
-import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
-import Code from "../panels/Code.svelte";
-import { workspace } from "$state/blockly.svelte";
-import { locale } from "svelte-i18n";
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { WorkspaceSvg, serialization } from "blockly";
-import { Theme, theme } from "$state/app.svelte";
-import { dark, light } from "$domain/blockly/theme";
+import { onMount } from "svelte";
+import { locale } from "svelte-i18n";
+import Code from "../panels/Code.svelte";
 
 function getTheme(theme: Theme) {
 	return theme === Theme.DARK ? dark : light;

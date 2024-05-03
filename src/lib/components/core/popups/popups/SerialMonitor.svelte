@@ -1,9 +1,9 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
+import TextInput from "$components/ui/TextInput.svelte";
 import { log } from "$state/workspace.svelte";
 import { tick } from "svelte";
+import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
-import TextInput from "$components/ui/TextInput.svelte";
 
 let element: HTMLDivElement;
 function formatDate(date: Date) {

@@ -1,23 +1,27 @@
 <script lang="ts">
 import { _, locale } from "svelte-i18n";
 
+import block from "$assets/block.svg";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Button from "$components/ui/Button.svelte";
+import ContextItem from "$components/ui/ContextItem.svelte";
+import Select from "$components/ui/Select.svelte";
+import { robots } from "$domain/robots";
+import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
+import { audio, workspace } from "$state/blockly.svelte";
 import { popups } from "$state/popup.svelte";
-import Uploader from "../popups/popups/Uploader.svelte";
 import {
-	Prompt,
-	handle,
-	port,
-	code,
-	mode,
 	Mode,
-	robot,
-	saveState,
+	Prompt,
+	code,
+	handle,
 	microPythonIO,
 	microPythonRun,
+	mode,
+	port,
+	robot,
+	saveState,
 } from "$state/workspace.svelte";
-import ContextItem from "$components/ui/ContextItem.svelte";
 import {
 	faDownload,
 	faEnvelope,
@@ -37,22 +41,16 @@ import {
 	faVolumeHigh,
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import block from "$assets/block.svg";
-import { Screen, Theme, theme, selected, screen } from "$state/app.svelte";
-import SaveProject from "../popups/popups/Prompt.svelte";
-import { audio, workspace } from "$state/blockly.svelte";
 import { serialization } from "blockly";
-import Examples from "../popups/popups/Examples.svelte";
-import About from "../popups/popups/About.svelte";
-import UploadLog from "../popups/popups/UploadLog.svelte";
 import JSZip from "jszip";
-import Workspace from "$components/workspace/Workspace.svelte";
-import Select from "$components/ui/Select.svelte";
-import { robots } from "$domain/robots";
-import Advanced from "$components/workspace/advanced/Advanced.svelte";
-import Warning from "../popups/popups/Warning.svelte";
+import { type Writable, get } from "svelte/store";
 import MicroPythonIO from "../../../micropython";
-import { get } from "svelte/store";
+import About from "../popups/popups/About.svelte";
+import Examples from "../popups/popups/Examples.svelte";
+import SaveProject from "../popups/popups/Prompt.svelte";
+import UploadLog from "../popups/popups/UploadLog.svelte";
+import Uploader from "../popups/popups/Uploader.svelte";
+import Warning from "../popups/popups/Warning.svelte";
 
 async function upload() {
   window._paq.push(["trackEvent", "Main", "UploadClicked"]);
@@ -237,57 +235,65 @@ function runPython() {
 }
 </script>
 
-{#snippet projectContext()}
-    <ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} />
-    <ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} />
+{#snippet projectContext(open: Writable<boolean>)}
+    <ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} {open} />
+    <ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} {open} />
     <ContextItem
         icon={faFloppyDisk}
         name={$_("SAVE")}
         onclick={saveProject}
         disabled={!$handle}
+        {open}
     />
     <ContextItem
         icon={faFloppyDisk}
         name={$_("SAVEAS")}
         onclick={saveProjectAs}
+        {open}
     />
     <ContextItem
         icon={faGraduationCap}
         name={$_("EXAMPLES")}
         onclick={examples}
+        {open}
     />
 {/snippet}
-{#snippet helpContext()}
+{#snippet helpContext(open: Writable<boolean>)}
     <ContextItem
         icon={faQuestionCircle}
         name={$_("HELP_FORUM")}
         onclick={discord}
+        {open}
     />
-    <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} />
+    <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} {open} />
 {/snippet}
-{#snippet moreContext()}
-    {#snippet languageContext()}
+{#snippet moreContext(open: Writable<boolean>)}
+    {#snippet languageContext(open: Writable<boolean>)}
         <ContextItem
             selected={$locale === "en"}
             name={"English"}
             onclick={() => setLocale("en")}
+            {open}
         />
         <ContextItem
             selected={$locale === "nl"}
             name={"Nederlands"}
             onclick={() => setLocale("nl")}
+            {open}
         />
     {/snippet}
-    {#snippet themeContext()}
+    {#snippet themeContext(open: Writable<boolean>)}
         <ContextItem
             selected={$theme === Theme.LIGHT}
             name={$_("LIGHT_THEME")}
             onclick={() => theme.set(Theme.LIGHT)}
+            {open}
         />
         <ContextItem
             selected={$theme === Theme.DARK}
             name={$_("DARK_THEME")}
             onclick={() => theme.set(Theme.DARK)}
+            {open}
         />
     {/snippet}
 
@@ -295,31 +301,37 @@ function runPython() {
         icon={faQuestionCircle}
         name={$_("MORE_ABOUT")}
         onclick={about}
+        {open}
     />
     <ContextItem
         icon={faGlobe}
         name={$_("LANGUAGE")}
         context={languageContext}
+        {open}
     />
     <ContextItem
         icon={$theme === Theme.LIGHT ? faLightbulb : faMoon}
         name={$_("THEME")}
         context={themeContext}
+        {open}
     />
     <ContextItem
         icon={$audio ? faVolumeXmark : faVolumeHigh}
         name={$_($audio ? "SOUND_OFF" : "SOUND_ON")}
         onclick={() => audio.update((audio) => !audio)}
+        {open}
     />
     <ContextItem
         icon={faSquarePollHorizontal}
         name={$_("VIEW_LOG")}
         onclick={log}
+        {open}
     />
     <ContextItem
         icon={faDownload}
         name={$_("DOWNLOAD_DRIVERS")}
         onclick={drivers}
+        {open}
     />
 {/snippet}
 

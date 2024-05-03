@@ -1,9 +1,9 @@
 <script lang="ts">
 import { microPythonIO, microPythonRun } from "$state/workspace.svelte";
-import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
-import { get } from "svelte/store";
+import { Terminal } from "@xterm/xterm";
 import { onMount } from "svelte";
+import { get } from "svelte/store";
 
 const terminal = new Terminal();
 const fitAddon = new FitAddon();

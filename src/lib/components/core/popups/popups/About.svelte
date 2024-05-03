@@ -1,10 +1,10 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
 import contribute from "$assets/contribute-foundation.png";
 import Button from "$components/ui/Button.svelte";
+import { type PopupState, popups } from "$state/popup.svelte";
 import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import type { Writable } from "svelte/store";
-import { popups, type PopupState } from "$state/popup.svelte";
 
 const popupState = getContext<Writable<PopupState>>("state");
 function close() {
