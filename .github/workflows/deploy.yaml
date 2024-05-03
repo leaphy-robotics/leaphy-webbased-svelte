@@ -22,16 +22,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create TEST env file
+        if: github.ref_type == 'branch'
+        run: |
+          cat << EOF > .env
+          VITE_BACKEND_URL="https://testleaphyeasybloqs.com:8443"
+          VITE_MATOMO_SITE_ID="2"
+          VITE_BACKEND_URL="https://webservice.leaphyeasybloqs.com"
+          VITE_SENTRY_DSN="{{ $secrets.VITE_SENTRY_DSN }}"
+          VITE_SENTRY_SAMPLE_RATE="1.0"
+          EOF
+
       - name: Build and push TEST Docker image
         if: github.ref_type == 'branch'
         uses: docker/build-push-action@v5
         with:
-          build-args: |
-            VITE_BACKEND_URL="https://testleaphyeasybloqs.com:8443"
-            VITE_MATOMO_SITE_ID="2"
-            VITE_BACKEND_URL="https://webservice.leaphyeasybloqs.com"
-            VITE_SENTRY_DSN="{{ $secrets.VITE_SENTRY_DSN }}"
-            VITE_SENTRY_SAMPLE_RATE="1.0"
           file: Dockerfile
           context: .
           push: true
