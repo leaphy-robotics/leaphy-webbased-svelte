@@ -1,7 +1,8 @@
 <script lang="ts">
+import Button from "$components/ui/Button.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
-import { log } from "$state/workspace.svelte";
+import { Prompt, log, port } from "$state/workspace.svelte";
 import { faArrowDown, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
 import { tick } from "svelte";
 import { _ } from "svelte-i18n";
@@ -52,6 +53,10 @@ function download() {
 	URL.revokeObjectURL(url);
 	link.remove();
 }
+
+async function connect() {
+	await port.connect(Prompt.MAYBE);
+}
 </script>
 
 {#snippet actions()}
@@ -59,6 +64,15 @@ function download() {
     <WindowButton icon={faTrash} onclick={log.clear} />
 {/snippet}
 {#snippet content()}
+    {#if !$port}
+    <div class="warning">
+        <div class="desc">
+            <div class="name">{$_("NOT_CONNECTED")}</div>
+            <div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+        </div>
+        <Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
+    </div>
+    {/if}
     <div class="content" bind:this={element}>
         {#each $log as item (item.id)}
             <div class="item">
@@ -67,14 +81,16 @@ function download() {
             </div>
         {/each}
     </div>
-    <form onsubmit={send}>
-        <TextInput
-            placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")}
-            bind:value
-            mode={"primary"}
-            rounded={false}
-        />
-    </form>
+    {#if $port}
+        <form onsubmit={send}>
+            <TextInput
+                placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")}
+                bind:value
+                mode={"primary"}
+                rounded={false}
+            />
+        </form>
+    {/if}
 {/snippet}
 
 <Windowed title={$_("SERIAL_OUTPUT")} {content} {actions} />
@@ -102,5 +118,19 @@ function download() {
     .text {
         color: var(--primary-dark-tint);
         font-family: "Courier New", Courier, monospace;
+    }
+
+    .warning {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--primary);
+        color: var(--on-primary);
+        width: 100%;
+        padding: 5px;
+    }
+    .name {
+        font-size: 1.1em;
+        font-weight: bold;
     }
 </style>

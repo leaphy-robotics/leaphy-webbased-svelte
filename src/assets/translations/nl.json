@@ -112,5 +112,7 @@
 	"CREATE_FOLDER": "Map aanmaken",
 	"DOWNLOADING_FIRMWARE": "Firmware downloaden",
 	"UPLOADING_FIRMWARE": "Firmware uploaden",
-	"INSTALLING_LIBRARIES": "Bibliotheken installeren"
+	"INSTALLING_LIBRARIES": "Bibliotheken installeren",
+	"NOT_CONNECTED": "Niet verbonden",
+	"NOT_CONNECTED_DESC": "Je ziet geen nieuwe output"
 }
