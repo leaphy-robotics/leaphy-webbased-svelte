@@ -3,8 +3,13 @@ import defaultProgram from "$assets/default-program.py?raw";
 import CodeEditor from "$components/ui/CodeEditor.svelte";
 import Tree from "$components/ui/Tree.svelte";
 import type { Tree as TreeType } from "$components/ui/Tree.types";
-import { PythonHandle } from "$domain/handles";
-import { code, handle, microPythonIO } from "$state/workspace.svelte";
+import { FileHandle, PythonHandle } from "$domain/handles";
+import {
+	code,
+	handle,
+	microPythonIO,
+	saveState,
+} from "$state/workspace.svelte";
 import { get } from "svelte/store";
 import type MicroPythonIO from "../../../micropython";
 import Terminal from "./Terminal.svelte";
@@ -41,6 +46,7 @@ async function getTree(io: MicroPythonIO, folder: string): Promise<TreeType> {
 
 microPythonIO.subscribe(async (io) => {
 	if (!io) return;
+	if (!get(saveState) || get(handle)) return;
 
 	if (!(await io.fs.exists("main.py"))) {
 		await io.fs.write("main.py", defaultProgram);
@@ -51,6 +57,10 @@ microPythonIO.subscribe(async (io) => {
 
 	code.set(await io.fs.read("main.py"));
 	handle.set(new PythonHandle("main.py"));
+});
+
+handle.subscribe((handle) => {
+	if (handle instanceof FileHandle) tree = undefined;
 });
 
 async function select(tree: string[]) {

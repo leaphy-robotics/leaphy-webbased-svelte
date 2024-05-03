@@ -1,7 +1,7 @@
 <script lang="ts">
 import { type Robot, robots as allRobots } from "$domain/robots";
 import { Screen, screen, selected } from "$state/app.svelte";
-import { Mode, code, mode, robot } from "$state/workspace.svelte";
+import { Mode, code, mode, robot, saveState } from "$state/workspace.svelte";
 
 interface Props {
 	robots: Robot[][];
@@ -18,6 +18,7 @@ function select(type: Robot) {
 		robot.set(allRobots[type.defaultRobot]);
 		mode.set(type.mode);
 		screen.set(Screen.WORKSPACE);
+		saveState.set(true);
 		return;
 	}
 
