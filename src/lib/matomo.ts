@@ -5,10 +5,10 @@ declare global {
 }
 
 function initMatomo() {
-  // Always create the _paq array so dev code works
-  const _paq = (window._paq = window._paq || []);
-  // Only track prod builds
-  if (!import.meta.env.PROD) return;
+	// Always create the _paq array so dev code works
+	const _paq = (window._paq = window._paq || []);
+	// Only track prod builds
+	if (!import.meta.env.PROD) return;
 
 	const u = import.meta.env.VITE_MATOMO_URL;
 	_paq.push(["trackPageView"]);

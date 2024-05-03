@@ -53,7 +53,7 @@ import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
 
 async function upload() {
-  window._paq.push(["trackEvent", "Main", "UploadClicked"]);
+	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
 	popups.open({
 		component: Uploader,
 		data: {

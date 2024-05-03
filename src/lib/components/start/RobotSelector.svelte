@@ -10,10 +10,10 @@ interface Props {
 const { robots, secondary }: Props = $props();
 
 function select(type: Robot) {
-  window._paq.push(["trackEvent", "SelectRobot", type.name]);
+	window._paq.push(["trackEvent", "SelectRobot", type.name]);
 
-  if ("variants" in type) return selected.set(type);
-  if ("mode" in type) {
+	if ("variants" in type) return selected.set(type);
+	if ("mode" in type) {
 		code.set(type.defaultProgram);
 		robot.set(allRobots[type.defaultRobot]);
 		mode.set(type.mode);
