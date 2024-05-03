@@ -37,7 +37,6 @@ export default defineConfig({
   }),
   // Upload source maps to Sentry
   sentryVitePlugin({
-    url: "https://leaphyeasybloqs.com:8443/",
     project: "leaphy-webbased-svelte",
     org: 'leaphy',
     authToken: process.env.SENTRY_AUTH_TOKEN,
