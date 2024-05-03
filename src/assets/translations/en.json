@@ -107,5 +107,7 @@
 	"RECONNECT": "Reconnect",
 	"RECONNECT_INFO": "Please reconnect your device",
 	"DONT_SHOW": "Don't show again",
-	"EXAMPLES": "Examples"
+	"EXAMPLES": "Examples",
+	"CREATE_FILE": "Create file",
+	"CREATE_FOLDER": "Create folder"
 }

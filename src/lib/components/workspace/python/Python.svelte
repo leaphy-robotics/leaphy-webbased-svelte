@@ -1,9 +1,11 @@
 <script lang="ts">
 import defaultProgram from "$assets/default-program.py?raw";
+import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import CodeEditor from "$components/ui/CodeEditor.svelte";
 import Tree from "$components/ui/Tree.svelte";
 import type { Tree as TreeType } from "$components/ui/Tree.types";
 import { FileHandle, PythonHandle } from "$domain/handles";
+import { popups } from "$state/popup.svelte";
 import {
 	code,
 	handle,
@@ -66,9 +68,45 @@ handle.subscribe((handle) => {
 async function select(tree: string[]) {
 	selected = tree;
 
+	await get(handle)?.write(get(code));
 	const data = await get(microPythonIO).fs.read(tree.join("/"));
-	code.set(data);
+	code.set(data.replaceAll("\r\n", "\n"));
+	console.log(data);
 	handle.set(new PythonHandle(tree.join("/")));
+}
+
+async function create(path: string[], type: "file" | "folder") {
+	const name = await popups.open({
+		component: Prompt,
+		data: {
+			name: type === "file" ? "CREATE_FILE" : "CREATE_FOLDER",
+			confirm: "OK_VARIABLE",
+		},
+		allowInteraction: false,
+	});
+	if (!name) return;
+
+	const io = get(microPythonIO);
+	const parent = path.reduce(
+		(prev, curr) => prev.contents.find((e) => (e as TreeType).name === curr),
+		tree,
+	) as TreeType;
+
+	if (type === "folder") {
+		io.fs.mkdir(`${path.join("/")}/${name}`);
+
+		parent.contents.push({
+			name,
+			contents: [],
+		});
+	}
+	if (type === "file") {
+		await get(handle)?.write(get(code));
+		io.fs.write(`${path.join("/")}/${name}.py`, defaultProgram);
+
+		parent.contents.push(`${name}.py`);
+		selected = [...path, name];
+	}
 }
 </script>
 
@@ -76,7 +114,7 @@ async function select(tree: string[]) {
     <div class="editor">
         {#if tree}
             <div class="files">
-                <Tree {tree} {selected} indent={10} onselect={select} />
+                <Tree {tree} {selected} indent={10} onselect={select} oncreate={create} />
             </div>
         {/if}
         <div class="code">

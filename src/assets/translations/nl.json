@@ -107,5 +107,7 @@
 	"RECONNECT_INFO": "Maak opnieuw verbinding",
 	"RECONNECT": "Verbind opnieuw",
 	"DONT_SHOW": "Niet opnieuw tonen",
-	"EXAMPLES": "Voorbeelden"
+	"EXAMPLES": "Voorbeelden",
+	"CREATE_FILE": "Bestand aanmaken",
+	"CREATE_FOLDER": "Map aanmaken"
 }
