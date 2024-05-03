@@ -3,10 +3,17 @@ import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
 import type { Handle } from "$domain/handles";
 import type { RobotDevice } from "$domain/robots";
+import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import type { ComponentType } from "svelte";
 import { get, writable } from "svelte/store";
+import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
+
+export type LeaphyPort =
+	| SerialPort
+	| MockedCDCSerialPort
+	| MockedFTDISerialPort;
 
 export const Mode = {
 	BLOCKS: Blocks,
@@ -64,7 +71,7 @@ function createLogState() {
 export const log = createLogState();
 
 function createPortState() {
-	const { subscribe, update } = writable<SerialPort>();
+	const { subscribe, update } = writable<LeaphyPort>();
 
 	let reserved = false;
 	let reader: ReadableStreamDefaultReader<Uint8Array>;
@@ -93,17 +100,39 @@ function createPortState() {
 		subscribe,
 		ready: new Promise<void>((resolve) => (onReady = resolve)),
 		async requestPort(prompt: Prompt) {
-			if (prompt !== Prompt.ALWAYS) {
-				const [port] = await navigator.serial.getPorts();
-				if (port) return port;
-			}
-			if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
+			if (navigator.serial) {
+				if (prompt !== Prompt.ALWAYS) {
+					const [port] = await navigator.serial.getPorts();
+					if (port) return port;
+				}
+				if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
 
-			return await navigator.serial.requestPort({
-				filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
-					usbVendorId: vendor,
-				})),
-			});
+				return await navigator.serial.requestPort({
+					filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
+						usbVendorId: vendor,
+					})),
+				});
+			}
+			if (navigator.usb) {
+				if (prompt !== Prompt.ALWAYS) {
+					const [device] = await navigator.usb.getDevices();
+
+					if (device?.vendorId === 1027)
+						return new MockedFTDISerialPort(device);
+					if (device) return new MockedCDCSerialPort(device);
+				}
+				if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
+
+				const device = await navigator.usb.requestDevice({
+					filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
+						vendorId: vendor,
+					})),
+				});
+				if (device?.vendorId === 1027) return new MockedFTDISerialPort(device);
+				if (device) return new MockedCDCSerialPort(device);
+
+				throw new ConnectionFailedError();
+			}
 		},
 		async connect(prompt: Prompt) {
 			this.ready = new Promise<void>((resolve) => (onReady = resolve));

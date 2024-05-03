@@ -85,11 +85,9 @@ onMount(async () => {
 		currentState = "UPDATE_COMPLETE";
 		done = true;
 	} catch (e) {
-		if (e instanceof UploadError) {
-			done = true;
-			currentState = e.name;
-			error = e.description;
-		}
+		done = true;
+		currentState = e?.name || "UPDATE_FAILED";
+		error = e.description;
 	}
 });
 

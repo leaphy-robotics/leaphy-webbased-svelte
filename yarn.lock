@@ -611,6 +611,11 @@
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/picotool-wasm/-/picotool-wasm-1.0.3.tgz#9047c984c7c261685f6e88d49c9ed54eaeb29391"
   integrity sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==
 
+"@leaphy-robotics/webusb-ftdi@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/webusb-ftdi/-/webusb-ftdi-1.0.1.tgz#3bcc6eeb0f03ebe8a91d727052b04a61a3517b4b"
+  integrity sha512-qPR4+mEg+mIqrvOMAov+mOfxM15DgMWofZufLpfktIa+4/kTRIjljCgYUO5l5Jeb7AuDUi4Uvrn/WT765T8thQ==
+
 "@leaphy-robotics/webusb-ftdi@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/webusb-ftdi/-/webusb-ftdi-1.0.0.tgz#999a9de85cef82747f09b1dfa6e01374bd85ba07"
@@ -2456,6 +2461,11 @@ w3c-xmlserializer@^4.0.0:
   integrity sha512-d+BFHzbiCx6zGfz0HyQ6Rg69w9k19nviJspaj4yNscGjrHu94sVP+aRm75yEbCh+r2/yR+7q6hux9LVtbuTGBw==
   dependencies:
     xml-name-validator "^4.0.0"
+
+web-serial-polyfill@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/web-serial-polyfill/-/web-serial-polyfill-1.0.15.tgz#0c0b4cd5f32b8c07243d2ffeea484892f46986b1"
+  integrity sha512-usZN7kGRkEWr8DzRWxW+og55L1fHo4hNIwxCSCfWKpM+i0L+2AwzupMvkDFxnJNqUFOhLaD3PlgAOJxUOUrAoA==
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

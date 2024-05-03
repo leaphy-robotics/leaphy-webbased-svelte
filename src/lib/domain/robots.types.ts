@@ -1,3 +1,5 @@
+import type { LeaphyPort } from "$state/workspace.svelte";
+
 export const RobotType = {
 	L_FLITZ_UNO: 1,
 	L_FLITZ_NANO: 2,
@@ -16,5 +18,5 @@ export const RobotType = {
 };
 
 export interface Programmer {
-	upload(port: SerialPort, response: Record<string, string>): Promise<void>;
+	upload(port: LeaphyPort, response: Record<string, string>): Promise<void>;
 }

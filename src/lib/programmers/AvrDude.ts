@@ -1,12 +1,12 @@
 import type { Programmer } from "$domain/robots.types";
-import { uploadLog } from "$state/workspace.svelte";
+import { uploadLog, type LeaphyPort } from "$state/workspace.svelte";
 import Module from "@leaphy-robotics/avrdude-webassembly/avrdude.js";
 
 declare global {
 	interface Window {
 		avrdudeLog: string[];
 		writeStream: WritableStreamDefaultWriter<Uint8Array>;
-		activePort: SerialPort;
+		activePort: LeaphyPort;
 		funcs: any;
 	}
 }
@@ -26,7 +26,7 @@ export default class AvrDude implements Programmer {
 	}
 
 	async upload(
-		port: SerialPort,
+		port: LeaphyPort,
 		response: Record<string, string>,
 	): Promise<void> {
 		const avrdude = await Module({
@@ -46,9 +46,10 @@ export default class AvrDude implements Programmer {
 		avrdude.FS.writeFile("/tmp/avrdude.conf", avrdudeConfig);
 		avrdude.FS.writeFile("/tmp/program.hex", response.hex);
 
-		const disconnectPromise = new Promise((resolve) =>
-			port.addEventListener("disconnect", resolve),
-		);
+		const disconnectPromise = new Promise((resolve) => {
+			if (navigator.serial && port instanceof SerialPort)
+				port.addEventListener("disconnect", resolve)
+		});
 		const oldConsoleError = console.error;
 		const workerErrorPromise = new Promise((resolve) => {
 			console.error = (...data) => {
@@ -80,7 +81,6 @@ export default class AvrDude implements Programmer {
 		if (window.writeStream) window.writeStream.releaseLock();
 
 		const log = window.avrdudeLog;
-		console.log(log);
 		uploadLog.set(log);
 
 		if (race !== 0) {
