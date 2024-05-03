@@ -114,7 +114,19 @@ async function openProject() {
 
 	handle.set(new FileHandle(file));
 	const content = await file.getFile();
-	serialization.workspaces.load(JSON.parse(await content.text()), $workspace);
+
+    if (file.name.endsWith('.ino')) {
+        mode.set(Mode.ADVANCED)
+        code.set(await content.text())
+    } else if (file.name.endsWith('.py')) {
+        mode.set(Mode.PYTHON)
+        robot.set(robots["l_nano_rp2040"])
+        code.set(await content.text())
+    } else {
+        mode.set(Mode.BLOCKS)
+        robot.set(robots[file.name.split(".").at(-1)])
+        serialization.workspaces.load(JSON.parse(await content.text()), $workspace);
+    }
 }
 
 async function saveProject() {
