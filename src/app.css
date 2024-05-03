@@ -42,7 +42,6 @@ body[data-color-scheme="dark"] {
     --accent: #32a5a9;
     --on-accent: #fff;
     --text-muted: #535361;
-    --warning: #ffb818;
 }
 
 body {
