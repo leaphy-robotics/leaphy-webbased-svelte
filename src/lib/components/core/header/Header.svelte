@@ -94,6 +94,7 @@ async function saveProjectAs() {
 
 	let extension = $robot.id;
 	if ($mode === Mode.ADVANCED) extension = "ino";
+	if ($mode === Mode.PYTHON) extension = "py";
 
 	const url = URL.createObjectURL(
 		new Blob([serialize()], { type: "text/plain" }),
