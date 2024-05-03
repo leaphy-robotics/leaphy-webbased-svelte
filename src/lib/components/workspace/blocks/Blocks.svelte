@@ -18,15 +18,27 @@ import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
 import Code from "../panels/Code.svelte";
 
+let backgroundX = $state(0);
+
 function getTheme(theme: Theme) {
 	return theme === Theme.DARK ? dark : light;
 }
 
+function updateSizing() {
+	const toolbox = ($workspace as WorkspaceSvg).getToolbox();
+	backgroundX =
+		window.innerWidth / 2 +
+		(toolbox.getFlyout().isVisible() ? toolbox.getFlyout().getWidth() : 0) / 2 +
+		40;
+}
+
 let element: HTMLDivElement;
 onMount(() => {
-	workspace.update(() => setupWorkspace($robot, element, getTheme($theme)));
+	workspace.set(setupWorkspace($robot, element, getTheme($theme)));
+	updateSizing();
 	$workspace.addChangeListener(() => {
 		code.set(arduino.workspaceToCode($workspace));
+		updateSizing();
 	});
 });
 
@@ -55,6 +67,9 @@ theme.subscribe((theme) => {
 </script>
 
 <div class="environment">
+	{#if $robot.background}
+		<img class="background" src="{$robot.background}" alt="{$robot.name}" style:left={`${backgroundX}px`}>
+	{/if}
     <div class="blockly" bind:this={element}></div>
 </div>
 
@@ -66,4 +81,14 @@ theme.subscribe((theme) => {
     .environment {
         position: relative;
     }
+
+	.background {
+		position: absolute;
+		width: 100%;
+		max-width: 600px;
+		max-height: 600px;
+		top: 50%;
+		translate: -50% -50%;
+		z-index: -1;
+	}
 </style>

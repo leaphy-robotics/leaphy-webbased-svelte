@@ -1,5 +1,5 @@
 import type { Programmer } from "$domain/robots.types";
-import { uploadLog, type LeaphyPort } from "$state/workspace.svelte";
+import { type LeaphyPort, uploadLog } from "$state/workspace.svelte";
 import Module from "@leaphy-robotics/avrdude-webassembly/avrdude.js";
 
 declare global {
@@ -48,7 +48,7 @@ export default class AvrDude implements Programmer {
 
 		const disconnectPromise = new Promise((resolve) => {
 			if (navigator.serial && port instanceof SerialPort)
-				port.addEventListener("disconnect", resolve)
+				port.addEventListener("disconnect", resolve);
 		});
 		const oldConsoleError = console.error;
 		const workerErrorPromise = new Promise((resolve) => {

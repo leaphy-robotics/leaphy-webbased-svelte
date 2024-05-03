@@ -1,6 +1,6 @@
 import type { Programmer } from "$domain/robots.types";
 import { usbRequest } from "$state/upload.svelte";
-import { port as portState, type LeaphyPort } from "$state/workspace.svelte";
+import { type LeaphyPort, port as portState } from "$state/workspace.svelte";
 import PicoTool from "@leaphy-robotics/picotool-wasm";
 import base64 from "base64-js";
 import { delay } from "./utils";

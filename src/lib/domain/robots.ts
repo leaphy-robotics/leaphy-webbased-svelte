@@ -1,5 +1,11 @@
 import defaultCPP from "$assets/default-program.ino?raw";
 import defaultPython from "$assets/default-program.py?raw";
+import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
+import flitzUnoBackground from "$assets/robots/backgrounds/flitz_uno.svg";
+import originalNanoBackground from "$assets/robots/backgrounds/orig_nano.svg";
+import originalNanoESP32Background from "$assets/robots/backgrounds/orig_nano_esp32.svg";
+import originalNanoRP2040Background from "$assets/robots/backgrounds/orig_nano_rp2040.svg";
+import originalUnoBackground from "$assets/robots/backgrounds/orig_uno.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
 import clickIcon from "$assets/robots/icons/l_click.svg";
 import flitzIcon from "$assets/robots/icons/l_flitz.svg";
@@ -42,6 +48,7 @@ export interface RobotDevice extends BaseRobot {
 	programmer: Programmer;
 	libraries: string[];
 	fqbn: string;
+	background?: string;
 }
 export interface RobotListing extends BaseRobot {
 	variants: RobotDevice[][];
@@ -98,6 +105,7 @@ export const robotListing: Robot[][] = [
 						name: "Flitz Uno",
 						libraries: DEFAULT_LIBRARIES,
 						icon: flitzIcon,
+						background: flitzUnoBackground,
 					},
 					{
 						...baseNano,
@@ -106,6 +114,7 @@ export const robotListing: Robot[][] = [
 						name: "Flitz Nano",
 						libraries: DEFAULT_LIBRARIES,
 						icon: flitzIcon,
+						background: flitzNanoBackground,
 					},
 				],
 			],
@@ -126,6 +135,7 @@ export const robotListing: Robot[][] = [
 							"Arduino_APDS9960",
 						]),
 						icon: originalIcon,
+						background: originalUnoBackground,
 					},
 					{
 						...baseNano,
@@ -137,6 +147,7 @@ export const robotListing: Robot[][] = [
 							"Arduino_APDS9960",
 						]),
 						icon: originalIcon,
+						background: originalNanoBackground,
 					},
 				],
 				[
@@ -150,6 +161,7 @@ export const robotListing: Robot[][] = [
 							"Arduino_APDS9960",
 						]),
 						icon: originalIcon,
+						background: originalNanoESP32Background,
 					},
 					{
 						...baseNanoRP2040,
@@ -161,6 +173,7 @@ export const robotListing: Robot[][] = [
 							"Arduino_APDS9960",
 						]),
 						icon: originalIcon,
+						background: originalNanoRP2040Background,
 					},
 				],
 			],
