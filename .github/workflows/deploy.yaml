@@ -22,6 +22,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
       - name: Create TEST env file
         if: github.ref_type == 'branch'
         run: |
@@ -33,6 +38,14 @@ jobs:
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
           VITE_SENTRY_SAMPLE_RATE="1.0"
           EOF
+
+      - name: Build application
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          yarn --frozen-lockfile --prefer-offline
+          yarn build
 
       - name: Build and push TEST Docker image
         if: github.ref_type == 'branch'
