@@ -6,6 +6,7 @@ import type { ComponentType } from "svelte";
 import { get, writable } from "svelte/store";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
+import type { Handle } from "$domain/handles";
 
 export const Mode = {
 	BLOCKS: Blocks,
@@ -164,7 +165,7 @@ function createUploadLog() {
 }
 export const uploadLog = createUploadLog();
 export const sidePanel = writable<ComponentType | undefined>(undefined);
-export const handle = writable<FileSystemFileHandle | undefined>(undefined);
+export const handle = writable<Handle | undefined>(undefined);
 export const robot = writable<RobotDevice>();
 export const mode = writable<ComponentType>(Mode.BLOCKS);
 export const code = writable<string>("");

@@ -51,6 +51,7 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+	import { FileHandle } from "$domain/handles";
 
 async function upload() {
 	popups.open({
@@ -110,7 +111,7 @@ async function openProject() {
 	const [file] = await window.showOpenFilePicker();
 	if (!file) return;
 
-	handle.update(() => file);
+	handle.set(new FileHandle(file));
 	const content = await file.getFile();
 	serialization.workspaces.load(JSON.parse(await content.text()), $workspace);
 }
@@ -118,13 +119,7 @@ async function openProject() {
 async function saveProject() {
 	if (!$handle) return;
 
-	const writable = await $handle.createWritable();
-	await writable.write({
-		type: "write",
-		data: serialize(),
-		position: 0,
-	});
-	await writable.close();
+    await get(handle).write(serialize());
 	saveState.set(true);
 }
 

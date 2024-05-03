@@ -10,6 +10,7 @@ interface Props {
 }
 let { value = $bindable(""), editable = true, language }: Props = $props();
 
+let updating = false;
 let ignoreUpdate = false;
 let element: HTMLDivElement;
 let editor: monaco.editor.IStandaloneCodeEditor;
@@ -22,7 +23,9 @@ onMount(() => {
 		readOnly: !editable,
 	});
 	editor.getModel().onDidChangeContent(() => {
-		ignoreUpdate = true;
+		if (updating) updating = false
+		else ignoreUpdate = true;
+		
 		value = editor.getValue();
 	});
 });
@@ -39,6 +42,7 @@ $effect(() => {
 		return;
 	}
 
+	updating = true;
 	editor.getModel().setValue(newContent as string);
 });
 </script>

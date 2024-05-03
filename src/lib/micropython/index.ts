@@ -91,10 +91,10 @@ export default class MicroPythonIO {
 			(async (resolve) => {
 				const { value, done } = await this.reader.read();
 
-				if (done) return resolve(false);
-				if (value.at(-1) !== 62) return resolve(false);
+				if (done) return false;
+				if (value.at(-1) !== 62) return false;
 
-				resolve(true);
+				return true
 			})(),
 		]);
 
