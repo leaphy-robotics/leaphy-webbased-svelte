@@ -120,7 +120,7 @@ async function openProject() {
 		code.set(await content.text());
 	} else if (file.name.endsWith(".py")) {
 		mode.set(Mode.PYTHON);
-		robot.set(robots["l_nano_rp2040"]);
+		robot.set(robots.l_nano_rp2040);
 		code.set(await content.text());
 	} else {
 		mode.set(Mode.BLOCKS);
