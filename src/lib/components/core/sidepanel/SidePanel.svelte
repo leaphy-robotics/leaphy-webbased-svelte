@@ -1,6 +1,6 @@
 <script lang="ts">
-import { onDestroy, onMount } from "svelte";
 import { sidePanel } from "$state/workspace.svelte";
+import { onDestroy, onMount } from "svelte";
 
 let width = $state(300);
 

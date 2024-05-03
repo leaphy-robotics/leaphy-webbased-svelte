@@ -1,8 +1,8 @@
-import { writable } from "svelte/store";
-import type { RobotListing } from "$domain/robots";
 import Start from "$components/start/Start.svelte";
 import Workspace from "$components/workspace/Workspace.svelte";
+import type { RobotListing } from "$domain/robots";
 import type { ComponentType } from "svelte";
+import { writable } from "svelte/store";
 
 export const Screen = {
 	START: Start,
@@ -22,11 +22,9 @@ export interface Library {
 }
 
 if (!["light", "dark"].includes(localStorage.getItem("theme"))) {
-	localStorage.setItem("theme", Theme.LIGHT)
+	localStorage.setItem("theme", Theme.LIGHT);
 }
-export const theme = writable<Theme>(
-	(localStorage.getItem("theme") as Theme),
-);
+export const theme = writable<Theme>(localStorage.getItem("theme") as Theme);
 theme.subscribe((theme) => {
 	document.body.setAttribute("data-color-scheme", theme);
 	localStorage.setItem("theme", theme);

@@ -1,9 +1,9 @@
 <script lang="ts">
-import { onDestroy, onMount, setContext, type Snippet } from "svelte";
-import ContextMenu from "./ContextMenu.svelte";
-import { writable, type Writable } from "svelte/store";
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { type Snippet, onDestroy, onMount, setContext } from "svelte";
 import Fa from "svelte-fa";
+import { type Writable, writable } from "svelte/store";
+import ContextMenu from "./ContextMenu.svelte";
 
 interface Props {
 	name?: string;

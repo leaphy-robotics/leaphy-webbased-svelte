@@ -1,13 +1,13 @@
 <script lang="ts">
-import { getContext, onDestroy, onMount, type Snippet } from "svelte";
-import { computePosition, type Placement } from "@floating-ui/dom";
+import { type Placement, computePosition } from "@floating-ui/dom";
+import { type Snippet, getContext, onDestroy, onMount } from "svelte";
 import type { Writable } from "svelte/store";
 
 interface Props {
 	source: HTMLElement;
 	content: Snippet<[Writable<boolean>]>;
 	anchor?: Placement;
-    open: Writable<boolean>
+	open: Writable<boolean>;
 }
 let { source, content, anchor = "bottom-start", open }: Props = $props();
 

@@ -1,9 +1,9 @@
 <script lang="ts">
 import {
-	faCaretRight,
 	type IconDefinition,
+	faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { getContext, onDestroy, onMount, type Snippet } from "svelte";
+import { type Snippet, getContext, onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
 import type { Writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";
@@ -15,7 +15,7 @@ interface Props {
 	context?: Snippet<[Writable<boolean>]>;
 	disabled?: boolean;
 	selected?: boolean;
-    open: Writable<boolean>
+	open: Writable<boolean>;
 }
 let {
 	icon,
@@ -24,7 +24,7 @@ let {
 	context,
 	disabled = false,
 	selected = false,
-    open
+	open,
 }: Props = $props();
 
 let element = $state<HTMLDivElement>();

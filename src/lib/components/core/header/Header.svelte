@@ -1,23 +1,27 @@
 <script lang="ts">
 import { _, locale } from "svelte-i18n";
 
+import block from "$assets/block.svg";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Button from "$components/ui/Button.svelte";
+import ContextItem from "$components/ui/ContextItem.svelte";
+import Select from "$components/ui/Select.svelte";
+import { robots } from "$domain/robots";
+import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
+import { audio, workspace } from "$state/blockly.svelte";
 import { popups } from "$state/popup.svelte";
-import Uploader from "../popups/popups/Uploader.svelte";
 import {
-	Prompt,
-	handle,
-	port,
-	code,
-	mode,
 	Mode,
-	robot,
-	saveState,
+	Prompt,
+	code,
+	handle,
 	microPythonIO,
 	microPythonRun,
+	mode,
+	port,
+	robot,
+	saveState,
 } from "$state/workspace.svelte";
-import ContextItem from "$components/ui/ContextItem.svelte";
 import {
 	faDownload,
 	faEnvelope,
@@ -37,20 +41,16 @@ import {
 	faVolumeHigh,
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import block from "$assets/block.svg";
-import { Screen, Theme, theme, selected, screen } from "$state/app.svelte";
-import SaveProject from "../popups/popups/Prompt.svelte";
-import { audio, workspace } from "$state/blockly.svelte";
 import { serialization } from "blockly";
-import Examples from "../popups/popups/Examples.svelte";
-import About from "../popups/popups/About.svelte";
-import UploadLog from "../popups/popups/UploadLog.svelte";
 import JSZip from "jszip";
-import Select from "$components/ui/Select.svelte";
-import { robots } from "$domain/robots";
-import Warning from "../popups/popups/Warning.svelte";
+import { type Writable, get } from "svelte/store";
 import MicroPythonIO from "../../../micropython";
-import { get, type Writable } from "svelte/store";
+import About from "../popups/popups/About.svelte";
+import Examples from "../popups/popups/Examples.svelte";
+import SaveProject from "../popups/popups/Prompt.svelte";
+import UploadLog from "../popups/popups/UploadLog.svelte";
+import Uploader from "../popups/popups/Uploader.svelte";
+import Warning from "../popups/popups/Warning.svelte";
 
 async function upload() {
 	popups.open({

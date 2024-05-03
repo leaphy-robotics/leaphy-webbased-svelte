@@ -1,19 +1,19 @@
-import flitzIcon from "$assets/robots/icons/l_flitz.svg";
-import originalIcon from "$assets/robots/icons/l_original.svg";
-import clickIcon from "$assets/robots/icons/l_click.svg";
-import nanoIcon from "$assets/robots/icons/l_nano.svg";
-import unoIcon from "$assets/robots/icons/l_uno.svg";
-import megaIcon from "$assets/robots/icons/l_mega.svg";
-import cppIcon from "$assets/robots/icons/l_c++.svg";
-import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
-import { Mode } from "$state/workspace.svelte";
-import type { ComponentType } from "svelte";
-import { RobotType, type Programmer } from "./robots.types";
-import AvrDude from "../programmers/AvrDude";
 import defaultCPP from "$assets/default-program.ino?raw";
 import defaultPython from "$assets/default-program.py?raw";
+import cppIcon from "$assets/robots/icons/l_c++.svg";
+import clickIcon from "$assets/robots/icons/l_click.svg";
+import flitzIcon from "$assets/robots/icons/l_flitz.svg";
+import megaIcon from "$assets/robots/icons/l_mega.svg";
+import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
+import nanoIcon from "$assets/robots/icons/l_nano.svg";
+import originalIcon from "$assets/robots/icons/l_original.svg";
+import unoIcon from "$assets/robots/icons/l_uno.svg";
+import { Mode } from "$state/workspace.svelte";
+import type { ComponentType } from "svelte";
+import AvrDude from "../programmers/AvrDude";
 import DFU from "../programmers/DFU";
 import Pico from "../programmers/Pico";
+import { type Programmer, RobotType } from "./robots.types";
 
 const DEFAULT_LIBRARIES = [
 	"Leaphy Extensions",

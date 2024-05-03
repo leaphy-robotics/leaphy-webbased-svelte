@@ -3,8 +3,8 @@ import { _ } from "svelte-i18n";
 
 import type { Library } from "$state/app.svelte";
 import { installed } from "$state/workspace.svelte";
-import Select from "./Select.svelte";
 import Button from "./Button.svelte";
+import Select from "./Select.svelte";
 
 interface Props {
 	library: Library;

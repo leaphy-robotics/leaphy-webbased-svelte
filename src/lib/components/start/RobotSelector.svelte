@@ -1,7 +1,7 @@
 <script lang="ts">
 import { type Robot, robots as allRobots } from "$domain/robots";
-import { Screen, selected, screen } from "$state/app.svelte";
-import { robot, mode, Mode, code } from "$state/workspace.svelte";
+import { Screen, screen, selected } from "$state/app.svelte";
+import { Mode, code, mode, robot } from "$state/workspace.svelte";
 
 interface Props {
 	robots: Robot[][];

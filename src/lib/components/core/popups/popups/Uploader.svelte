@@ -3,6 +3,8 @@ import { _ } from "svelte-i18n";
 
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
+import { type PopupState, popups } from "$state/popup.svelte";
+import { usbRequest } from "$state/upload.svelte";
 import {
 	Prompt,
 	SUPPORTED_VENDOR_IDS,
@@ -11,9 +13,7 @@ import {
 	robot,
 } from "$state/workspace.svelte";
 import { getContext, onMount } from "svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
 import type { Writable } from "svelte/store";
-import { usbRequest } from "$state/upload.svelte";
 
 interface Props {
 	source?: string;

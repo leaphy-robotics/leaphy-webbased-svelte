@@ -1,7 +1,7 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import * as monaco from "monaco-editor";
 import { Theme, theme } from "$state/app.svelte";
+import * as monaco from "monaco-editor";
+import { onMount } from "svelte";
 
 interface Props {
 	value: string;

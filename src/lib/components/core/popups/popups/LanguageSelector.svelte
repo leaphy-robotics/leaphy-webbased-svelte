@@ -2,7 +2,7 @@
 import leaphyLogo from "$assets/leaphy-logo-color.svg";
 import english from "$assets/translations/en.svg";
 import dutch from "$assets/translations/nl.svg";
-import { popups, type PopupState } from "$state/popup.svelte";
+import { type PopupState, popups } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { locale } from "svelte-i18n";
 import type { Writable } from "svelte/store";

@@ -1,9 +1,9 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
-import { popups, type PopupState } from "$state/popup.svelte";
+import { type PopupState, popups } from "$state/popup.svelte";
 import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import type { Writable } from "svelte/store";
 
 interface Props {
