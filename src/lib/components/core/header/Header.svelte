@@ -55,7 +55,7 @@
     import { get } from "svelte/store";
 
     async function upload() {
-        window._paq.push(['trackEvent', 'Main', 'UploadClicked']);
+        window._paq.push(["trackEvent", "Main", "UploadClicked"]);
         popups.open({
             component: Uploader,
             data: {
