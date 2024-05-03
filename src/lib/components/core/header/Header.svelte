@@ -6,6 +6,7 @@ import leaphyLogo from "$assets/leaphy-logo.svg";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import Select from "$components/ui/Select.svelte";
+import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
 import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
 import { audio, workspace } from "$state/blockly.svelte";
@@ -51,7 +52,6 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-	import { FileHandle } from "$domain/handles";
 
 async function upload() {
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
@@ -120,7 +120,7 @@ async function openProject() {
 async function saveProject() {
 	if (!$handle) return;
 
-    await get(handle).write(serialize());
+	await get(handle).write(serialize());
 	saveState.set(true);
 }
 

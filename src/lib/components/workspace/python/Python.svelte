@@ -1,61 +1,64 @@
 <script lang="ts">
+import defaultProgram from "$assets/default-program.py?raw";
 import CodeEditor from "$components/ui/CodeEditor.svelte";
 import Tree from "$components/ui/Tree.svelte";
-import { type Tree as TreeType } from "$components/ui/Tree.types"
+import type { Tree as TreeType } from "$components/ui/Tree.types";
+import { PythonHandle } from "$domain/handles";
 import { code, handle, microPythonIO } from "$state/workspace.svelte";
+import { get } from "svelte/store";
 import type MicroPythonIO from "../../../micropython";
 import Terminal from "./Terminal.svelte";
-import defaultProgram from "$assets/default-program.py?raw"
-import { get } from "svelte/store";
-	import { PythonHandle } from "$domain/handles";
 
-let tree = $state<TreeType|undefined>(undefined)
-let selected = $state<string[]>(["main.py"])
+let tree = $state<TreeType | undefined>(undefined);
+let selected = $state<string[]>(["main.py"]);
 
 async function getTree(io: MicroPythonIO, folder: string): Promise<TreeType> {
-    let items = await io.fs.ls(folder)
-    items = items.sort((a, b) => {
-        if (!a.isDir && b.isDir) return 1
-        if (a.isDir && !b.isDir) return -1
+	let items = await io.fs.ls(folder);
+	items = items.sort((a, b) => {
+		if (!a.isDir && b.isDir) return 1;
+		if (a.isDir && !b.isDir) return -1;
 
-        if (a.name < b.name) return -1
-        if (a.name > b.name) return 1
+		if (a.name < b.name) return -1;
+		if (a.name > b.name) return 1;
 
-        return 0
-    })
+		return 0;
+	});
 
-    let contents: (string|TreeType)[] = []
-    for (const item of items) {
-        if (item.isDir) contents.push(await getTree(io, `${folder === "/" ? "" : folder}/${item.name}`))
-        else contents.push(item.name)
-    }
+	let contents: (string | TreeType)[] = [];
+	for (const item of items) {
+		if (item.isDir)
+			contents.push(
+				await getTree(io, `${folder === "/" ? "" : folder}/${item.name}`),
+			);
+		else contents.push(item.name);
+	}
 
-    return {
-        name: folder.split('/').at(-1),
-        contents
-    }
+	return {
+		name: folder.split("/").at(-1),
+		contents,
+	};
 }
 
-microPythonIO.subscribe(async io => {
-    if (!io) return
+microPythonIO.subscribe(async (io) => {
+	if (!io) return;
 
-    if (!await io.fs.exists("main.py")) {
-        await io.fs.write("main.py", defaultProgram)
-    }
+	if (!(await io.fs.exists("main.py"))) {
+		await io.fs.write("main.py", defaultProgram);
+	}
 
-    tree = await getTree(io, "/")
-    tree.name = "robot"
-    
-    code.set(await io.fs.read("main.py"))
-    handle.set(new PythonHandle("main.py"))
-})
+	tree = await getTree(io, "/");
+	tree.name = "robot";
+
+	code.set(await io.fs.read("main.py"));
+	handle.set(new PythonHandle("main.py"));
+});
 
 async function select(tree: string[]) {
-    selected = tree
+	selected = tree;
 
-    const data = await get(microPythonIO).fs.read(tree.join('/'))
-    code.set(data)
-    handle.set(new PythonHandle(tree.join('/')))
+	const data = await get(microPythonIO).fs.read(tree.join("/"));
+	code.set(data);
+	handle.set(new PythonHandle(tree.join("/")));
 }
 </script>
 

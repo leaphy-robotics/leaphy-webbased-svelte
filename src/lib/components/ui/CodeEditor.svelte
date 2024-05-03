@@ -23,9 +23,9 @@ onMount(() => {
 		readOnly: !editable,
 	});
 	editor.getModel().onDidChangeContent(() => {
-		if (updating) updating = false
+		if (updating) updating = false;
 		else ignoreUpdate = true;
-		
+
 		value = editor.getValue();
 	});
 });

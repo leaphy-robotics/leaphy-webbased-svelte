@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
-	import Fa from "svelte-fa";
-	import type { Tree } from "./Tree.types";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import Fa from "svelte-fa";
+import type { Tree } from "./Tree.types";
 
-    interface Props {
-        tree: Tree,
-        selected: string[]|null,
-        onselect: (selection: string[]) => void,
-        indent?: number
-    }
-    let { tree, selected, indent = 0, onselect }: Props = $props()
+interface Props {
+	tree: Tree;
+	selected: string[] | null;
+	onselect: (selection: string[]) => void;
+	indent?: number;
+}
+let { tree, selected, indent = 0, onselect }: Props = $props();
 
-    let open = $state(!!selected)
-    function interact() {
-        open = !open
-    }
+let open = $state(!!selected);
+function interact() {
+	open = !open;
+}
 </script>
 
 <div class="tree" style:--indent={`${indent}px`}>

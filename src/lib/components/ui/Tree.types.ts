@@ -1,4 +1,4 @@
 export type Tree = {
-    name: string,
-    contents: (string | Tree)[]
-}
+	name: string;
+	contents: (string | Tree)[];
+};

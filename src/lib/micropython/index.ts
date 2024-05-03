@@ -94,7 +94,7 @@ export default class MicroPythonIO {
 				if (done) return false;
 				if (value.at(-1) !== 62) return false;
 
-				return true
+				return true;
 			})(),
 		]);
 

@@ -1,12 +1,12 @@
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
+import type { Handle } from "$domain/handles";
 import type { RobotDevice } from "$domain/robots";
 import type { ComponentType } from "svelte";
 import { get, writable } from "svelte/store";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
-import type { Handle } from "$domain/handles";
 
 export const Mode = {
 	BLOCKS: Blocks,
