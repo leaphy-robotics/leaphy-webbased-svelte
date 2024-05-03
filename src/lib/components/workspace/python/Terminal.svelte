@@ -91,7 +91,10 @@
                 }
                 case '\r': {
                     terminal.write('\r\n')
+                    historyPosition = history.length
+                    history.push('')
 
+                    if (!line) break
                     const events = io.runCode(line)
                     line = ''
                     pos = 0
@@ -103,9 +106,6 @@
                         terminal.write(`\x1b[31m${event.data}\x1b[0m`)
                     })
                     events.addEventListener('done', render)
-
-                    historyPosition = history.length
-                    history.push('')
 
                     break
                 }

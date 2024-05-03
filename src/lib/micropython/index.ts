@@ -3,6 +3,9 @@ import { popups } from "$state/popup.svelte"
 import { port } from "$state/workspace.svelte"
 import base64 from "base64-js"
 import { get } from "svelte/store"
+import { Commands } from "./commands"
+import { FileSystem } from "./filesystem"
+import { PackageManager } from "./packagagemanager"
 
 class StdoutEvent extends Event {
     static type = "stdout"
@@ -47,6 +50,9 @@ const decoder = new TextDecoder()
 const encoder = new TextEncoder()
 
 export default class MicroPythonIO {
+    public commands: Commands = new Commands(this)
+    public fs: FileSystem = new FileSystem(this)
+    public packageManager: PackageManager = new PackageManager(this)
     public port: SerialPort
     public reader: ReadableStreamDefaultReader<Uint8Array>
     public writer: WritableStreamDefaultWriter<Uint8Array>
@@ -97,19 +103,37 @@ export default class MicroPythonIO {
             
             return await this.enterREPLMode()
         }
+
+        await this.commands.loadCommands()
+        await this.packageManager.flashLibrary("github:leaphy-robotics/leaphy-micropython/package.json")
+
+        console.log(this.fs)
     }
 
     runCode(code: string) {
         this.running = true
         const events = new IOEventTarget()
         new Promise(async () => {
-            await this.writer.write(encoder.encode(`${code}\x04`))
+            const data = encoder.encode(`${code}\x04`)
+            for (let offset = 0; offset < data.length; offset += 256) {
+                await this.writer.write(data.slice(offset, offset+256))
+            }
 
-            const { value, done: disconnected } = await this.reader.read()
-            if (disconnected) throw new Error("Disconnected")
-            
-            const content = decoder.decode(value)
-            if (content.slice(0, 2) !== "OK") throw new Error("Compile error")
+            let content = ""
+            while (true) {
+                const { value, done: disconnected } = await this.reader.read()
+                if (disconnected) throw new Error("Disconnected")
+                
+                content += decoder.decode(value)
+                if (content.length < 2) continue
+
+                if (content.slice(0, 2) !== "OK") {
+                    console.log("Unexpected data: ", content)
+                    throw new Error("Compile error")
+                }
+
+                break
+            }
 
             let stdoutContent = ""
             let stderrContent = ""
@@ -130,6 +154,8 @@ export default class MicroPythonIO {
                         break
                     }
                     case Mode.NONE: {
+                        if (data !== ">") break
+
                         this.running = false
                         events.dispatchEvent(new DoneEvent(stdoutContent, stderrContent))
                         done = true

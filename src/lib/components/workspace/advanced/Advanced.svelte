@@ -13,7 +13,7 @@
 
 
 <div class="environment">
-    <CodeEditor bind:value={$code} />
+    <CodeEditor bind:value={$code} language="cpp" />
 </div>
 
 <style>
