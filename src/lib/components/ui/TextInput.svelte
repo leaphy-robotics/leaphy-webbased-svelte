@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { onMount, type Bindable } from "svelte";
+    import { onMount } from "svelte";
 
     interface Props {
         placeholder?: string;
-        value: Bindable<string>;
+        value: string;
         mode: "primary" | "secondary";
         rounded: boolean;
         focus?: boolean;

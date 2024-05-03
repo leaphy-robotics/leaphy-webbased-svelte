@@ -1,13 +1,12 @@
 <script lang="ts">
     import { computePosition } from "@floating-ui/dom";
     import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-    import { tick, type Bindable } from "svelte";
+    import { tick } from "svelte";
     import Fa from "svelte-fa";
-    import { number } from "svelte-i18n";
 
     interface Props {
         options: [string, any][];
-        value: Bindable<any>;
+        value: any;
     }
     let { options, value = $bindable() }: Props = $props();
 

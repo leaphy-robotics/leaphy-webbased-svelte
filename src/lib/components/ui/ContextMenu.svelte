@@ -3,8 +3,6 @@
         getContext,
         onDestroy,
         onMount,
-        tick,
-        type Bindable,
         type Snippet,
     } from "svelte";
     import { computePosition, type Placement } from "@floating-ui/dom";
