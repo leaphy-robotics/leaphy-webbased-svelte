@@ -79,12 +79,9 @@ function createPortState() {
 	let onReady: () => void;
 	subscribe(async (port) => {
 		if (!port || reserved) return;
-		console.log(1)
 		if (!port.readable || !port.writable) {
-			console.log(2)
 			await port.open({ baudRate: 115200 });
 		}
-		console.log(3)
 		if (port.readable.locked || port.writable.locked) return;
 
 		writer = port.writable.getWriter();
@@ -140,7 +137,6 @@ function createPortState() {
 		async connect(prompt: Prompt) {
 			this.ready = new Promise<void>((resolve) => (onReady = resolve));
 			const port = await this.requestPort(prompt);
-			console.log(port)
 			update(() => port);
 			return port;
 		},

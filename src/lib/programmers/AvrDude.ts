@@ -36,11 +36,8 @@ export default class AvrDude implements Programmer {
 		});
 		window.funcs = avrdude;
 
-		console.log(port)
 		if (port.readable || port.writable) await port.close();
-		console.log(2)
 		await port.open({ baudRate: 115200 });
-		console.log(3)
 		window.activePort = port;
 
 		const avrdudeConfig = await fetch("/avrdude.conf").then((res) =>
@@ -49,12 +46,10 @@ export default class AvrDude implements Programmer {
 		avrdude.FS.writeFile("/tmp/avrdude.conf", avrdudeConfig);
 		avrdude.FS.writeFile("/tmp/program.hex", response.hex);
 
-		console.log(1)
 		const disconnectPromise = new Promise((resolve) => {
 			if (navigator.serial && port instanceof SerialPort)
 				port.addEventListener("disconnect", resolve)
 		});
-		console.log(2)
 		const oldConsoleError = console.error;
 		const workerErrorPromise = new Promise((resolve) => {
 			console.error = (...data) => {
@@ -66,7 +61,6 @@ export default class AvrDude implements Programmer {
 				}
 			};
 		});
-		console.log(3)
 		const startAvrdude = avrdude.cwrap("startAvrdude", "number", ["string"]);
 
 		let race = await Promise.race([
@@ -74,7 +68,6 @@ export default class AvrDude implements Programmer {
 			startAvrdude(this.args),
 			workerErrorPromise,
 		]);
-		console.log(4)
 
 		console.error = oldConsoleError;
 		if (race.type) {
@@ -88,7 +81,6 @@ export default class AvrDude implements Programmer {
 		if (window.writeStream) window.writeStream.releaseLock();
 
 		const log = window.avrdudeLog;
-		console.log(log);
 		uploadLog.set(log);
 
 		if (race !== 0) {
