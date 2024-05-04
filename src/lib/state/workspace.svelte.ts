@@ -11,6 +11,7 @@ import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import { workspace } from "./blockly.svelte";
+import { popups } from "./popup.svelte";
 
 export type LeaphyPort =
 	| SerialPort
@@ -229,5 +230,10 @@ export async function tempSave() {
 }
 
 window.addEventListener("beforeunload", tempSave);
+
+mode.subscribe(() => {
+	popups.clear();
+	sidePanel.set(null);
+});
 
 code.subscribe(() => saveState.set(false));
