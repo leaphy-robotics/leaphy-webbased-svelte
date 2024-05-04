@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { goToHomePage, openExample as loadExample } from "./utils";
 
 test.beforeEach(goToHomePage);
