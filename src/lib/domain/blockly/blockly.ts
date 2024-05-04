@@ -173,6 +173,7 @@ export function setupWorkspace(
 
 		localStorage.setItem("backpack", JSON.stringify(backpack.getContents()));
 	});
+	workspace.addChangeListener(Blockly.Events.disableOrphans);
 
 	backpack.init();
 
