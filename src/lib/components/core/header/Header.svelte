@@ -70,6 +70,7 @@ async function connect() {
 }
 
 async function newProject() {
+	popups.clear();
 	willRestore.set(false);
 	selected.set(null);
 	screen.set(Screen.START);
@@ -224,6 +225,7 @@ function redo() {
 }
 
 async function blocks() {
+	popups.clear();
 	if (!$saveState) {
 		const ok = await popups.open({
 			component: Warning,
@@ -244,6 +246,7 @@ async function blocks() {
 }
 
 async function cpp() {
+	popups.clear();
 	tempSave();
 	mode.set(Mode.ADVANCED);
 }
@@ -277,12 +280,14 @@ function runPython() {
         onclick={saveProjectAs}
         {open}
     />
-    <ContextItem
-        icon={faGraduationCap}
-        name={$_("EXAMPLES")}
-        onclick={examples}
-        {open}
-    />
+    {#if $mode === Mode.BLOCKS}
+        <ContextItem
+            icon={faGraduationCap}
+            name={$_("EXAMPLES")}
+            onclick={examples}
+            {open}
+        />
+    {/if}
 {/snippet}
 {#snippet helpContext(open: Writable<boolean>)}
     <ContextItem

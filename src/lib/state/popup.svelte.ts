@@ -17,7 +17,7 @@ export interface PopupState {
 }
 
 function createPopups() {
-	const { subscribe, update } = writable<PopupState[]>([]);
+	const { subscribe, update, set } = writable<PopupState[]>([]);
 
 	return {
 		subscribe,
@@ -59,6 +59,9 @@ function createPopups() {
 					return false;
 				}),
 			);
+		},
+		clear() {
+			set([]);
 		},
 	};
 }
