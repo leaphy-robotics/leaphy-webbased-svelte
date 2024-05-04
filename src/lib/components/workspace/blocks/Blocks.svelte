@@ -38,6 +38,7 @@ onMount(() => {
 	$workspace.addChangeListener(() => {
 		code.set(arduino.workspaceToCode($workspace));
 		updateSizing();
+		($workspace as WorkspaceSvg).resize();
 	});
 });
 
