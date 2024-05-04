@@ -55,3 +55,47 @@ test("Undo redo - Variable change", async ({ page }) => {
 	await page.keyboard.press("Control+y");
 	await expect(page.getByText('123', { exact: true })).toBeVisible();
 });
+
+test("Undo redo - Dragging", async ({ page }) => {
+	await page.getByText("Leaphy Original").click();
+	await page.getByText("Original Uno").click();
+
+	await loadExample(page, "blink");
+
+	await page.locator(".side").first().click(); // Open code
+
+	// Drag the repeat block somewhere to the left, disconnecting it
+	await page.getByText('repeat forever').dragTo(page.getByText('repeat forever'), {
+		force: true,
+		targetPosition: {
+			x: -250,
+			y: 0,
+		}
+	});
+
+	await expect(page.locator(".view-lines")).not.toContainText("delay");
+
+	await page.keyboard.press("Control+z");
+	await expect(page.locator(".view-lines")).toContainText("delay");
+	await page.keyboard.press("Control+y");
+	await expect(page.locator(".view-lines")).not.toContainText("delay");
+
+	// Move it back to its original location, connecting it again
+	await page.getByText('repeat forever').dragTo(page.getByText('Leaphy', { exact: true }), {
+		force: true,
+		targetPosition: {
+			x: 0,
+			y: 50,
+		}
+	});
+
+	await expect(page.locator(".view-lines")).toContainText("delay");
+	await page.keyboard.press("Control+z");
+	await expect(page.locator(".view-lines")).not.toContainText("delay");
+	await page.keyboard.press("Control+y");
+	await expect(page.locator(".view-lines")).toContainText("delay");
+	await page.keyboard.press("Control+z");
+	await expect(page.locator(".view-lines")).not.toContainText("delay");
+	await page.keyboard.press("Control+z");
+	await expect(page.locator(".view-lines")).toContainText("delay");
+});
