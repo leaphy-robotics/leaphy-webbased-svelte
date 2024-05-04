@@ -66,7 +66,9 @@ async function upload() {
 }
 
 async function connect() {
-	await port.connect(Prompt.ALWAYS);
+	try {
+		await port.connect(Prompt.ALWAYS);
+	} catch {}
 }
 
 async function newProject() {
@@ -252,7 +254,12 @@ async function cpp() {
 }
 
 async function connectPython() {
-	await port.connect(Prompt.MAYBE);
+	try {
+		await port.connect(Prompt.MAYBE);
+	} catch {
+		return;
+	}
+
 	const io = new MicroPythonIO();
 	await io.initialize();
 	microPythonIO.set(io);

@@ -77,7 +77,7 @@ function createLogState() {
 export const log = createLogState();
 
 function createPortState() {
-	const { subscribe, update } = writable<LeaphyPort>();
+	const { subscribe, set, update } = writable<LeaphyPort>();
 
 	let reserved = false;
 	let reader: ReadableStreamDefaultReader<Uint8Array>;
@@ -105,7 +105,7 @@ function createPortState() {
 	return {
 		subscribe,
 		ready: new Promise<void>((resolve) => (onReady = resolve)),
-		async requestPort(prompt: Prompt) {
+		async requestPort(prompt: Prompt): Promise<LeaphyPort> {
 			if (navigator.serial) {
 				if (prompt !== Prompt.ALWAYS) {
 					const [port] = await navigator.serial.getPorts();
@@ -143,7 +143,12 @@ function createPortState() {
 		async connect(prompt: Prompt) {
 			this.ready = new Promise<void>((resolve) => (onReady = resolve));
 			const port = await this.requestPort(prompt);
-			update(() => port);
+			if ("addEventListener" in port) {
+				port.addEventListener("disconnect", async () => {
+					set(undefined);
+				});
+			}
+			set(port);
 			return port;
 		},
 		reconnect() {
