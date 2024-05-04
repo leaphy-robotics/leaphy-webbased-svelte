@@ -25,6 +25,7 @@ let progress = $state(0);
 let currentState = $state("CONNECTING");
 let error = $state<string | null>(null);
 let done = $state(false);
+let failed = $state(false);
 
 class UploadError extends Error {
 	constructor(
@@ -73,8 +74,12 @@ async function upload(res: Record<string, string>) {
 
 onMount(async () => {
 	try {
-		if (!$port) await port.connect(Prompt.MAYBE);
-		progress += 100 / 3;
+		try {
+			if (!$port) await port.connect(Prompt.MAYBE);
+			progress += 100 / 3;
+		} catch {
+			throw new UploadError("NO_DEVICE_SELECTED", "");
+		}
 
 		const res = program || (await compile());
 		progress += 100 / 3;
@@ -86,6 +91,7 @@ onMount(async () => {
 		done = true;
 	} catch (e) {
 		done = true;
+		failed = true;
 		currentState = e?.name || "UPDATE_FAILED";
 		error = e.description;
 	}
@@ -109,7 +115,7 @@ async function connectUSB() {
 }
 </script>
 
-<div class="content" class:error={!!error}>
+<div class="content" class:error={!!failed}>
     {#if $usbRequest}
         <h2 class="state">{$_("RECONNECT")}</h2>
         <div class="info">{$_("RECONNECT_INFO")}</div>
