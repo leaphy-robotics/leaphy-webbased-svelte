@@ -30,7 +30,18 @@ function createPopups() {
 				popup,
 				onclose,
 			};
-			update((popups) => [...popups, state]);
+			update((popups) => {
+				if (
+					popups.find(
+						(popup) => popup.popup.component === state.popup.component,
+					)
+				) {
+					onclose(undefined);
+					return popups;
+				}
+
+				return [...popups, state];
+			});
 
 			return promise;
 		},
