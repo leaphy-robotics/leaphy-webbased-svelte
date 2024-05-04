@@ -4,11 +4,13 @@ import Python from "$components/workspace/python/Python.svelte";
 import type { Handle } from "$domain/handles";
 import type { RobotDevice } from "$domain/robots";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
+import { serialization } from "blockly";
 import type { ComponentType } from "svelte";
 import { get, writable } from "svelte/store";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
+import { workspace } from "./blockly.svelte";
 
 export type LeaphyPort =
 	| SerialPort
@@ -205,5 +207,27 @@ export const saveState = writable<boolean>(true);
 export const installed = writable<[string, string][]>([]);
 export const microPythonIO = writable<MicroPythonIO | undefined>();
 export const microPythonRun = writable<IOEventTarget | undefined>();
+
+export async function tempSave() {
+	switch (get(mode)) {
+		case Mode.BLOCKS: {
+			localStorage.setItem(
+				`session_blocks_${get(robot).id}`,
+				JSON.stringify(serialization.workspaces.save(get(workspace))),
+			);
+			break;
+		}
+		case Mode.ADVANCED: {
+			localStorage.setItem("session_l_cpp", get(code));
+			break;
+		}
+		case Mode.PYTHON: {
+			localStorage.setItem("session_l_python", get(code));
+			break;
+		}
+	}
+}
+
+window.addEventListener("beforeunload", tempSave);
 
 code.subscribe(() => saveState.set(false));

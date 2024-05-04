@@ -1,22 +1,14 @@
 <script lang="ts">
-import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
-import SideBar from "$components/ui/SideBar.svelte";
-import SideButton from "$components/ui/SideButton.svelte";
 import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import { Theme, theme } from "$state/app.svelte";
-import { workspace } from "$state/blockly.svelte";
-import { popups } from "$state/popup.svelte";
-import { code, robot, sidePanel } from "$state/workspace.svelte";
-import {
-	faCode,
-	faSquarePollHorizontal,
-} from "@fortawesome/free-solid-svg-icons";
+import { restore, willRestore, workspace } from "$state/blockly.svelte";
+import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { WorkspaceSvg, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
-import Code from "../panels/Code.svelte";
+import { get } from "svelte/store";
 
 let backgroundX = $state(0);
 
@@ -34,7 +26,14 @@ function updateSizing() {
 
 let element: HTMLDivElement;
 onMount(() => {
-	workspace.set(setupWorkspace($robot, element, getTheme($theme)));
+	workspace.set(
+		setupWorkspace(
+			$robot,
+			element,
+			getTheme($theme),
+			get(willRestore) ? get(restore) : undefined,
+		),
+	);
 	updateSizing();
 	$workspace.addChangeListener(() => {
 		code.set(arduino.workspaceToCode($workspace));

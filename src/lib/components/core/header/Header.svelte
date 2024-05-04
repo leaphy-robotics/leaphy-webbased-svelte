@@ -9,7 +9,7 @@ import Select from "$components/ui/Select.svelte";
 import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
 import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
-import { audio, workspace } from "$state/blockly.svelte";
+import { audio, restore, willRestore, workspace } from "$state/blockly.svelte";
 import { popups } from "$state/popup.svelte";
 import {
 	Mode,
@@ -22,6 +22,7 @@ import {
 	port,
 	robot,
 	saveState,
+	tempSave,
 } from "$state/workspace.svelte";
 import {
 	faDownload,
@@ -69,6 +70,7 @@ async function connect() {
 }
 
 async function newProject() {
+	willRestore.set(false);
 	selected.set(null);
 	screen.set(Screen.START);
 }
@@ -124,9 +126,16 @@ async function openProject() {
 		robot.set(robots.l_nano_rp2040);
 		code.set(await content.text());
 	} else {
-		mode.set(Mode.BLOCKS);
+		if (get(mode) === Mode.BLOCKS) {
+			serialization.workspaces.load(
+				JSON.parse(await content.text()),
+				$workspace,
+			);
+		} else {
+			restore.set(JSON.parse(await content.text()));
+			mode.set(Mode.BLOCKS);
+		}
 		robot.set(robots[file.name.split(".").at(-1)]);
-		serialization.workspaces.load(JSON.parse(await content.text()), $workspace);
 	}
 }
 
@@ -227,7 +236,16 @@ async function blocks() {
 		if (!ok) return;
 	}
 
+	tempSave();
+	restore.set(
+		JSON.parse(localStorage.getItem(`session_blocks_${get(robot).id}`)),
+	);
 	mode.set(Mode.BLOCKS);
+}
+
+async function cpp() {
+	tempSave();
+	mode.set(Mode.ADVANCED);
 }
 
 async function connectPython() {
@@ -387,7 +405,7 @@ function runPython() {
                     mode={"outlined"}
                     icon={faPen}
                     name={$_("CODE")}
-                    onclick={() => mode.set(Mode.ADVANCED)}
+                    onclick={cpp}
                 />
             {:else if $mode === Mode.ADVANCED}
                 <Button

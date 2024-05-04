@@ -1,7 +1,9 @@
 <script lang="ts">
 import { type Robot, robots as allRobots } from "$domain/robots";
 import { Screen, screen, selected } from "$state/app.svelte";
+import { restore, workspace } from "$state/blockly.svelte";
 import { Mode, code, mode, robot, saveState } from "$state/workspace.svelte";
+import { serialization } from "blockly";
 
 interface Props {
 	robots: Robot[][];
@@ -14,7 +16,7 @@ function select(type: Robot) {
 
 	if ("variants" in type) return selected.set(type);
 	if ("mode" in type) {
-		code.set(type.defaultProgram);
+		code.set(localStorage.getItem(`session_${type.id}`) || type.defaultProgram);
 		robot.set(allRobots[type.defaultRobot]);
 		mode.set(type.mode);
 		screen.set(Screen.WORKSPACE);
@@ -22,6 +24,9 @@ function select(type: Robot) {
 		return;
 	}
 
+	if (localStorage.getItem(`session_blocks_${type.id}`)) {
+		restore.set(JSON.parse(localStorage.getItem(`session_blocks_${type.id}`)));
+	}
 	robot.set(type);
 	mode.set(Mode.BLOCKS);
 	screen.set(Screen.WORKSPACE);
