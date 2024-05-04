@@ -1,6 +1,6 @@
 import consumers from "node:stream/consumers";
 import { expect, test } from "@playwright/test";
-import { goToHomePage } from "./utils";
+import { goToHomePage, openExample } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -8,10 +8,7 @@ test("Load Blink example and check code", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
-	// Open the blink example
-	await page.getByRole("button", { name: "My projects" }).click();
-	await page.getByRole("cell", { name: "Examples" }).click();
-	await page.getByRole("button", { name: "Blink" }).click();
+	await openExample(page, "blink");
 
 	await page.locator(".side").first().click(); // Open code
 
