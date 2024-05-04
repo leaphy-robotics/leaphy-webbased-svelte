@@ -99,7 +99,7 @@ function select(type: Robot) {
         align-items: center;
 
         box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        border: solid 1px var(--background);
+        border: solid 1px var(--background-tint);
         background: var(--robot);
         aspect-ratio: 1/1;
         width: 100%;
