@@ -35,7 +35,10 @@ onMount(() => {
 		),
 	);
 	updateSizing();
-	$workspace.addChangeListener(() => {
+	$workspace.addChangeListener((event: any) => {
+		if (!(event.type === "toolbox_item_select")) {
+			return;
+		}
 		code.set(arduino.workspaceToCode($workspace));
 		updateSizing();
 		($workspace as WorkspaceSvg).resize();
