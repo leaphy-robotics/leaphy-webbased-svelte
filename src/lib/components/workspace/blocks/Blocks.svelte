@@ -6,6 +6,7 @@ import { restore, willRestore, workspace } from "$state/blockly.svelte";
 import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { WorkspaceSvg, serialization } from "blockly";
+	import type { Abstract } from "blockly/core/events/events";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
@@ -35,7 +36,7 @@ onMount(() => {
 		),
 	);
 	updateSizing();
-	$workspace.addChangeListener((event: any) => {
+	$workspace.addChangeListener((event: Abstract) => {
 		if (!(event.type === "toolbox_item_select")) {
 			return;
 		}
