@@ -2,7 +2,13 @@
 import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import { Theme, theme } from "$state/app.svelte";
-import { restore, willRestore, workspace } from "$state/blockly.svelte";
+import {
+	canRedo,
+	canUndo,
+	restore,
+	willRestore,
+	workspace,
+} from "$state/blockly.svelte";
 import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { Events, WorkspaceSvg, serialization } from "blockly";
@@ -36,6 +42,9 @@ onMount(() => {
 	);
 	updateSizing();
 	$workspace.addChangeListener((event) => {
+		canUndo.set(get(workspace).getUndoStack().length > 0);
+		canRedo.set(get(workspace).getRedoStack().length > 0);
+
 		code.set(arduino.workspaceToCode($workspace));
 		updateSizing();
 

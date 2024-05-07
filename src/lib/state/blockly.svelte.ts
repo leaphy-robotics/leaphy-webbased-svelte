@@ -11,3 +11,6 @@ export const audio = writable<boolean>(
 audio.subscribe((audio) => {
 	localStorage.setItem("audio", JSON.stringify(audio));
 });
+
+export const canUndo = writable<boolean>(false);
+export const canRedo = writable<boolean>(false);
