@@ -10,32 +10,34 @@ test("Saving - Backpack", async ({ page }) => {
 	await loadExample(page, "blink");
 
 	// Put something in the backpack
-	await page.getByText('repeat forever').dragTo(page.locator('.blocklyBackpack'));
+	await page
+		.getByText("repeat forever")
+		.dragTo(page.locator(".blocklyBackpack"));
 
 	// Check that its in the backpack
-	await expect(page.getByText('repeat forever')).toBeHidden();
-	await page.locator('.blocklyBackpack').click();
-	await expect(page.getByText('repeat forever')).toBeVisible();
+	await expect(page.getByText("repeat forever")).toBeHidden();
+	await page.locator(".blocklyBackpack").click();
+	await expect(page.getByText("repeat forever")).toBeVisible();
 
 	// Start a new project, why not?
-	await page.getByRole('button', { name: 'My projects' }).click();
-	await page.getByRole('cell', { name: 'New' }).click();
+	await page.getByRole("button", { name: "My projects" }).click();
+	await page.getByRole("cell", { name: "New" }).click();
 
 	await page.reload();
 
 	// Load a different robot type than before, cause why not
-	await page.getByRole('button', { name: 'Leaphy Click Leaphy Click' }).click();
+	await page.getByRole("button", { name: "Leaphy Click Leaphy Click" }).click();
 
-	await expect(page.getByText('repeat forever')).toBeHidden();
-	await page.locator('.blocklyBackpack').click();
-	await expect(page.getByText('repeat forever')).toBeVisible();
+	await expect(page.getByText("repeat forever")).toBeHidden();
+	await page.locator(".blocklyBackpack").click();
+	await expect(page.getByText("repeat forever")).toBeVisible();
 
-	await page.getByText('repeat forever').dragTo(page.getByText('Leaphy'), {
+	await page.getByText("repeat forever").dragTo(page.getByText("Leaphy"), {
 		force: true,
 		targetPosition: {
 			x: 30,
-			y: 30
-		}
+			y: 30,
+		},
 	});
 
 	// Check that the blocks have been loaded properly
@@ -54,23 +56,23 @@ test("Saving - Blockly", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
-	await expect(page.getByText('repeat forever')).toBeVisible();
+	await expect(page.getByText("repeat forever")).toBeVisible();
 });
 
 test("Saving - C++", async ({ page }) => {
-	await page.getByRole('button', { name: 'Leaphy C++ Leaphy C++' }).click();
-	await page.getByText('setup').click();
-	await page.getByLabel('Editor content;Press Alt+F1').fill('testing');
+	await page.getByRole("button", { name: "Leaphy C++ Leaphy C++" }).click();
+	await page.getByText("setup").click();
+	await page.getByLabel("Editor content;Press Alt+F1").fill("testing");
 
-	await expect(page.getByText('setup')).toBeHidden();
-	await expect(page.getByText('testing')).toBeVisible();
+	await expect(page.getByText("setup")).toBeHidden();
+	await expect(page.getByText("testing")).toBeVisible();
 
 	await page.reload();
 
-	await page.getByRole('button', { name: 'Leaphy C++ Leaphy C++' }).click();
+	await page.getByRole("button", { name: "Leaphy C++ Leaphy C++" }).click();
 
-	await expect(page.getByText('setup')).toBeHidden();
-	await expect(page.getByText('testing')).toBeVisible();
+	await expect(page.getByText("setup")).toBeHidden();
+	await expect(page.getByText("testing")).toBeVisible();
 });
 
 test("Saving - New project", async ({ page }) => {
@@ -80,13 +82,13 @@ test("Saving - New project", async ({ page }) => {
 	await loadExample(page, "blink");
 
 	// Start a new project, should reset to the default
-	await page.getByRole('button', { name: 'My projects' }).click();
-	await page.getByRole('cell', { name: 'New' }).click();
+	await page.getByRole("button", { name: "My projects" }).click();
+	await page.getByRole("cell", { name: "New" }).click();
 
 	// Open the same editor
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
 	// Its a new project, it should not be here!
-	await expect(page.getByText('repeat forever')).toBeHidden();
+	await expect(page.getByText("repeat forever")).toBeHidden();
 });
