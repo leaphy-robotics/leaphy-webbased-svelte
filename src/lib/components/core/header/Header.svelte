@@ -9,7 +9,14 @@ import Select from "$components/ui/Select.svelte";
 import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
 import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
-import { audio, restore, willRestore, workspace } from "$state/blockly.svelte";
+import {
+	audio,
+	canRedo,
+	canUndo,
+	restore,
+	willRestore,
+	workspace,
+} from "$state/blockly.svelte";
 import { popups } from "$state/popup.svelte";
 import {
 	Mode,
@@ -405,8 +412,8 @@ function runPython() {
 
     <div class="comp">
         {#if $screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
-            <Button mode={"outlined"} icon={faUndo} onclick={undo} />
-            <Button mode={"outlined"} icon={faRedo} onclick={redo} />
+            <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!$canUndo} />
+            <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!$canRedo} />
         {/if}
     </div>
 
