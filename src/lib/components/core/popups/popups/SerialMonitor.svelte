@@ -1,15 +1,29 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
+import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
 import { Prompt, log, port } from "$state/workspace.svelte";
-import { faArrowDown, faTrash, faX } from "@fortawesome/free-solid-svg-icons";
+import {
+	faArrowDown,
+	faBars,
+	faChartLine,
+	faTrash,
+	faX,
+} from "@fortawesome/free-solid-svg-icons";
 import { tick } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
 
-let element: HTMLDivElement;
+enum Mode {
+	TEXT = 0,
+	CHART = 1,
+}
+
+let mode = $state(Mode.TEXT);
+
+let element = $state<HTMLDivElement>();
 function formatDate(date: Date) {
 	return `${date.getHours()}:${String(date.getMinutes()).padStart(
 		2,
@@ -26,7 +40,7 @@ log.subscribe(async () => {
 	element.scroll({ top: element.scrollHeight, behavior: "smooth" });
 });
 
-let value = "";
+let value = $state("");
 function send(event: SubmitEvent) {
 	event.preventDefault();
 	log.write(`${value}\n`);
@@ -57,30 +71,40 @@ function download() {
 async function connect() {
 	await port.connect(Prompt.MAYBE);
 }
+
+function switchMode() {
+	if (mode === Mode.CHART) mode = Mode.TEXT;
+	else mode = Mode.CHART;
+}
 </script>
 
 {#snippet actions()}
     <WindowButton icon={faArrowDown} onclick={download} />
+	<WindowButton icon={mode === Mode.TEXT ? faChartLine : faBars} onclick={switchMode} />
     <WindowButton icon={faTrash} onclick={log.clear} />
 {/snippet}
 {#snippet content()}
     {#if !$port}
-    <div class="warning">
-        <div class="desc">
-            <div class="name">{$_("NOT_CONNECTED")}</div>
-            <div class="description">{$_("NOT_CONNECTED_DESC")}</div>
-        </div>
-        <Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
-    </div>
+	    <div class="warning">
+	        <div class="desc">
+	            <div class="name">{$_("NOT_CONNECTED")}</div>
+	            <div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+	        </div>
+	        <Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
+	    </div>
     {/if}
-    <div class="content" bind:this={element}>
-        {#each $log as item (item.id)}
-            <div class="item">
-                <div class="date">{formatDate(item.date)}</div>
-                <div class="text">{item.content}</div>
-            </div>
-        {/each}
-    </div>
+    {#if mode === Mode.TEXT}
+	    <div class="content" bind:this={element}>
+	        {#each $log as item (item.id)}
+	            <div class="item">
+	                <div class="date">{formatDate(item.date)}</div>
+	                <div class="text">{item.content}</div>
+	            </div>
+	        {/each}
+	    </div>
+	{:else if mode === Mode.CHART}
+		<Chart />
+	{/if}
     {#if $port}
         <form onsubmit={send}>
             <TextInput
