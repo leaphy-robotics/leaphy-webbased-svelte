@@ -5,8 +5,8 @@ import { Theme, theme } from "$state/app.svelte";
 import { restore, willRestore, workspace } from "$state/blockly.svelte";
 import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import { WorkspaceSvg, serialization } from "blockly";
-import type { Abstract } from "blockly/core/events/events";
+import { Events, WorkspaceSvg, serialization } from "blockly";
+import { type Abstract } from "blockly/core/events/events";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
@@ -36,13 +36,13 @@ onMount(() => {
 		),
 	);
 	updateSizing();
-	$workspace.addChangeListener((event: Abstract) => {
-		if (!(event.type === "toolbox_item_select")) {
-			return;
-		}
+	$workspace.addChangeListener((event) => {
 		code.set(arduino.workspaceToCode($workspace));
 		updateSizing();
-		($workspace as WorkspaceSvg).resize();
+
+		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
+			($workspace as WorkspaceSvg).resize();
+		}
 	});
 });
 
