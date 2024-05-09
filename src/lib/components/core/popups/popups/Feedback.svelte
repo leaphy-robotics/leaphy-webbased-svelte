@@ -59,7 +59,7 @@ function onsubmit(event: SubmitEvent) {
     <TextArea
         bind:value={comments}
         mode={"secondary"}
-        rounded={false}
+        rounded={true}
         focus={true}
 		rows={10}
     />

@@ -45,7 +45,7 @@ onMount(() => {
         color: var(--on-secondary);
     }
     .rounded {
-        border-radius: 20px;
+        border-radius: 10px;
     }
 
     .primary::placeholder {
