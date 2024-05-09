@@ -321,7 +321,7 @@ function runPython() {
         {open}
     />
     <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} {open} />
-	<ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
+    <ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
 {/snippet}
 {#snippet moreContext(open: Writable<boolean>)}
     {#snippet languageContext(open: Writable<boolean>)}
