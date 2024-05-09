@@ -18,8 +18,6 @@ jobs:
         run: yarn --frozen-lockfile --prefer-offline
       - name: Run Biome
         run: yarn biome ci src tests
-      - name: Run linter
-        run: yarn lint
       - name: Run ESLint
         run: npx eslint .
       - name: Run prettier
