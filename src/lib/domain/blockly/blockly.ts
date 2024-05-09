@@ -9,14 +9,14 @@ import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	CATEGORIES,
 	EXTENSIONS,
-	THEME,
 	blocks,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
+import { type WorkspaceSvg, serialization } from "blockly";
+import type { Workspace } from "blockly";
 import type {
 	CategoryInfo,
 	ToolboxDefinition,
-	ToolboxItemInfo,
 } from "blockly/core/utils/toolbox";
 import { Backpack } from "./backpack";
 import { LeaphyCategory } from "./category-ui/category";
@@ -119,6 +119,19 @@ export function setLocale(robot: RobotDevice, locale: string) {
 		translation.ARD_SERVO_WRITE = translation.ARD_SERVO_ARM_WRITE;
 	} else {
 		translation.ARD_SERVO_WRITE = translation.ARD_SERVO_REGULAR_WRITE;
+	}
+}
+
+// Load a workspace from a JSON or XML string
+export function loadWorkspaceFromString(content: string, workspace: Workspace) {
+	try {
+		const json = JSON.parse(content);
+		serialization.workspaces.load(json, workspace);
+	} catch {
+		// It's not JSON, maybe it's XML
+		const xml = Blockly.utils.xml.textToDom(content);
+		workspace.clear();
+		Blockly.Xml.domToWorkspace(xml, workspace);
 	}
 }
 
