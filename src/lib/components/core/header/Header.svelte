@@ -100,6 +100,7 @@ async function saveProjectAs() {
 			name: "SAVEAS",
 			placeholder: "GIVE_FILENAME",
 			confirm: "SAVE",
+			requireValue: true,
 		},
 		allowInteraction: false,
 	});

@@ -11,8 +11,15 @@ interface Props {
 	placeholder: string;
 	confirm: string;
 	value?: string;
+	requireValue: boolean;
 }
-let { name, placeholder, confirm, value = $bindable("") }: Props = $props();
+let {
+	name,
+	placeholder,
+	confirm,
+	value = $bindable(""),
+	requireValue = false,
+}: Props = $props();
 const popupState = getContext<Writable<PopupState>>("state");
 
 function cancel() {
@@ -20,6 +27,7 @@ function cancel() {
 }
 
 function save() {
+	if (requireValue && !value) return;
 	popups.close($popupState.id, value);
 }
 
