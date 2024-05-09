@@ -52,5 +52,6 @@
     "svelte-i18n": "^4.0.0",
     "vite-plugin-static-copy": "1.0.4",
     "web-serial-polyfill": "^1.0.15"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }
