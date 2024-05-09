@@ -98,6 +98,7 @@
 	"DEVICE_INFORMATION": "Apparaat informatie",
 	"EMAIL": "E-mail",
 	"FEEDBACK": "Suggestie / Feedback",
+	"FEEDBACK_SENT": "Uw feedback is verstuurd, bedankt!",
 	"FLASH_FIRMWARE": "Firmware flashen",
 	"FLASHING": "Flashing de firmware...",
 	"FLASHED": "Firmware succesvol geflashed",

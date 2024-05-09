@@ -8,8 +8,9 @@ import type { Writable } from "svelte/store";
 interface Props {
 	title: string;
 	message: string;
+	showCancel: boolean;
 }
-const { title, message }: Props = $props();
+const { title, message, showCancel = true }: Props = $props();
 
 const popupState = getContext<Writable<PopupState>>("state");
 function cancel() {
@@ -24,7 +25,11 @@ function ok() {
     <h2>{$_(title)}</h2>
     <div class="text">{$_(message)}</div>
     <div class="actions">
+		{#if showCancel}
         <Button name={$_("CANCEL")} mode={"secondary"} onclick={cancel} />
+		{:else}
+		<div></div>
+		{/if}
         <Button name={$_("OK")} mode={"primary"} onclick={ok} />
     </div>
 </div>

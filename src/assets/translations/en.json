@@ -98,6 +98,7 @@
 	"DEVICE_INFORMATION": "Device information",
 	"EMAIL": "Email",
 	"FEEDBACK": "Suggestion / Feedback",
+	"FEEDBACK_SENT": "Your feedback has been sent, thank you!",
 	"FLASH_FIRMWARE": "Flash firmware",
 	"FLASHING": "Flashing firmware...",
 	"FLASHED": "Firmware flashed",

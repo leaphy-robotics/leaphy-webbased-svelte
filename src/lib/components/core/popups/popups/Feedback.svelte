@@ -1,4 +1,5 @@
 <script lang="ts">
+import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import TextArea from "$components/ui/TextArea.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
@@ -17,7 +18,7 @@ function cancel() {
 	popups.close($popupState.id, false);
 }
 
-function save() {
+async function save() {
 	const eventId = Sentry.captureMessage("User Feedback");
 	const userFeedback = {
 		event_id: eventId,
@@ -26,6 +27,16 @@ function save() {
 		comments: comments,
 	};
 	Sentry.captureUserFeedback(userFeedback);
+
+	await popups.open({
+		component: Warning,
+		data: {
+			title: "FEEDBACK",
+			message: $_("FEEDBACK_SENT"),
+			showCancel: false,
+		},
+		allowInteraction: true,
+	});
 
 	popups.close($popupState.id, comments);
 }
