@@ -8,16 +8,9 @@ import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 import type { Writable } from "svelte/store";
 
-interface Props {
-	comments?: string;
-	senderName: string;
-	senderEmail: string;
-}
-let {
-	comments = $bindable(""),
-	senderName = $bindable(""),
-	senderEmail = $bindable(""),
-}: Props = $props();
+let comments = "";
+let senderName = "";
+let senderEmail = "";
 const popupState = getContext<Writable<PopupState>>("state");
 
 function cancel() {
@@ -50,7 +43,7 @@ function onsubmit(event: SubmitEvent) {
 			placeholder={$_("NAME")}
 			bind:value={senderEmail}
 			mode="secondary"
-			rounded={false}>
+			rounded={true}>
 		</TextInput>
 	</div>
 
@@ -59,7 +52,7 @@ function onsubmit(event: SubmitEvent) {
 			placeholder={$_("EMAIL")}
 			bind:value={senderName}
 			mode="secondary"
-			rounded={false}>
+			rounded={true}>
 		</TextInput>
 	</div>
 
