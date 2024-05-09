@@ -10,6 +10,7 @@ interface Props {
 	icon?: IconDefinition | string;
 	onclick?: () => void;
 	context?: Snippet<[Writable<boolean>]>;
+	disabled?: boolean;
 	mode: "primary" | "secondary" | "outlined" | "accent";
 	bold?: boolean;
 }
@@ -20,6 +21,7 @@ const {
 	context,
 	bold,
 	icon,
+	disabled,
 }: Props = $props();
 
 let btn: HTMLButtonElement = $state();
@@ -39,6 +41,7 @@ function onContext() {
 <button
     bind:this={btn}
     {onclick}
+    {disabled}
     type="button"
     class="btn"
     class:primary={mode === "primary"}
@@ -92,5 +95,10 @@ function onContext() {
     .bold {
         font-weight: bolder;
         font-size: 1.1em;
+    }
+
+    .btn[disabled] {
+        filter: opacity(.5);
+        cursor: unset;
     }
 </style>

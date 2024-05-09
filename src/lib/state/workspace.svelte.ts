@@ -40,6 +40,30 @@ interface LogItem {
 
 export const SUPPORTED_VENDOR_IDS = [0x1a86, 9025, 2341, 0x0403, 0x2e8a];
 
+function createChartState() {
+	const { subscribe, update, set } = writable<
+		Record<string, { x: Date; y: number }[]>
+	>({});
+
+	return {
+		subscribe,
+		point(chart: string, height: number) {
+			update((charts) => {
+				if (!charts[chart]) {
+					charts[chart] = [];
+				}
+
+				charts[chart].push({ x: new Date(), y: height });
+				return charts;
+			});
+		},
+		clear() {
+			set({});
+		},
+	};
+}
+export const charts = createChartState();
+
 let writer: WritableStreamDefaultWriter<Uint8Array>;
 function createLogState() {
 	const { subscribe, update, set } = writable<LogItem[]>([]);
@@ -51,12 +75,20 @@ function createLogState() {
 			writer.write(new TextEncoder().encode(content));
 		},
 		clear() {
+			charts.clear();
 			set([]);
 		},
 		enqueue(content: Uint8Array) {
 			buffer += new TextDecoder().decode(content);
 
 			const items = buffer.split("\n");
+			for (const item of items) {
+				const [label, value] = item.split(" = ");
+				if (!label || !value || Number.isNaN(Number.parseFloat(value)))
+					continue;
+
+				charts.point(label, Number.parseFloat(value));
+			}
 			buffer = items.pop();
 
 			if (items.length > 0) {
