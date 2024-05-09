@@ -28,6 +28,7 @@ onMount(() => {
 
 <style>
     .textarea {
+		font-family: inherit;
         border: none;
         padding: 5px 10px;
         margin: 0;
