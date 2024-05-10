@@ -7,6 +7,7 @@ interface Props {
 	mode: "primary" | "secondary";
 	rounded: boolean;
 	focus?: boolean;
+	required?: boolean;
 }
 let {
 	placeholder,
@@ -14,6 +15,7 @@ let {
 	mode,
 	rounded,
 	focus,
+	required,
 }: Props = $props();
 
 let input: HTMLInputElement;
@@ -31,6 +33,7 @@ onMount(() => {
     class:primary={mode === "primary"}
     class:secondary={mode === "secondary"}
     class:rounded
+	{required}
 />
 
 <style>

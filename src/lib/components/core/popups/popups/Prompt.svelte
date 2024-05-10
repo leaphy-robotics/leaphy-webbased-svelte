@@ -11,7 +11,7 @@ interface Props {
 	placeholder: string;
 	confirm: string;
 	value?: string;
-	requireValue: boolean;
+	requireValue?: boolean;
 }
 let {
 	name,
@@ -45,6 +45,7 @@ function onsubmit(event: SubmitEvent) {
         mode={"secondary"}
         rounded={true}
         focus={true}
+		required={requireValue}
     />
     <div class="actions">
         <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
