@@ -14,66 +14,63 @@ export async function openExample(page: Page, example: string | RegExp) {
 }
 
 // Playwright doesn't seem to support `showOpenFilePicker()` so this functions mocks it
-export async function setNextOpenedFile(
+export async function mockShowOpenFilePicker(
 	page: Page,
 	path: string,
-): Promise<(timeout?: number) => Promise<string>> {
+): Promise<Promise<(timeout?: number) => Promise<FileSystemWriteChunkType[]>>> {
 	let content = await fs.readFile(path, "utf-8");
 
-	let onWriteResolve: ((data: string) => void) | undefined = undefined;
-
-	await page.exposeFunction("onWriteOpenedFile", (data: string) => {
-		if (onWriteResolve !== undefined) {
-			onWriteResolve(data);
-		}
-	});
-
 	await page.evaluate(
-		([content, file_name]) => {
-			window.showOpenFilePicker = async (): Promise<[FileSystemFileHandle]> => {
-				// return something close enough to what a [FileSystemFileHandle] looks like, as you can't actually create it, atleast i could not find it
-				return [
-					{
-						getFile: async () => {
-							return {
-								text: async () => content,
-								name: file_name,
-							};
-						},
-						createWritable: async () => {
-							let written = "";
+		([content, path]) => {
+			const blob = new Blob([content], { type: "application/json" });
+			const file = new File([blob], path, { type: "application/json" });
 
-							return {
-								write: async (data: FileSystemWriteChunkType) => {
-									// There has to be a better way right??
-									if (typeof data === "string") {
-										throw "todo";
-									}
-									if ("data" in data && typeof data.data === "string") {
-										written += data.data;
-									} else {
-										throw "todo";
-									}
-								},
-								close: async () => {
-									await (window as any).onWriteOpenedFile(written);
-								},
-							};
-						},
-						name: file_name,
+			const createWritable = async () => {
+				let writtenChunks: FileSystemWriteChunkType[] = [];
+				return {
+					write: async (data: FileSystemWriteChunkType) => {
+						writtenChunks.push(data);
 					},
-				] as unknown as [FileSystemFileHandle];
+					close: async () => {
+						await (window as any).onWriteOpenedFile(writtenChunks);
+					},
+				};
+			};
+
+			const fileHandle = {
+				getFile: async () => file,
+				name: path,
+				createWritable,
+			};
+
+			(window as any).showOpenFilePicker = async () => {
+				return [fileHandle];
 			};
 		},
 		[content, path],
 	);
 
-	return (timeout = 1000) => {
-		return new Promise<string>((resolve, reject) => {
+	let createOnWritePromise = async (timeout = 1000) => {
+		let onWriteResolve:
+			| ((writtenChunks: FileSystemWriteChunkType[]) => void)
+			| undefined = undefined;
+
+		await page.exposeFunction(
+			"onWriteOpenedFile",
+			(writtenChunks: FileSystemWriteChunkType[]) => {
+				if (onWriteResolve !== undefined) {
+					onWriteResolve(writtenChunks);
+				}
+			},
+		);
+
+		return new Promise<FileSystemWriteChunkType[]>((resolve, reject) => {
 			onWriteResolve = resolve;
 			setTimeout(() => {
 				reject("File not written within time!");
 			}, timeout);
 		});
 	};
+
+	return createOnWritePromise;
 }

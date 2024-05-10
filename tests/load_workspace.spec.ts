@@ -1,5 +1,5 @@
 import { FileChooser, expect, test } from "@playwright/test";
-import { goToHomePage, setNextOpenedFile } from "./utils";
+import { goToHomePage, mockShowOpenFilePicker } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -16,7 +16,7 @@ for (let [testName, file] of test_files) {
 		await page.getByRole("button", { name: "My projects" }).click();
 
 		// Playwright doesn't seem to support `showOpenFilePicker()` so mock it
-		let createOnWritePromise = await setNextOpenedFile(
+		let createOnWritePromise = await mockShowOpenFilePicker(
 			page,
 			`./tests/saved_workspaces/${file}`,
 		);
@@ -41,8 +41,7 @@ for (let [testName, file] of test_files) {
 
 		let onWritePromise = createOnWritePromise();
 		await page.getByRole("cell", { name: "Save", exact: true }).click();
-		let written = await onWritePromise;
-
-		expect(written).toContain("leaphy_serial_print_line"); // check that it contains the print
+		let writtenChunks = await onWritePromise;
+		expect(JSON.stringify(writtenChunks)).toContain("hello world"); // This is very hacky, but it works
 	});
 }
