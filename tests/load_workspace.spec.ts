@@ -1,4 +1,4 @@
-import { FileChooser, expect, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { goToHomePage, mockShowOpenFilePicker } from "./utils";
 
 test.beforeEach(goToHomePage);

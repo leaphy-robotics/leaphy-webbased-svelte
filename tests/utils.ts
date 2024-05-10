@@ -58,9 +58,7 @@ export async function mockShowOpenFilePicker(
 		await page.exposeFunction(
 			"onWriteOpenedFile",
 			(writtenChunks: FileSystemWriteChunkType[]) => {
-				if (onWriteResolve !== undefined) {
-					onWriteResolve(writtenChunks);
-				}
+				if (onWriteResolve) onWriteResolve(writtenChunks);
 			},
 		);
 
