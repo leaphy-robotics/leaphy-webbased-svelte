@@ -13,6 +13,7 @@ interface Props {
 	value?: string;
 	requireValue?: boolean;
 }
+
 let {
 	name,
 	placeholder,
@@ -38,33 +39,33 @@ function onsubmit(event: SubmitEvent) {
 </script>
 
 <form class="content" {onsubmit}>
-    <h2>{$_(name)}</h2>
-    <TextInput
-        bind:value
-        placeholder={$_(placeholder)}
-        mode={"secondary"}
-        rounded={true}
-        focus={true}
+	<h2>{$_(name)}</h2>
+	<TextInput
+		bind:value
+		placeholder={$_(placeholder)}
+		mode={"secondary"}
+		rounded={true}
+		focus={true}
 		required={requireValue}
-    />
-    <div class="actions">
-        <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
-        <Button onclick={save} mode={"primary"} name={$_(confirm)} />
-    </div>
+	/>
+	<div class="actions">
+		<Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")}/>
+		<Button onclick={save} mode={"primary"} name={$_(confirm)}/>
+	</div>
 </form>
 
 <style>
-    .content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-width: 400px;
-        text-align: center;
-    }
+	.content {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		min-width: 400px;
+		text-align: center;
+	}
 
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 20px;
+	}
 </style>
