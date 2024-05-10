@@ -1,7 +1,5 @@
 import { RobotType } from "./robots.types";
 
-console.log("hi");
-
 const L_ORIGINAL_NANO_ALL = [
 	RobotType.L_ORIGINAL_NANO,
 	RobotType.L_ORIGINAL_NANO_ESP32,
