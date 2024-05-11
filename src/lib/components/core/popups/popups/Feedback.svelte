@@ -54,6 +54,7 @@ function onsubmit(event: SubmitEvent) {
 			placeholder={$_("NAME")}
 			bind:value={senderEmail}
 			mode="secondary"
+			focus={true}
 			required
 			rounded={true}>
 		</TextInput>
@@ -73,7 +74,6 @@ function onsubmit(event: SubmitEvent) {
 		bind:value={comments}
 		mode={"secondary"}
 		rounded={true}
-		focus={true}
 		required
 		rows={10}
 	/>
