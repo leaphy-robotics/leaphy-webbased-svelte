@@ -32,7 +32,7 @@ async function save() {
 		component: Warning,
 		data: {
 			title: "FEEDBACK",
-			message: $_("FEEDBACK_SENT"),
+			message: "FEEDBACK_SENT",
 			showCancel: false,
 		},
 		allowInteraction: true,

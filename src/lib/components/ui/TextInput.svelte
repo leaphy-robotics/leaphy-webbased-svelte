@@ -30,7 +30,7 @@ onMount(() => {
 <input
 	bind:this={input}
 	class="input"
-	type={type}
+	{type}
 	{placeholder}
 	bind:value
 	class:primary={mode === "primary"}
