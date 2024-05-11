@@ -37,7 +37,7 @@ function onsubmit(event: SubmitEvent) {
 }
 </script>
 
-<form class="content" onsubmit={onsubmit}>
+<form class="content" {onsubmit}>
 	<h2>{$_(name)}</h2>
 	<TextInput
 		bind:value
