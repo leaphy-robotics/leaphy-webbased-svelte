@@ -18,7 +18,7 @@ let {
 	rounded,
 	focus,
 	required,
-	type = "text"
+	type = "text",
 }: Props = $props();
 
 let input: HTMLInputElement;
