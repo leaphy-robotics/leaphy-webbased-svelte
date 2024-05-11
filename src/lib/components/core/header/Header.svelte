@@ -6,6 +6,7 @@ import leaphyLogo from "$assets/leaphy-logo.svg";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import Select from "$components/ui/Select.svelte";
+import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
 import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
@@ -50,9 +51,9 @@ import {
 	faVolumeHigh,
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { serialization } from "blockly";
+import { Xml, serialization } from "blockly";
 import JSZip from "jszip";
-import { type Writable, get } from "svelte/store";
+import { get } from "svelte/store";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
@@ -137,10 +138,7 @@ async function openProject() {
 		code.set(await content.text());
 	} else {
 		if (get(mode) === Mode.BLOCKS) {
-			serialization.workspaces.load(
-				JSON.parse(await content.text()),
-				$workspace,
-			);
+			loadWorkspaceFromString(await content.text(), $workspace);
 		} else {
 			restore.set(JSON.parse(await content.text()));
 			mode.set(Mode.BLOCKS);
