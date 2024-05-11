@@ -1,6 +1,7 @@
 <script lang="ts">
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import type { Snippet } from "svelte";
+import { type Snippet, onDestroy, onMount, setContext } from "svelte";
+import Fa from "svelte-fa";
 import { type Writable, writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";
 

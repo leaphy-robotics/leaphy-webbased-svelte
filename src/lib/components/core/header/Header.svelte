@@ -53,6 +53,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { serialization } from "blockly";
 import JSZip from "jszip";
+import type { Writable } from "svelte/store";
 import { get } from "svelte/store";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
