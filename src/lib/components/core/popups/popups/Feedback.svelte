@@ -48,12 +48,13 @@ function onsubmit(event: SubmitEvent) {
 </script>
 
 <form class="content" {onsubmit}>
-    <h2>{$_("FEEDBACK")}</h2>
+	<h2>{$_("FEEDBACK")}</h2>
 	<div class="input">
 		<TextInput
 			placeholder={$_("NAME")}
 			bind:value={senderEmail}
 			mode="secondary"
+			required
 			rounded={true}>
 		</TextInput>
 	</div>
@@ -63,21 +64,23 @@ function onsubmit(event: SubmitEvent) {
 			placeholder={$_("EMAIL")}
 			bind:value={senderName}
 			mode="secondary"
+			required
 			rounded={true}>
 		</TextInput>
 	</div>
 
-    <TextArea
-        bind:value={comments}
-        mode={"secondary"}
-        rounded={true}
-        focus={true}
+	<TextArea
+		bind:value={comments}
+		mode={"secondary"}
+		rounded={true}
+		focus={true}
+		required
 		rows={10}
-    />
-    <div class="actions">
-        <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
-        <Button onclick={save} mode={"primary"} name={$_("SEND")} />
-    </div>
+	/>
+	<div class="actions">
+		<Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")}/>
+		<Button type="submit" mode={"primary"} name={$_("SEND")}/>
+	</div>
 </form>
 
 <style>
@@ -85,17 +88,17 @@ function onsubmit(event: SubmitEvent) {
 		padding-bottom: 10px;
 	}
 
-    .content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-width: 400px;
-        text-align: center;
-    }
+	.content {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		min-width: 400px;
+		text-align: center;
+	}
 
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 20px;
+	}
 </style>
