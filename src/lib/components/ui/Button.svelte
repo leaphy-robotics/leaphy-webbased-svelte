@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { type Snippet, onDestroy, onMount, setContext } from "svelte";
-import Fa from "svelte-fa";
+import type { Snippet } from "svelte";
 import { type Writable, writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";
 
@@ -13,6 +12,7 @@ interface Props {
 	disabled?: boolean;
 	mode: "primary" | "secondary" | "outlined" | "accent";
 	bold?: boolean;
+	type?: "button" | "submit";
 }
 const {
 	name,
@@ -22,6 +22,7 @@ const {
 	bold,
 	icon,
 	disabled,
+	type = "button",
 }: Props = $props();
 
 let btn: HTMLButtonElement = $state();
@@ -42,7 +43,7 @@ function onContext() {
     bind:this={btn}
     {onclick}
     {disabled}
-    type="button"
+	{type}
     class="btn"
     class:primary={mode === "primary"}
     class:secondary={mode === "secondary"}

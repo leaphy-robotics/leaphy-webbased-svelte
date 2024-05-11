@@ -28,7 +28,6 @@ function cancel() {
 }
 
 function save() {
-	if (requireValue && !value) return;
 	popups.close($popupState.id, value);
 }
 
@@ -38,7 +37,7 @@ function onsubmit(event: SubmitEvent) {
 }
 </script>
 
-<form class="content" {onsubmit}>
+<form class="content" onsubmit={onsubmit}>
 	<h2>{$_(name)}</h2>
 	<TextInput
 		bind:value
@@ -50,7 +49,7 @@ function onsubmit(event: SubmitEvent) {
 	/>
 	<div class="actions">
 		<Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")}/>
-		<Button onclick={save} mode={"primary"} name={$_(confirm)}/>
+		<Button type="submit" mode={"primary"} name={$_(confirm)}/>
 	</div>
 </form>
 

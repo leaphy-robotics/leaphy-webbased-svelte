@@ -51,7 +51,7 @@ import {
 	faVolumeHigh,
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { Xml, serialization } from "blockly";
+import { serialization } from "blockly";
 import JSZip from "jszip";
 import { get } from "svelte/store";
 import MicroPythonIO from "../../../micropython";
