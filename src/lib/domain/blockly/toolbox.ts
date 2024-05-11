@@ -322,6 +322,49 @@ export default [
 		],
 	},
 	{
+		name: "Mesh",
+		style: "mesh_category",
+		id: "l_mesh",
+		robots: [RobotType.L_NANO_ESP32, RobotType.L_ORIGINAL_NANO_ESP32],
+		groups: [
+			[
+				{
+					type: "mesh_setup",
+					inputs: {
+						NAME: text("Leaphy Mesh")
+					}
+				},
+				{
+					type: "mesh_update",
+				}
+			],
+			[
+				{
+					type: "mesh_on_connection"
+				}
+			],
+			[
+				{
+					type: "mesh_add_procedure"
+				},
+				{
+					type: "mesh_call_procedure",
+					inputs: {
+						TO: { shadow: { type: "mesh_client" } }
+					}
+				},
+				{
+					type: "mesh_call_procedure_all"
+				}
+			],
+			[
+				{
+					type: "mesh_client"
+				}
+			]
+		]
+	},
+	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",
 		style: "leaphy_category",
 		id: "%robot%",
