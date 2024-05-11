@@ -8,39 +8,46 @@ import type { Writable } from "svelte/store";
 interface Props {
 	title: string;
 	message: string;
+	showCancel: boolean;
 }
-const { title, message }: Props = $props();
+
+const { title, message, showCancel = true }: Props = $props();
 
 const popupState = getContext<Writable<PopupState>>("state");
+
 function cancel() {
 	popups.close($popupState.id, false);
 }
+
 function ok() {
 	popups.close($popupState.id, true);
 }
 </script>
 
 <div class="content">
-    <h2>{$_(title)}</h2>
-    <div class="text">{$_(message)}</div>
-    <div class="actions">
-        <Button name={$_("CANCEL")} mode={"secondary"} onclick={cancel} />
-        <Button name={$_("OK")} mode={"primary"} onclick={ok} />
-    </div>
+	<h2>{$_(title)}</h2>
+	<div class="text">{$_(message)}</div>
+	<div class="actions">
+		{#if showCancel}
+			<Button name={$_("CANCEL")} mode={"secondary"} onclick={cancel}/>
+		{/if}
+		<div></div>
+		<Button name={$_("OK")} mode={"primary"} onclick={ok}/>
+	</div>
 </div>
 
 <style>
-    .content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-width: 400px;
-        text-align: center;
-    }
+	.content {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		min-width: 400px;
+		text-align: center;
+	}
 
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 20px;
+	}
 </style>
