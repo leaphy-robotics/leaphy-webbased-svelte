@@ -8,6 +8,7 @@ interface Props {
 	rounded: boolean;
 	focus?: boolean;
 	required?: boolean;
+	type?: string;
 }
 
 let {
@@ -17,6 +18,7 @@ let {
 	rounded,
 	focus,
 	required,
+	type = "text"
 }: Props = $props();
 
 let input: HTMLInputElement;
@@ -28,7 +30,7 @@ onMount(() => {
 <input
 	bind:this={input}
 	class="input"
-	type="text"
+	type={type}
 	{placeholder}
 	bind:value
 	class:primary={mode === "primary"}

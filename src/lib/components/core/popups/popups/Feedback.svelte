@@ -65,6 +65,7 @@ function onsubmit(event: SubmitEvent) {
 			placeholder={$_("EMAIL")}
 			bind:value={senderName}
 			mode="secondary"
+			type="email"
 			required
 			rounded={true}>
 		</TextInput>
