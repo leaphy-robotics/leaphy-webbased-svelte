@@ -1,9 +1,8 @@
 <script lang="ts">
 import { type Robot, robots as allRobots } from "$domain/robots";
 import { Screen, screen, selected } from "$state/app.svelte";
-import { restore, workspace } from "$state/blockly.svelte";
+import { restore } from "$state/blockly.svelte";
 import { Mode, code, mode, robot, saveState } from "$state/workspace.svelte";
-import { serialization } from "blockly";
 
 interface Props {
 	robots: Robot[][];
@@ -60,7 +59,7 @@ function select(type: Robot) {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 50px;
+        gap: 3vh;
     }
     .secondary {
         background: var(--background);
@@ -76,10 +75,11 @@ function select(type: Robot) {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 1vw;
 
         flex: 1;
-        max-width: 180px;
+        max-width: 12vw;
+        max-height: 25vh;
         cursor: pointer;
 
         border: none;
