@@ -2,45 +2,43 @@
 import { onMount } from "svelte";
 
 interface Props {
-	placeholder?: string;
 	value: string;
 	mode: "primary" | "secondary";
 	rounded: boolean;
 	focus?: boolean;
+	rows: number;
 	required?: boolean;
-	type?: string;
 }
 
 let {
-	placeholder,
 	value = $bindable(""),
 	mode,
 	rounded,
 	focus,
-	required,
-	type = "text",
+	rows,
+	required = false,
 }: Props = $props();
 
-let input: HTMLInputElement;
+let input: HTMLTextAreaElement;
 onMount(() => {
 	if (focus) input.focus();
 });
 </script>
 
-<input
+<textarea
 	bind:this={input}
-	class="input"
-	{type}
-	{placeholder}
+	class="textarea"
 	bind:value
+	rows={rows}
+	{required}
 	class:primary={mode === "primary"}
 	class:secondary={mode === "secondary"}
 	class:rounded
-	{required}
-/>
+></textarea>
 
 <style>
-	.input {
+	.textarea {
+		font-family: inherit;
 		border: none;
 		padding: 5px 10px;
 		margin: 0;
@@ -60,7 +58,7 @@ onMount(() => {
 	}
 
 	.rounded {
-		border-radius: 20px;
+		border-radius: 10px;
 	}
 
 	.primary::placeholder {
