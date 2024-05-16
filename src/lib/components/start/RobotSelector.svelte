@@ -72,19 +72,12 @@ function select(type: Robot) {
     }
 
     .robot {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1vw;
-
-        flex: 1;
-        max-width: 12vw;
-        max-height: 25vh;
+        width: 12vw;
+		max-width: 180px;
         cursor: pointer;
 
         border: none;
         background: none;
-        padding: 0;
 
         transition: 0.1s ease;
         color: var(--on-background);
@@ -106,6 +99,7 @@ function select(type: Robot) {
         border-radius: 0.375rem;
 
         transition: 0.1s ease;
+		margin-bottom: 1vh;
     }
     .robot.selected .icon,
     .robot:hover .icon {
