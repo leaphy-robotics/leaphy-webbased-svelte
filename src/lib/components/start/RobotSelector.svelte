@@ -8,6 +8,7 @@ interface Props {
 	robots: Robot[][];
 	secondary: boolean;
 }
+
 const { robots, secondary }: Props = $props();
 
 function select(type: Robot) {
@@ -33,84 +34,89 @@ function select(type: Robot) {
 </script>
 
 <div class="selector" class:secondary>
-    {#each robots as row}
-        <div class="row">
-            {#each row as robot}
-                <button
-                    class="robot"
-                    onclick={() => select(robot)}
-                    class:selected={$selected?.id === robot.id}
-                >
+	{#each robots as row}
+		<div class="row">
+			{#each row as robot}
+				<button
+					class="robot"
+					onclick={() => select(robot)}
+					class:selected={$selected?.id === robot.id}
+				>
                     <span class="icon">
-                        <img class="image" src={robot.icon} alt={robot.name} />
+                        <img class="image" src={robot.icon} alt={robot.name}/>
                     </span>
-                    <span class="name">{robot.name}</span>
-                </button>
-            {/each}
-        </div>
-    {/each}
+					<span class="name">{robot.name}</span>
+				</button>
+			{/each}
+		</div>
+	{/each}
 </div>
 
 <style>
-    .selector {
-        width: 50vw;
-        height: 100%;
+	.selector {
+		width: 50vw;
+		height: 100%;
 
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 3vh;
-    }
-    .secondary {
-        background: var(--background);
-    }
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 3vh;
+	}
 
-    .row {
-        display: flex;
-        justify-content: center;
-        gap: 24px;
-    }
+	.secondary {
+		background: var(--background);
+	}
 
-    .robot {
-        width: 12vw;
+	.row {
+		display: flex;
+		justify-content: center;
+		gap: 24px;
+	}
+
+	.robot {
+		width: 12vw;
 		max-width: 180px;
-        cursor: pointer;
+		cursor: pointer;
 
-        border: none;
-        background: none;
+		border: none;
+		background: none;
 
-        transition: 0.1s ease;
-        color: var(--on-background);
-    }
-    .robot.selected,
-    .robot:hover {
-        scale: 1.03;
-    }
-    .icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+		transition: 0.1s ease;
+		color: var(--on-background);
+	}
 
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        border: solid 1px var(--background-tint);
-        background: var(--robot);
-        aspect-ratio: 1/1;
-        width: 100%;
-        border-radius: 0.375rem;
+	.robot.selected,
+	.robot:hover {
+		scale: 1.03;
+	}
 
-        transition: 0.1s ease;
+	.icon {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+		border: solid 1px var(--background-tint);
+		background: var(--robot);
+		aspect-ratio: 1/1;
+		width: 100%;
+		border-radius: 0.375rem;
+
+		transition: 0.1s ease;
 		margin-bottom: 1vh;
-    }
-    .robot.selected .icon,
-    .robot:hover .icon {
-        border: 3px solid var(--primary) !important;
-    }
+	}
 
-    .image {
-        max-width: 90%;
-        max-height: 90%;
-    }
-    .name {
-        font-size: 1rem;
-    }
+	.robot.selected .icon,
+	.robot:hover .icon {
+		border: 3px solid var(--primary) !important;
+	}
+
+	.image {
+		max-width: 90%;
+		max-height: 90%;
+	}
+
+	.name {
+		font-size: 1rem;
+	}
 </style>
