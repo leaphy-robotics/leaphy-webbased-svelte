@@ -40,6 +40,7 @@ onDestroy(() => {
 <style>
     .panel {
         display: flex;
+        pointer-events: auto;
     }
     .dragger {
         position: relative;

@@ -149,6 +149,7 @@ export function setupWorkspace(
 		toolbox: loadToolbox(robot),
 		theme: theme,
 		zoom: {
+			controls: true,
 			startScale: 0.8,
 		},
 	});

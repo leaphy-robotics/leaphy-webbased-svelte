@@ -62,6 +62,7 @@ function openCode() {
         display: flex;
         height: 100%;
         z-index: 99;
+        pointer-events: none;
     }
 
     .content {
