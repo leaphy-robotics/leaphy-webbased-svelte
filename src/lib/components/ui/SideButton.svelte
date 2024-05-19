@@ -26,5 +26,6 @@ const { icon, onclick }: Props = $props();
         align-items: center;
         background: var(--primary);
         color: var(--on-primary);
+        pointer-events: auto;
     }
 </style>
