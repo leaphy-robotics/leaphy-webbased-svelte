@@ -1,0 +1,118 @@
+{
+	"blocks": {
+		"languageVersion": 0,
+		"blocks": [
+			{
+				"type": "leaphy_start",
+				"id": "rzE0Ve:6bHB~8aIqyj-U",
+				"x": 154,
+				"y": 21,
+				"deletable": false,
+				"inputs": {
+					"STACK": {
+						"block": {
+							"type": "controls_repeat_forever",
+							"id": "in]|2;6|M/%ZJprATWW9",
+							"inputs": {
+								"DO": {
+									"block": {
+										"type": "controls_if",
+										"id": "d}Z3N:Vd_p;FPGdXzMkg",
+										"extraState": { "hasElse": true },
+										"inputs": {
+											"IF0": {
+												"block": {
+													"type": "logic_compare",
+													"id": "qUfB(/@n/0m3gf?SFisR",
+													"fields": { "OP": "EQ" },
+													"inputs": {
+														"A": {
+															"shadow": {
+																"type": "math_number",
+																"id": "3j.vABoGVR;8+,Kaw9`4",
+																"fields": { "NUM": 1 }
+															},
+															"block": {
+																"type": "leaphy_flitz_nano_read_stomach_sensor",
+																"id": "5uYOZNX1khsN5N=eIl;$"
+															}
+														},
+														"B": {
+															"shadow": {
+																"type": "math_number",
+																"id": "fERGPwz,,Kv_Os{ox6f*",
+																"fields": { "NUM": 1 }
+															}
+														}
+													}
+												}
+											},
+											"DO0": {
+												"block": {
+													"type": "leaphy_flitz_led",
+													"id": "|bfoixb}U4Y1*SY8E3dJ",
+													"inputs": {
+														"FLITZ_LED_R": {
+															"shadow": {
+																"type": "math_number",
+																"id": "rGo43JS:tPbp!/0A2~dB",
+																"fields": { "NUM": 0 }
+															}
+														},
+														"FLITZ_LED_G": {
+															"shadow": {
+																"type": "math_number",
+																"id": "()NYbmZe:zE3sJ.5q8fy",
+																"fields": { "NUM": 255 }
+															}
+														},
+														"FLITZ_LED_B": {
+															"shadow": {
+																"type": "math_number",
+																"id": "bmSyXLXD!u5{%P`~#e0,",
+																"fields": { "NUM": 0 }
+															}
+														}
+													}
+												}
+											},
+											"ELSE": {
+												"block": {
+													"type": "leaphy_flitz_led",
+													"id": "j^Vb{o8SQO6(o17tO/--",
+													"inputs": {
+														"FLITZ_LED_R": {
+															"shadow": {
+																"type": "math_number",
+																"id": "eg#UkKDIsIl6w(#,pmVc",
+																"fields": { "NUM": 0 }
+															}
+														},
+														"FLITZ_LED_G": {
+															"shadow": {
+																"type": "math_number",
+																"id": "0u`VTgZYUs]xoj|H$?:t",
+																"fields": { "NUM": 0 }
+															}
+														},
+														"FLITZ_LED_B": {
+															"shadow": {
+																"type": "math_number",
+																"id": "wfT6Ny5w%$c=6%B_Re7S",
+																"fields": { "NUM": 255 }
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		]
+	}
+}

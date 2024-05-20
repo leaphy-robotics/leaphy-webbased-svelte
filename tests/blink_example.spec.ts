@@ -8,7 +8,7 @@ test("Load Blink example and check code", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
-	await openExample(page, "blink");
+	await openExample(page, "Blink");
 
 	await page.locator(".side").first().click(); // Open code
 
