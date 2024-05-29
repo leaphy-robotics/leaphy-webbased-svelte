@@ -34,13 +34,13 @@ function openCode() {
 
 {#snippet actions()}
     {#if $mode === Mode.BLOCKS}
-        <SideButton icon={faCode} onclick={openCode} />
+        <SideButton icon={faCode} action="CODE" onclick={openCode} />
     {/if}
     {#if $mode !== Mode.PYTHON}
-        <SideButton icon={faSquarePollHorizontal} onclick={openSerial} />
+        <SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
     {/if}
     {#if $mode === Mode.ADVANCED}
-        <SideButton icon={faBook} onclick={openLibraryManager} />
+        <SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
     {/if}
 {/snippet}
 
