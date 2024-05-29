@@ -10,13 +10,15 @@ test("Arduino - upload", async ({ page }) => {
 
 	await openExample(page, "Blink");
 
-	await page.getByRole('button', { name: 'Upload to robot' }).click();
-	await expect(page.getByRole('heading', { name: 'Robot update complete' })).toBeVisible({
-		timeout: 15000
+	await page.getByRole("button", { name: "Upload to robot" }).click();
+	await expect(
+		page.getByRole("heading", { name: "Robot update complete" }),
+	).toBeVisible({
+		timeout: 15000,
 	});
-	
+
 	// Try it again :)
-	await page.getByRole('button', { name: 'Go back to editor' }).click();
+	await page.getByRole("button", { name: "Go back to editor" }).click();
 	// await page.getByRole('button', { name: 'Upload to robot' }).click();
 	// await expect(page.getByRole('heading', { name: 'Robot update complete' })).toBeVisible({
 	// 	timeout: 15000

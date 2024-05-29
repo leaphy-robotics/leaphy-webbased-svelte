@@ -18,6 +18,8 @@ jobs:
         run: yarn --frozen-lockfile --prefer-offline
       - name: Run Biome
         run: yarn biome ci src tests
+      - name: Install libsimavr
+        run: sudo apt-get install -y libsimavr-dev
       - name: Run Playwright tests
         run: yarn playwright test
       - uses: actions/upload-artifact@v4
