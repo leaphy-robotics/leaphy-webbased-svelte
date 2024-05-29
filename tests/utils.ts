@@ -1,5 +1,10 @@
 import { promises as fs } from "node:fs";
 import type { Page, PlaywrightTestArgs } from "@playwright/test";
+import setupPlaywrightArduino from '@leaphy-robotics/playwright-arduino';
+
+export async function setupArduino({ page }: PlaywrightTestArgs) {
+	await setupPlaywrightArduino(page);
+}
 
 export async function goToHomePage({ page }: PlaywrightTestArgs) {
 	await page.goto("/");
