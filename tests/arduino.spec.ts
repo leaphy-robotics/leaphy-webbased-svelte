@@ -4,7 +4,7 @@ import { goToHomePage, openExample, setupArduino } from "./utils";
 test.beforeEach(setupArduino);
 test.beforeEach(goToHomePage);
 
-test("Arduino - upload", async ({ page }) => {
+test("Arduino - Blockly upload", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
@@ -17,10 +17,18 @@ test("Arduino - upload", async ({ page }) => {
 		timeout: 15000,
 	});
 
-	// Try it again :)
 	await page.getByRole("button", { name: "Go back to editor" }).click();
-	// await page.getByRole('button', { name: 'Upload to robot' }).click();
-	// await expect(page.getByRole('heading', { name: 'Robot update complete' })).toBeVisible({
-	// 	timeout: 15000
-	// });
+});
+
+test("Arduino - C++ upload", async ({ page }) => {
+	await page.getByText("Leaphy C++").click();
+
+	await page.getByRole("button", { name: "Upload to robot" }).click();
+	await expect(
+		page.getByRole("heading", { name: "Robot update complete" }),
+	).toBeVisible({
+		timeout: 15000,
+	});
+
+	await page.getByRole("button", { name: "Go back to editor" }).click();
 });
