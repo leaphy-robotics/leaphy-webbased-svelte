@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, openExample as loadExample } from "./utils";
+import { goToHomePage, openExample } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -7,7 +7,7 @@ test("Saving - Backpack", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
-	await loadExample(page, "Blink");
+	await openExample(page, "Blink");
 
 	// Put something in the backpack
 	await page
@@ -49,7 +49,7 @@ test("Saving - Blockly", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
-	await loadExample(page, "Blink");
+	await openExample(page, "Blink");
 
 	await page.reload();
 
@@ -79,7 +79,7 @@ test("Saving - New project", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
-	await loadExample(page, "Blink");
+	await openExample(page, "Blink");
 
 	// Start a new project, should reset to the default
 	await page.getByRole("button", { name: "My projects" }).click();
