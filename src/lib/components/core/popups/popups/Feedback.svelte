@@ -52,7 +52,7 @@ function onsubmit(event: SubmitEvent) {
 	<div class="input">
 		<TextInput
 			placeholder={$_("NAME")}
-			bind:value={senderEmail}
+			bind:value={senderName}
 			mode="secondary"
 			focus={true}
 			required
@@ -63,7 +63,7 @@ function onsubmit(event: SubmitEvent) {
 	<div class="input">
 		<TextInput
 			placeholder={$_("EMAIL")}
-			bind:value={senderName}
+			bind:value={senderEmail}
 			mode="secondary"
 			type="email"
 			required
