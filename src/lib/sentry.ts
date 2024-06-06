@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/svelte";
 
 function initSentry() {
-	if (!import.meta.env.PROD) return;
+	if (!import.meta.env.VITE_SENTRY_DSN) return;
 
 	Sentry.init({
 		dsn: import.meta.env.VITE_SENTRY_DSN,
