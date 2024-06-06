@@ -1,15 +1,15 @@
 import { promises as fs } from "node:fs";
 import setupPlaywrightArduino from "@leaphy-robotics/playwright-arduino";
-import { test, type Page, type PlaywrightTestArgs } from "@playwright/test";
+import { type Page, type PlaywrightTestArgs, test } from "@playwright/test";
 
 // Prevent sentry events from actually being sent
-test.beforeEach(async ({context}) => {	
+test.beforeEach(async ({ context }) => {
 	await context.route("**/api/2/envelope/*", (route) => {
 		route.fulfill({
 			status: 200,
 		});
 	});
-})
+});
 
 export async function setupArduino({ page }: PlaywrightTestArgs) {
 	await setupPlaywrightArduino(page);
