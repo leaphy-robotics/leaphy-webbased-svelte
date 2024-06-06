@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, openExample } from "./utils";
+import { goToHomePage } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -11,14 +11,6 @@ test("User Feedback", async ({ page }) => {
 	await page.getByPlaceholder("Your name...").fill("test");
 	await page.getByPlaceholder("Email").fill("test@ing");
 	await page.locator("textarea").fill("test123");
-
-	// Make sure no requests are actually done
-	await page.route("**/api/2/envelope/*", (route) => {
-		route.fulfill({
-			status: 200,
-			body: "",
-		});
-	});
 
 	// Wait for the user_report feedback
 	const feedbackPromise = page.waitForRequest((request) => {
