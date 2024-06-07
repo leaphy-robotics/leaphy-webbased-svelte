@@ -23,8 +23,13 @@ async function testExtension(page: Page, extension: string) {
 			await fs.readFile(`./tests/code_tests/${workspace_file}_code`)
 		).toString();
 
-		for (const line of code.split("\n")) {
-			await expect(page.locator(".view-lines")).toContainText(line);
+		for (const segment of code.split("\n\n")) {
+			// Create a regex of the segment instead of directly searching for the segment so whitespace becomes optional
+			let escaped = segment.replace(/([\\\.\(\)\[\]\*\+\?])/g, "\\$1");
+			let whitespace = escaped.replace(/(\s)+/g, "\\s*");
+			let regex = new RegExp(`${whitespace}`);
+
+			await expect(page.locator(".view-lines")).toContainText(regex);
 		}
 	}
 }
