@@ -40,3 +40,10 @@ test("Code blocks - Original Uno", async ({ page }) => {
 
 	await testExtension(page, ".l_original_uno");
 });
+
+test("Code blocks - Flitz Uno", async ({ page }) => {
+	await page.getByText("Leaphy Flitz").click();
+	await page.getByText("Flitz Uno").click();
+
+	await testExtension(page, ".l_flitz_uno");
+});
