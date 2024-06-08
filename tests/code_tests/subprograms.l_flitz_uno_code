@@ -1,0 +1,30 @@
+test();
+
+void test() {
+  Serial.println(analogRead(2));
+  if (testing()) {
+    return;
+  }
+  Serial.println("text");
+}
+
+boolean testing() {
+  Serial.print(digitalRead(8));
+  Serial.print(" = ");
+  Serial.println(17);
+  return false;
+}
+
+Serial.begin(115200);
+
+pinMode(14, OUTPUT);
+pinMode(15, OUTPUT);
+pinMode(2, INPUT);
+digitalWrite(14, HIGH);
+digitalWrite(15, LOW);
+
+pinMode(8, INPUT);
+pinMode(9, OUTPUT);
+pinMode(10, OUTPUT);
+digitalWrite(8, LOW);
+digitalWrite(9, HIGH);

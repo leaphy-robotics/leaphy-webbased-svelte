@@ -1,0 +1,3 @@
+analogWrite(3, 52);
+analogWrite(5, 92);
+analogWrite(6, 229);
