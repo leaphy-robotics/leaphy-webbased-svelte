@@ -16,7 +16,7 @@ export default class PinSelectorField extends FieldDropdown {
 
 		switch (board.mapping) {
 			case PinMapping.UNO: {
-				digitalPinRange = [2, 13];
+				digitalPinRange = [2, 19];
 				analogPinRange = [0, 5];
 				PinSelectorField.pwmPinOptions = [
 					["3", "3"],
@@ -30,7 +30,7 @@ export default class PinSelectorField extends FieldDropdown {
 			}
 
 			case PinMapping.NANO: {
-				digitalPinRange = [2, 13];
+				digitalPinRange = [2, 19];
 				analogPinRange = [0, 7];
 				PinSelectorField.pwmPinOptions = [
 					["3", "3"],
