@@ -43,6 +43,7 @@ test("Arduino - C++ upload", async ({ page }) => {
 
 // Help debug errors in the above tests
 test.afterEach(async ({ page }) => {
-	let log = await page.evaluate("window.avrdudeLog");
-	console.log(JSON.stringify(log, null, 4));
+	await page.evaluate(
+		"console.log(JSON.stringify(window.avrdudeLog, null, 4))",
+	);
 });
