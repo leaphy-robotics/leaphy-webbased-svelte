@@ -11,6 +11,7 @@ import {
 	registerExtensions,
 	blocks,
 	translations,
+	ProcedureSerializer
 } from "@leaphy-robotics/leaphy-blocks";
 import { serialization } from "blockly";
 import type { Workspace } from "blockly";
@@ -42,6 +43,11 @@ Blockly.registry.register(
 	"lists",
 	new CATEGORIES.ListSerializer(),
 );
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"procedures",
+	new ProcedureSerializer()
+)
 
 registerExtensions(Blockly);
 
