@@ -28,3 +28,6 @@ pinMode(9, OUTPUT);
 pinMode(10, OUTPUT);
 digitalWrite(8, LOW);
 digitalWrite(9, HIGH);
+
+leaphyProgram();
+}
