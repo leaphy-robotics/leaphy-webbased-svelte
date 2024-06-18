@@ -33,6 +33,7 @@ import {
 	tempSave,
 } from "$state/workspace.svelte";
 import {
+	faComment,
 	faDownload,
 	faEnvelope,
 	faFile,
@@ -51,12 +52,14 @@ import {
 	faVolumeHigh,
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { Xml, serialization } from "blockly";
+import { serialization } from "blockly";
 import JSZip from "jszip";
+import type { Writable } from "svelte/store";
 import { get } from "svelte/store";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
+import Feedback from "../popups/popups/Feedback.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
@@ -100,6 +103,7 @@ async function saveProjectAs() {
 			name: "SAVEAS",
 			placeholder: "GIVE_FILENAME",
 			confirm: "SAVE",
+			requireValue: true,
 		},
 		allowInteraction: false,
 	});
@@ -186,6 +190,14 @@ function discord() {
 }
 function email() {
 	window.open("mailto:helpdesk@leaphy.org", "_blank").focus();
+}
+
+function feedback() {
+	popups.open({
+		component: Feedback,
+		data: {},
+		allowInteraction: true,
+	});
 }
 
 function about() {
@@ -309,6 +321,7 @@ function runPython() {
         {open}
     />
     <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} {open} />
+    <ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
 {/snippet}
 {#snippet moreContext(open: Writable<boolean>)}
     {#snippet languageContext(open: Writable<boolean>)}

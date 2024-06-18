@@ -1,0 +1,8 @@
+double testing = 0;
+
+double testing2 = 0;
+
+testing = 25;
+testing += testing;
+testing2 = testing;
+testing2 += testing;

@@ -11,8 +11,16 @@ interface Props {
 	placeholder: string;
 	confirm: string;
 	value?: string;
+	requireValue?: boolean;
 }
-let { name, placeholder, confirm, value = $bindable("") }: Props = $props();
+
+let {
+	name,
+	placeholder,
+	confirm,
+	value = $bindable(""),
+	requireValue = false,
+}: Props = $props();
 const popupState = getContext<Writable<PopupState>>("state");
 
 function cancel() {
@@ -30,32 +38,33 @@ function onsubmit(event: SubmitEvent) {
 </script>
 
 <form class="content" {onsubmit}>
-    <h2>{$_(name)}</h2>
-    <TextInput
-        bind:value
-        placeholder={$_(placeholder)}
-        mode={"secondary"}
-        rounded={true}
-        focus={true}
-    />
-    <div class="actions">
-        <Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")} />
-        <Button onclick={save} mode={"primary"} name={$_(confirm)} />
-    </div>
+	<h2>{$_(name)}</h2>
+	<TextInput
+		bind:value
+		placeholder={$_(placeholder)}
+		mode={"secondary"}
+		rounded={true}
+		focus={true}
+		required={requireValue}
+	/>
+	<div class="actions">
+		<Button onclick={cancel} mode={"secondary"} name={$_("CANCEL")}/>
+		<Button type="submit" mode={"primary"} name={$_(confirm)}/>
+	</div>
 </form>
 
 <style>
-    .content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        min-width: 400px;
-        text-align: center;
-    }
+	.content {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		min-width: 400px;
+		text-align: center;
+	}
 
-    .actions {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 20px;
-    }
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 20px;
+	}
 </style>

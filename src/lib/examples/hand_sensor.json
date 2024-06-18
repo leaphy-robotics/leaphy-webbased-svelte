@@ -1,0 +1,58 @@
+{
+	"blocks": {
+		"languageVersion": 0,
+		"blocks": [
+			{
+				"type": "leaphy_start",
+				"id": "rzE0Ve:6bHB~8aIqyj-U",
+				"x": 154,
+				"y": 21,
+				"deletable": false,
+				"inputs": {
+					"STACK": {
+						"block": {
+							"type": "controls_repeat_forever",
+							"id": "in]|2;6|M/%ZJprATWW9",
+							"inputs": {
+								"DO": {
+									"block": {
+										"type": "leaphy_serial_print_line",
+										"id": "9:E$YoGwe[z=S}=@Y(nU",
+										"inputs": {
+											"VALUE": {
+												"shadow": {
+													"type": "text",
+													"id": "prU]*r(F1O~;bEE%Nk^U",
+													"fields": { "TEXT": "text" }
+												},
+												"block": {
+													"type": "leaphy_flitz_nano_read_hand_sensor",
+													"id": "BaH4%R7u@B)6FJ;wE@^G"
+												}
+											}
+										},
+										"next": {
+											"block": {
+												"type": "time_delay",
+												"id": "9nntz:hPtb;X|dVD5p$.",
+												"inputs": {
+													"DELAY_TIME_MILI": {
+														"shadow": {
+															"type": "math_number",
+															"id": "AAkoD8tK+F)W5@[u=R}?",
+															"fields": { "NUM": 1000 }
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		]
+	}
+}

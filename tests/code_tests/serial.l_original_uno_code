@@ -1,0 +1,3 @@
+Serial.println(Serial.available());
+
+Serial.begin(115200);

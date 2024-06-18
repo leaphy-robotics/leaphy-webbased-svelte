@@ -45,7 +45,7 @@ onMount(() => {
 		canUndo.set(get(workspace).getUndoStack().length > 0);
 		canRedo.set(get(workspace).getRedoStack().length > 0);
 
-		code.set(arduino.workspaceToCode($workspace));
+		code.set(arduino.workspaceToCode($workspace, $robot.id));
 		updateSizing();
 
 		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
@@ -65,7 +65,7 @@ locale.subscribe((locale) => {
 			setupWorkspace($robot, element, getTheme($theme), content),
 		);
 		$workspace.addChangeListener(() => {
-			code.set(arduino.workspaceToCode($workspace));
+			code.set(arduino.workspaceToCode($workspace, $robot.id));
 		});
 	}
 });
