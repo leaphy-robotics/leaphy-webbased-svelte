@@ -304,6 +304,8 @@ function runPython() {
         onclick={saveProjectAs}
         {open}
     />
+{/snippet}
+{#snippet helpContext(open: Writable<boolean>)}
     {#if $mode === Mode.BLOCKS}
         <ContextItem
             icon={faGraduationCap}
@@ -312,8 +314,6 @@ function runPython() {
             {open}
         />
     {/if}
-{/snippet}
-{#snippet helpContext(open: Writable<boolean>)}
     <ContextItem
         icon={faQuestionCircle}
         name={$_("HELP_FORUM")}
