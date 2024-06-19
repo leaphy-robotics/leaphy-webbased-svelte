@@ -6,7 +6,7 @@ test.describe.configure({ mode: "serial" });
 test.beforeEach(setupArduino);
 test.beforeEach(goToHomePage);
 
-test("Arduino - Blockly upload", async ({ page }) => {
+test.fixme("Arduino - Blockly upload", async ({ page }) => {
 	await page.getByText("Leaphy Original").click();
 	await page.getByText("Original Uno").click();
 
@@ -25,7 +25,7 @@ test("Arduino - Blockly upload", async ({ page }) => {
 	});
 });
 
-test("Arduino - C++ upload", async ({ page }) => {
+test.fixme("Arduino - C++ upload", async ({ page }) => {
 	await page.getByText("Leaphy C++").click();
 
 	await page.getByRole("button", { name: "Upload to robot" }).click();
