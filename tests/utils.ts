@@ -22,7 +22,7 @@ export async function goToHomePage({ page }: PlaywrightTestArgs) {
 }
 
 export async function openExample(page: Page, example: string | RegExp) {
-	await page.getByRole("button", { name: "My projects" }).click();
+	await page.getByRole("button", { name: "Tips" }).click();
 	await page.getByRole("cell", { name: "Examples" }).click();
 	await page.getByRole("button", { name: example, exact: true }).click();
 }
