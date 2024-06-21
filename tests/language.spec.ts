@@ -6,7 +6,7 @@ test.beforeEach(goToHomePage);
 test("Language", async ({ page }) => {
 	await page.getByRole("button", { name: "MicroPython MicroPython" }).click();
 	await page.getByRole("button", { name: "More..." }).click();
-	await page.getByRole('cell', { name: 'Language' }).click();
+	await page.getByRole("cell", { name: "Language" }).click();
 	await page.getByRole("cell", { name: "Nederlands" }).click();
 	await page.getByRole("button", { name: "Mijn projecten" }).click();
 	await page.getByRole("cell", { name: "Nieuw" }).click();
@@ -28,7 +28,7 @@ test("Language", async ({ page }) => {
 	await page.getByRole("button", { name: "Annuleer" }).click();
 
 	// Prevent it from opening a popup requesting the port, act as if nothing gets selected
-	await page.evaluate("navigator.serial.requestPort = function() {}")
+	await page.evaluate("navigator.serial.requestPort = function() {}");
 	await page.getByRole("button", { name: "Upload naar robot" }).click();
-	await page.getByRole('button', { name: 'Ga terug naar code scherm' }).click();
+	await page.getByRole("button", { name: "Ga terug naar code scherm" }).click();
 });
