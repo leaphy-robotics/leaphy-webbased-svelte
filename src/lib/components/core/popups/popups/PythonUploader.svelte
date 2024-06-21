@@ -109,7 +109,7 @@ async function connectUSB() {
             {/if}
             {#if done}
                 <Button
-                    name={"Go back to editor"}
+                    name={$_("LEAVE_UPLOADING")}
                     mode={"primary"}
                     onclick={close}
                 />
