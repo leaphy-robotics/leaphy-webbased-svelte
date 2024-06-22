@@ -4,6 +4,7 @@ export const dark = Theme.defineTheme("leaphy-dark", {
 	name: "leaphy-dark",
 	blockStyles: {
 		leaphy_blocks: { colourPrimary: "#066c80", hat: "cap" },
+		mesh_blocks: { colourPrimary: "#009999" },
 		loop_blocks: { colourPrimary: "#69530d" },
 		math_blocks: { colourPrimary: "#45662a" },
 		text_blocks: { colourPrimary: "#45662a" },
@@ -15,6 +16,7 @@ export const dark = Theme.defineTheme("leaphy-dark", {
 
 	categoryStyles: {
 		leaphy_category: { colour: "#066c80" },
+		mesh_category: { colour: "#009999" },
 		situation_category: { colour: "#69530d" },
 		numbers_category: { colour: "#45662a" },
 		variables_category: { colour: "#87451a" },
@@ -34,6 +36,7 @@ export const dark = Theme.defineTheme("leaphy-dark", {
 export const light = Theme.defineTheme("leaphy-light", {
 	blockStyles: {
 		leaphy_blocks: { colourPrimary: "#06778f", hat: "cap" },
+		mesh_blocks: { colourPrimary: "#009999" },
 		loop_blocks: { colourPrimary: "#D9B53F" },
 		math_blocks: { colourPrimary: "#75B342" },
 		text_blocks: { colourPrimary: "#75B342" },
@@ -50,6 +53,7 @@ export const light = Theme.defineTheme("leaphy-light", {
 		variables_category: { colour: "#DE7C3B" },
 		lists_category: { colour: "#a500cf" },
 		functions_category: { colour: "#4095CE" },
+		mesh_category: { colour: "#009999" },
 	},
 	componentStyles: {
 		toolboxBackgroundColour: "#343444",

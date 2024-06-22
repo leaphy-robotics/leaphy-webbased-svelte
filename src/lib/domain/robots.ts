@@ -159,6 +159,8 @@ export const robotListing: Robot[][] = [
 						libraries: DEFAULT_LIBRARIES.concat([
 							"QMC5883LCompass",
 							"Arduino_APDS9960",
+							"Painless Mesh",
+							"AsyncTCP",
 						]),
 						icon: originalIcon,
 						background: originalNanoESP32Background,
@@ -215,6 +217,8 @@ export const robotListing: Robot[][] = [
 						libraries: DEFAULT_LIBRARIES.concat([
 							"QMC5883LCompass",
 							"Arduino_APDS9960",
+							"Painless Mesh",
+							"AsyncTCP",
 						]),
 						icon: nanoIcon,
 					},

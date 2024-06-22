@@ -8,11 +8,12 @@ import { popups } from "$state/popup.svelte";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	CATEGORIES,
-	EXTENSIONS,
+	ProcedureSerializer,
 	blocks,
+	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
-import { type WorkspaceSvg, serialization } from "blockly";
+import { serialization } from "blockly";
 import type { Workspace } from "blockly";
 import type {
 	CategoryInfo,
@@ -42,22 +43,13 @@ Blockly.registry.register(
 	"lists",
 	new CATEGORIES.ListSerializer(),
 );
-
-Blockly.Extensions.register(
-	"appendStatementInputStack",
-	EXTENSIONS.APPEND_STATEMENT_INPUT_STACK,
-);
-Blockly.Extensions.register(
-	"list_select_extension",
-	EXTENSIONS.LIST_SELECT_EXTENSION,
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"procedures",
+	new ProcedureSerializer(),
 );
 
-Blockly.Extensions.registerMutator(
-	"l_controls_if_mutator",
-	EXTENSIONS.CONTROLS_IF_MUTATOR_MIXIN,
-	null as unknown as undefined, // TODO(#6920)
-	["controls_if_elseif", "controls_if_else"],
-);
+registerExtensions(Blockly);
 
 Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
 	const name = await popups.open({
