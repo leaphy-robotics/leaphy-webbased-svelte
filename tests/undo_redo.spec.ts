@@ -30,6 +30,15 @@ test("Undo redo - Deletion", async ({ page }) => {
 	await expect(page.getByText("repeat forever")).toBeVisible();
 	await redo(page);
 	await expect(page.getByText("repeat forever")).toBeHidden();
+
+	await undo(page);
+	await expect(page.getByText("repeat forever")).toBeVisible();
+	await page
+		.getByText("repeat forever")
+		.dragTo(page.locator("g.blocklyTrash"), {
+			force: true,
+		});
+	await expect(page.getByText("repeat forever")).toBeHidden();
 });
 
 test("Undo redo - Variable change", async ({ page }) => {
