@@ -8,10 +8,10 @@ import { popups } from "$state/popup.svelte";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	CATEGORIES,
-	registerExtensions,
+	ProcedureSerializer,
 	blocks,
+	registerExtensions,
 	translations,
-	ProcedureSerializer
 } from "@leaphy-robotics/leaphy-blocks";
 import { serialization } from "blockly";
 import type { Workspace } from "blockly";
@@ -46,8 +46,8 @@ Blockly.registry.register(
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"procedures",
-	new ProcedureSerializer()
-)
+	new ProcedureSerializer(),
+);
 
 registerExtensions(Blockly);
 
