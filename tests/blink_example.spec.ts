@@ -25,7 +25,7 @@ test("Load Blink example and check code", async ({ page }) => {
 
 	// Check that the delays have been updated accordingly
 	await expect(page.locator(".view-lines")).toContainText(
-		"delay(500); digitalWrite(13, LOW); delay(500);",
+		"delay(500); digitalWrite(13, false); delay(500);",
 	);
 
 	// Save the robot
