@@ -15,7 +15,7 @@ export async function setupArduino({ page }: PlaywrightTestArgs) {
 	let board = await setupPlaywrightArduino(page);
 	page.once("close", (_) => {
 		board.stop();
-	})
+	});
 }
 
 export async function goToHomePage({ page }: PlaywrightTestArgs) {
