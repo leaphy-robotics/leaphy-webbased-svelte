@@ -12,7 +12,10 @@ test.beforeEach(async ({ context }) => {
 });
 
 export async function setupArduino({ page }: PlaywrightTestArgs) {
-	await setupPlaywrightArduino(page);
+	let board = await setupPlaywrightArduino(page);
+	page.once("close", (_) => {
+		board.stop();
+	});
 }
 
 export async function goToHomePage({ page }: PlaywrightTestArgs) {

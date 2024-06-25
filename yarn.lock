@@ -616,10 +616,10 @@
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/picotool-wasm/-/picotool-wasm-1.0.3.tgz#9047c984c7c261685f6e88d49c9ed54eaeb29391"
   integrity sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==
 
-"@leaphy-robotics/playwright-arduino@^1.0.2":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@leaphy-robotics/playwright-arduino/-/playwright-arduino-1.0.3.tgz#430110f666f2ff4f0e63fa43444236a574b6e9f9"
-  integrity sha512-X4/tLINRBfJjGrDLGRARnJNNLHdma33gKvQu4yZFDctZXuDdEdveImryzR5veoPEfgfQy+yH9UCNWhnsJWn+jg==
+"@leaphy-robotics/playwright-arduino@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/playwright-arduino/-/playwright-arduino-1.0.4.tgz#678f1fdff9a2bb8c25ef871784f49b6e567daeec"
+  integrity sha512-jpG6URAVPetUubutUYHZeRDFRzn08G/rs/NqG9cDB48EBjPxLbukDQ5iN3T3ZSvcPwss1GLMx7D/VHTVWcllgQ==
   dependencies:
     serialport "^12.0.0"
 
