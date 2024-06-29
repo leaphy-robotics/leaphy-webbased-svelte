@@ -22,7 +22,11 @@ export interface Library {
 }
 
 if (!["light", "dark"].includes(localStorage.getItem("theme"))) {
-	localStorage.setItem("theme", Theme.LIGHT);
+	if (window.matchMedia?.("(prefers-color-scheme:dark)").matches) {
+		localStorage.setItem("theme", Theme.DARK);
+	} else {
+		localStorage.setItem("theme", Theme.LIGHT);
+	}
 }
 export const theme = writable<Theme>(localStorage.getItem("theme") as Theme);
 theme.subscribe((theme) => {
