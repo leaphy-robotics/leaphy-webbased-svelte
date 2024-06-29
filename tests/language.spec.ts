@@ -14,7 +14,7 @@ test("Language", async ({ page }) => {
 	await page
 		.getByRole("button", { name: "Original Nano ESP32 Original" })
 		.click();
-	await expect(page.getByText("Lees afstand")).toBeVisible();
+	await expect(page.getByText("Lees afstand")).not.toBeVisible(); // Should not be visible, the sonar trig block replaces it
 	await expect(page.getByText("Lees anapin")).toBeVisible();
 	await expect(page.getByText("Lees gas")).toBeVisible();
 	await expect(page.getByText("Lees luchtdruk")).toBeVisible();
