@@ -1,11 +1,44 @@
 import { Backpack as BaseBackpack } from "@blockly/workspace-backpack";
+import { registerContextMenus } from "@blockly/workspace-backpack/src/backpack_helpers";
 import Blockly from "blockly/core";
 
-export class Backpack extends BaseBackpack {
+export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
 	constructor(workspace: Blockly.WorkspaceSvg) {
 		super(workspace, {
 			allowEmptyBackpackOpen: false,
 		});
+	}
+
+	override init(): void {
+		this.workspace_.getComponentManager().addComponent({
+			component: this,
+			weight: 2,
+			capabilities: [
+				Blockly.ComponentManager.Capability.AUTOHIDEABLE,
+				Blockly.ComponentManager.Capability.DRAG_TARGET,
+				Blockly.ComponentManager.Capability.POSITIONABLE,
+				Blockly.ComponentManager.Capability.DELETE_AREA,
+			],
+		});
+		this.initFlyout();
+		this.createDom();
+		this.attachListeners();
+		// @ts-ignore
+		if (this.options.contextMenu) {
+			// @ts-ignore
+			registerContextMenus(this.options.contextMenu, this.workspace_);
+		}
+		this.initialized_ = true;
+		this.workspace_.resize();
+	}
+
+	wouldDelete(element: Blockly.IDraggable, couldConnect: boolean): boolean {
+		if (element instanceof Blockly.BlockSvg) {
+			if (element.type === "leaphy_start") {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	override initFlyout() {
@@ -36,6 +69,7 @@ export class Backpack extends BaseBackpack {
 		parentNode?.appendChild(this.flyout_?.createDom(Blockly.utils.Svg.SVG));
 		this.flyout_.init(this.workspace_);
 	}
+
 	override addBlock(block: Blockly.Block) {
 		if (block.type === "leaphy_start") {
 			this.addBlocks(block.getChildren(false));
@@ -48,7 +82,6 @@ export class Backpack extends BaseBackpack {
 
 		// @ts-ignore
 		this.addItem(this.blockToJsonString(block));
-		setTimeout(() => block.dispose(undefined), 0);
 	}
 
 	override position(
