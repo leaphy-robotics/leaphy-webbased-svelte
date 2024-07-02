@@ -46,10 +46,6 @@ export default [
 			],
 			[
 				{
-					type: "leaphy_original_get_distance",
-					robots: [...robotGroups.L_ORIGINAL_ALL, ...robotGroups.L_NANO_ALL],
-				},
-				{
 					type: "digital_read",
 				},
 				{
@@ -59,6 +55,7 @@ export default [
 			[
 				{
 					type: "leaphy_sonar_read",
+					fields: { TRIG_PIN: "8", ECHO_PIN: "7" },
 				},
 			],
 			[
@@ -76,10 +73,6 @@ export default [
 				},
 				{
 					type: "leaphy_i2c_rgb_color",
-				},
-				{
-					type: "leaphy_original_get_distance",
-					robots: [RobotType.L_CLICK],
 				},
 				{
 					type: "leaphy_tof_get_distance",

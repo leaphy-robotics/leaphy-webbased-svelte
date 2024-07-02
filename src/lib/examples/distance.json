@@ -26,8 +26,12 @@
 													"fields": { "TEXT": "text" }
 												},
 												"block": {
-													"type": "leaphy_original_get_distance",
-													"id": "wjMq5+~Z[*Z(v=!a2_.T"
+													"type": "leaphy_sonar_read",
+													"id": "6.[a1G|zx+jJ#{X`Lc/J",
+													"fields": {
+														"TRIG_PIN": "8",
+														"ECHO_PIN": "7"
+													}
 												}
 											}
 										},

@@ -33,8 +33,12 @@
 																"fields": { "NUM": 1 }
 															},
 															"block": {
-																"type": "leaphy_original_get_distance",
-																"id": "-l]N2@hVF=BacXvt%kXU"
+																"type": "leaphy_sonar_read",
+																"id": "u$GWvK~;BHT//.)aajeR",
+																"fields": {
+																	"TRIG_PIN": "8",
+																	"ECHO_PIN": "7"
+																}
 															}
 														},
 														"B": {
