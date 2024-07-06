@@ -279,7 +279,7 @@ export async function explain(block: Blockly.BlockSvg) {
 		{
 			component: Explanation,
 			data: {
-				explanation: fetch("http://localhost:8000/ai/generate", {
+				explanation: fetch(`${import.meta.env.VITE_BACKEND_URL}/ai/generate`, {
 					method: "post",
 					headers: {
 						"content-type": "application/json",
