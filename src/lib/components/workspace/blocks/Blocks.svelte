@@ -11,10 +11,11 @@ import {
 } from "$state/blockly.svelte";
 import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import { Events, WorkspaceSvg, serialization } from "blockly";
+import {Events, WorkspaceSvg, serialization, Block, ContextMenuRegistry} from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
+import Dropper from "$components/ui/Dropper.svelte";
 
 let backgroundX = $state(0);
 
@@ -83,6 +84,7 @@ theme.subscribe((theme) => {
 		<img class="background" src="{$robot.background}" alt="{$robot.name}" style:left={`${backgroundX}px`}>
 	{/if}
     <div class="blockly" bind:this={element}></div>
+	<Dropper />
 </div>
 
 <style>
