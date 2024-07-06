@@ -118,5 +118,8 @@
 	"UPLOADING_FIRMWARE": "Uploading firmware",
 	"INSTALLING_LIBRARIES": "Installing libraries",
 	"NOT_CONNECTED": "Not connected",
-	"NOT_CONNECTED_DESC": "You won't see new output"
+	"NOT_CONNECTED_DESC": "You won't see new output",
+	"EXPLANATION": "Explanation",
+	"EXPLAIN_BLOCK": "Explain Block ✨",
+	"META_ATTRIBUTION": "Built with Meta Llama 3"
 }

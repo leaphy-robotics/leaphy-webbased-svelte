@@ -1,4 +1,5 @@
 <script lang="ts">
+import Dropper from "$components/ui/Dropper.svelte";
 import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import { Theme, theme } from "$state/app.svelte";
@@ -83,6 +84,7 @@ theme.subscribe((theme) => {
 		<img class="background" src="{$robot.background}" alt="{$robot.name}" style:left={`${backgroundX}px`}>
 	{/if}
     <div class="blockly" bind:this={element}></div>
+	<Dropper />
 </div>
 
 <style>

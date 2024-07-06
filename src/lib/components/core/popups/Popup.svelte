@@ -2,7 +2,6 @@
 import type { PopupState } from "$state/popup.svelte";
 import { setContext } from "svelte";
 import { writable } from "svelte/store";
-import Windowed from "./Windowed.svelte";
 
 interface Props {
 	state: PopupState;
@@ -21,6 +20,7 @@ $effect(() => {
     <div class="localRoot">
         <div
             class="popup"
+			style:translate="{popupState.anchor}"
             style:left={`${popupState.position.x}px`}
             style:top={`${popupState.position.y}px`}
         >
@@ -35,7 +35,6 @@ $effect(() => {
 <style>
     .popup {
         position: absolute;
-        translate: -50% -50%;
         background: var(--background);
         border-radius: 6px;
         overflow: hidden;

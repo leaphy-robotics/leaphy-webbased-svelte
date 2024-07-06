@@ -118,5 +118,8 @@
 	"UPLOADING_FIRMWARE": "Firmware uploaden",
 	"INSTALLING_LIBRARIES": "Bibliotheken installeren",
 	"NOT_CONNECTED": "Niet verbonden",
-	"NOT_CONNECTED_DESC": "Je ziet geen nieuwe output"
+	"NOT_CONNECTED_DESC": "Je ziet geen nieuwe output",
+	"EXPLANATION": "Uitleg",
+	"EXPLAIN_BLOCK": "Leg blok uit ✨",
+	"META_ATTRIBUTION": "Gemaakt met Meta Llama 3"
 }

@@ -3,6 +3,11 @@ import LanguageSelector from "$components/core/popups/popups/LanguageSelector.sv
 import type { ComponentType } from "svelte";
 import { writable } from "svelte/store";
 
+export enum Anchor {
+	TopLeft = "0 0",
+	Center = "-50% -50%",
+}
+
 interface Popup {
 	component: ComponentType;
 	data: Record<string, any>;
@@ -14,6 +19,7 @@ export interface PopupState {
 	popup: Popup;
 	position: { x: number; y: number };
 	onclose: (value: any) => void;
+	anchor: Anchor;
 }
 
 function createPopups() {
@@ -21,7 +27,7 @@ function createPopups() {
 
 	return {
 		subscribe,
-		open(popup: Popup) {
+		open(popup: Popup, initialState?: Partial<PopupState>) {
 			let onclose: (value: any) => void;
 			const promise = new Promise<any>((resolve) => (onclose = resolve));
 			const state: PopupState = {
@@ -29,6 +35,8 @@ function createPopups() {
 				position: { x: 0, y: 0 },
 				popup,
 				onclose,
+				anchor: Anchor.Center,
+				...initialState,
 			};
 			update((popups) => {
 				if (
