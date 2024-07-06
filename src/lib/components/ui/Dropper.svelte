@@ -1,63 +1,68 @@
 <script lang="ts">
+import { explain } from "$domain/blockly/blockly";
+import { workspace } from "$state/blockly.svelte";
+import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
+import type * as Blockly from "blockly";
+import type { WorkspaceSvg } from "blockly";
+import { onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
-import {
-	faMagicWandSparkles,
-} from "@fortawesome/free-solid-svg-icons";
-import * as Blockly from "blockly";
-import {get} from "svelte/store";
-import {workspace} from "$state/blockly.svelte";
-import type {WorkspaceSvg} from "blockly";
-import {onDestroy, onMount} from "svelte";
-import {explain} from "$domain/blockly/blockly";
+import { get } from "svelte/store";
 
 function getBlockForPosition(event: PointerEvent) {
-	const space = get(workspace) as WorkspaceSvg
-	if (!space) return
+	const space = get(workspace) as WorkspaceSvg;
+	if (!space) return;
 
-	return space.getAllBlocks(true).reverse().find(block => {
-		const bounding = block.pathObject.svgPath.getBoundingClientRect()
+	return space
+		.getAllBlocks(true)
+		.reverse()
+		.find((block) => {
+			const bounding = block.pathObject.svgPath.getBoundingClientRect();
 
-		if (bounding.x > event.clientX || bounding.y > event.clientY) return false
-		return !(bounding.x + bounding.width < event.clientX || bounding.y + bounding.height < event.clientY)
-	})
+			if (bounding.x > event.clientX || bounding.y > event.clientY)
+				return false;
+			return !(
+				bounding.x + bounding.width < event.clientX ||
+				bounding.y + bounding.height < event.clientY
+			);
+		});
 }
 
-let previous: Blockly.BlockSvg = null
-let selecting = false
+let previous: Blockly.BlockSvg = null;
+let selecting = false;
 function pointerMove(event: PointerEvent) {
-	if (!selecting) return
+	if (!selecting) return;
 
-	const block =getBlockForPosition(event)
-	previous?.setHighlighted(false)
-	block?.setHighlighted(true)
+	const block = getBlockForPosition(event);
+	previous?.setHighlighted(false);
+	block?.setHighlighted(true);
 
-	previous = block
+	previous = block;
 }
 
 async function select(event: PointerEvent) {
-	if (!selecting) return
+	if (!selecting) return;
 
-	previous?.setHighlighted(false)
-	selecting = false
+	previous?.setHighlighted(false);
+	selecting = false;
 
-	const block = getBlockForPosition(event)
-	if (!block) return
+	const block = getBlockForPosition(event);
+	if (!block) return;
 
-	await explain(block)
+	await explain(block);
 }
 
 function onclick() {
-	selecting = true
+	selecting = true;
 }
 
 onMount(() => {
-	document.body.addEventListener('pointermove', pointerMove)
-	document.body.addEventListener('pointerup', select)
-})
+	document.body.addEventListener("pointermove", pointerMove);
+	document.body.addEventListener("pointerup", select);
+});
 onDestroy(() => {
-	document.body.removeEventListener('pointermove', pointerMove)
-	document.body.removeEventListener('pointerup', select)
-})
+	document.body.removeEventListener("pointermove", pointerMove);
+	document.body.removeEventListener("pointerup", select);
+});
 </script>
 
 <button class="dropper" class:selecting {onclick}>

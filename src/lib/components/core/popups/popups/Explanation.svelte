@@ -1,31 +1,31 @@
 <script lang="ts">
-	import SvelteMarkdown from 'svelte-markdown'
-	import {getContext, onDestroy, onMount} from "svelte";
-	import type {Writable} from "svelte/store";
-	import {popups, type PopupState} from "$state/popup.svelte";
-	import { _ } from 'svelte-i18n'
+import { type PopupState, popups } from "$state/popup.svelte";
+import { getContext, onDestroy, onMount } from "svelte";
+import { _ } from "svelte-i18n";
+import SvelteMarkdown from "svelte-markdown";
+import type { Writable } from "svelte/store";
 
-	interface Props {
-		explanation: Promise<string>
-	}
+interface Props {
+	explanation: Promise<string>;
+}
 
-	let { explanation }: Props = $props();
+let { explanation }: Props = $props();
 
-	const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<Writable<PopupState>>("state");
 
-	let element: HTMLDivElement
-	function click(event: MouseEvent) {
-		if (element.contains(event.target as HTMLElement)) return
+let element: HTMLDivElement;
+function click(event: MouseEvent) {
+	if (element.contains(event.target as HTMLElement)) return;
 
-		popups.close($popupState.id);
-	}
+	popups.close($popupState.id);
+}
 
-	onMount(() => {
-		document.body.addEventListener('click', click)
-	})
-	onDestroy(() => {
-		document.body.removeEventListener('click', click)
-	})
+onMount(() => {
+	document.body.addEventListener("click", click);
+});
+onDestroy(() => {
+	document.body.removeEventListener("click", click);
+});
 </script>
 
 <div class="content" bind:this={element}>

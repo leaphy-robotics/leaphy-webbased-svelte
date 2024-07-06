@@ -1,4 +1,5 @@
 <script lang="ts">
+import Dropper from "$components/ui/Dropper.svelte";
 import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import { Theme, theme } from "$state/app.svelte";
@@ -11,11 +12,14 @@ import {
 } from "$state/blockly.svelte";
 import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import {Events, WorkspaceSvg, serialization, Block, ContextMenuRegistry} from "blockly";
+import {
+	Events,
+	WorkspaceSvg,
+	serialization,
+} from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
-import Dropper from "$components/ui/Dropper.svelte";
 
 let backgroundX = $state(0);
 

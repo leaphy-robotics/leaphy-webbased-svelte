@@ -4,8 +4,8 @@ import type { ComponentType } from "svelte";
 import { writable } from "svelte/store";
 
 export enum Anchor {
-	TopLeft = '0 0',
-	Center = '-50% -50%'
+	TopLeft = "0 0",
+	Center = "-50% -50%",
 }
 
 interface Popup {
@@ -19,7 +19,7 @@ export interface PopupState {
 	popup: Popup;
 	position: { x: number; y: number };
 	onclose: (value: any) => void;
-	anchor: Anchor
+	anchor: Anchor;
 }
 
 function createPopups() {
@@ -36,7 +36,7 @@ function createPopups() {
 				popup,
 				onclose,
 				anchor: Anchor.Center,
-				...initialState
+				...initialState,
 			};
 			update((popups) => {
 				if (
