@@ -26,7 +26,6 @@ import type {
 	CategoryInfo,
 	ToolboxDefinition,
 } from "blockly/core/utils/toolbox";
-import Groq from "groq-sdk";
 import { _ } from "svelte-i18n";
 import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
@@ -196,11 +195,6 @@ export function setupWorkspace(
 
 	return workspace;
 }
-
-const groq = new Groq({
-	apiKey: "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",
-	dangerouslyAllowBrowser: true,
-});
 
 function serializeBlock(
 	block: Block,
