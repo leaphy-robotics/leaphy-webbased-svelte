@@ -12,11 +12,7 @@ import {
 } from "$state/blockly.svelte";
 import { code, robot } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import {
-	Events,
-	WorkspaceSvg,
-	serialization,
-} from "blockly";
+import { Events, WorkspaceSvg, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
