@@ -121,5 +121,6 @@
 	"NOT_CONNECTED_DESC": "You won't see new output",
 	"EXPLANATION": "Explanation",
 	"EXPLAIN_BLOCK": "Explain Block ✨",
-	"META_ATTRIBUTION": "Built with Meta Llama 3"
+	"META_ATTRIBUTION": "Built with Meta Llama 3",
+	"AI_RATE_LIMITED": "The explanation robot is a little too busy right now, please try again later."
 }
