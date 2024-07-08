@@ -39,6 +39,10 @@ onDestroy(() => {
 		</div>
 	{:then explanation}
 		<SvelteMarkdown source="{explanation}" />
+	{:catch error }
+		<div class="container">
+			{$_("AI_RATE_LIMITED")}
+		</div>
 	{/await}
 	<div class="footer">{$_("META_ATTRIBUTION")}</div>
 </div>
