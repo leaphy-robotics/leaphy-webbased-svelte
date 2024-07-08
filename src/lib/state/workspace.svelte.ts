@@ -178,6 +178,8 @@ function createPortState() {
 			if ("addEventListener" in port) {
 				port.addEventListener("disconnect", async () => {
 					set(undefined);
+
+					onReady(); // Make sure we do not get stuck waiting for the port to be ready while its disconnected
 				});
 			}
 			set(port);
@@ -202,6 +204,8 @@ function createPortState() {
 		},
 		async reserve() {
 			reserved = true;
+
+			await this.ready; // Prevent race condition
 
 			const serialPort = get(port);
 			if (serialPort.readable.locked) {
