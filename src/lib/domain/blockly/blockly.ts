@@ -4,7 +4,7 @@ import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
-import { audio, workspace } from "$state/blockly.svelte";
+import { audio } from "$state/blockly.svelte";
 import { Anchor, popups } from "$state/popup.svelte";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
@@ -14,13 +14,7 @@ import {
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
-import {
-	type Block,
-	ContextMenu,
-	ContextMenuRegistry,
-	type WorkspaceSvg,
-	serialization,
-} from "blockly";
+import { type Block, ContextMenuRegistry, serialization } from "blockly";
 import type { Workspace } from "blockly";
 import type {
 	CategoryInfo,
@@ -298,7 +292,10 @@ export async function explain(block: Blockly.BlockSvg) {
 						],
 						model: "Llama3-70b-8192",
 					}),
-				}).then(async (res) => JSON.parse(await res.text())),
+				}).then(async (res) => {
+					if (!res.ok) throw new Error(res.statusText);
+					return JSON.parse(await res.text());
+				}),
 			},
 			allowInteraction: true,
 		},
