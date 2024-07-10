@@ -34,7 +34,7 @@ const DEFAULT_LIBRARIES = [
 	"Adafruit BMP280 Library",
 	"TM1637",
 	"LedControl",
-	"DS3231"
+	"DS3231",
 ];
 
 interface BaseRobot {

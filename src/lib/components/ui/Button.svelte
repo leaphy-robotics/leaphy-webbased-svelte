@@ -25,7 +25,7 @@ const {
 	bold,
 	icon,
 	disabled,
-	inline=false,
+	inline = false,
 	type = "button",
 }: Props = $props();
 

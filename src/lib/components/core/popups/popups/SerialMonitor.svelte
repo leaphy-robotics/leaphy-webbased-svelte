@@ -1,5 +1,4 @@
 <script lang="ts">
-import Fa from 'svelte-fa'
 import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
@@ -8,14 +7,16 @@ import { Prompt, log, port } from "$state/workspace.svelte";
 import {
 	faArrowDown,
 	faBars,
-	faChartLine, faClock,
+	faChartLine,
+	faClock,
 	faTrash,
 } from "@fortawesome/free-solid-svg-icons";
+import { format } from "date-fns";
 import { tick } from "svelte";
+import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
-import {format} from "date-fns";
 
 enum Mode {
 	TEXT = 0,
@@ -23,7 +24,7 @@ enum Mode {
 }
 
 let mode = $state(Mode.TEXT);
-let input = $state<HTMLInputElement>()
+let input = $state<HTMLInputElement>();
 
 let element = $state<HTMLDivElement>();
 function formatDate(date: Date) {
@@ -80,8 +81,8 @@ function switchMode() {
 }
 
 function insertDate() {
-	value += format(new Date(), 'yyMMddiHHmmss')
-	if (input) input.focus()
+	value += format(new Date(), "yyMMddiHHmmss");
+	if (input) input.focus();
 }
 </script>
 

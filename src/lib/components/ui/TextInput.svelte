@@ -9,7 +9,7 @@ interface Props {
 	focus?: boolean;
 	required?: boolean;
 	type?: string;
-	input: HTMLInputElement
+	input: HTMLInputElement;
 }
 
 let {
@@ -20,7 +20,7 @@ let {
 	focus,
 	required,
 	type = "text",
-	input = $bindable()
+	input = $bindable(),
 }: Props = $props();
 
 onMount(() => {
