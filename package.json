@@ -35,7 +35,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@leaphy-robotics/avrdude-webassembly": "^1.6.1",
     "@leaphy-robotics/dfu-util-wasm": "^1.0.2",
-    "@leaphy-robotics/leaphy-blocks": "^3.1.1",
+    "@leaphy-robotics/leaphy-blocks": "3.2.0",
     "@leaphy-robotics/picotool-wasm": "1.0.3",
     "@leaphy-robotics/webusb-ftdi": "1.0.1",
     "@sentry/svelte": "8.0.0-beta.5",
