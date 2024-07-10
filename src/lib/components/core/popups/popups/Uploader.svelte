@@ -61,28 +61,35 @@ async function compile() {
 }
 
 async function upload(res: Record<string, string>) {
-	currentState = "UPDATE_STARTED";
 	try {
+		currentState = "WAITING_FOR_PORT";
+		await port.ready;
+		progress += 100 / 5;
 		await port.reserve();
+		progress += 100 / 5;
+		currentState = "UPDATE_STARTED";
 		await $robot.programmer.upload($port, res);
 	} catch (e) {
-		console.log(e);
+		console.log("upload error", e);
 		throw new UploadError("UPDATE_FAILED", e);
+	} finally {
+		port.release();
 	}
-	port.release();
 }
 
 onMount(async () => {
 	try {
+		await port.clear_state();
+
 		try {
 			if (!$port) await port.connect(Prompt.MAYBE);
-			progress += 100 / 3;
+			progress += 100 / 5;
 		} catch {
 			throw new UploadError("NO_DEVICE_SELECTED", "");
 		}
 
 		const res = program || (await compile());
-		progress += 100 / 3;
+		progress += 100 / 5;
 
 		await upload(res);
 
@@ -90,6 +97,7 @@ onMount(async () => {
 		currentState = "UPDATE_COMPLETE";
 		done = true;
 	} catch (e) {
+		console.log("update failed:", e);
 		done = true;
 		failed = true;
 		currentState = e?.name || "UPDATE_FAILED";

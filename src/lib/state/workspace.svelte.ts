@@ -118,9 +118,17 @@ function createPortState() {
 	subscribe(async (port) => {
 		if (!port || reserved) return;
 		if (!port.readable || !port.writable) {
-			await port.open({ baudRate: 115200 });
+			try {
+				await port.open({ baudRate: 115200 });
+			} catch (e) {
+				console.error("Failed to open port:", e);
+				onReady(); // prevent infinite waiting
+				return;
+			}
 		}
-		if (port.readable.locked || port.writable.locked) return;
+		if (port.readable.locked || port.writable.locked) {
+			return;
+		}
 
 		writer = port.writable.getWriter();
 		reader = port.readable.getReader();
@@ -177,9 +185,10 @@ function createPortState() {
 			const port = await this.requestPort(prompt);
 			if ("addEventListener" in port) {
 				port.addEventListener("disconnect", async () => {
+					console.log("Port disconnected");
 					set(undefined);
 
-					onReady(); // Make sure we do not get stuck waiting for the port to be ready while its disconnected
+					onReady();
 				});
 			}
 			set(port);
@@ -205,21 +214,52 @@ function createPortState() {
 		async reserve() {
 			reserved = true;
 
-			await this.ready; // Prevent race condition
+			await this.ready; // Prevent a race condition
 
 			const serialPort = get(port);
-			if (serialPort.readable.locked) {
+			// Note: serialPort can be undefined if the port was disconnected
+
+			if (!serialPort || serialPort.readable.locked) {
 				await reader.cancel();
 				reader.releaseLock();
 			}
 
-			if (serialPort.writable.locked) {
+			if (!serialPort || serialPort.writable.locked) {
 				writer.releaseLock();
 			}
 		},
 		release() {
 			reserved = false;
 			update((port) => port);
+		},
+		async clear_state() {
+			// Hack: Clear all the state as no state is needed.
+			// Prevents getting in a bad state where all future uploads fail
+
+			if (reader) {
+				try {
+					await reader.cancel();
+				} catch (e) {
+					console.log("Failed to cancel reader", e);
+				}
+				try {
+					reader.releaseLock();
+				} catch (e) {
+					console.log("Failed to release reader", e);
+				}
+				reader = undefined;
+			}
+
+			if (writer) {
+				try {
+					writer.releaseLock();
+				} catch (e) {
+					console.log("Failed to release writer:", e);
+				}
+				writer = undefined;
+			}
+
+			set(undefined);
 		},
 	};
 }

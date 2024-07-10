@@ -33,6 +33,7 @@
 	"COMPILATION_STARTED": "Compiling...",
 	"COMPILATION_FAILED": "Compilation error!",
 	"COMPILATION_COMPLETE": "Compilation complete",
+	"WAITING_FOR_PORT": "Accessing port...",
 	"UPDATE_STARTED": "Updating Robot...",
 	"UPDATE_FAILED": "Updating Robot failed!",
 	"UPDATE_COMPLETE": "Robot update complete",
