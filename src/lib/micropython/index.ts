@@ -1,9 +1,11 @@
 import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte";
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
+import type { RobotDevice } from "$domain/robots";
 import { popups } from "$state/popup.svelte";
 import { port } from "$state/workspace.svelte";
 import base64 from "base64-js";
 import { get } from "svelte/store";
+import { delay } from "../programmers/utils";
 import { Commands } from "./commands";
 import { FileSystem } from "./filesystem";
 import { PackageManager } from "./packagagemanager";
@@ -73,10 +75,15 @@ export default class MicroPythonIO {
 		});
 	}
 
-	async getFirmware() {
-		const res = await fetch(
-			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
-		);
+	async getFirmware(robot: RobotDevice) {
+		const firmwareSources = {
+			l_nano_esp32:
+				"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/esp32.bin",
+			l_nano_rp2040:
+				"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
+		};
+
+		const res = await fetch(firmwareSources[robot.id]);
 		const content = await res.arrayBuffer();
 
 		return {
@@ -126,6 +133,7 @@ export default class MicroPythonIO {
 			const data = encoder.encode(`${code}\x04`);
 			for (let offset = 0; offset < data.length; offset += 256) {
 				await this.writer.write(data.slice(offset, offset + 256));
+				await delay(5);
 			}
 
 			let content = "";

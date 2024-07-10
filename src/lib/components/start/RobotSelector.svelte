@@ -1,46 +1,31 @@
 <script lang="ts">
-import { type Robot, robots as allRobots } from "$domain/robots";
-import { Screen, screen, selected } from "$state/app.svelte";
-import { restore } from "$state/blockly.svelte";
-import { Mode, code, mode, robot, saveState } from "$state/workspace.svelte";
+import type { Robot, RobotListing } from "$domain/robots";
 
 interface Props {
 	robots: Robot[][];
 	secondary: boolean;
+	onselect: (robot: Robot) => void;
+	selected?: RobotListing;
+	compact?: boolean;
 }
 
-const { robots, secondary }: Props = $props();
-
-function select(type: Robot) {
-	window._paq.push(["trackEvent", "SelectRobot", type.name]);
-
-	if ("variants" in type) return selected.set(type);
-	if ("mode" in type) {
-		code.set(localStorage.getItem(`session_${type.id}`) || type.defaultProgram);
-		robot.set(allRobots[type.defaultRobot]);
-		mode.set(type.mode);
-		screen.set(Screen.WORKSPACE);
-		saveState.set(true);
-		return;
-	}
-
-	if (localStorage.getItem(`session_blocks_${type.id}`)) {
-		restore.set(JSON.parse(localStorage.getItem(`session_blocks_${type.id}`)));
-	}
-	robot.set(type);
-	mode.set(Mode.BLOCKS);
-	screen.set(Screen.WORKSPACE);
-}
+const {
+	robots,
+	secondary,
+	onselect,
+	selected,
+	compact = false,
+}: Props = $props();
 </script>
 
-<div class="selector" class:secondary>
+<div class="selector" class:secondary class:compact>
 	{#each robots as row}
 		<div class="row">
 			{#each row as robot}
 				<button
 					class="robot"
-					onclick={() => select(robot)}
-					class:selected={$selected?.id === robot.id}
+					onclick={() => onselect(robot)}
+					class:selected={selected?.id === robot.id}
 				>
                     <span class="icon">
                         <img class="image" src={robot.icon} alt={robot.name}/>
@@ -61,6 +46,10 @@ function select(type: Robot) {
 		flex-direction: column;
 		justify-content: center;
 		gap: 3vh;
+	}
+
+	.selector.compact {
+		width: unset;
 	}
 
 	.secondary {
