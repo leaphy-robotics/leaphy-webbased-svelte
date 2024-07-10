@@ -1,5 +1,6 @@
 import robotGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
+import { format } from "date-fns";
 
 function number(value: number) {
 	return {
@@ -82,6 +83,64 @@ export default [
 				},
 				{
 					type: "leaphy_i2c_gesture",
+				},
+				{
+					type: "leaphy_i2c_rtc_get",
+				},
+				{
+					type: "leaphy_i2c_rtc_format",
+					extraState: [
+						{
+							type: "item",
+							item: "day",
+							fmt: "2-digit",
+						},
+						{
+							type: "text",
+							value: "/",
+						},
+						{
+							type: "item",
+							item: "month",
+							fmt: "2-digit",
+						},
+						{
+							type: "text",
+							value: "/",
+						},
+						{
+							type: "item",
+							item: "year",
+							fmt: "full",
+						},
+						{
+							type: "text",
+							value: " ",
+						},
+						{
+							type: "item",
+							item: "hour",
+							fmt: "2-digit",
+						},
+						{
+							type: "text",
+							value: ":",
+						},
+						{
+							type: "item",
+							item: "minute",
+							fmt: "2-digit",
+						},
+						{
+							type: "text",
+							value: ":",
+						},
+						{
+							type: "item",
+							item: "second",
+							fmt: "2-digit",
+						},
+					],
 				},
 			],
 			[
@@ -310,6 +369,12 @@ export default [
 				{
 					type: "i2c_use_channel",
 					robots: robotGroups.L_NANO_ALL,
+				},
+				{
+					type: "leaphy_i2c_rtc_set",
+					inputs: {
+						VALUE: text(format(new Date(), "yyMMddiHHmmss")),
+					},
 				},
 			],
 		],
@@ -609,6 +674,12 @@ export default [
 					inputs: {
 						VALUE: text("apple"),
 						CHECK: text("a"),
+					},
+				},
+				{
+					type: "text_to_double",
+					inputs: {
+						VALUE: text("123"),
 					},
 				},
 			],

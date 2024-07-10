@@ -59,7 +59,7 @@ body {
     box-sizing: content-box;
 }
 
-.blocklyFlyout {
+.injectionDiv > .blocklyFlyout {
     transform: translate(80px, 0) !important;
 }
 
