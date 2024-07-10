@@ -1,14 +1,19 @@
 <script lang="ts">
 import RobotSelector from "$components/start/RobotSelector.svelte";
-import {type Robot, type RobotListing, robotListing, robots as allRobots} from "$domain/robots";
-import {Screen, screen} from "$state/app.svelte";
+import {
+	type Robot,
+	type RobotListing,
+	robots as allRobots,
+	robotListing,
+} from "$domain/robots";
+import { Screen, screen } from "$state/app.svelte";
+import { restore } from "$state/blockly.svelte";
+import { Mode, code, mode, robot, saveState } from "$state/workspace.svelte";
 import { flip } from "svelte/animate";
 import { cubicOut } from "svelte/easing";
 import { fly } from "svelte/transition";
-import {code, Mode, mode, robot, saveState} from "$state/workspace.svelte";
-import {restore} from "$state/blockly.svelte";
 
-let selected = $state<RobotListing>()
+let selected = $state<RobotListing>();
 const selectors = $derived(
 	selected ? [robotListing, selected.variants] : [robotListing],
 );
@@ -20,7 +25,7 @@ const animationOptions = {
 function onselect(type: Robot) {
 	window._paq.push(["trackEvent", "SelectRobot", type.name]);
 
-	if ("variants" in type) return selected = type;
+	if ("variants" in type) return (selected = type);
 	if ("mode" in type) {
 		code.set(localStorage.getItem(`session_${type.id}`) || type.defaultProgram);
 		robot.set(allRobots[type.defaultRobot]);

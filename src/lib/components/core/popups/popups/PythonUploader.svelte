@@ -1,8 +1,10 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
 
+import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
+import { type RobotDevice, robots } from "$domain/robots";
 import { type PopupState, popups } from "$state/popup.svelte";
 import { usbRequest } from "$state/upload.svelte";
 import {
@@ -13,10 +15,8 @@ import {
 	robot,
 } from "$state/workspace.svelte";
 import { getContext, onMount } from "svelte";
-import {get, type Writable} from "svelte/store";
+import { type Writable, get } from "svelte/store";
 import type MicroPythonIO from "../../../../micropython";
-import {type RobotDevice, robots} from "$domain/robots";
-import RobotSelector from "$components/start/RobotSelector.svelte";
 
 interface Props {
 	io: MicroPythonIO;
@@ -27,7 +27,7 @@ let progress = $state(0);
 let currentState = $state("CONNECTING");
 let error = $state<string | null>(null);
 let done = $state(false);
-let robotRequest = $state<((robot: RobotDevice) => void)>()
+let robotRequest = $state<(robot: RobotDevice) => void>();
 
 class UploadError extends Error {
 	constructor(
@@ -56,11 +56,13 @@ onMount(async () => {
 
 		currentState = "CHOOSING_ROBOT";
 		if (!installed) {
-			const newRobot = await new Promise<RobotDevice>(resolve => robotRequest = resolve)
-			robot.set(newRobot)
+			const newRobot = await new Promise<RobotDevice>(
+				(resolve) => (robotRequest = resolve),
+			);
+			robot.set(newRobot);
 		}
-		robotRequest = undefined
-		progress += 100 / 6
+		robotRequest = undefined;
+		progress += 100 / 6;
 
 		currentState = "DOWNLOADING_FIRMWARE";
 		let firmware: Record<string, string>;
@@ -86,7 +88,7 @@ onMount(async () => {
 		done = true;
 		currentState = e?.name || "UPDATE_FAILED";
 		error = e.description;
-		throw e
+		throw e;
 	}
 });
 

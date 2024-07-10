@@ -1,15 +1,21 @@
 <script lang="ts">
-import {type Robot, type RobotListing} from "$domain/robots";
+import type { Robot, RobotListing } from "$domain/robots";
 
 interface Props {
 	robots: Robot[][];
 	secondary: boolean;
-	onselect: (robot: Robot) => void,
-	selected?: RobotListing
-	compact?: boolean
+	onselect: (robot: Robot) => void;
+	selected?: RobotListing;
+	compact?: boolean;
 }
 
-const { robots, secondary, onselect, selected, compact=false }: Props = $props();
+const {
+	robots,
+	secondary,
+	onselect,
+	selected,
+	compact = false,
+}: Props = $props();
 </script>
 
 <div class="selector" class:secondary class:compact>
