@@ -66,5 +66,4 @@ function createLibraryState() {
 }
 
 export const screen = writable<ComponentType>(Screen.START);
-export const selected = writable<RobotListing | null>(null);
 export const libraries = createLibraryState();

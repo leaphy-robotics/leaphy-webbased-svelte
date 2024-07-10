@@ -9,7 +9,7 @@ import Select from "$components/ui/Select.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
-import { Screen, Theme, screen, selected, theme } from "$state/app.svelte";
+import { Screen, Theme, screen, theme } from "$state/app.svelte";
 import {
 	audio,
 	canRedo,
@@ -85,7 +85,6 @@ async function connect() {
 async function newProject() {
 	popups.clear();
 	willRestore.set(false);
-	selected.set(null);
 	screen.set(Screen.START);
 }
 
