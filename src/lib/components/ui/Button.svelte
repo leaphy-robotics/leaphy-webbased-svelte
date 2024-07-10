@@ -14,6 +14,7 @@ interface Props {
 	mode: "primary" | "secondary" | "outlined" | "accent";
 	bold?: boolean;
 	type?: "button" | "submit";
+	inline?: boolean;
 }
 
 const {
@@ -24,6 +25,7 @@ const {
 	bold,
 	icon,
 	disabled,
+	inline=false,
 	type = "button",
 }: Props = $props();
 
@@ -53,6 +55,7 @@ function onContext() {
 	class:outlined={mode === "outlined"}
 	class:accent={mode === "accent"}
 	class:bold
+	class:inline
 >
 	{#if icon}
 		{#if typeof icon === "string"}
@@ -74,6 +77,10 @@ function onContext() {
 		background: none;
 		border: none;
 		padding: 10px 15px;
+	}
+
+	.inline {
+		padding: 5px 10px;
 	}
 
 	.icon {

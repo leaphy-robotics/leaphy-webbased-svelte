@@ -1,4 +1,5 @@
 <script lang="ts">
+import Fa from 'svelte-fa'
 import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
@@ -7,14 +8,14 @@ import { Prompt, log, port } from "$state/workspace.svelte";
 import {
 	faArrowDown,
 	faBars,
-	faChartLine,
+	faChartLine, faClock,
 	faTrash,
-	faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { tick } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
+import {format} from "date-fns";
 
 enum Mode {
 	TEXT = 0,
@@ -22,6 +23,7 @@ enum Mode {
 }
 
 let mode = $state(Mode.TEXT);
+let input = $state<HTMLInputElement>()
 
 let element = $state<HTMLDivElement>();
 function formatDate(date: Date) {
@@ -76,6 +78,11 @@ function switchMode() {
 	if (mode === Mode.CHART) mode = Mode.TEXT;
 	else mode = Mode.CHART;
 }
+
+function insertDate() {
+	value += format(new Date(), 'yyMMddiHHmmss')
+	if (input) input.focus()
+}
 </script>
 
 {#snippet actions()}
@@ -106,14 +113,20 @@ function switchMode() {
 		<Chart />
 	{/if}
     {#if $port}
-        <form onsubmit={send}>
-            <TextInput
-                placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")}
-                bind:value
-                mode={"primary"}
-                rounded={false}
-            />
-        </form>
+		<div class="send">
+			<div class="suggestions">
+				<Button mode={"accent"} name={format(new Date(), 'yyMMddiHHmmss')} icon={faClock} inline onclick={insertDate} />
+			</div>
+			<form onsubmit={send}>
+				<TextInput
+					placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")}
+					bind:value
+					bind:input
+					mode={"primary"}
+					rounded={false}
+				/>
+			</form>
+		</div>
     {/if}
 {/snippet}
 
@@ -157,4 +170,17 @@ function switchMode() {
         font-size: 1.1em;
         font-weight: bold;
     }
+
+	.send {
+		display: flex;
+		flex-direction: column;
+		background: var(--primary);
+		color: var(--on-primary);
+	}
+
+	.suggestions {
+		display: flex;
+		gap: 10px;
+		padding: 10px 10px 5px;
+	}
 </style>
