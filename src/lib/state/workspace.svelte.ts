@@ -177,6 +177,7 @@ function createPortState() {
 			const port = await this.requestPort(prompt);
 			if ("addEventListener" in port) {
 				port.addEventListener("disconnect", async () => {
+					reserved = false;
 					set(undefined);
 				});
 			}
