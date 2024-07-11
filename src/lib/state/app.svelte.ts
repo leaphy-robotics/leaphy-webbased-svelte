@@ -1,6 +1,5 @@
 import Start from "$components/start/Start.svelte";
 import Workspace from "$components/workspace/Workspace.svelte";
-import type { RobotListing } from "$domain/robots";
 import type { ComponentType } from "svelte";
 import { writable } from "svelte/store";
 
@@ -21,8 +20,10 @@ export interface Library {
 	versions: string[];
 }
 
-if (!["light", "dark"].includes(localStorage.getItem("theme"))) {
-	localStorage.setItem("theme", Theme.LIGHT);
+if (!localStorage.getItem("theme") || !["light", "dark"].includes(localStorage.getItem("theme"))) {
+	// Theme is not set or is set to something invalid.
+	const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? Theme.DARK : Theme.LIGHT;
+	localStorage.setItem("theme", preferredTheme);
 }
 export const theme = writable<Theme>(localStorage.getItem("theme") as Theme);
 theme.subscribe((theme) => {
