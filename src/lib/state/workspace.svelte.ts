@@ -118,7 +118,12 @@ function createPortState() {
 	subscribe(async (port) => {
 		if (!port || reserved) return;
 		if (!port.readable || !port.writable) {
-			await port.open({ baudRate: 115200 });
+			try {
+				await port.open({ baudRate: 115200 });
+			} catch (e) {
+				onReady();
+				throw e;
+			}
 		}
 		if (port.readable.locked || port.writable.locked) return;
 
@@ -179,6 +184,7 @@ function createPortState() {
 				port.addEventListener("disconnect", async () => {
 					reserved = false;
 					set(undefined);
+					onReady();
 				});
 			}
 			set(port);
@@ -203,6 +209,8 @@ function createPortState() {
 		},
 		async reserve() {
 			reserved = true;
+
+			await this.ready; // Prevent race condition: port.open not being complete
 
 			const serialPort = get(port);
 			if (serialPort.readable.locked) {
