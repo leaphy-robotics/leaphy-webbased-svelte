@@ -115,13 +115,14 @@ function createPortState() {
 	let reader: ReadableStreamDefaultReader<Uint8Array>;
 
 	let onReady: () => void;
+	let onFailure: () => void;
 	subscribe(async (port) => {
 		if (!port || reserved) return;
 		if (!port.readable || !port.writable) {
 			try {
 				await port.open({ baudRate: 115200 });
 			} catch (e) {
-				onReady();
+				onFailure();
 				throw e;
 			}
 		}
@@ -141,7 +142,10 @@ function createPortState() {
 
 	return {
 		subscribe,
-		ready: new Promise<void>((resolve) => (onReady = resolve)),
+		ready: new Promise<void>((resolve, reject) => {
+			onReady = resolve;
+			onFailure = reject;
+		}),
 		async requestPort(prompt: Prompt): Promise<LeaphyPort> {
 			if (navigator.serial) {
 				if (prompt !== Prompt.ALWAYS) {
@@ -178,13 +182,16 @@ function createPortState() {
 			}
 		},
 		async connect(prompt: Prompt) {
-			this.ready = new Promise<void>((resolve) => (onReady = resolve));
+			this.ready = new Promise<void>((resolve, reject) => {
+				onReady = resolve;
+				onFailure = reject;
+			});
 			const port = await this.requestPort(prompt);
 			if ("addEventListener" in port) {
 				port.addEventListener("disconnect", async () => {
 					reserved = false;
 					set(undefined);
-					onReady();
+					onFailure();
 				});
 			}
 			set(port);
