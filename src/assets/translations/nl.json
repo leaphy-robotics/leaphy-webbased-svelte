@@ -33,6 +33,7 @@
 	"COMPILATION_STARTED": "Code compileren",
 	"COMPILATION_FAILED": "Compilatiefout!",
 	"COMPILATION_COMPLETE": "Compilatie voltooid",
+	"WAITING_FOR_PORT": "Poort openen",
 	"UPDATE_STARTED": "Code uploaden",
 	"UPDATE_FAILED": "Upload mislukt!",
 	"UPDATE_COMPLETE": "Upload voltooid",
