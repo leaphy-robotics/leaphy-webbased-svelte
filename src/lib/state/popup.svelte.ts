@@ -3,6 +3,7 @@ import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import type { ComponentType } from "svelte";
 import { writable } from "svelte/store";
+import { port, Prompt } from "./workspace.svelte";
 
 export enum Anchor {
 	TopLeft = "0 0",
@@ -96,7 +97,8 @@ export async function setup() {
 
 	if (
 		!localStorage.getItem("dontShowBrowserNotSupported") &&
-		navigator.serial === undefined
+		navigator.serial === undefined &&
+		navigator.usb === undefined
 	) {
 		await popups.open({
 			component: BrowserNotSupported,

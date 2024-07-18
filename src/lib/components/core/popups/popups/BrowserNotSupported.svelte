@@ -15,27 +15,35 @@ function close_dont_show_again() {
 }
 </script>
 
+<div class="error">
+	<h2 class="text">{$_("BROWSER_NOT_SUPPORTED")}</h2>
+</div>
+
 <div class="content">
-	<div class="text">{$_("BROWSER_NOT_SUPPORTED")}</div>
 	<div class="text">{$_("BROWSER_NOT_SUPPORTED_1")}</div>
 	<div class="text">{$_("BROWSER_NOT_SUPPORTED_SUGGESTION")}</div>
 </div>
 
 <div class="actions">
-	<Button name={$_("ACKNOWLEDGE_BROWSER_NOT_SUPPORTED")} mode={"accent"} onclick={close} bold={true} />
-	<Button name={$_("ACKNOWLEDGE_BROWSER_NOT_SUPPORTED_DONT_SHOW_AGAIN")} mode={"accent"} onclick={close_dont_show_again} bold={true} />
+	<Button name={$_("ACKNOWLEDGE_BROWSER_NOT_SUPPORTED")} mode={"primary"} onclick={close} bold={true} />
+	<Button name={$_("ACKNOWLEDGE_BROWSER_NOT_SUPPORTED_DONT_SHOW_AGAIN")} mode={"secondary"} onclick={close_dont_show_again} bold={true} />
 </div>
 
 <style>
+	.error {
+		border-radius: 5px;
+		padding: 10px;
+		color: red;
+		text-align: center;
+	}
+
 	.content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		width: 800px;
-		padding: 20px;
-		gap: 20px;
+		gap: 10px;
 		text-align: center;
-		font-size: larger;
 	}
 
 	.actions {

@@ -125,7 +125,7 @@
 	"META_ATTRIBUTION": "Gemaakt met Meta Llama 3",
 	"AI_RATE_LIMITED": "De uitleg robot is op dit moment erg druk, probeer het later nog eens.",
 	"CHOOSING_ROBOT": "Kies je arduino",
-	"BROWSER_NOT_SUPPORTED": "De browser die je gebruikt support geen web-serial.",
+	"BROWSER_NOT_SUPPORTED": "De browser die je gebruikt support geen web-serial of web-usb.",
 	"BROWSER_NOT_SUPPORTED_1": "Je zal daardoor je code niet kunnen uploaden.",
 	"BROWSER_NOT_SUPPORTED_SUGGESTION": "Een chromium based browser zou werken (Edge/Chrome/Brave)",
 	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED": "I snap het",
