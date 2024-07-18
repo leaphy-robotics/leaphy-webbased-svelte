@@ -3,7 +3,6 @@ import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import type { ComponentType } from "svelte";
 import { writable } from "svelte/store";
-import { port, Prompt } from "./workspace.svelte";
 
 export enum Anchor {
 	TopLeft = "0 0",
