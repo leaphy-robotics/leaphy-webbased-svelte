@@ -67,7 +67,7 @@ jobs:
           file: Dockerfile
           context: .
           push: true
-          tags: ghcr.io/leaphy-robotics/leaphy-webbased-svelte/leaphy-webbased-svelte:$ENV
+          tags: ghcr.io/leaphy-robotics/leaphy-webbased-svelte/leaphy-webbased-svelte:${{ env.ENV }}
 
       - name: Redeploy
         run: |
