@@ -1,3 +1,4 @@
+import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSupported.svelte";
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import type { ComponentType } from "svelte";
@@ -88,6 +89,18 @@ export async function setup() {
 	if (!localStorage.getItem("credits")) {
 		await popups.open({
 			component: Credits,
+			data: {},
+			allowInteraction: false,
+		});
+	}
+
+	if (
+		!localStorage.getItem("dontShowBrowserNotSupported") &&
+		navigator.serial === undefined &&
+		navigator.usb === undefined
+	) {
+		await popups.open({
+			component: BrowserNotSupported,
 			data: {},
 			allowInteraction: false,
 		});
