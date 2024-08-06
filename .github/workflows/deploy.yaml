@@ -37,6 +37,21 @@ jobs:
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
           VITE_SENTRY_SAMPLE_RATE="1.0"
           EOF
+          echo "ENV=test" >> $GITHUB_ENV
+          echo "STACK=leaphy-webbased-test" >> $GITHUB_ENV
+
+      - name: Create PROD env file
+        if: github.ref_type == 'tag'
+        run: |
+          cat << EOF > .env
+          VITE_BACKEND_URL="https://leaphyeasybloqs.com"
+          VITE_MATOMO_URL="https://leaphyeasybloqs.com/matomo/"
+          VITE_MATOMO_SITE_ID="1"
+          VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
+          VITE_SENTRY_SAMPLE_RATE="0.0"
+          EOF
+          echo "ENV=prod" >> $GITHUB_ENV
+          echo "STACK=leaphy-webbased" >> $GITHUB_ENV
 
       - name: Build application
         env:
@@ -46,19 +61,17 @@ jobs:
           yarn --frozen-lockfile --prefer-offline
           yarn build
 
-      - name: Build and push TEST Docker image
-        if: github.ref_type == 'branch'
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           file: Dockerfile
           context: .
           push: true
-          tags: ghcr.io/leaphy-robotics/leaphy-webbased-svelte/leaphy-webbased-svelte:test
+          tags: ghcr.io/leaphy-robotics/leaphy-webbased-svelte/leaphy-webbased-svelte:${ENV}
 
-      - name: Redeploy TEST
-        if: github.ref_type == 'branch'
+      - name: Redeploy
         run: |
-          curl https://admin.leaphyeasybloqs.com/hooks/update-docker-image?stack=leaphy-webbased-test -H "X-Token: ${{ secrets.WEBHOOK_TOKEN }}"
+          curl https://admin.leaphyeasybloqs.com/hooks/update-docker-image?stack=${STACK} -H "X-Token: ${{ secrets.WEBHOOK_TOKEN }}"
 
       - name: Clean up old images
         uses: actions/delete-package-versions@v5
