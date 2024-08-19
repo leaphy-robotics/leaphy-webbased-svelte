@@ -1,6 +1,10 @@
 <script lang="ts">
 import Dropper from "$components/ui/Dropper.svelte";
-import { setLocale, setupWorkspace } from "$domain/blockly/blockly";
+import {
+	loadToolbox,
+	setLocale,
+	setupWorkspace,
+} from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import { Theme, theme } from "$state/app.svelte";
 import {
@@ -52,6 +56,12 @@ onMount(() => {
 		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
 			($workspace as WorkspaceSvg).resize();
 		}
+	});
+
+	robot.subscribe(() => {
+		($workspace as WorkspaceSvg).updateToolbox(loadToolbox($robot));
+		($workspace as WorkspaceSvg).getToolbox().selectItemByPosition(0);
+		($workspace as WorkspaceSvg).getToolbox().refreshTheme();
 	});
 });
 

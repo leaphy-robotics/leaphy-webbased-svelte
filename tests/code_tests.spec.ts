@@ -1,6 +1,11 @@
 import { promises as fs } from "node:fs";
 import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage, mockShowOpenFilePicker, openExample } from "./utils";
+import {
+	goToHomePage,
+	mockShowOpenFilePicker,
+	openExample,
+	selectRobot,
+} from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -40,15 +45,11 @@ test("Code blocks - Leaphy Click", async ({ page }) => {
 });
 
 test("Code blocks - Original Uno", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await testExtension(page, ".l_original_uno");
 });
 
 test("Code blocks - Flitz Uno", async ({ page }) => {
-	await page.getByText("Leaphy Flitz").click();
-	await page.getByText("Flitz Uno").click();
-
+	await selectRobot(page, "Leaphy Flitz", "Flitz Uno");
 	await testExtension(page, ".l_flitz_uno");
 });

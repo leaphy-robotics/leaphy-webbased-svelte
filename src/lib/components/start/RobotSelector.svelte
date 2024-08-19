@@ -1,31 +1,22 @@
 <script lang="ts">
-import type { Robot, RobotListing } from "$domain/robots";
+import type { Robot } from "$domain/robots";
 
 interface Props {
 	robots: Robot[][];
-	secondary: boolean;
 	onselect: (robot: Robot) => void;
-	selected?: RobotListing;
 	compact?: boolean;
 }
 
-const {
-	robots,
-	secondary,
-	onselect,
-	selected,
-	compact = false,
-}: Props = $props();
+const { robots, onselect, compact = false }: Props = $props();
 </script>
 
-<div class="selector" class:secondary class:compact>
+<div class="selector" class:compact>
 	{#each robots as row}
 		<div class="row">
 			{#each row as robot}
 				<button
 					class="robot"
 					onclick={() => onselect(robot)}
-					class:selected={selected?.id === robot.id}
 				>
                     <span class="icon">
                         <img class="image" src={robot.icon} alt={robot.name}/>
@@ -52,10 +43,6 @@ const {
 		width: unset;
 	}
 
-	.secondary {
-		background: var(--background);
-	}
-
 	.row {
 		display: flex;
 		justify-content: center;
@@ -74,7 +61,6 @@ const {
 		color: var(--on-background);
 	}
 
-	.robot.selected,
 	.robot:hover {
 		scale: 1.03;
 	}
@@ -95,7 +81,6 @@ const {
 		margin-bottom: 1vh;
 	}
 
-	.robot.selected .icon,
 	.robot:hover .icon {
 		border: 3px solid var(--primary) !important;
 	}

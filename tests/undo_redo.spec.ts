@@ -1,5 +1,5 @@
 import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage, openExample } from "./utils";
+import { goToHomePage, openExample, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -11,9 +11,7 @@ async function redo(page: Page) {
 }
 
 test("Undo redo - Deletion", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	// Delete the repeat forever block
@@ -42,9 +40,7 @@ test("Undo redo - Deletion", async ({ page }) => {
 });
 
 test("Undo redo - Variable change", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	// Change a boolean
@@ -74,9 +70,7 @@ test("Undo redo - Variable change", async ({ page }) => {
 });
 
 test("Undo redo - Dragging", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	await page.locator(".side").first().click(); // Open code

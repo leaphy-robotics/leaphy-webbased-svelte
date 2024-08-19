@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, openExample, setupArduino } from "./utils";
+import { goToHomePage, openExample, selectRobot, setupArduino } from "./utils";
 
 test.describe.configure({ mode: "serial" });
 
@@ -7,9 +7,7 @@ test.beforeEach(setupArduino);
 test.beforeEach(goToHomePage);
 
 test("Arduino - Blockly upload", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	await page.getByRole("button", { name: "Upload to robot" }).click();
@@ -26,8 +24,7 @@ test("Arduino - Blockly upload", async ({ page }) => {
 });
 
 test("Arduino - C++ upload", async ({ page }) => {
-	await page.getByText("Leaphy C++").click();
-
+	await selectRobot(page, "Leaphy C++", "Arduino Uno");
 	await page.getByRole("button", { name: "Upload to robot" }).click();
 	await expect(
 		page.getByRole("button", { name: "Go back to editor" }),
