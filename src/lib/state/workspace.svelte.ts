@@ -180,7 +180,7 @@ function createPortState() {
 	}
 
 	function getLeaphyPort(port: SerialPort | USBDevice): LeaphyPort {
-		if (port instanceof SerialPort) return port;
+		if ("readable" in port) return port;
 
 		if (port?.vendorId === 1027) return new MockedFTDISerialPort(port);
 
