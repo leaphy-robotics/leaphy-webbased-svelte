@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.7.2",
-    "@leaphy-robotics/playwright-arduino": "^1.0.4",
+    "@leaphy-robotics/playwright-arduino": "1.0.5",
     "@playwright/test": "^1.43.1",
     "@sentry/vite-plugin": "^2.16.1",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
