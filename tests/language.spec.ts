@@ -1,5 +1,5 @@
 import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage, openExample } from "./utils";
+import { goToHomePage, openExample, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -10,10 +10,7 @@ test("Language", async ({ page }) => {
 	await page.getByRole("cell", { name: "Nederlands" }).click();
 	await page.getByRole("button", { name: "Mijn projecten" }).click();
 	await page.getByRole("cell", { name: "Nieuw" }).click();
-	await page.getByRole("button", { name: "Leaphy Original Leaphy" }).click();
-	await page
-		.getByRole("button", { name: "Original Nano ESP32 Original" })
-		.click();
+	await selectRobot(page, "Leaphy Original", "Original Nano ESP32", "Ga door");
 	await expect(page.getByText("Lees afstand")).toBeVisible();
 	await expect(page.getByText("Lees anapin")).toBeVisible();
 	await expect(page.getByText("Lees gas")).toBeVisible();

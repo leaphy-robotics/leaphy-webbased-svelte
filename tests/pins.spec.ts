@@ -1,5 +1,5 @@
 import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage } from "./utils";
+import { goToHomePage, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -90,8 +90,7 @@ test("Pins - Uno", async ({ page }) => {
 });
 
 test("Pins - Nano", async ({ page }) => {
-	await page.getByText("Arduino Nano").click();
-	await page.getByText("Arduino Nano ESP32").click();
+	await selectRobot(page, "Arduino Nano", "Arduino Nano ESP32");
 
 	await test_pins(page, nano_pins);
 });

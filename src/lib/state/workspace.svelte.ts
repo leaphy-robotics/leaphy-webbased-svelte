@@ -310,8 +310,20 @@ export const microPythonIO = writable<MicroPythonIO | undefined>();
 export const microPythonRun = writable<IOEventTarget | undefined>();
 
 export function tempSave() {
-	const contentAddress = `${get(robot).saveAddress}_content`;
-	localStorage.setItem(`${get(robot).saveAddress}_robot`, get(robot).id);
+	let saveAddress = get(robot).saveAddress;
+	switch (get(mode)) {
+		case Mode.ADVANCED: {
+			saveAddress = "l_c++";
+			break;
+		}
+		case Mode.PYTHON: {
+			saveAddress = "l_micropython";
+			break;
+		}
+	}
+
+	const contentAddress = `${saveAddress}_content`;
+	localStorage.setItem(`${saveAddress}_robot`, get(robot).id);
 
 	switch (get(mode)) {
 		case Mode.BLOCKS: {
