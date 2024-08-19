@@ -2,7 +2,7 @@ import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
 import type { Handle } from "$domain/handles";
-import type { RobotDevice } from "$domain/robots";
+import { type RobotDevice, robots } from "$domain/robots";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { serialization } from "blockly";
 import type { ComponentType } from "svelte";
@@ -110,6 +110,7 @@ export const log = createLogState();
 
 function createPortState() {
 	const { subscribe, set, update } = writable<LeaphyPort>();
+	const board = writable<RobotDevice | null | undefined>();
 
 	let reserved = false;
 	let reader: ReadableStreamDefaultReader<Uint8Array>;
@@ -140,13 +141,59 @@ function createPortState() {
 		}
 	});
 
+	function detectBoard(port: SerialPort | USBDevice) {
+		const vendor =
+			"vendorId" in port ? port.vendorId : port.getInfo().usbVendorId;
+		const product =
+			"productId" in port ? port.productId : port.getInfo().usbProductId;
+
+		switch (vendor) {
+			// Official arduino vendor ID
+			case 0x2341: {
+				switch (product) {
+					case 0x0043: {
+						return robots.l_uno;
+					}
+					case 0x0070: {
+						return robots.l_nano_esp32;
+					}
+					case 0x0042: {
+						return robots.l_mega;
+					}
+					case 0x005e: {
+						return robots.l_nano_rp2040;
+					}
+				}
+				break;
+			}
+			// Darling vendor ID
+			case 0x0403: {
+				switch (product) {
+					case 0x6001: {
+						return robots.l_nano;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	function getLeaphyPort(port: SerialPort | USBDevice): LeaphyPort {
+		if (port instanceof SerialPort) return port;
+
+		if (port?.vendorId === 1027) return new MockedFTDISerialPort(port);
+
+		return new MockedCDCSerialPort(port);
+	}
+
 	return {
 		subscribe,
 		ready: new Promise<void>((resolve, reject) => {
 			onReady = resolve;
 			onFailure = reject;
 		}),
-		async requestPort(prompt: Prompt): Promise<LeaphyPort> {
+		async requestPort(prompt: Prompt): Promise<SerialPort | USBDevice> {
 			if (navigator.serial) {
 				if (prompt !== Prompt.ALWAYS) {
 					const [port] = await navigator.serial.getPorts();
@@ -163,10 +210,7 @@ function createPortState() {
 			if (navigator.usb) {
 				if (prompt !== Prompt.ALWAYS) {
 					const [device] = await navigator.usb.getDevices();
-
-					if (device?.vendorId === 1027)
-						return new MockedFTDISerialPort(device);
-					if (device) return new MockedCDCSerialPort(device);
+					if (device) return device;
 				}
 				if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
 
@@ -175,8 +219,7 @@ function createPortState() {
 						vendorId: vendor,
 					})),
 				});
-				if (device?.vendorId === 1027) return new MockedFTDISerialPort(device);
-				if (device) return new MockedCDCSerialPort(device);
+				if (device) return device;
 
 				throw new ConnectionFailedError();
 			}
@@ -191,10 +234,13 @@ function createPortState() {
 				port.addEventListener("disconnect", async () => {
 					reserved = false;
 					set(undefined);
+					board.set(undefined);
 					onFailure();
 				});
 			}
-			set(port);
+			set(getLeaphyPort(port));
+			board.set(detectBoard(port));
+
 			return port;
 		},
 		reconnect() {
@@ -233,6 +279,7 @@ function createPortState() {
 			reserved = false;
 			update((port) => port);
 		},
+		board,
 	};
 }
 export const port = createPortState();
@@ -262,21 +309,24 @@ export const installed = writable<[string, string][]>([]);
 export const microPythonIO = writable<MicroPythonIO | undefined>();
 export const microPythonRun = writable<IOEventTarget | undefined>();
 
-export async function tempSave() {
+export function tempSave() {
+	const contentAddress = `${get(robot).saveAddress}_content`;
+	localStorage.setItem(`${get(robot).saveAddress}_robot`, get(robot).id);
+
 	switch (get(mode)) {
 		case Mode.BLOCKS: {
 			localStorage.setItem(
-				`session_blocks_${get(robot).id}`,
+				contentAddress,
 				JSON.stringify(serialization.workspaces.save(get(workspace))),
 			);
 			break;
 		}
 		case Mode.ADVANCED: {
-			localStorage.setItem("session_l_cpp", get(code));
+			localStorage.setItem(contentAddress, get(code));
 			break;
 		}
 		case Mode.PYTHON: {
-			localStorage.setItem("session_l_python", get(code));
+			localStorage.setItem(contentAddress, get(code));
 			break;
 		}
 	}

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { type Snippet, onDestroy, onMount, setContext } from "svelte";
 import Fa from "svelte-fa";
 import { type Writable, writable } from "svelte/store";
@@ -15,6 +15,8 @@ interface Props {
 	bold?: boolean;
 	type?: "button" | "submit";
 	inline?: boolean;
+	center?: boolean;
+	large?: boolean;
 }
 
 const {
@@ -27,6 +29,8 @@ const {
 	disabled,
 	inline = false,
 	type = "button",
+	center = false,
+	large = false,
 }: Props = $props();
 
 let btn: HTMLButtonElement = $state();
@@ -56,6 +60,8 @@ function onContext() {
 	class:accent={mode === "accent"}
 	class:bold
 	class:inline
+	class:center
+	class:large
 >
 	{#if icon}
 		{#if typeof icon === "string"}
@@ -77,6 +83,10 @@ function onContext() {
 		background: none;
 		border: none;
 		padding: 10px 15px;
+	}
+
+	.center {
+		justify-content: center;
 	}
 
 	.inline {
@@ -109,6 +119,10 @@ function onContext() {
 
 	.bold {
 		font-weight: bolder;
+		font-size: 1.1em;
+	}
+
+	.large {
 		font-size: 1.1em;
 	}
 

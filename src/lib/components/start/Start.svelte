@@ -1,58 +1,67 @@
 <script lang="ts">
+import Connect from "$components/core/popups/popups/Connect.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import {
-	type Robot,
 	type RobotListing,
-	robots as allRobots,
+	getSelector,
 	robotListing,
+	robots,
 } from "$domain/robots";
 import { Screen, screen } from "$state/app.svelte";
 import { restore } from "$state/blockly.svelte";
-import { Mode, code, mode, robot, saveState } from "$state/workspace.svelte";
-import { flip } from "svelte/animate";
-import { cubicOut } from "svelte/easing";
-import { fly } from "svelte/transition";
+import { popups } from "$state/popup.svelte";
+import {
+	Mode,
+	Prompt,
+	code,
+	mode,
+	port,
+	robot,
+	saveState,
+} from "$state/workspace.svelte";
 
-let selected = $state<RobotListing>();
-const selectors = $derived(
-	selected ? [robotListing, selected.variants] : [robotListing],
-);
-const animationOptions = {
-	easing: cubicOut,
-	duration: 300,
-};
+async function connect() {
+	try {
+		await port.connect(Prompt.NEVER);
+	} catch {}
+}
 
-function onselect(type: Robot) {
-	window._paq.push(["trackEvent", "SelectRobot", type.name]);
-
-	if ("variants" in type) return (selected = type);
-	if ("mode" in type) {
-		code.set(localStorage.getItem(`session_${type.id}`) || type.defaultProgram);
-		robot.set(allRobots[type.defaultRobot]);
-		mode.set(type.mode);
-		screen.set(Screen.WORKSPACE);
-		saveState.set(true);
-		return;
-	}
-
-	if (localStorage.getItem(`session_blocks_${type.id}`)) {
-		restore.set(JSON.parse(localStorage.getItem(`session_blocks_${type.id}`)));
-	}
-	robot.set(type);
-	mode.set(Mode.BLOCKS);
+function onselect(type: RobotListing) {
+	robot.set(
+		robots[localStorage.getItem(`${type.saveAddress}_robot`)] ||
+			type.defaultRobot,
+	);
+	mode.set(type.mode || Mode.BLOCKS);
 	screen.set(Screen.WORKSPACE);
+
+	if ($mode !== Mode.BLOCKS)
+		code.set(
+			localStorage.getItem(`${type.saveAddress}_content`) ||
+				type.defaultProgram,
+		);
+	else
+		restore.set(
+			JSON.parse(localStorage.getItem(`${type.saveAddress}_content`)),
+		);
+
+	saveState.set(true);
+
+	if (type.mode === Mode.PYTHON) return;
+	if (getSelector(type.defaultRobot)) {
+		popups.open({
+			component: Connect,
+			data: {
+				connectOverride: !localStorage.getItem(`${type.saveAddress}_robot`),
+			},
+			allowInteraction: false,
+		});
+	}
+	connect();
 }
 </script>
 
 <div class="start">
-    {#each selectors as robots, i (i)}
-        <div
-            in:fly={{ x: "100%", ...animationOptions }}
-            animate:flip={animationOptions}
-        >
-            <RobotSelector {onselect} {robots} {selected} secondary={i > 0} />
-        </div>
-    {/each}
+	<RobotSelector {onselect} robots="{robotListing}" />
 </div>
 
 <style>

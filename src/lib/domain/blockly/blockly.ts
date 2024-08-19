@@ -14,7 +14,12 @@ import {
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
-import { type Block, ContextMenuRegistry, serialization } from "blockly";
+import {
+	type Block,
+	ContextMenuRegistry,
+	type WorkspaceSvg,
+	serialization,
+} from "blockly";
 import type { Workspace } from "blockly";
 import type {
 	CategoryInfo,
@@ -77,7 +82,7 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 	});
 };
 
-function loadToolbox(robot: RobotDevice): ToolboxDefinition {
+export function loadToolbox(robot: RobotDevice): ToolboxDefinition {
 	return {
 		kind: "categoryToolbox",
 		contents: toolbox
@@ -106,6 +111,39 @@ function loadToolbox(robot: RobotDevice): ToolboxDefinition {
 				return result as CategoryInfo;
 			}),
 	};
+}
+
+export function isCompatible(workspace: WorkspaceSvg, robot: RobotDevice) {
+	let incompatible = new Set<string>();
+	let compatible = new Set<string>();
+	for (const category of toolbox) {
+		if (category.robots && !inFilter(robot, category.robots)) {
+			if (category.id === "l_lists") {
+				for (const block of blocks) {
+					if (block.style === "list_blocks") incompatible.add(block.type);
+				}
+			} else {
+				for (const block of category.groups.flat()) {
+					incompatible.add(block.type);
+				}
+			}
+		} else if (!category.custom) {
+			for (const block of category.groups.flat()) {
+				if ("robots" in block && !inFilter(robot, block.robots))
+					incompatible.add(block.type);
+				else compatible.add(block.type);
+			}
+		}
+	}
+
+	for (const block of compatible) {
+		incompatible.delete(block);
+	}
+	return !Array.from(incompatible.values()).find((block) => {
+		if (block === "text") return false;
+
+		return !!workspace.getBlocksByType(block).length;
+	});
 }
 
 export function setLocale(robot: RobotDevice, locale: string) {

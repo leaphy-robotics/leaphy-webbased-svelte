@@ -3,12 +3,13 @@ import { _, locale } from "svelte-i18n";
 
 import block from "$assets/block.svg";
 import leaphyLogo from "$assets/leaphy-logo.svg";
+import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import Select from "$components/ui/Select.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
-import { robots } from "$domain/robots";
+import { getSelector, robots } from "$domain/robots";
 import { Screen, Theme, screen, theme } from "$state/app.svelte";
 import {
 	audio,
@@ -77,9 +78,13 @@ async function upload() {
 }
 
 async function connect() {
-	try {
-		await port.connect(Prompt.ALWAYS);
-	} catch {}
+	if (getSelector($robot))
+		popups.open({
+			component: Connect,
+			data: {},
+			allowInteraction: false,
+		});
+	else port.connect(Prompt.ALWAYS);
 }
 
 async function newProject() {
@@ -393,15 +398,6 @@ function runPython() {
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if $screen === Screen.WORKSPACE && $mode === Mode.ADVANCED}
-            <Select
-                options={Object.values(robots).map((device) => [
-                    device.name,
-                    device,
-                ])}
-                bind:value={$robot}
-            />
-        {/if}
         {#if $screen === Screen.WORKSPACE}
             <Button
                 name={$_("PROJECT")}
