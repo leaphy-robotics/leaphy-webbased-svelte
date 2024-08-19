@@ -9,6 +9,7 @@ import {
 } from "$domain/robots";
 import { Screen, screen } from "$state/app.svelte";
 import { restore } from "$state/blockly.svelte";
+import { willRestore } from "$state/blockly.svelte.js";
 import { popups } from "$state/popup.svelte";
 import {
 	Mode,
@@ -36,7 +37,7 @@ function onselect(type: RobotListing) {
 
 	if ($mode !== Mode.BLOCKS)
 		code.set(
-			localStorage.getItem(`${type.saveAddress}_content`) ||
+			($willRestore && localStorage.getItem(`${type.saveAddress}_content`)) ||
 				type.defaultProgram,
 		);
 	else

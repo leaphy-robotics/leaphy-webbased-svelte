@@ -1,5 +1,6 @@
 import * as Blockly from "blockly";
 import "@blockly/field-bitmap";
+import defaultProgram from "$assets/default-program.json?raw";
 import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { type RobotDevice, inFilter } from "$domain/robots";
@@ -189,20 +190,7 @@ export function setupWorkspace(
 	});
 
 	Blockly.serialization.workspaces.load(
-		content || {
-			blocks: {
-				languageVersion: 0,
-				blocks: [
-					{
-						type: "leaphy_start",
-						id: "rzE0Ve:6bHB~8aIqyj-U",
-						deletable: false,
-						x: 500,
-						y: 10,
-					},
-				],
-			},
-		},
+		content || JSON.parse(defaultProgram),
 		workspace,
 	);
 

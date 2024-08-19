@@ -1,4 +1,5 @@
 <script lang="ts">
+import defaultProgram from "$assets/default-program.json?raw";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import ChipSelect from "$components/ui/ChipSelect.svelte";
@@ -82,23 +83,7 @@ async function disabledSelect() {
 	});
 	if (!value) return false;
 
-	Blockly.serialization.workspaces.load(
-		{
-			blocks: {
-				languageVersion: 0,
-				blocks: [
-					{
-						type: "leaphy_start",
-						id: "rzE0Ve:6bHB~8aIqyj-U",
-						deletable: false,
-						x: 500,
-						y: 10,
-					},
-				],
-			},
-		},
-		$workspace,
-	);
+	Blockly.serialization.workspaces.load(JSON.parse(defaultProgram), $workspace);
 	handle.set(undefined);
 	return true;
 }
