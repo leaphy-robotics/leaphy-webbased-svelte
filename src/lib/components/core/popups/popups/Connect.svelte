@@ -48,7 +48,9 @@ board.subscribe((board) => {
 
 	const robotDevice = get(robot);
 	const robotType = getSelector(robotDevice)
-		.find((category) => category.robots.includes(robotDevice))
+		.find((category) =>
+			category.robots.find((robot) => $state.is(robot, robotDevice)),
+		)
 		.robots.find((robot) => robot.board === board.board);
 
 	if (robotType) robot.set(robotType);
