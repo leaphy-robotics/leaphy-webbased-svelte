@@ -16,7 +16,6 @@ import originalIcon from "$assets/robots/icons/l_original.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
 import robotsGroups from "$domain/robots.groups";
 import { Mode, mode } from "$state/workspace.svelte";
-import type { ComponentType } from "svelte";
 import { get } from "svelte/store";
 import AvrDude from "../programmers/AvrDude";
 import DFU from "../programmers/DFU";
@@ -42,11 +41,10 @@ const DEFAULT_LIBRARIES = [
 interface BaseRobot {
 	name: string;
 	icon: string;
-	saveAddress: string;
+	id: string;
 }
 
 export interface RobotDevice extends BaseRobot {
-	id: string;
 	type: number;
 	mapping: PinMapping;
 	programmer: Programmer;
@@ -55,12 +53,19 @@ export interface RobotDevice extends BaseRobot {
 	background?: string;
 	board: string;
 }
-export interface RobotListing extends BaseRobot {
-	defaultRobot: RobotDevice;
+
+interface RobotListingVariants extends BaseRobot {
+	variants: Robot[][];
+}
+
+interface RobotListingMode extends BaseRobot {
+	robot: RobotDevice;
 	defaultProgram?: string;
 	mode?: (typeof Mode)[keyof typeof Mode];
 }
-export type Robot = RobotDevice | RobotListing;
+
+export type RobotListing = RobotListingVariants | RobotListingMode;
+export type Robot = RobotListing | RobotDevice;
 
 export enum PinMapping {
 	UNO = 0,
@@ -100,7 +105,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseUno,
 		id: "l_flitz_uno",
-		saveAddress: "l_flitz",
 		type: RobotType.L_FLITZ_UNO,
 		name: "Flitz Uno",
 		libraries: DEFAULT_LIBRARIES,
@@ -110,7 +114,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNano,
 		id: "l_flitz_nano",
-		saveAddress: "l_flitz",
 		type: RobotType.L_FLITZ_NANO,
 		name: "Flitz Nano",
 		libraries: DEFAULT_LIBRARIES,
@@ -120,7 +123,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseUno,
 		id: "l_original_uno",
-		saveAddress: "l_original",
 		type: RobotType.L_ORIGINAL_UNO,
 		name: "Original Uno",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -133,7 +135,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNano,
 		id: "l_original_nano",
-		saveAddress: "l_original",
 		type: RobotType.L_ORIGINAL_NANO,
 		name: "Original Nano",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -146,7 +147,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNanoESP32,
 		id: "l_original_nano_esp32",
-		saveAddress: "l_original",
 		type: RobotType.L_ORIGINAL_NANO_ESP32,
 		name: "Original Nano ESP32",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -161,7 +161,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNanoRP2040,
 		id: "l_original_nano_rp2040",
-		saveAddress: "l_original",
 		type: RobotType.L_ORIGINAL_NANO_RP2040,
 		name: "Original Nano RP2040",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -174,7 +173,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseUno,
 		id: "l_click",
-		saveAddress: "l_click",
 		type: RobotType.L_CLICK,
 		name: "Leaphy Click",
 		libraries: DEFAULT_LIBRARIES,
@@ -183,7 +181,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNano,
 		id: "l_nano",
-		saveAddress: "l_nano",
 		type: RobotType.L_NANO,
 		name: "Arduino Nano",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -195,7 +192,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNanoESP32,
 		id: "l_nano_esp32",
-		saveAddress: "l_nano",
 		type: RobotType.L_NANO_ESP32,
 		name: "Arduino Nano ESP32",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -209,7 +205,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNanoRP2040,
 		id: "l_nano_rp2040",
-		saveAddress: "l_nano",
 		type: RobotType.L_NANO_RP2040,
 		name: "Arduino Nano RP2040",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -221,7 +216,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseUno,
 		id: "l_uno",
-		saveAddress: "l_uno",
 		type: RobotType.L_UNO,
 		name: "Arduino Uno",
 		libraries: DEFAULT_LIBRARIES.concat([
@@ -233,7 +227,6 @@ const robotDevices: RobotDevice[] = [
 	{
 		id: "l_mega",
 		type: RobotType.L_MEGA,
-		saveAddress: "l_mega",
 		mapping: PinMapping.MEGA,
 		name: "Arduino Mega",
 		programmer: new AvrDude("atmega2560"),
@@ -255,63 +248,51 @@ export const robots: Robots = robotDevices.reduce((robots, robot) => {
 	return robots;
 }, {} as Robots);
 
-export const robotListing: RobotListing[][] = [
+export const robotListing: Robot[][] = [
 	[
 		{
-			saveAddress: "l_flitz",
+			id: "l_flitz_select",
 			name: "Leaphy Flitz",
 			icon: flitzIcon,
-			defaultRobot: robots.l_flitz_uno,
+			variants: [[robots.l_flitz_uno, robots.l_flitz_nano]],
 		},
 		{
-			saveAddress: "l_original",
+			id: "l_original_select",
 			name: "Leaphy Original",
 			icon: originalIcon,
-			defaultRobot: robots.l_original_uno,
+			variants: [
+				[robots.l_original_uno, robots.l_original_nano],
+				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
+			],
 		},
-		{
-			saveAddress: "l_click",
-			name: "Leaphy Click",
-			icon: clickIcon,
-			defaultRobot: robots.l_click,
-		},
+		robots.l_click,
 	],
 	[
 		{
-			saveAddress: "l_nano",
+			id: "l_nano_select",
 			name: "Arduino Nano",
 			icon: nanoIcon,
-			defaultRobot: robots.l_nano,
+			variants: [[robots.l_nano], [robots.l_nano_esp32, robots.l_nano_rp2040]],
 		},
-		{
-			saveAddress: "l_uno",
-			name: "Arduino Uno",
-			icon: unoIcon,
-			defaultRobot: robots.l_uno,
-		},
-		{
-			saveAddress: "l_mega",
-			name: "Arduino Mega",
-			icon: megaIcon,
-			defaultRobot: robots.l_mega,
-		},
+		robots.l_uno,
+		robots.l_mega,
 	],
 	[
 		{
-			saveAddress: "l_c++",
+			id: "l_cpp",
 			name: "Leaphy C++",
 			icon: cppIcon,
 			defaultProgram: defaultCPP,
 			mode: Mode.ADVANCED,
-			defaultRobot: robots.l_uno,
+			robot: robots.l_uno,
 		},
 		{
-			saveAddress: "l_micropython",
+			id: "l_micropython",
 			name: "MicroPython",
 			icon: microPythonIcon,
 			mode: Mode.PYTHON,
 			defaultProgram: defaultPython,
-			defaultRobot: robots.l_nano_rp2040,
+			robot: robots.l_nano_rp2040,
 		},
 	],
 ];

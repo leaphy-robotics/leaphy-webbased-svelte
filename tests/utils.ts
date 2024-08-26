@@ -11,15 +11,9 @@ test.beforeEach(async ({ context }) => {
 	});
 });
 
-export async function selectRobot(
-	page: Page,
-	tile: string,
-	robot: string,
-	continueName = "Continue",
-) {
+export async function selectRobot(page: Page, tile: string, robot?: string) {
 	await page.getByText(tile).click();
-	await page.getByText(robot).click();
-	await page.getByText(continueName).click();
+	if (robot) await page.getByText(robot).click();
 }
 
 export async function setupArduino({ page }: PlaywrightTestArgs) {

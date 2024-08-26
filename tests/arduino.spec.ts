@@ -24,7 +24,7 @@ test("Arduino - Blockly upload", async ({ page }) => {
 });
 
 test("Arduino - C++ upload", async ({ page }) => {
-	await selectRobot(page, "Leaphy C++", "Arduino Uno");
+	await selectRobot(page, "Leaphy C++");
 	await page.getByRole("button", { name: "Upload to robot" }).click();
 	await expect(
 		page.getByRole("button", { name: "Go back to editor" }),

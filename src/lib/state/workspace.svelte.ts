@@ -119,6 +119,7 @@ function createPortState() {
 	let onFailure: () => void;
 	subscribe(async (port) => {
 		if (!port || reserved) return;
+
 		if (!port.readable || !port.writable) {
 			try {
 				await port.open({ baudRate: 115200 });
@@ -310,10 +311,10 @@ export const microPythonIO = writable<MicroPythonIO | undefined>();
 export const microPythonRun = writable<IOEventTarget | undefined>();
 
 export function tempSave() {
-	let saveAddress = get(robot).saveAddress;
+	let saveAddress = get(robot).id;
 	switch (get(mode)) {
 		case Mode.ADVANCED: {
-			saveAddress = "l_c++";
+			saveAddress = "l_cpp";
 			break;
 		}
 		case Mode.PYTHON: {
