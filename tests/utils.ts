@@ -11,11 +11,7 @@ test.beforeEach(async ({ context }) => {
 	});
 });
 
-export async function selectRobot(
-	page: Page,
-	tile: string,
-	robot: string,
-) {
+export async function selectRobot(page: Page, tile: string, robot: string) {
 	await page.getByText(tile).click();
 	await page.getByText(robot).click();
 }
