@@ -118,7 +118,10 @@ function createPortState() {
 	let onReady: () => void;
 	let onFailure: () => void;
 	subscribe(async (port) => {
+		console.log(1);
 		if (!port || reserved) return;
+		console.log(2);
+
 		if (!port.readable || !port.writable) {
 			try {
 				await port.open({ baudRate: 115200 });
@@ -127,7 +130,9 @@ function createPortState() {
 				throw e;
 			}
 		}
+		console.log(3);
 		if (port.readable.locked || port.writable.locked) return;
+		console.log(4);
 
 		writer = port.writable.getWriter();
 		reader = port.readable.getReader();

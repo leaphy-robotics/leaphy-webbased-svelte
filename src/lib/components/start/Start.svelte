@@ -32,8 +32,8 @@ let selectors = $state<Robot[][][]>([robotListing]);
 let selected = $state<Robot>();
 
 async function onselect(type: Robot) {
-	await connect();
 	if ("variants" in type) {
+		await connect();
 		selectors[1] = type.variants;
 		selected = type;
 		return;
