@@ -10,7 +10,7 @@ test("Language", async ({ page }) => {
 	await page.getByRole("cell", { name: "Nederlands" }).click();
 	await page.getByRole("button", { name: "Mijn projecten" }).click();
 	await page.getByRole("cell", { name: "Nieuw" }).click();
-	await selectRobot(page, "Leaphy Original", "Original Nano ESP32", "Ga door");
+	await selectRobot(page, "Leaphy Original", "Original Nano ESP32");
 	await expect(page.getByText("Lees afstand")).toBeVisible();
 	await expect(page.getByText("Lees anapin")).toBeVisible();
 	await expect(page.getByText("Lees gas")).toBeVisible();
