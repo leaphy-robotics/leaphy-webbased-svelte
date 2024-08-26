@@ -2,6 +2,7 @@ import "@xterm/xterm/css/xterm.css";
 import "./app.css";
 import { mount } from "svelte";
 import { addMessages, init } from "svelte-i18n";
+import "$domain/robots";
 import App from "./App.svelte";
 import enTranslations from "./assets/translations/en.json";
 import nlTranslations from "./assets/translations/nl.json";
