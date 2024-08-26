@@ -1,45 +1,75 @@
 <script lang="ts">
+import Button from "$components/ui/Button.svelte";
 import type { Robot } from "$domain/robots";
+import { Prompt, port } from "$state/workspace.svelte";
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { _ } from "svelte-i18n";
 
 interface Props {
 	robots: Robot[][];
 	onselect: (robot: Robot) => void;
 	compact?: boolean;
+	selected?: Robot;
+	secondary?: boolean;
 }
 
-const { robots, onselect, compact = false }: Props = $props();
+const {
+	robots,
+	onselect,
+	compact = false,
+	selected,
+	secondary,
+}: Props = $props();
+
+const { board } = port;
 </script>
 
-<div class="selector" class:compact>
-	{#each robots as row}
-		<div class="row">
-			{#each row as robot}
-				<button
-					class="robot"
-					onclick={() => onselect(robot)}
-				>
-                    <span class="icon">
-                        <img class="image" src={robot.icon} alt={robot.name}/>
-                    </span>
-					<span class="name">{robot.name}</span>
-				</button>
-			{/each}
-		</div>
-	{/each}
+<div class="container" class:secondary class:compact>
+	<div class="selector">
+		{#if secondary}
+			<Button onclick="{() => port.connect(Prompt.ALWAYS)}" mode="tint" icon="{faUsb}" name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold="{!!$port}" large />
+		{/if}
+		{#each robots as row}
+			<div class="row">
+				{#each row as robot}
+					<button
+						class="robot"
+						class:selected={robot.id === selected?.id || ("board" in robot && $board?.id === robot.board)}
+						onclick={() => onselect(robot)}
+					>
+						<span class="icon">
+							<img class="image" src={robot.icon} alt={robot.name}/>
+						</span>
+						<span class="name">{robot.name}</span>
+					</button>
+				{/each}
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
-	.selector {
+	.container {
 		width: 50vw;
 		height: 100%;
 
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		align-items: center;
+	}
+
+	.selector {
+		display: flex;
+		flex-direction: column;
 		gap: 3vh;
 	}
 
-	.selector.compact {
+	.secondary {
+		background: var(--background);
+	}
+
+	.compact {
 		width: unset;
 	}
 
@@ -81,7 +111,7 @@ const { robots, onselect, compact = false }: Props = $props();
 		margin-bottom: 1vh;
 	}
 
-	.robot:hover .icon {
+	.robot:hover .icon, .selected .icon {
 		border: 3px solid var(--primary) !important;
 	}
 

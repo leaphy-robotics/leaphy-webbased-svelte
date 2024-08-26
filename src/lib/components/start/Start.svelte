@@ -1,12 +1,7 @@
 <script lang="ts">
-import Connect from "$components/core/popups/popups/Connect.svelte";
+import Warning from "$components/core/popups/popups/Warning.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
-import {
-	type RobotListing,
-	getSelector,
-	robotListing,
-	robots,
-} from "$domain/robots";
+import { type Robot, robotListing } from "$domain/robots";
 import { Screen, screen } from "$state/app.svelte";
 import { restore } from "$state/blockly.svelte";
 import { willRestore } from "$state/blockly.svelte.js";
@@ -20,6 +15,12 @@ import {
 	robot,
 	saveState,
 } from "$state/workspace.svelte";
+import { _ } from "svelte-i18n";
+import { flip } from "svelte/animate";
+import { cubicOut } from "svelte/easing";
+import { fly } from "svelte/transition";
+
+const { board } = port;
 
 async function connect() {
 	try {
@@ -27,42 +28,69 @@ async function connect() {
 	} catch {}
 }
 
-function onselect(type: RobotListing) {
-	robot.set(
-		robots[localStorage.getItem(`${type.saveAddress}_robot`)] ||
-			type.defaultRobot,
-	);
-	mode.set(type.mode || Mode.BLOCKS);
-	screen.set(Screen.WORKSPACE);
+let selectors = $state<Robot[][][]>([robotListing]);
+let selected = $state<Robot>();
 
-	if ($mode !== Mode.BLOCKS)
+async function onselect(type: Robot) {
+	await connect();
+	if ("variants" in type) {
+		selectors[1] = type.variants;
+		selected = type;
+		return;
+	}
+
+	if ("robot" in type) {
+		robot.set($board || type.robot);
+		mode.set(type.mode || Mode.BLOCKS);
 		code.set(
-			($willRestore && localStorage.getItem(`${type.saveAddress}_content`)) ||
+			($willRestore && localStorage.getItem(`${type.id}_content`)) ||
 				type.defaultProgram,
 		);
-	else
-		restore.set(
-			JSON.parse(localStorage.getItem(`${type.saveAddress}_content`)),
-		);
+	} else {
+		robot.set(type);
+		mode.set(Mode.BLOCKS);
+		restore.set(JSON.parse(localStorage.getItem(`${type.id}_content`)));
+
+		if ($board && type.board !== $board.id) {
+			popups
+				.open({
+					component: Warning,
+					data: {
+						title: "INVALID_ROBOT_TITLE",
+						message: $_("INVALID_ROBOT", {
+							values: { robot: $robot.name, board: $board.name },
+						}),
+						showCancel: true,
+					},
+					allowInteraction: false,
+				})
+				.then((result) => {
+					if (result) return;
+
+					screen.set(Screen.START);
+				});
+		}
+	}
 
 	saveState.set(true);
-
-	if (type.mode === Mode.PYTHON) return;
-	if (getSelector(type.defaultRobot)) {
-		popups.open({
-			component: Connect,
-			data: {
-				connectOverride: !localStorage.getItem(`${type.saveAddress}_robot`),
-			},
-			allowInteraction: false,
-		});
-	}
-	connect();
+	screen.set(Screen.WORKSPACE);
 }
+
+const animationOptions = {
+	easing: cubicOut,
+	duration: 300,
+};
 </script>
 
 <div class="start">
-	<RobotSelector {onselect} robots="{robotListing}" />
+	{#each selectors as robots, i (i)}
+		<div
+			in:fly={{ x: "100%", ...animationOptions }}
+			animate:flip={animationOptions}
+		>
+			<RobotSelector {onselect} {robots} {selected} secondary={i > 0} />
+		</div>
+	{/each}
 </div>
 
 <style>

@@ -125,6 +125,7 @@
 	"META_ATTRIBUTION": "Gemaakt met Meta Llama 3",
 	"AI_RATE_LIMITED": "De uitleg robot is op dit moment erg druk, probeer het later nog eens.",
 	"CHOOSING_ROBOT": "Kies je arduino",
+	"INVALID_ROBOT_TITLE": "Ongeschikte robot",
 	"INVALID_ROBOT": "De geselecteerde robot {robot} werkt niet met de automatisch gedetecteerde {board}!",
 	"INCOMPATIBLE_PROJECT": "Ongeschikt",
 	"CONTINUE": "Ga door",

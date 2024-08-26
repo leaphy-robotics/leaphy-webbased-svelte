@@ -310,7 +310,7 @@ export const microPythonIO = writable<MicroPythonIO | undefined>();
 export const microPythonRun = writable<IOEventTarget | undefined>();
 
 export function tempSave() {
-	let saveAddress = get(robot).saveAddress;
+	let saveAddress = get(robot).id;
 	switch (get(mode)) {
 		case Mode.ADVANCED: {
 			saveAddress = "l_c++";

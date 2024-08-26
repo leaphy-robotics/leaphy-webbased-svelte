@@ -11,7 +11,7 @@ interface Props {
 	onclick?: () => void;
 	context?: Snippet<[Writable<boolean>]>;
 	disabled?: boolean;
-	mode: "primary" | "secondary" | "outlined" | "accent";
+	mode: "primary" | "secondary" | "outlined" | "accent" | "tint";
 	bold?: boolean;
 	type?: "button" | "submit";
 	inline?: boolean;
@@ -58,6 +58,7 @@ function onContext() {
 	class:secondary={mode === "secondary"}
 	class:outlined={mode === "outlined"}
 	class:accent={mode === "accent"}
+	class:tint={mode === "tint"}
 	class:bold
 	class:inline
 	class:center
@@ -115,6 +116,11 @@ function onContext() {
 	.accent {
 		background: var(--accent);
 		color: var(--on-accent);
+	}
+
+	.tint {
+		background: var(--background-tint);
+		color: var(--on-background);
 	}
 
 	.bold {

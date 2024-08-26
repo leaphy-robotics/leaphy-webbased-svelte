@@ -125,6 +125,7 @@
 	"META_ATTRIBUTION": "Built with Meta Llama 3",
 	"AI_RATE_LIMITED": "The explanation robot is a little too busy right now, please try again later.",
 	"CHOOSING_ROBOT": "Choose your board",
+	"INVALID_ROBOT_TITLE": "Incompatible device",
 	"INVALID_ROBOT": "The selected robot {robot} does not work with the automatically detected {board}!",
 	"INCOMPATIBLE_PROJECT": "Incompatible",
 	"CONTINUE": "Continue",
