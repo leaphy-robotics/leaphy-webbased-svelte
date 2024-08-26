@@ -54,7 +54,7 @@ test("Saving - Blockly", async ({ page }) => {
 });
 
 test("Saving - C++", async ({ page }) => {
-	await selectRobot(page, "Leaphy C++", "Arduino Uno");
+	await selectRobot(page, "Leaphy C++");
 	await page.getByText("setup").click();
 	await page.getByLabel("Editor content;Press Alt+F1").fill("testing");
 
@@ -63,7 +63,7 @@ test("Saving - C++", async ({ page }) => {
 
 	await page.reload();
 
-	await selectRobot(page, "Leaphy C++", "Arduino Uno");
+	await selectRobot(page, "Leaphy C++");
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();
 });
