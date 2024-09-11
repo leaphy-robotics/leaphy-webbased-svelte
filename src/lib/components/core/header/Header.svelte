@@ -324,7 +324,7 @@ function runPython() {
         onclick={discord}
         {open}
     />
-    <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} {open} />
+    <ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
     <ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
 {/snippet}
 {#snippet moreContext(open: Writable<boolean>)}
