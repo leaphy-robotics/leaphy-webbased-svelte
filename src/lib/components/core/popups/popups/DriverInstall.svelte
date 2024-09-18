@@ -1,10 +1,10 @@
 <script lang="ts">
+import install_drivers from "$assets/install_drivers.mp4";
 import Button from "$components/ui/Button.svelte";
 import { type PopupState, popups } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 import type { Writable } from "svelte/store";
-import install_drivers from "$assets/install_drivers.mp4"
 
 const popupState = getContext<Writable<PopupState>>("state");
 function close() {
@@ -15,7 +15,7 @@ function close() {
 <div class="content">
 	<h1>{$_("DRIVER_INSTALL_TITLE")}</h1>
 	<p>{$_("DRIVER_INSTALL_TEXT")}</p>
-	<video src={install_drivers} controls={true} width={600} />
+	<video src={install_drivers} controls={true} width={600}></video>
     <Button name={$_("CLOSE")} mode={"accent"} onclick={close} bold={true} />
 </div>
 

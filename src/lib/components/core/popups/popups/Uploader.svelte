@@ -1,6 +1,7 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
 
+import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type PopupState, popups } from "$state/popup.svelte";
@@ -12,10 +13,9 @@ import {
 	port,
 	robot,
 } from "$state/workspace.svelte";
+import JSZip from "jszip";
 import { getContext, onMount } from "svelte";
 import type { Writable } from "svelte/store";
-import JSZip from "jszip";
-import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 
 interface Props {
 	source?: string;
