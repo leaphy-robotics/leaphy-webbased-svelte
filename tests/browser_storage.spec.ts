@@ -1,12 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, openExample } from "./utils";
+import { goToHomePage, openExample, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
 test("Saving - Backpack", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	// Put something in the backpack
@@ -46,21 +44,17 @@ test("Saving - Backpack", async ({ page }) => {
 });
 
 test("Saving - Blockly", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	await page.reload();
 
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await expect(page.getByText("repeat forever")).toBeVisible();
 });
 
 test("Saving - C++", async ({ page }) => {
-	await page.getByRole("button", { name: "Leaphy C++ Leaphy C++" }).click();
+	await selectRobot(page, "Leaphy C++");
 	await page.getByText("setup").click();
 	await page.getByLabel("Editor content;Press Alt+F1").fill("testing");
 
@@ -69,16 +63,13 @@ test("Saving - C++", async ({ page }) => {
 
 	await page.reload();
 
-	await page.getByRole("button", { name: "Leaphy C++ Leaphy C++" }).click();
-
+	await selectRobot(page, "Leaphy C++");
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();
 });
 
 test("Saving - New project", async ({ page }) => {
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
+	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
 	// Start a new project, should reset to the default

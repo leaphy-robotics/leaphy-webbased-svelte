@@ -11,6 +11,11 @@ test.beforeEach(async ({ context }) => {
 	});
 });
 
+export async function selectRobot(page: Page, tile: string, robot?: string) {
+	await page.getByText(tile).click();
+	if (robot) await page.getByText(robot).click();
+}
+
 export async function setupArduino({ page }: PlaywrightTestArgs) {
 	let board = await setupPlaywrightArduino(page);
 	page.once("close", (_) => {

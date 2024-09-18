@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, mockShowOpenFilePicker } from "./utils";
+import { goToHomePage, mockShowOpenFilePicker, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -10,9 +10,7 @@ let test_files = [
 
 for (let [testName, file] of test_files) {
 	test(`LoadAndSave - ${testName}`, async ({ page }) => {
-		await page.getByText("Leaphy Original").click();
-		await page.getByText("Original Uno").click();
-
+		await selectRobot(page, "Leaphy Original", "Original Uno");
 		await page.getByRole("button", { name: "My projects" }).click();
 
 		// Playwright doesn't seem to support `showOpenFilePicker()` so mock it

@@ -129,5 +129,12 @@
 	"BROWSER_NOT_SUPPORTED_1": "You won't be able to upload your code.",
 	"BROWSER_NOT_SUPPORTED_SUGGESTION": "A chromium based browser should work (Edge/Chrome/Brave)",
 	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED": "I understand",
-	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED_DONT_SHOW_AGAIN": "Don't show again"
+	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED_DONT_SHOW_AGAIN": "Don't show again",
+	"INVALID_ROBOT_TITLE": "Incompatible device",
+	"INVALID_ROBOT": "The selected robot {robot} does not work with the automatically detected {board}!",
+	"INCOMPATIBLE_PROJECT": "Incompatible",
+	"CONTINUE": "Continue",
+	"UNKNOWN_BOARD": "Unknown",
+	"CLEAR_PROJECT": "Clear project",
+	"CLEAR_PROJECT_DESC": "Selecting this robot will clear your project, are you sure?"
 }
