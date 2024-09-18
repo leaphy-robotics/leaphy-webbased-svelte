@@ -14,7 +14,7 @@
 	"PROJECT": "My projects",
 	"HELP": "Tips",
 	"HELP_FORUM": "Leaphy Discord (Help forum)",
-	"DOWNLOAD_DRIVERS": "Windows drivers",
+	"DOWNLOAD_DRIVERS": "Download drivers",
 	"MORE": "More...",
 	"MORE_ABOUT": "About Easybloqs",
 	"UPLOAD": "Upload to robot",
@@ -131,5 +131,7 @@
 	"CONTINUE": "Continue",
 	"UNKNOWN_BOARD": "Unknown",
 	"CLEAR_PROJECT": "Clear project",
-	"CLEAR_PROJECT_DESC": "Selecting this robot will clear your project, are you sure?"
+	"CLEAR_PROJECT_DESC": "Selecting this robot will clear your project, are you sure?",
+	"DRIVER_INSTALL_TITLE": "How to install drivers?",
+	"DRIVER_INSTALL_TEXT": "You first must open the zip file, then execute all programs in the file. Finally you must restart your computer."
 }
