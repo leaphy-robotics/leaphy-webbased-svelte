@@ -6,7 +6,6 @@ import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
-import Select from "$components/ui/Select.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
 import { getSelector, robots } from "$domain/robots";
@@ -57,6 +56,7 @@ import { serialization } from "blockly";
 import JSZip from "jszip";
 import type { Writable } from "svelte/store";
 import { get } from "svelte/store";
+import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
@@ -210,29 +210,6 @@ function about() {
 		data: {},
 		allowInteraction: true,
 	});
-}
-
-async function drivers() {
-	const response = await fetch(
-		"https://api.github.com/repos/leaphy-robotics/leaphy-firmware/contents/drivers",
-	);
-	const data = await response.json();
-	const files = data.map(({ download_url }) => download_url);
-	const zip = new JSZip();
-
-	await Promise.all(
-		files.map(async (url) => {
-			const res = await fetch(url);
-			zip.file(url.split("/").pop(), await res.blob());
-		}),
-	);
-
-	const a = document.createElement("a");
-	const url = URL.createObjectURL(await zip.generateAsync({ type: "blob" }));
-	a.href = url;
-	a.download = "leaphy-drivers.zip";
-	a.click();
-	URL.revokeObjectURL(url);
 }
 
 function undo() {
@@ -390,7 +367,7 @@ function runPython() {
     <ContextItem
         icon={faDownload}
         name={$_("DOWNLOAD_DRIVERS")}
-        onclick={drivers}
+        onclick={downloadDrivers}
         {open}
     />
 {/snippet}
