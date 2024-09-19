@@ -147,7 +147,7 @@ async function connectUSB() {
 			<Button
 				name={$_("DOWNLOAD_DRIVERS")}
 				mode={"accent"}
-				onclick={downloadDrivers}
+				onclick={() => {close(); downloadDrivers();}}
 			/>
 		{/if}
     {/if}

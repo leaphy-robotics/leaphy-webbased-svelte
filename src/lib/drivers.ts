@@ -23,7 +23,6 @@ async function downloadDrivers() {
 	a.download = "leaphy-drivers.zip";
 	a.click();
 	URL.revokeObjectURL(url);
-	close();
 	await popups.open({
 		component: DriverInstall,
 		data: {},
