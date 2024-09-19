@@ -138,5 +138,5 @@
 	"CLEAR_PROJECT": "Clear project",
 	"CLEAR_PROJECT_DESC": "Selecting this robot will clear your project, are you sure?",
 	"DRIVER_INSTALL_TITLE": "How to install drivers?",
-	"DRIVER_INSTALL_TEXT": "You first must open the zip file, then execute all programs in the file. Finally you must restart your computer."
+	"DRIVER_INSTALL_TEXT": "Please follow the steps in the instruction video below to install the drivers."
 }
