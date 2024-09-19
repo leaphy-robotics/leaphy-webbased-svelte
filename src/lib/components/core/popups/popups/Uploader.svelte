@@ -140,7 +140,7 @@ async function downloadDrivers() {
 	const url = URL.createObjectURL(await zip.generateAsync({ type: "blob" }));
 	a.href = url;
 	a.download = "leaphy-drivers.zip";
-	//a.click();
+	a.click();
 	URL.revokeObjectURL(url);
 	close();
 	await popups.open({
