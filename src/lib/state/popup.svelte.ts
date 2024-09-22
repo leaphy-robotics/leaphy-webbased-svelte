@@ -33,13 +33,14 @@ function createPopups() {
 			let onclose: (value: any) => void;
 			const promise = new Promise<any>((resolve) => (onclose = resolve));
 			const state: PopupState = {
-				id: `${count++}`,
+				id: `${count}`,
 				position: { x: 0, y: 0 },
 				popup,
 				onclose,
 				anchor: Anchor.Center,
 				...initialState,
 			};
+			count++;
 			if (count > 1000) count = 0;
 			update((popups) => {
 				if (

@@ -103,6 +103,7 @@ function createLogState() {
 						})),
 					].slice(-100),
 				);
+				count++;
 				if (count > 100) count = 0;
 			}
 		},
