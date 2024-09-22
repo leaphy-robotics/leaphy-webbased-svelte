@@ -33,6 +33,7 @@ export enum Prompt {
 export class ConnectionFailedError {}
 
 interface LogItem {
+	id: string;
 	date: Date;
 	content: string;
 }
@@ -67,6 +68,7 @@ let writer: WritableStreamDefaultWriter<Uint8Array>;
 function createLogState() {
 	const { subscribe, update, set } = writable<LogItem[]>([]);
 	let buffer = "";
+	let count = 0;
 
 	return {
 		subscribe,
@@ -95,11 +97,13 @@ function createLogState() {
 					[
 						...log,
 						...items.map((content) => ({
+							id: `${count}`,
 							date: new Date(),
 							content,
 						})),
 					].slice(-100),
 				);
+				if (count > 100) count = 0;
 			}
 		},
 	};
