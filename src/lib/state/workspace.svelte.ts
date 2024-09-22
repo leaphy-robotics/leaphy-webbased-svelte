@@ -33,7 +33,6 @@ export enum Prompt {
 export class ConnectionFailedError {}
 
 interface LogItem {
-	id: string;
 	date: Date;
 	content: string;
 }
@@ -96,7 +95,6 @@ function createLogState() {
 					[
 						...log,
 						...items.map((content) => ({
-							id: crypto.randomUUID(),
 							date: new Date(),
 							content,
 						})),

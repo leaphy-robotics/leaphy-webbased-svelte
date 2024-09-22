@@ -103,7 +103,7 @@ function insertDate() {
     {/if}
     {#if mode === Mode.TEXT}
 	    <div class="content" bind:this={element}>
-	        {#each $log as item (item.id)}
+	        {#each $log as item}
 	            <div class="item">
 	                <div class="date">{formatDate(item.date)}</div>
 	                <div class="text">{item.content}</div>
