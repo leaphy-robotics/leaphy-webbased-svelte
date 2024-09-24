@@ -68,6 +68,7 @@ let writer: WritableStreamDefaultWriter<Uint8Array>;
 function createLogState() {
 	const { subscribe, update, set } = writable<LogItem[]>([]);
 	let buffer = "";
+	let count = 0;
 
 	return {
 		subscribe,
@@ -96,12 +97,14 @@ function createLogState() {
 					[
 						...log,
 						...items.map((content) => ({
-							id: crypto.randomUUID(),
+							id: `${count}`,
 							date: new Date(),
 							content,
 						})),
 					].slice(-100),
 				);
+				count++;
+				if (count > 100) count = 0;
 			}
 		},
 	};

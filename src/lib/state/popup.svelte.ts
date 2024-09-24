@@ -25,6 +25,7 @@ export interface PopupState {
 
 function createPopups() {
 	const { subscribe, update, set } = writable<PopupState[]>([]);
+	let count = 0;
 
 	return {
 		subscribe,
@@ -32,13 +33,15 @@ function createPopups() {
 			let onclose: (value: any) => void;
 			const promise = new Promise<any>((resolve) => (onclose = resolve));
 			const state: PopupState = {
-				id: crypto.randomUUID(),
+				id: `${count}`,
 				position: { x: 0, y: 0 },
 				popup,
 				onclose,
 				anchor: Anchor.Center,
 				...initialState,
 			};
+			count++;
+			if (count > 1000) count = 0;
 			update((popups) => {
 				if (
 					popups.find(
