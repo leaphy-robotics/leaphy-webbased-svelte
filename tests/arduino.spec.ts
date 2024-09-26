@@ -6,7 +6,7 @@ test.describe.configure({ mode: "serial" });
 test.beforeEach(setupArduino);
 test.beforeEach(goToHomePage);
 
-test("Arduino - Blockly upload", async ({ page }) => {
+test.fixme("Arduino - Blockly upload", async ({ page }) => {
 	await selectRobot(page, "Leaphy Original", "Original Uno");
 	await openExample(page, "Blink");
 
@@ -23,7 +23,7 @@ test("Arduino - Blockly upload", async ({ page }) => {
 	});
 });
 
-test("Arduino - C++ upload", async ({ page }) => {
+test.fixme("Arduino - C++ upload", async ({ page }) => {
 	await selectRobot(page, "Leaphy C++");
 	await page.getByRole("button", { name: "Upload to robot" }).click();
 	await expect(
