@@ -599,10 +599,10 @@
   resolved "https://registry.yarnpkg.com/@kurkle/color/-/color-0.3.2.tgz#5acd38242e8bde4f9986e7913c8fdf49d3aa199f"
   integrity sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==
 
-"@leaphy-robotics/avrdude-webassembly@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@leaphy-robotics/avrdude-webassembly/-/avrdude-webassembly-1.6.1.tgz#78a9e58748130034e4443db09fbdd7870868acea"
-  integrity sha512-RJZVa6GN8KUC02IQkUQgMeIIjqLF9XzMSselYA3WdUQT67QriLbScd5uKiuCgHpjjzmI/FEIfKF9XSgCmuz+yg==
+"@leaphy-robotics/avrdude-webassembly@1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/avrdude-webassembly/-/avrdude-webassembly-1.7.0.tgz#719ff7e254eac0785d1c345625375244ab0e9124"
+  integrity sha512-7xBsMpL00C/+BNif4Y61+mwqY4sokFN888rUA63UFXuvKNoxzTLnPDH7jpYOx9BFm88iogpBxeiuTpqdY9x/pA==
   dependencies:
     "@leaphy-robotics/webusb-ftdi" "^1.0.0"
 
