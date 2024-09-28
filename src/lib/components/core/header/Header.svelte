@@ -90,6 +90,7 @@ async function connect() {
 async function newProject() {
 	popups.clear();
 	willRestore.set(false);
+	$workspace.clear();
 	screen.set(Screen.START);
 }
 
