@@ -12,6 +12,7 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import { workspace } from "./blockly.svelte";
 import { popups } from "./popup.svelte";
+import Error from "$components/core/popups/popups/Error.svelte";
 
 export type LeaphyPort =
 	| SerialPort
@@ -120,6 +121,7 @@ function createPortState() {
 
 	let onReady: () => void;
 	let onFailure: () => void;
+	let showFeedback = false;
 	subscribe(async (port) => {
 		if (!port || reserved) return;
 
@@ -127,6 +129,18 @@ function createPortState() {
 			try {
 				await port.open({ baudRate: 115200 });
 			} catch (e) {
+				set(undefined);
+				if (showFeedback) {
+					popups.open({
+						component: Error,
+						data: {
+							title: "ROBOT_RESERVED",
+							message: "ROBOT_RESERVED_MESSAGE"
+						},
+						allowInteraction: false
+					})
+				}
+
 				onFailure();
 				throw e;
 			}
@@ -198,6 +212,7 @@ function createPortState() {
 			onFailure = reject;
 		}),
 		async requestPort(prompt: Prompt): Promise<SerialPort | USBDevice> {
+			showFeedback = prompt === Prompt.ALWAYS;
 			if (navigator.serial) {
 				if (prompt !== Prompt.ALWAYS) {
 					const [port] = await navigator.serial.getPorts();
