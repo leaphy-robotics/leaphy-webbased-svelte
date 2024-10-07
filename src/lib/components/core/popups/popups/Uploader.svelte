@@ -17,6 +17,7 @@ import JSZip from "jszip";
 import { getContext, onMount } from "svelte";
 import type { Writable } from "svelte/store";
 import { downloadDrivers } from "../../../../drivers";
+import Error from "$components/core/popups/popups/Error.svelte";
 
 interface Props {
 	source?: string;
@@ -65,12 +66,25 @@ async function compile() {
 
 async function upload(res: Record<string, string>) {
 	try {
-		currentState = "WAITING_FOR_PORT";
-		await port.ready;
-		progress += 100 / 4;
+		try {
+			currentState = "WAITING_FOR_PORT";
+			await port.ready;
+			progress += 100 / 4;
 
-		currentState = "UPDATE_STARTED";
-		await port.reserve();
+			currentState = "UPDATE_STARTED";
+			await port.reserve();
+		} catch {
+			popups.close($popupState.id);
+			return popups.open({
+				component: Error,
+				data: {
+					title: "ROBOT_RESERVED",
+					message: "ROBOT_RESERVED_MESSAGE"
+				},
+				allowInteraction: false
+			})
+		}
+
 		await $robot.programmer.upload($port, res);
 	} catch (e) {
 		console.log(e);
