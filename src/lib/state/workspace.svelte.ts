@@ -233,7 +233,10 @@ function createPortState() {
 				onReady = resolve;
 				onFailure = reject;
 			});
+
 			const port = await this.requestPort(prompt);
+			if (get({ subscribe }) === port) return onReady()
+
 			if ("addEventListener" in port) {
 				port.addEventListener("disconnect", async () => {
 					reserved = false;
