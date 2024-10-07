@@ -1,8 +1,10 @@
 <script lang="ts">
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
+import { popups } from "$state/popup.svelte";
 import { Prompt, log, port } from "$state/workspace.svelte";
 import {
 	faArrowDown,
@@ -17,8 +19,6 @@ import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
-import {popups} from "$state/popup.svelte";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 enum Mode {
 	TEXT = 0,
@@ -52,13 +52,13 @@ function send(event: SubmitEvent) {
 		log.write(`${value}\n`);
 	} catch {
 		popups.open({
-			component: Error,
+			component: ErrorPopup,
 			data: {
 				title: "ROBOT_RESERVED",
-				message: "ROBOT_RESERVED_MESSAGE"
+				message: "ROBOT_RESERVED_MESSAGE",
 			},
-			allowInteraction: false
-		})
+			allowInteraction: false,
+		});
 	}
 
 	value = "";

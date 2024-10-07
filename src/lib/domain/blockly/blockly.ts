@@ -1,6 +1,7 @@
 import * as Blockly from "blockly";
 import "@blockly/field-bitmap";
 import defaultProgram from "$assets/default-program.json?raw";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { type RobotDevice, inFilter } from "$domain/robots";
@@ -34,7 +35,6 @@ import { LeaphyCategory } from "./category-ui/category";
 import { LeaphyToolbox } from "./category-ui/toolbox";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -171,18 +171,18 @@ export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 			Blockly.Xml.domToWorkspace(xml, workspace);
 		} catch {
 			popups.open({
-				component: Error,
+				component: ErrorPopup,
 				data: {
 					title: "INVALID_WORKSPACE",
 					message: "INVALID_WORKSPACE_MESSAGE",
 				},
-				allowInteraction: false
-			})
-			return false
+				allowInteraction: false,
+			});
+			return false;
 		}
 	}
 
-	return true
+	return true;
 }
 
 export function setupWorkspace(
@@ -334,7 +334,7 @@ export async function explain(block: Blockly.BlockSvg) {
 						model: "Llama3-70b-8192",
 					}),
 				}).then(async (res) => {
-					if (!res.ok) throw new Error(res.statusText);
+					if (!res.ok) throw new ErrorPopup(res.statusText);
 					return JSON.parse(await res.text());
 				}),
 			},

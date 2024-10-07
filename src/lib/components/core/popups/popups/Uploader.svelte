@@ -2,6 +2,7 @@
 import { _ } from "svelte-i18n";
 
 import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type PopupState, popups } from "$state/popup.svelte";
@@ -17,7 +18,6 @@ import JSZip from "jszip";
 import { getContext, onMount } from "svelte";
 import type { Writable } from "svelte/store";
 import { downloadDrivers } from "../../../../drivers";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 interface Props {
 	source?: string;
@@ -31,7 +31,7 @@ let error = $state<string | null>(null);
 let done = $state(false);
 let failed = $state(false);
 
-class UploadError extends Error {
+class UploadError extends ErrorPopup {
 	constructor(
 		public name: string,
 		public description: string,
@@ -76,13 +76,13 @@ async function upload(res: Record<string, string>) {
 		} catch {
 			popups.close($popupState.id);
 			return popups.open({
-				component: Error,
+				component: ErrorPopup,
 				data: {
 					title: "ROBOT_RESERVED",
-					message: "ROBOT_RESERVED_MESSAGE"
+					message: "ROBOT_RESERVED_MESSAGE",
 				},
-				allowInteraction: false
-			})
+				allowInteraction: false,
+			});
 		}
 
 		await $robot.programmer.upload($port, res);

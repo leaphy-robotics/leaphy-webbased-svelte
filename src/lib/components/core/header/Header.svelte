@@ -4,6 +4,7 @@ import { _, locale } from "svelte-i18n";
 import block from "$assets/block.svg";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
@@ -65,7 +66,6 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 async function upload() {
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
@@ -149,7 +149,7 @@ async function openProject() {
 	} else {
 		if (get(mode) === Mode.BLOCKS) {
 			if (!loadWorkspaceFromString(await content.text(), $workspace)) {
-				return
+				return;
 			}
 		} else {
 			restore.set(JSON.parse(await content.text()));
@@ -158,14 +158,14 @@ async function openProject() {
 
 		if (!robots[file.name.split(".").at(-1)]) {
 			popups.open({
-				component: Error,
+				component: ErrorPopup,
 				data: {
 					title: "UNDEFINED_ROBOT",
 					message: "UNDEFINED_ROBOT_MESSAGE",
 				},
-				allowInteraction: false
-			})
-			return
+				allowInteraction: false,
+			});
+			return;
 		}
 
 		robot.set(robots[file.name.split(".").at(-1)]);

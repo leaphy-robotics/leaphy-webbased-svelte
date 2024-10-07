@@ -1,3 +1,4 @@
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
@@ -12,7 +13,6 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import { workspace } from "./blockly.svelte";
 import { popups } from "./popup.svelte";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 export type LeaphyPort =
 	| SerialPort
@@ -132,13 +132,13 @@ function createPortState() {
 				set(undefined);
 				if (showFeedback) {
 					popups.open({
-						component: Error,
+						component: ErrorPopup,
 						data: {
 							title: "ROBOT_RESERVED",
-							message: "ROBOT_RESERVED_MESSAGE"
+							message: "ROBOT_RESERVED_MESSAGE",
 						},
-						allowInteraction: false
-					})
+						allowInteraction: false,
+					});
 				}
 
 				onFailure();
@@ -250,7 +250,7 @@ function createPortState() {
 			});
 
 			const port = await this.requestPort(prompt);
-			if (get({ subscribe }) === port) return onReady()
+			if (get({ subscribe }) === port) return onReady();
 
 			if ("addEventListener" in port) {
 				port.addEventListener("disconnect", async () => {
