@@ -34,6 +34,7 @@ import { LeaphyCategory } from "./category-ui/category";
 import { LeaphyToolbox } from "./category-ui/toolbox";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
+import Error from "$components/core/popups/popups/Error.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -163,11 +164,25 @@ export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 		const json = JSON.parse(content);
 		serialization.workspaces.load(json, workspace);
 	} catch {
-		// It's not JSON, maybe it's XML
-		const xml = Blockly.utils.xml.textToDom(content);
-		workspace.clear();
-		Blockly.Xml.domToWorkspace(xml, workspace);
+		try {
+			// It's not JSON, maybe it's XML
+			const xml = Blockly.utils.xml.textToDom(content);
+			workspace.clear();
+			Blockly.Xml.domToWorkspace(xml, workspace);
+		} catch {
+			popups.open({
+				component: Error,
+				data: {
+					title: "INVALID_WORKSPACE",
+					message: "INVALID_WORKSPACE_MESSAGE",
+				},
+				allowInteraction: false
+			})
+			return false
+		}
 	}
+
+	return true
 }
 
 export function setupWorkspace(

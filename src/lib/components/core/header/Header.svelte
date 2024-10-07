@@ -65,6 +65,7 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+import Error from "$components/core/popups/popups/Error.svelte";
 
 async function upload() {
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
@@ -147,11 +148,26 @@ async function openProject() {
 		code.set(await content.text());
 	} else {
 		if (get(mode) === Mode.BLOCKS) {
-			loadWorkspaceFromString(await content.text(), $workspace);
+			if (!loadWorkspaceFromString(await content.text(), $workspace)) {
+				return
+			}
 		} else {
 			restore.set(JSON.parse(await content.text()));
 			mode.set(Mode.BLOCKS);
 		}
+
+		if (!robots[file.name.split(".").at(-1)]) {
+			popups.open({
+				component: Error,
+				data: {
+					title: "UNDEFINED_ROBOT",
+					message: "UNDEFINED_ROBOT_MESSAGE",
+				},
+				allowInteraction: false
+			})
+			return
+		}
+
 		robot.set(robots[file.name.split(".").at(-1)]);
 	}
 }

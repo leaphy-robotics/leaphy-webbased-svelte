@@ -138,5 +138,10 @@
 	"CLEAR_PROJECT": "Clear project",
 	"CLEAR_PROJECT_DESC": "Selecting this robot will clear your project, are you sure?",
 	"DRIVER_INSTALL_TITLE": "How to install drivers?",
-	"DRIVER_INSTALL_TEXT": "Please follow the steps in the instruction video below to install the drivers."
+	"DRIVER_INSTALL_TEXT": "Please follow the steps in the instruction video below to install the drivers.",
+	"SEND_FEEDBACK": "Send feedback",
+	"INVALID_WORKSPACE": "Invalid project",
+	"INVALID_WORKSPACE_MESSAGE": "That doesn't look like a Leaphy Project, please verify that you have selected the correct file",
+	"UNDEFINED_ROBOT": "Project name invalid",
+	"UNDEFINED_ROBOT_MESSAGE": "This does seem like a valid Leaphy Project, but the robot type was not included in the name, we've kept your previous robot selection for now."
 }
