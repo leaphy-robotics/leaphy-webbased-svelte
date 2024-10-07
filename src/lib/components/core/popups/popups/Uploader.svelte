@@ -2,6 +2,7 @@
 import { _ } from "svelte-i18n";
 
 import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type PopupState, popups } from "$state/popup.svelte";
@@ -30,7 +31,7 @@ let error = $state<string | null>(null);
 let done = $state(false);
 let failed = $state(false);
 
-class UploadError extends Error {
+class UploadError extends ErrorPopup {
 	constructor(
 		public name: string,
 		public description: string,
@@ -65,12 +66,25 @@ async function compile() {
 
 async function upload(res: Record<string, string>) {
 	try {
-		currentState = "WAITING_FOR_PORT";
-		await port.ready;
-		progress += 100 / 4;
+		try {
+			currentState = "WAITING_FOR_PORT";
+			await port.ready;
+			progress += 100 / 4;
 
-		currentState = "UPDATE_STARTED";
-		await port.reserve();
+			currentState = "UPDATE_STARTED";
+			await port.reserve();
+		} catch {
+			popups.close($popupState.id);
+			return popups.open({
+				component: ErrorPopup,
+				data: {
+					title: "ROBOT_RESERVED",
+					message: "ROBOT_RESERVED_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+		}
+
 		await $robot.programmer.upload($port, res);
 	} catch (e) {
 		console.log(e);

@@ -1,8 +1,10 @@
 <script lang="ts">
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
+import { popups } from "$state/popup.svelte";
 import { Prompt, log, port } from "$state/workspace.svelte";
 import {
 	faArrowDown,
@@ -46,7 +48,19 @@ log.subscribe(async () => {
 let value = $state("");
 function send(event: SubmitEvent) {
 	event.preventDefault();
-	log.write(`${value}\n`);
+	try {
+		log.write(`${value}\n`);
+	} catch {
+		popups.open({
+			component: ErrorPopup,
+			data: {
+				title: "ROBOT_RESERVED",
+				message: "ROBOT_RESERVED_MESSAGE",
+			},
+			allowInteraction: false,
+		});
+	}
+
 	value = "";
 }
 

@@ -1,6 +1,7 @@
 import * as Blockly from "blockly";
 import "@blockly/field-bitmap";
 import defaultProgram from "$assets/default-program.json?raw";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { type RobotDevice, inFilter } from "$domain/robots";
@@ -163,11 +164,25 @@ export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 		const json = JSON.parse(content);
 		serialization.workspaces.load(json, workspace);
 	} catch {
-		// It's not JSON, maybe it's XML
-		const xml = Blockly.utils.xml.textToDom(content);
-		workspace.clear();
-		Blockly.Xml.domToWorkspace(xml, workspace);
+		try {
+			// It's not JSON, maybe it's XML
+			const xml = Blockly.utils.xml.textToDom(content);
+			workspace.clear();
+			Blockly.Xml.domToWorkspace(xml, workspace);
+		} catch {
+			popups.open({
+				component: ErrorPopup,
+				data: {
+					title: "INVALID_WORKSPACE",
+					message: "INVALID_WORKSPACE_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+			return false;
+		}
 	}
+
+	return true;
 }
 
 export function setupWorkspace(
@@ -319,7 +334,7 @@ export async function explain(block: Blockly.BlockSvg) {
 						model: "Llama3-70b-8192",
 					}),
 				}).then(async (res) => {
-					if (!res.ok) throw new Error(res.statusText);
+					if (!res.ok) throw new ErrorPopup(res.statusText);
 					return JSON.parse(await res.text());
 				}),
 			},

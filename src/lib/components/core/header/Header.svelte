@@ -4,6 +4,7 @@ import { _, locale } from "svelte-i18n";
 import block from "$assets/block.svg";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
@@ -78,7 +79,7 @@ async function upload() {
 }
 
 async function connect() {
-	if (getSelector($robot))
+	if ($mode === Mode.ADVANCED)
 		popups.open({
 			component: Connect,
 			data: {},
@@ -147,11 +148,26 @@ async function openProject() {
 		code.set(await content.text());
 	} else {
 		if (get(mode) === Mode.BLOCKS) {
-			loadWorkspaceFromString(await content.text(), $workspace);
+			if (!loadWorkspaceFromString(await content.text(), $workspace)) {
+				return;
+			}
 		} else {
 			restore.set(JSON.parse(await content.text()));
 			mode.set(Mode.BLOCKS);
 		}
+
+		if (!robots[file.name.split(".").at(-1)]) {
+			popups.open({
+				component: ErrorPopup,
+				data: {
+					title: "UNDEFINED_ROBOT",
+					message: "UNDEFINED_ROBOT_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+			return;
+		}
+
 		robot.set(robots[file.name.split(".").at(-1)]);
 	}
 }

@@ -138,5 +138,12 @@
 	"CLEAR_PROJECT": "Wis project",
 	"CLEAR_PROJECT_DESC": "Door deze robot te selecteren wis je je project, weet je het zeker?",
 	"DRIVER_INSTALL_TITLE": "Hoe installeer je drivers?",
-	"DRIVER_INSTALL_TEXT": "Bekijk het filmpje voor uitleg hoe je de drivers kunt installeren."
+	"DRIVER_INSTALL_TEXT": "Bekijk het filmpje voor uitleg hoe je de drivers kunt installeren.",
+	"SEND_FEEDBACK": "Verstuur feedback",
+	"INVALID_WORKSPACE": "Ongeldig project",
+	"INVALID_WORKSPACE_MESSAGE": "Dat ziet er niet uit als een kloppend Leaphy Project, controleer of je het goede bestand hebt geselecteerd",
+	"UNDEFINED_ROBOT": "Ongeldige project naam",
+	"UNDEFINED_ROBOT_MESSAGE": "Dit project ziet er goed uit, maar het type robot staat niet in de naam, je vorige robot selectie is behouden",
+	"ROBOT_RESERVED": "Verbinding onmogelijk",
+	"ROBOT_RESERVED_MESSAGE": "Het lijkt erop dat we niet kunnen verbinden met de robot, de poort zou in gebruik kunnen zijn door een ander programma of een andere app"
 }
