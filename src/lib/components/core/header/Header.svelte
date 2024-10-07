@@ -78,7 +78,7 @@ async function upload() {
 }
 
 async function connect() {
-	if (getSelector($robot))
+	if ($mode === Mode.ADVANCED)
 		popups.open({
 			component: Connect,
 			data: {},
