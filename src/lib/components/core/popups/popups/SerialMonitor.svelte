@@ -17,6 +17,8 @@ import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
+import {popups} from "$state/popup.svelte";
+import Error from "$components/core/popups/popups/Error.svelte";
 
 enum Mode {
 	TEXT = 0,
@@ -46,7 +48,19 @@ log.subscribe(async () => {
 let value = $state("");
 function send(event: SubmitEvent) {
 	event.preventDefault();
-	log.write(`${value}\n`);
+	try {
+		log.write(`${value}\n`);
+	} catch {
+		popups.open({
+			component: Error,
+			data: {
+				title: "ROBOT_RESERVED",
+				message: "ROBOT_RESERVED_MESSAGE"
+			},
+			allowInteraction: false
+		})
+	}
+
 	value = "";
 }
 
