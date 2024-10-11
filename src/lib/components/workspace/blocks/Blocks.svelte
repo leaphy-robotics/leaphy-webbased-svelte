@@ -47,6 +47,15 @@ onMount(() => {
 	);
 	updateSizing();
 	$workspace.addChangeListener((event) => {
+		if (
+			"blockId" in event &&
+			$workspace
+				.getBlockById(event.blockId as string)
+				?.type?.includes("procedures")
+		) {
+			($workspace as WorkspaceSvg).getToolbox().refreshSelection();
+		}
+
 		canUndo.set(get(workspace).getUndoStack().length > 0);
 		canRedo.set(get(workspace).getRedoStack().length > 0);
 
