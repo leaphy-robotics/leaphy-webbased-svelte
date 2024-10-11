@@ -31,7 +31,7 @@ let error = $state<string | null>(null);
 let done = $state(false);
 let failed = $state(false);
 
-class UploadError extends ErrorPopup {
+class UploadError extends Error {
 	constructor(
 		public name: string,
 		public description: string,
