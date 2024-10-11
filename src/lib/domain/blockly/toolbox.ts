@@ -1,7 +1,7 @@
 import robotGroups from "$domain/robots.groups";
-import { RobotType } from "$domain/robots.types";
-import { format } from "date-fns";
 import robotsGroups from "$domain/robots.groups";
+import {RobotType} from "$domain/robots.types";
+import {format} from "date-fns";
 
 function number(value: number) {
 	return {
