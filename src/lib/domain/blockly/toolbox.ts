@@ -1,5 +1,4 @@
 import robotGroups from "$domain/robots.groups";
-import robotsGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 import { format } from "date-fns";
 
@@ -59,14 +58,14 @@ export default [
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "8", ECHO_PIN: "7" },
 					robots: [
-						...robotsGroups.ALL,
-						...robotsGroups.L_NANO_ALL.map((e) => -e),
+						...robotGroups.ALL,
+						...robotGroups.L_NANO_ALL.map((e) => -e),
 					],
 				},
 				{
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-					robots: robotsGroups.L_NANO_ALL,
+					robots: robotGroups.L_NANO_ALL,
 				},
 			],
 			[
