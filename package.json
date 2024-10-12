@@ -34,7 +34,7 @@
     "@floating-ui/dom": "^1.6.3",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "6.6.0",
-    "@leaphy-robotics/avrdude-webassembly": "1.7.0",
+    "@leaphy-robotics/avrdude-webassembly": "^1.6.1",
     "@leaphy-robotics/dfu-util-wasm": "^1.0.2",
     "@leaphy-robotics/leaphy-blocks": "3.2.1",
     "@leaphy-robotics/picotool-wasm": "1.0.3",
