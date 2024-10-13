@@ -39,7 +39,7 @@
     "@leaphy-robotics/leaphy-blocks": "3.2.2",
     "@leaphy-robotics/picotool-wasm": "1.0.3",
     "@leaphy-robotics/webusb-ftdi": "1.0.1",
-    "@sentry/svelte": "8.0.0-beta.5",
+    "@sentry/svelte": "^8.34.0",
     "@types/w3c-web-usb": "^1.0.10",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
