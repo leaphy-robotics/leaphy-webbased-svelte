@@ -7,11 +7,10 @@ import ListSelect from "$components/ui/ListSelect.svelte";
 import { isCompatible } from "$domain/blockly/blockly";
 import { type RobotDevice, type Selector, getSelector } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
 import { Mode, Prompt, handle, mode, robot } from "$state/workspace.svelte";
 import { port } from "$state/workspace.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import type { WorkspaceSvg } from "blockly";
 import * as Blockly from "blockly";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
@@ -38,10 +37,10 @@ const values = $derived(
 	category.robots.map((robot) => [robot.name, robot] as [string, RobotDevice]),
 );
 
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 function start() {
 	window._paq.push(["trackEvent", "SelectRobot", $robot.name]);
-	popups.close($popupState.id);
+	popupState.close();
 }
 
 board.subscribe((board) => {
@@ -72,7 +71,7 @@ function checkEnabled(robot: RobotDevice): boolean {
 }
 
 async function disabledSelect() {
-	const value = await popups.open({
+	const value = await PopupsState.open({
 		component: Warning,
 		data: {
 			title: "CLEAR_PROJECT",

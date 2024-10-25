@@ -1,9 +1,8 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
+import { type PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
-import type { Writable } from "svelte/store";
 
 interface Props {
 	title: string;
@@ -13,14 +12,14 @@ interface Props {
 
 const { title, message, showCancel = true }: Props = $props();
 
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 
 function cancel() {
-	popups.close($popupState.id, false);
+	popupState.close(false);
 }
 
 function ok() {
-	popups.close($popupState.id, true);
+	popupState.close(true);
 }
 </script>
 

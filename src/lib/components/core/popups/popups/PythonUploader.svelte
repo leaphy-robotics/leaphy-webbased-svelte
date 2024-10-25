@@ -5,7 +5,7 @@ import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
-import { type PopupState, popups } from "$state/popup.svelte";
+import { type PopupState } from "$state/popup.svelte";
 import { usbRequest } from "$state/upload.svelte";
 import {
 	SUPPORTED_VENDOR_IDS,
@@ -13,13 +13,13 @@ import {
 	robot,
 } from "$state/workspace.svelte";
 import { getContext, onMount } from "svelte";
-import { type Writable, get } from "svelte/store";
+import { get } from "svelte/store";
 import type MicroPythonIO from "../../../../micropython";
 
 interface Props {
 	io: MicroPythonIO;
 }
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 const { io }: Props = $props();
 let progress = $state(0);
 let currentState = $state("CONNECTING");
@@ -81,7 +81,7 @@ onMount(async () => {
 		);
 		progress += 100 / 6;
 
-		popups.close($popupState.id);
+		popupState.close();
 	} catch (e) {
 		done = true;
 		currentState = e?.name || "UPDATE_FAILED";
@@ -91,7 +91,7 @@ onMount(async () => {
 });
 
 function close() {
-	popups.close($popupState.id);
+	popupState.close();
 }
 
 async function connectUSB() {

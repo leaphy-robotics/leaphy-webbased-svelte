@@ -5,7 +5,7 @@ import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
 import { usbRequest } from "$state/upload.svelte";
 import {
 	Prompt,
@@ -14,16 +14,14 @@ import {
 	port,
 	robot,
 } from "$state/workspace.svelte";
-import JSZip from "jszip";
 import { getContext, onMount } from "svelte";
-import type { Writable } from "svelte/store";
 import { downloadDrivers } from "../../../../drivers";
 
 interface Props {
 	source?: string;
 	program?: Record<string, string>;
 }
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 const { source, program }: Props = $props();
 let progress = $state(0);
 let currentState = $state("CONNECTING");
@@ -74,8 +72,8 @@ async function upload(res: Record<string, string>) {
 			currentState = "UPDATE_STARTED";
 			await port.reserve();
 		} catch {
-			popups.close($popupState.id);
-			return popups.open({
+			popupState.close();
+			return PopupsState.open({
 				component: ErrorPopup,
 				data: {
 					title: "ROBOT_RESERVED",
@@ -120,7 +118,7 @@ onMount(async () => {
 });
 
 function close() {
-	popups.close($popupState.id);
+	popupState.close();
 }
 
 async function connectUSB() {

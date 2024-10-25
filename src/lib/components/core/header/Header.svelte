@@ -12,7 +12,7 @@ import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
-import { popups } from "$state/popup.svelte";
+import PopupState from "$state/popup.svelte";
 import {
 	Mode,
 	Prompt,
@@ -61,7 +61,7 @@ import Warning from "../popups/popups/Warning.svelte";
 
 async function upload() {
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
-	popups.open({
+	PopupState.open({
 		component: Uploader,
 		data: {
 			source: $code,
@@ -72,7 +72,7 @@ async function upload() {
 
 async function connect() {
 	if ($mode === Mode.ADVANCED)
-		popups.open({
+		PopupState.open({
 			component: Connect,
 			data: {},
 			allowInteraction: false,
@@ -81,7 +81,7 @@ async function connect() {
 }
 
 async function newProject() {
-	popups.clear();
+	PopupState.clear();
 
 	BlocklyState.willRestore = false;
 	BlocklyState.workspace?.clear();
@@ -97,7 +97,7 @@ function serialize() {
 }
 
 async function saveProjectAs() {
-	const name = await popups.open({
+	const name = await PopupState.open({
 		component: SaveProject,
 		data: {
 			name: "SAVEAS",
@@ -151,7 +151,7 @@ async function openProject() {
 		}
 
 		if (!robots[file.name.split(".").at(-1)]) {
-			popups.open({
+			PopupState.open({
 				component: ErrorPopup,
 				data: {
 					title: "UNDEFINED_ROBOT",
@@ -180,7 +180,7 @@ function saveDynamic() {
 }
 
 function examples() {
-	popups.open({
+	PopupState.open({
 		component: Examples,
 		data: {},
 		allowInteraction: true,
@@ -193,7 +193,7 @@ function setLocale(language: string) {
 }
 
 function log() {
-	popups.open({
+	PopupState.open({
 		component: UploadLog,
 		data: {},
 		allowInteraction: true,
@@ -208,7 +208,7 @@ function email() {
 }
 
 function feedback() {
-	popups.open({
+	PopupState.open({
 		component: Feedback,
 		data: {},
 		allowInteraction: true,
@@ -216,7 +216,7 @@ function feedback() {
 }
 
 function about() {
-	popups.open({
+	PopupState.open({
 		component: About,
 		data: {},
 		allowInteraction: true,
@@ -232,9 +232,9 @@ function redo() {
 }
 
 async function blocks() {
-	popups.clear();
+	PopupState.clear();
 	if (!$saveState) {
-		const ok = await popups.open({
+		const ok = await PopupState.open({
 			component: Warning,
 			data: {
 				title: "CONFIRMEDITORCHANGE_TITLE",
@@ -253,7 +253,7 @@ async function blocks() {
 }
 
 async function cpp() {
-	popups.clear();
+	PopupState.clear();
 	tempSave();
 	mode.set(Mode.ADVANCED);
 }

@@ -1,15 +1,15 @@
 <script lang="ts">
-import { popups, setup } from "$state/popup.svelte";
+import PopupState from "$state/popup.svelte";
 import { onMount } from "svelte";
 import Popup from "./Popup.svelte";
 
 onMount(async () => {
-	await setup();
+	await PopupState.setup()
 });
 </script>
 
 <div class="popupRoot">
-    {#each $popups as state (state.id)}
+    {#each PopupState.popups as state (state.id)}
         <Popup {state} />
     {/each}
 </div>

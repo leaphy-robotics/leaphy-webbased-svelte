@@ -5,7 +5,7 @@ import CodeEditor from "$components/ui/CodeEditor.svelte";
 import Tree from "$components/ui/Tree.svelte";
 import type { Tree as TreeType } from "$components/ui/Tree.types";
 import { FileHandle, PythonHandle } from "$domain/handles";
-import { popups } from "$state/popup.svelte";
+import PopupState from "$state/popup.svelte";
 import {
 	code,
 	handle,
@@ -76,14 +76,14 @@ async function select(tree: string[]) {
 }
 
 async function create(path: string[], type: "file" | "folder") {
-	const name = await popups.open({
+	const name = await PopupState.open({
 		component: Prompt,
 		data: {
 			name: type === "file" ? "CREATE_FILE" : "CREATE_FOLDER",
 			confirm: "OK_VARIABLE",
 		},
 		allowInteraction: false,
-	});
+	}) as string;
 	if (!name) return;
 
 	const io = get(microPythonIO);

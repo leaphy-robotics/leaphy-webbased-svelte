@@ -4,7 +4,7 @@ import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
-import { popups } from "$state/popup.svelte";
+import PopupsState from "$state/popup.svelte";
 import { Prompt, log, port } from "$state/workspace.svelte";
 import {
 	faArrowDown,
@@ -51,7 +51,7 @@ function send(event: SubmitEvent) {
 	try {
 		log.write(`${value}\n`);
 	} catch {
-		popups.open({
+		PopupsState.open({
 			component: ErrorPopup,
 			data: {
 				title: "ROBOT_RESERVED",

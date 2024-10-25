@@ -1,14 +1,13 @@
 <script lang="ts">
 import contribute from "$assets/contribute-foundation.png";
 import Button from "$components/ui/Button.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
+import { type PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
-import type { Writable } from "svelte/store";
 
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 function close() {
-	popups.close($popupState.id);
+	popupState.close();
 }
 </script>
 

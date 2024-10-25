@@ -12,7 +12,7 @@ import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
-import { popups } from "./popup.svelte";
+import PopupState from "./popup.svelte";
 
 export type LeaphyPort =
 	| SerialPort
@@ -131,7 +131,7 @@ function createPortState() {
 			} catch (e) {
 				set(undefined);
 				if (showFeedback) {
-					popups.open({
+					PopupState.open({
 						component: ErrorPopup,
 						data: {
 							title: "ROBOT_RESERVED",
@@ -369,7 +369,7 @@ export function tempSave() {
 window.addEventListener("beforeunload", tempSave);
 
 mode.subscribe(() => {
-	popups.clear();
+	PopupState.clear();
 	sidePanel.set(null);
 });
 

@@ -7,7 +7,7 @@ import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
-import { Anchor, popups } from "$state/popup.svelte";
+import PopupState, { Anchor } from "$state/popup.svelte";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	CATEGORIES,
@@ -63,7 +63,7 @@ Blockly.registry.register(
 registerExtensions(Blockly);
 
 Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
-	const name = await popups.open({
+	const name = await PopupState.open({
 		component: Prompt,
 		data: {
 			name: "NAME_VARIABLE_PROMPT_INPUT",
@@ -73,7 +73,7 @@ Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
 		},
 		allowInteraction: false,
 	});
-	if (name) callback(name);
+	if (name) callback(name as string);
 });
 
 const play = Blockly.WorkspaceAudio.prototype.play;
@@ -169,7 +169,7 @@ export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 			workspace.clear();
 			Blockly.Xml.domToWorkspace(xml, workspace);
 		} catch {
-			popups.open({
+			PopupState.open({
 				component: ErrorPopup,
 				data: {
 					title: "INVALID_WORKSPACE",
@@ -303,7 +303,7 @@ export async function explain(block: Blockly.BlockSvg) {
 	};
 
 	const position = block.pathObject.svgPath.getBoundingClientRect();
-	await popups.open(
+	await PopupState.open(
 		{
 			component: Explanation,
 			data: {
@@ -338,8 +338,7 @@ export async function explain(block: Blockly.BlockSvg) {
 				}),
 			},
 			allowInteraction: true,
-		},
-		{
+
 			position: {
 				x: position.x + position.width + 10 - window.innerWidth / 2,
 				y: position.y + 10 - window.innerHeight / 2,

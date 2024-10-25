@@ -4,7 +4,7 @@ import RobotSelector from "$components/start/RobotSelector.svelte";
 import { type Robot, robotListing } from "$domain/robots";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
-import { popups } from "$state/popup.svelte";
+import PopupState from "$state/popup.svelte";
 import {
 	Mode,
 	Prompt,
@@ -51,7 +51,7 @@ async function onselect(type: Robot) {
 		BlocklyState.restore = JSON.parse(localStorage.getItem(`${type.id}_content`));
 
 		if ($board && type.board !== $board.id) {
-			popups
+			PopupState
 				.open({
 					component: Warning,
 					data: {

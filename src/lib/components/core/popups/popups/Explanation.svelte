@@ -1,9 +1,8 @@
 <script lang="ts">
-import { type PopupState, popups } from "$state/popup.svelte";
-import { getContext, onDestroy, onMount } from "svelte";
+import { type PopupState } from "$state/popup.svelte";
+import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 import SvelteMarkdown from "svelte-markdown";
-import type { Writable } from "svelte/store";
 
 interface Props {
 	explanation: Promise<string>;
@@ -11,23 +10,17 @@ interface Props {
 
 let { explanation }: Props = $props();
 
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 
 let element: HTMLDivElement;
 function click(event: MouseEvent) {
 	if (element.contains(event.target as HTMLElement)) return;
 
-	popups.close($popupState.id);
+	popupState.close();
 }
-
-onMount(() => {
-	document.body.addEventListener("click", click);
-});
-onDestroy(() => {
-	document.body.removeEventListener("click", click);
-});
 </script>
 
+<svelte:body onclick={click} />
 <div class="content" bind:this={element}>
 	<h2>{$_("EXPLANATION")}</h2>
 	{#await explanation}

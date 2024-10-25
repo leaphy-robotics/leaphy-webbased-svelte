@@ -1,7 +1,6 @@
 import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte";
-import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import type { RobotDevice } from "$domain/robots";
-import { popups } from "$state/popup.svelte";
+import PopupState from "$state/popup.svelte";
 import {type LeaphyPort, port} from "$state/workspace.svelte";
 import base64 from "base64-js";
 import { get } from "svelte/store";
@@ -68,7 +67,7 @@ export default class MicroPythonIO {
 	public running: boolean;
 
 	async initialize() {
-		await popups.open({
+		await PopupState.open({
 			component: PythonUploader,
 			data: { io: this },
 			allowInteraction: false,
