@@ -1,6 +1,6 @@
 <script lang="ts">
 import { inFilter } from "$domain/robots";
-import { workspace } from "$state/blockly.svelte";
+import BlocklyState from "$state/blockly.svelte";
 import { type PopupState, popups } from "$state/popup.svelte";
 import { robot } from "$state/workspace.svelte";
 import { serialization } from "blockly";
@@ -37,7 +37,7 @@ const popupState = getContext<Writable<PopupState>>("state");
 async function loadExample(example: Example) {
 	popups.close($popupState.id);
 	const sketch = await example.sketch();
-	serialization.workspaces.load(sketch.default, $workspace);
+	serialization.workspaces.load(sketch.default, BlocklyState.workspace);
 }
 </script>
 
@@ -46,7 +46,7 @@ async function loadExample(example: Example) {
         {#each visible as example}
             <button class="example" onclick={() => loadExample(example)}>
                 <img class="icon" src={example.icon} alt="" />
-                <div class="name">{example.name}</div>
+                <span class="name">{example.name}</span>
             </button>
         {/each}
     </div>

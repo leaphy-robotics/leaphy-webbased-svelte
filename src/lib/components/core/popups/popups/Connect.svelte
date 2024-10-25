@@ -6,7 +6,7 @@ import ChipSelect from "$components/ui/ChipSelect.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import { isCompatible } from "$domain/blockly/blockly";
 import { type RobotDevice, type Selector, getSelector } from "$domain/robots";
-import { workspace } from "$state/blockly.svelte";
+import BlocklyState from "$state/blockly.svelte";
 import { type PopupState, popups } from "$state/popup.svelte";
 import { Mode, Prompt, handle, mode, robot } from "$state/workspace.svelte";
 import { port } from "$state/workspace.svelte";
@@ -68,7 +68,7 @@ const warning = $derived(
 function checkEnabled(robot: RobotDevice): boolean {
 	if ($mode !== Mode.BLOCKS) return true;
 
-	return $workspace ? isCompatible($workspace as WorkspaceSvg, robot) : true;
+	return BlocklyState.workspace ? isCompatible(BlocklyState.workspace, robot) : true;
 }
 
 async function disabledSelect() {
@@ -83,7 +83,7 @@ async function disabledSelect() {
 	});
 	if (!value) return false;
 
-	Blockly.serialization.workspaces.load(JSON.parse(defaultProgram), $workspace);
+	Blockly.serialization.workspaces.load(JSON.parse(defaultProgram), BlocklyState.workspace);
 	handle.set(undefined);
 	return true;
 }

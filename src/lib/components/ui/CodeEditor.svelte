@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Theme, theme } from "$state/app.svelte";
+import AppState, { Theme } from "$state/app.svelte";
 import * as monaco from "monaco-editor";
 import { onMount } from "svelte";
 
@@ -16,7 +16,7 @@ let element: HTMLDivElement;
 let editor: monaco.editor.IStandaloneCodeEditor;
 onMount(() => {
 	editor = monaco.editor.create(element, {
-		theme: $theme === Theme.DARK ? "vs-dark" : "vs-light",
+		theme: AppState.theme === Theme.DARK ? "vs-dark" : "vs-light",
 		language,
 		value: value as string,
 		automaticLayout: true,
@@ -30,10 +30,9 @@ onMount(() => {
 	});
 });
 
-theme.subscribe((theme) => {
-	if (!editor) return;
-	monaco.editor.setTheme(theme === Theme.DARK ? "vs-dark" : "vs-light");
-});
+$effect(() => {
+	monaco.editor.setTheme(AppState.theme === Theme.DARK ? "vs-dark" : "vs-light");
+})
 
 $effect(() => {
 	const newContent = value; // marks value as dependency, do not remove

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { explain } from "$domain/blockly/blockly";
-import { workspace } from "$state/blockly.svelte";
+import BlocklyState from "$state/blockly.svelte";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 import type * as Blockly from "blockly";
 import type { WorkspaceSvg } from "blockly";
@@ -9,10 +9,7 @@ import Fa from "svelte-fa";
 import { get } from "svelte/store";
 
 function getBlockForPosition(event: PointerEvent) {
-	const space = get(workspace) as WorkspaceSvg;
-	if (!space) return;
-
-	return space
+	return BlocklyState.workspace
 		.getAllBlocks(true)
 		.reverse()
 		.find((block) => {

@@ -11,7 +11,7 @@ import { get, writable } from "svelte/store";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
-import { workspace } from "./blockly.svelte";
+import BlocklyState from "./blockly.svelte";
 import { popups } from "./popup.svelte";
 
 export type LeaphyPort =
@@ -351,7 +351,7 @@ export function tempSave() {
 		case Mode.BLOCKS: {
 			localStorage.setItem(
 				contentAddress,
-				JSON.stringify(serialization.workspaces.save(get(workspace))),
+				JSON.stringify(serialization.workspaces.save(BlocklyState.workspace)),
 			);
 			break;
 		}

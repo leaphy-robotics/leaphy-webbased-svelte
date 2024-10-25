@@ -10,15 +10,8 @@ import ContextItem from "$components/ui/ContextItem.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
 import { robots } from "$domain/robots";
-import { Screen, Theme, screen, theme } from "$state/app.svelte";
-import {
-	audio,
-	canRedo,
-	canUndo,
-	restore,
-	willRestore,
-	workspace,
-} from "$state/blockly.svelte";
+import AppState, { Screen, Theme } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
 import { popups } from "$state/popup.svelte";
 import {
 	Mode,
@@ -54,7 +47,6 @@ import {
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { serialization } from "blockly";
-import JSZip from "jszip";
 import type { Writable } from "svelte/store";
 import { get } from "svelte/store";
 import { downloadDrivers } from "../../../drivers";
@@ -90,14 +82,16 @@ async function connect() {
 
 async function newProject() {
 	popups.clear();
-	willRestore.set(false);
-	if ($workspace) $workspace.clear();
-	screen.set(Screen.START);
+
+	BlocklyState.willRestore = false;
+	BlocklyState.workspace?.clear();
+
+	AppState.screen = Screen.START;
 }
 
 function serialize() {
 	if ($mode === Mode.BLOCKS)
-		return JSON.stringify(serialization.workspaces.save($workspace));
+		return JSON.stringify(serialization.workspaces.save(BlocklyState.workspace));
 
 	return $code;
 }
@@ -148,11 +142,11 @@ async function openProject() {
 		code.set(await content.text());
 	} else {
 		if (get(mode) === Mode.BLOCKS) {
-			if (!loadWorkspaceFromString(await content.text(), $workspace)) {
+			if (!loadWorkspaceFromString(await content.text(), BlocklyState.workspace)) {
 				return;
 			}
 		} else {
-			restore.set(JSON.parse(await content.text()));
+			BlocklyState.restore.set(JSON.parse(await content.text()));
 			mode.set(Mode.BLOCKS);
 		}
 
@@ -230,15 +224,11 @@ function about() {
 }
 
 function undo() {
-	if (!$workspace) return;
-
-	$workspace.undo(false);
+	BlocklyState.workspace?.undo(false);
 }
 
 function redo() {
-	if (!$workspace) return;
-
-	$workspace.undo(true);
+	BlocklyState.workspace?.undo(true);
 }
 
 async function blocks() {
@@ -256,7 +246,7 @@ async function blocks() {
 	}
 
 	tempSave();
-	restore.set(
+	BlocklyState.restore.set(
 		JSON.parse(localStorage.getItem(`session_blocks_${get(robot).id}`)),
 	);
 	mode.set(Mode.BLOCKS);
@@ -338,15 +328,15 @@ function runPython() {
     {/snippet}
     {#snippet themeContext(open: Writable<boolean>)}
         <ContextItem
-            selected={$theme === Theme.LIGHT}
+            selected={AppState.theme === Theme.LIGHT}
             name={$_("LIGHT_THEME")}
-            onclick={() => theme.set(Theme.LIGHT)}
+            onclick={() => AppState.theme = Theme.LIGHT}
             {open}
         />
         <ContextItem
-            selected={$theme === Theme.DARK}
+            selected={AppState.theme === Theme.DARK}
             name={$_("DARK_THEME")}
-            onclick={() => theme.set(Theme.DARK)}
+            onclick={() => AppState.theme = Theme.DARK}
             {open}
         />
     {/snippet}
@@ -364,15 +354,15 @@ function runPython() {
         {open}
     />
     <ContextItem
-        icon={$theme === Theme.LIGHT ? faLightbulb : faMoon}
+        icon={AppState.theme === Theme.LIGHT ? faLightbulb : faMoon}
         name={$_("THEME")}
         context={themeContext}
         {open}
     />
     <ContextItem
-        icon={$audio ? faVolumeXmark : faVolumeHigh}
-        name={$_($audio ? "SOUND_OFF" : "SOUND_ON")}
-        onclick={() => audio.update((audio) => !audio)}
+        icon={BlocklyState.audio ? faVolumeXmark : faVolumeHigh}
+        name={$_(BlocklyState.audio ? "SOUND_OFF" : "SOUND_ON")}
+        onclick={() => BlocklyState.audio = !BlocklyState.audio}
         {open}
     />
     <ContextItem
@@ -392,7 +382,7 @@ function runPython() {
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if $screen === Screen.WORKSPACE}
+        {#if AppState.screen === Screen.WORKSPACE}
             <Button
                 name={$_("PROJECT")}
                 mode={"outlined"}
@@ -411,14 +401,14 @@ function runPython() {
     </div>
 
     <div class="comp">
-        {#if $screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
-            <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!$canUndo} />
-            <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!$canRedo} />
+        {#if AppState.screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
+            <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!BlocklyState.canUndo} />
+            <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!BlocklyState.canRedo} />
         {/if}
     </div>
 
     <div class="comp">
-        {#if $screen === Screen.WORKSPACE}
+        {#if AppState.screen === Screen.WORKSPACE}
             {#if $mode === Mode.BLOCKS}
                 <Button
                     mode={"outlined"}

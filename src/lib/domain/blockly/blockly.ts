@@ -6,7 +6,7 @@ import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
-import { audio } from "$state/blockly.svelte";
+import BlocklyState from "$state/blockly.svelte";
 import { Anchor, popups } from "$state/popup.svelte";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
@@ -78,10 +78,9 @@ Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
 
 const play = Blockly.WorkspaceAudio.prototype.play;
 Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
-	audio.update((state) => {
-		if (state) play.call(this, name, opt_volume);
-		return state;
-	});
+	if (!BlocklyState.audio) return
+
+	play.call(this, name, opt_volume)
 };
 
 export function loadToolbox(robot: RobotDevice): ToolboxDefinition {

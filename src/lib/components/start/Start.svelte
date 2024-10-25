@@ -2,9 +2,8 @@
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import { type Robot, robotListing } from "$domain/robots";
-import { Screen, screen } from "$state/app.svelte";
-import { restore } from "$state/blockly.svelte";
-import { willRestore } from "$state/blockly.svelte.js";
+import AppState, { Screen } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
 import { popups } from "$state/popup.svelte";
 import {
 	Mode,
@@ -43,13 +42,13 @@ async function onselect(type: Robot) {
 		robot.set($board || type.robot);
 		mode.set(type.mode || Mode.BLOCKS);
 		code.set(
-			($willRestore && localStorage.getItem(`${type.id}_content`)) ||
+			(BlocklyState.willRestore && localStorage.getItem(`${type.id}_content`)) ||
 				type.defaultProgram,
 		);
 	} else {
 		robot.set(type);
 		mode.set(Mode.BLOCKS);
-		restore.set(JSON.parse(localStorage.getItem(`${type.id}_content`)));
+		BlocklyState.restore = JSON.parse(localStorage.getItem(`${type.id}_content`));
 
 		if ($board && type.board !== $board.id) {
 			popups
@@ -67,13 +66,13 @@ async function onselect(type: Robot) {
 				.then((result) => {
 					if (result) return;
 
-					screen.set(Screen.START);
+					AppState.screen = Screen.START;
 				});
 		}
 	}
 
 	saveState.set(true);
-	screen.set(Screen.WORKSPACE);
+	AppState.screen = Screen.WORKSPACE;
 }
 
 const animationOptions = {
