@@ -1,5 +1,5 @@
 import type { Programmer } from "$domain/robots.types";
-import { usbRequest } from "$state/upload.svelte";
+import USBRequestState from "$state/upload.svelte";
 import { type LeaphyPort, port as portState } from "$state/workspace.svelte";
 import PicoTool from "@leaphy-robotics/picotool-wasm";
 import base64 from "base64-js";
@@ -13,7 +13,7 @@ export default class Pico implements Programmer {
 		await port.open({ baudRate: 1200 });
 		await port.close();
 		await delay(1000);
-		await usbRequest.request();
+		await USBRequestState.request();
 
 		const sketch = base64.toByteArray(response.sketch);
 		await pico.flash(sketch);

@@ -1,27 +1,17 @@
-import { writable } from "svelte/store";
+class USBRequestState {
+	respond = $state<null | ((device: USBDevice) => void)>(null)
 
-function createUSBRequest() {
-	const { subscribe, set, update } = writable<
-		((device: USBDevice) => void) | null
-	>(null);
+	async request() {
+		const [device] = await navigator.usb.getDevices();
+		if (device) return device;
 
-	return {
-		subscribe,
-		async request() {
-			const [device] = await navigator.usb.getDevices();
-			if (device) return device;
-
-			return new Promise<USBDevice>((resolve) => {
-				set(resolve);
-			});
-		},
-		respond(device: USBDevice) {
-			console.log(device);
-			update((resolve) => {
-				resolve(device);
-				return null;
-			});
-		},
-	};
+		return new Promise<USBDevice>((resolve) => {
+			this.respond = (device: USBDevice) => {
+				resolve(device)
+				this.respond = null
+			}
+		});
+	}
 }
-export const usbRequest = createUSBRequest();
+
+export default new USBRequestState();

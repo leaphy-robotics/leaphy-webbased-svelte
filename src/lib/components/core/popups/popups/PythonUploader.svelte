@@ -6,7 +6,7 @@ import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
 import { type PopupState } from "$state/popup.svelte";
-import { usbRequest } from "$state/upload.svelte";
+import USBRequestState from "$state/upload.svelte";
 import {
 	SUPPORTED_VENDOR_IDS,
 	port,
@@ -96,9 +96,9 @@ function close() {
 
 async function connectUSB() {
 	const [device] = await navigator.usb.getDevices();
-	if (device) return usbRequest.respond(device);
+	if (device) return USBRequestState.respond(device);
 
-	usbRequest.respond(
+	USBRequestState.respond(
 		await navigator.usb.requestDevice({
 			filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
 				vendorId: vendor,
@@ -109,7 +109,7 @@ async function connectUSB() {
 </script>
 
     <div class="content" class:error={!!error}>
-        {#if $usbRequest}
+        {#if USBRequestState.request}
             <h2 class="state">{$_("RECONNECT")}</h2>
             <div class="info">{$_("RECONNECT_INFO")}</div>
             <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
