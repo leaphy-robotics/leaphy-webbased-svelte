@@ -611,10 +611,10 @@
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/dfu-util-wasm/-/dfu-util-wasm-1.0.2.tgz#29afcc01266655e1c7b5da0eeceb0ead48c86fd7"
   integrity sha512-lvS+tJFO049b4ERYKX0HcoUtnQv76A1z9sZrAvbs7s3bvdMW0BObKmktZeJ7emcp3lU/+OJWsD2h0EY5rnkiNg==
 
-"@leaphy-robotics/leaphy-blocks@^3.2.4":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@leaphy-robotics/leaphy-blocks/-/leaphy-blocks-3.2.4.tgz#6be575ee0777c29e22b2d0d1af06a1a0e3026f58"
-  integrity sha512-wCTA4x0kAgHIDuCNklTukJBKSP/gCP5ixLWVGXdOVYZIbswGwo+OlAfblhA3ZlZWgJZ68qM0BBax5jC5n23hBw==
+"@leaphy-robotics/leaphy-blocks@^3.2.5":
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/leaphy-blocks/-/leaphy-blocks-3.2.5.tgz#d375ab68087b147b2decc69ab51ee4eb75598d5c"
+  integrity sha512-jl0Dsv5Mi82K8Bz2Ceec68zxtb/7V4/GmxqrkBJHRjt1kTireWQCxOWmPA1v9C5f3y3XRKl+wS+LDIKxT/w9/w==
   dependencies:
     blockly "^10.4.3"
 
