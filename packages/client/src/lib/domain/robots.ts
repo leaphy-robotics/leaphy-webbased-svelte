@@ -146,6 +146,7 @@ const robotDevices: RobotDevice[] = [
 			"Arduino_APDS9960@1.0.4",
 			"painlessMesh@1.5.4",
 			"AsyncTCP@3.3.2",
+			"LeaphyBLE"
 		]),
 		icon: originalIcon,
 		background: originalNanoESP32Background,
@@ -200,6 +201,7 @@ const robotDevices: RobotDevice[] = [
 			"Arduino_APDS9960@1.0.4",
 			"painlessMesh@1.5.4",
 			"AsyncTCP@3.3.2",
+			"LeaphyBLE"
 		]),
 		icon: nanoIcon,
 	},

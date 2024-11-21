@@ -480,6 +480,14 @@ export default [
 		],
 	},
 	{
+		name: "Bluetooth",
+		style: "bluetooth_category",
+		id: "l_bluetooth",
+		robots: [RobotType.L_NANO_ESP32, RobotType.L_ORIGINAL_NANO_ESP32],
+		groups: [
+		]
+	},
+	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",
 		style: "leaphy_category",
 		id: "%robot%",
