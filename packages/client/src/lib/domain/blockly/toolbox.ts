@@ -485,7 +485,23 @@ export default [
 		id: "l_bluetooth",
 		robots: [RobotType.L_NANO_ESP32, RobotType.L_ORIGINAL_NANO_ESP32],
 		groups: [
-		]
+			[
+				{
+					type: "bluetooth_setup",
+					inputs: {
+						NAME: text("Leaphy"),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_on_connect",
+				},
+				{
+					type: "bluetooth_on_disconnect",
+				},
+			],
+		],
 	},
 	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",
