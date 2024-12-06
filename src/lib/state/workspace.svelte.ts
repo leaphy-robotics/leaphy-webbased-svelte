@@ -12,6 +12,7 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import { workspace } from "./blockly.svelte";
 import { popups } from "./popup.svelte";
+import PythonBlocks from "$components/workspace/pythonblocks/pythonBlocks.svelte";
 
 export type LeaphyPort =
 	| SerialPort
@@ -22,6 +23,7 @@ export const Mode = {
 	BLOCKS: Blocks,
 	ADVANCED: Advanced,
 	PYTHON: Python,
+	PYTHONBLOCKS: PythonBlocks,
 };
 
 export enum Prompt {
@@ -68,7 +70,6 @@ let writer: WritableStreamDefaultWriter<Uint8Array>;
 function createLogState() {
 	const { subscribe, update, set } = writable<LogItem[]>([]);
 	let buffer = "";
-	let count = 0;
 
 	return {
 		subscribe,
@@ -97,14 +98,12 @@ function createLogState() {
 					[
 						...log,
 						...items.map((content) => ({
-							id: `${count}`,
+							id: crypto.randomUUID(),
 							date: new Date(),
 							content,
 						})),
 					].slice(-100),
 				);
-				count++;
-				if (count > 100) count = 0;
 			}
 		},
 	};
@@ -324,6 +323,10 @@ export function tempSave() {
 			saveAddress = "l_micropython";
 			break;
 		}
+		case Mode.PYTHONBLOCKS: {
+			saveAddress = "l_micropython_blocks";
+			break;
+		}
 	}
 
 	const contentAddress = `${saveAddress}_content`;
@@ -331,6 +334,13 @@ export function tempSave() {
 
 	switch (get(mode)) {
 		case Mode.BLOCKS: {
+			localStorage.setItem(
+				contentAddress,
+				JSON.stringify(serialization.workspaces.save(get(workspace))),
+			);
+			break;
+		}
+		case Mode.PYTHONBLOCKS: {
 			localStorage.setItem(
 				contentAddress,
 				JSON.stringify(serialization.workspaces.save(get(workspace))),

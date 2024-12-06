@@ -6,6 +6,7 @@ import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
+import Select from "$components/ui/Select.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
 import { getSelector, robots } from "$domain/robots";
@@ -56,7 +57,6 @@ import { serialization } from "blockly";
 import JSZip from "jszip";
 import type { Writable } from "svelte/store";
 import { get } from "svelte/store";
-import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
@@ -90,7 +90,6 @@ async function connect() {
 async function newProject() {
 	popups.clear();
 	willRestore.set(false);
-	if ($workspace) $workspace.clear();
 	screen.set(Screen.START);
 }
 
@@ -213,6 +212,29 @@ function about() {
 	});
 }
 
+async function drivers() {
+	const response = await fetch(
+		"https://api.github.com/repos/leaphy-robotics/leaphy-firmware/contents/drivers",
+	);
+	const data = await response.json();
+	const files = data.map(({ download_url }) => download_url);
+	const zip = new JSZip();
+
+	await Promise.all(
+		files.map(async (url) => {
+			const res = await fetch(url);
+			zip.file(url.split("/").pop(), await res.blob());
+		}),
+	);
+
+	const a = document.createElement("a");
+	const url = URL.createObjectURL(await zip.generateAsync({ type: "blob" }));
+	a.href = url;
+	a.download = "leaphy-drivers.zip";
+	a.click();
+	URL.revokeObjectURL(url);
+}
+
 function undo() {
 	if (!$workspace) return;
 
@@ -302,7 +324,7 @@ function runPython() {
         onclick={discord}
         {open}
     />
-    <ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
+    <ContextItem icon={faEnvelope} name={$_("EMAIL")} onclick={email} {open} />
     <ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
 {/snippet}
 {#snippet moreContext(open: Writable<boolean>)}
@@ -368,7 +390,7 @@ function runPython() {
     <ContextItem
         icon={faDownload}
         name={$_("DOWNLOAD_DRIVERS")}
-        onclick={downloadDrivers}
+        onclick={drivers}
         {open}
     />
 {/snippet}
@@ -384,7 +406,7 @@ function runPython() {
             />
             <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
             <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
-            {#if $mode !== Mode.PYTHON}
+            {#if $mode !== Mode.PYTHON && $mode !== Mode.PYTHONBLOCKS}
                 <Button
                     name={$_("CHOOSE_ROBOT")}
                     mode={"outlined"}
@@ -425,7 +447,7 @@ function runPython() {
                 mode={"outlined"}
                 onclick={saveDynamic}
             />
-            {#if $mode === Mode.PYTHON}
+            {#if $mode === Mode.PYTHON || $mode === Mode.PYTHONBLOCKS}
                 {#if $microPythonIO}
                     <Button
                         name={$_("RUN_CODE")}

@@ -287,6 +287,14 @@ export const robotListing: Robot[][] = [
 			robot: robots.l_uno,
 		},
 		{
+			id: "l_micropython_blocks",
+			name: "MicroPython Blocks",
+			icon: microPythonIcon,
+			mode: Mode.PYTHONBLOCKS,
+			defaultProgram: defaultPython,
+			robot: robots.l_nano_rp2040,
+		},
+		{
 			id: "l_micropython",
 			name: "MicroPython",
 			icon: microPythonIcon,

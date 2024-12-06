@@ -1,10 +1,6 @@
 <script lang="ts">
 import Dropper from "$components/ui/Dropper.svelte";
-import {
-	loadToolbox,
-	setLocale,
-	setupWorkspace,
-} from "$domain/blockly/blockly";
+import {loadToolbox,setLocale,setupWorkspace } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import { Theme, theme } from "$state/app.svelte";
 import {

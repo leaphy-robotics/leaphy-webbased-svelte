@@ -33,7 +33,7 @@ function openCode() {
 </script>
 
 {#snippet actions()}
-    {#if $mode === Mode.BLOCKS}
+    {#if $mode === Mode.BLOCKS || $mode === Mode.PYTHONBLOCKS}
         <SideButton icon={faCode} action="CODE" onclick={openCode} />
     {/if}
     {#if $mode !== Mode.PYTHON}

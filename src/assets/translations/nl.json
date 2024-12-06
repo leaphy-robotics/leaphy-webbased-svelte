@@ -14,7 +14,7 @@
 	"PROJECT": "Mijn projecten",
 	"HELP": "Tips",
 	"HELP_FORUM": "Leaphy Discord (Help Forum)",
-	"DOWNLOAD_DRIVERS": "Download drivers",
+	"DOWNLOAD_DRIVERS": "Windows drivers",
 	"MORE": "Meer...",
 	"MORE_ABOUT": "Over Easybloqs",
 	"UPLOAD": "Upload naar robot",
@@ -125,18 +125,11 @@
 	"META_ATTRIBUTION": "Gemaakt met Meta Llama 3",
 	"AI_RATE_LIMITED": "De uitleg robot is op dit moment erg druk, probeer het later nog eens.",
 	"CHOOSING_ROBOT": "Kies je arduino",
-	"BROWSER_NOT_SUPPORTED": "De browser die je gebruikt support geen web-serial of web-usb.",
-	"BROWSER_NOT_SUPPORTED_1": "Je zal daardoor je code niet kunnen uploaden.",
-	"BROWSER_NOT_SUPPORTED_SUGGESTION": "Een chromium based browser zou werken (Edge/Chrome/Brave)",
-	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED": "Ik snap het",
-	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED_DONT_SHOW_AGAIN": "Laat niet meer zien",
 	"INVALID_ROBOT_TITLE": "Ongeschikte robot",
 	"INVALID_ROBOT": "De geselecteerde robot {robot} werkt niet met de automatisch gedetecteerde {board}!",
 	"INCOMPATIBLE_PROJECT": "Ongeschikt",
 	"CONTINUE": "Ga door",
 	"UNKNOWN_BOARD": "Onbekend",
 	"CLEAR_PROJECT": "Wis project",
-	"CLEAR_PROJECT_DESC": "Door deze robot te selecteren wis je je project, weet je het zeker?",
-	"DRIVER_INSTALL_TITLE": "Hoe installeer je drivers?",
-	"DRIVER_INSTALL_TEXT": "Bekijk het filmpje voor uitleg hoe je de drivers kunt installeren."
+	"CLEAR_PROJECT_DESC": "Door deze robot te selecteren wis je je project, weet je het zeker?"
 }
