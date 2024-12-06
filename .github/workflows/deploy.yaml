@@ -2,10 +2,8 @@ name: Deploy
 
 on:
   push:
-    tags:
-      - v*
     branches:
-      - main
+      - pythonblocks
   workflow_dispatch: {}
 
 jobs:
@@ -27,31 +25,15 @@ jobs:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Create TEST env file
-        if: github.ref_type == 'branch'
+      - name: Create env file
         run: |
           cat << EOF > .env
           VITE_BACKEND_URL="https://testleaphyeasybloqs.com"
           VITE_MATOMO_URL="https://leaphyeasybloqs.com/matomo/"
           VITE_MATOMO_SITE_ID="2"
-          VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
-          VITE_SENTRY_SAMPLE_RATE="1.0"
           EOF
-          echo "ENV=test" >> "$GITHUB_ENV"
-          echo "STACK=leaphy-webbased-test" >> "$GITHUB_ENV"
-
-      - name: Create PROD env file
-        if: github.ref_type == 'tag'
-        run: |
-          cat << EOF > .env
-          VITE_BACKEND_URL="https://leaphyeasybloqs.com"
-          VITE_MATOMO_URL="https://leaphyeasybloqs.com/matomo/"
-          VITE_MATOMO_SITE_ID="1"
-          VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
-          VITE_SENTRY_SAMPLE_RATE="0.0"
-          EOF
-          echo "ENV=prod" >> "$GITHUB_ENV"
-          echo "STACK=leaphy-webbased" >> "$GITHUB_ENV"
+          echo "ENV=python" >> "$GITHUB_ENV"
+          echo "STACK=leaphy-webbased-python" >> "$GITHUB_ENV"
 
       - name: Build application
         env:
@@ -72,11 +54,3 @@ jobs:
       - name: Redeploy
         run: |
           curl https://admin.leaphyeasybloqs.com/hooks/update-docker-image?stack=$STACK -H "X-Token: ${{ secrets.WEBHOOK_TOKEN }}"
-
-      - name: Clean up old images
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: "leaphy-webbased-svelte/leaphy-webbased-svelte"
-          package-type: "container"
-          min-versions-to-keep: 5
-          delete-only-untagged-versions: "true"
