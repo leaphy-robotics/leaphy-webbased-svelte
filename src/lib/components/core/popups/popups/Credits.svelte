@@ -4,7 +4,7 @@ import { _ } from "svelte-i18n";
 import contribute from "$assets/contribute-foundation.png";
 import leaphyLogo from "$assets/leaphy-logo-color.svg";
 import Button from "$components/ui/Button.svelte";
-import { type PopupState } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 
 const popupState = getContext<PopupState>("state");

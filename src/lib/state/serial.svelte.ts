@@ -1,9 +1,9 @@
-import {type RobotDevice, robots} from "$domain/robots";
-import {track} from "$state/utils";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
-import {SerialPort as MockedCDCSerialPort} from "web-serial-polyfill";
+import { type RobotDevice, robots } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
+import { track } from "$state/utils";
+import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
+import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 
 export type LeaphyPort =
 	| SerialPort
@@ -26,13 +26,12 @@ export class ConnectionFailedError {}
 
 export const SUPPORTED_VENDOR_IDS = [0x1a86, 9025, 2341, 0x0403, 0x2e8a];
 
-
 class LogState {
-	log = $state<LogItem[]>([])
-	charts = $state<Record<string, { x: Date; y: number }[]>>({})
+	log = $state<LogItem[]>([]);
+	charts = $state<Record<string, { x: Date; y: number }[]>>({});
 
-	private buffer = ''
-	private count = 0
+	private buffer = "";
+	private count = 0;
 
 	constructor(private serial: SerialState) {}
 
@@ -41,13 +40,13 @@ class LogState {
 	}
 
 	clear() {
-		this.charts = {}
-		this.log = []
+		this.charts = {};
+		this.log = [];
 	}
 
 	getID() {
-		if (this.count > 100) this.count = 0
-		return `${this.count++}`
+		if (this.count > 100) this.count = 0;
+		return `${this.count++}`;
 	}
 
 	enqueue(content: Uint8Array) {
@@ -56,8 +55,7 @@ class LogState {
 		const items = this.buffer.split("\n");
 		for (const item of items) {
 			const [label, value] = item.split(" = ");
-			if (!label || !value || Number.isNaN(Number.parseFloat(value)))
-				continue;
+			if (!label || !value || Number.isNaN(Number.parseFloat(value))) continue;
 
 			this.point(label, Number.parseFloat(value));
 		}
@@ -71,7 +69,7 @@ class LogState {
 					date: new Date(),
 					content,
 				})),
-			].slice(-100)
+			].slice(-100);
 		}
 	}
 
@@ -85,30 +83,32 @@ class LogState {
 }
 
 class SerialState {
-	port = $state<LeaphyPort>()
-	board = $state<RobotDevice|null>()
-	ready = $state(new Promise<void>((resolve, reject) => {
-		this.onReady = resolve
-		this.onFailure = reject
-	}))
+	port = $state<LeaphyPort>();
+	board = $state<RobotDevice | null>();
+	ready = $state(
+		new Promise<void>((resolve, reject) => {
+			this.onReady = resolve;
+			this.onFailure = reject;
+		}),
+	);
 
-	reserved = $state(false)
-	reader: ReadableStreamDefaultReader<Uint8Array>
-	writer: WritableStreamDefaultWriter<Uint8Array>
+	reserved = $state(false);
+	reader: ReadableStreamDefaultReader<Uint8Array>;
+	writer: WritableStreamDefaultWriter<Uint8Array>;
 
-	onReady: () => void
-	onFailure: () => void
-	showFeedback = false
+	onReady: () => void;
+	onFailure: () => void;
+	showFeedback = false;
 
-	log = new LogState(this)
+	log = new LogState(this);
 
 	constructor() {
 		$effect.root(() => {
 			$effect(() => {
-				track(this.port)
-				this.initPort().then()
-			})
-		})
+				track(this.port);
+				this.initPort().then();
+			});
+		});
 	}
 
 	async initPort() {
@@ -289,4 +289,4 @@ class SerialState {
 	}
 }
 
-export default new SerialState()
+export default new SerialState();

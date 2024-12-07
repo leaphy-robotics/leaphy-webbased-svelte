@@ -78,9 +78,9 @@ Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
 
 const play = Blockly.WorkspaceAudio.prototype.play;
 Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
-	if (!BlocklyState.audio) return
+	if (!BlocklyState.audio) return;
 
-	play.call(this, name, opt_volume)
+	play.call(this, name, opt_volume);
 };
 
 export function loadToolbox(robot: RobotDevice): ToolboxDefinition {
@@ -303,49 +303,47 @@ export async function explain(block: Blockly.BlockSvg) {
 	};
 
 	const position = block.pathObject.svgPath.getBoundingClientRect();
-	await PopupState.open(
-		{
-			component: Explanation,
-			data: {
-				explanation: fetch(`${import.meta.env.VITE_BACKEND_URL}/ai/generate`, {
-					method: "post",
-					headers: {
-						"content-type": "application/json",
-					},
-					body: JSON.stringify({
-						messages: [
-							{
-								role: "system",
-								content: `explain the selected portion of the following pseudo code (SELECT_BEGIN - SELECT_END) in simple terms, the pseudo code is directly generated from a blockly environment to program robots called Leaphy EasyBloqs, you must do this in ${
-									locales[get(locale)]
-								}`,
-							},
-							{
-								role: "user",
-								content: `\`\`\`\n${code}\n\`\`\``,
-							},
-							{
-								role: "system",
-								content:
-									"please only return the explanation for the given set of code in simple terms, like you're explaining it to someone who has never touched code before, do not explain the code around the given set of code unless directly related, do not talk about or reference the pseudo code directly, you are talking about the selected code almost exclusively, so you do not have to include the **begin_select** and **end_select** tokens in your response, only include your explanation in the response",
-							},
-						],
-						model: "Llama3-70b-8192",
-					}),
-				}).then(async (res) => {
-					if (!res.ok) throw new Error(res.statusText);
-					return JSON.parse(await res.text());
+	await PopupState.open({
+		component: Explanation,
+		data: {
+			explanation: fetch(`${import.meta.env.VITE_BACKEND_URL}/ai/generate`, {
+				method: "post",
+				headers: {
+					"content-type": "application/json",
+				},
+				body: JSON.stringify({
+					messages: [
+						{
+							role: "system",
+							content: `explain the selected portion of the following pseudo code (SELECT_BEGIN - SELECT_END) in simple terms, the pseudo code is directly generated from a blockly environment to program robots called Leaphy EasyBloqs, you must do this in ${
+								locales[get(locale)]
+							}`,
+						},
+						{
+							role: "user",
+							content: `\`\`\`\n${code}\n\`\`\``,
+						},
+						{
+							role: "system",
+							content:
+								"please only return the explanation for the given set of code in simple terms, like you're explaining it to someone who has never touched code before, do not explain the code around the given set of code unless directly related, do not talk about or reference the pseudo code directly, you are talking about the selected code almost exclusively, so you do not have to include the **begin_select** and **end_select** tokens in your response, only include your explanation in the response",
+						},
+					],
+					model: "Llama3-70b-8192",
 				}),
-			},
-			allowInteraction: true,
-
-			position: {
-				x: position.x + position.width + 10 - window.innerWidth / 2,
-				y: position.y + 10 - window.innerHeight / 2,
-			},
-			anchor: Anchor.TopLeft,
+			}).then(async (res) => {
+				if (!res.ok) throw new Error(res.statusText);
+				return JSON.parse(await res.text());
+			}),
 		},
-	);
+		allowInteraction: true,
+
+		position: {
+			x: position.x + position.width + 10 - window.innerWidth / 2,
+			y: position.y + 10 - window.innerHeight / 2,
+		},
+		anchor: Anchor.TopLeft,
+	});
 }
 
 const explainBlockOption: ContextMenuRegistry.RegistryItem = {

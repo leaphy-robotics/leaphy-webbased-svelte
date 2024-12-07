@@ -14,72 +14,68 @@ interface Popup {
 	allowInteraction: boolean;
 
 	position?: { x: number; y: number };
-	anchor?: Anchor
+	anchor?: Anchor;
 }
 
 export class PopupState {
-	id = $state<number>()
+	id = $state<number>();
 
-	component = $state<Component>()
-	data = $state<Record<string, any>>()
-	allowInteraction = $state<boolean>()
+	component = $state<Component>();
+	data = $state<Record<string, any>>();
+	allowInteraction = $state<boolean>();
 
-	position = $state({ x: 0, y: 0 })
-	onclose: () => void = undefined
-	anchor = $state<Anchor>(Anchor.Center)
+	position = $state({ x: 0, y: 0 });
+	onclose: () => void = undefined;
+	anchor = $state<Anchor>(Anchor.Center);
 
 	constructor(
 		id: number,
 		props: Popup,
-		public close: (value?: any) => void
+		public close: (value?: any) => void,
 	) {
-		this.id = id
+		this.id = id;
 
-		this.component = props.component
-		this.data = props.data
-		this.allowInteraction = props.allowInteraction
+		this.component = props.component;
+		this.data = props.data;
+		this.allowInteraction = props.allowInteraction;
 
-		if (props.position) this.position = props.position
-		if (props.anchor) this.anchor = props.anchor
+		if (props.position) this.position = props.position;
+		if (props.anchor) this.anchor = props.anchor;
 	}
 }
 
 class PopupsState {
-	popups = $state<PopupState[]>([])
-	count = 0
+	popups = $state<PopupState[]>([]);
+	count = 0;
 
 	getID() {
-		this.count++
-		if (this.count > 1000) this.count = 0
+		this.count++;
+		if (this.count > 1000) this.count = 0;
 
-		return this.count
+		return this.count;
 	}
 
 	open(props: Popup) {
-		return new Promise(resolve => {
-			if (this.popups.find(popup => popup.component === props.component)) {
-				resolve(undefined)
+		return new Promise((resolve) => {
+			if (this.popups.find((popup) => popup.component === props.component)) {
+				resolve(undefined);
 			}
 
-			const id = this.getID()
-			this.popups.push(new PopupState(
-				id,
-				props,
-				(value: any) => {
-					this.popups = this.popups.filter(popup => popup.id !== id)
-					resolve(value)
-				}
-			))
-		})
+			const id = this.getID();
+			this.popups.push(
+				new PopupState(id, props, (value: any) => {
+					this.popups = this.popups.filter((popup) => popup.id !== id);
+					resolve(value);
+				}),
+			);
+		});
 	}
 
 	async setup() {
 		if (!localStorage.getItem("language")) {
 			await this.open({
 				component: LanguageSelector,
-				data: {
-
-				},
+				data: {},
 				allowInteraction: false,
 			});
 		}
@@ -106,8 +102,8 @@ class PopupsState {
 	}
 
 	clear() {
-		this.popups = []
+		this.popups = [];
 	}
 }
 
-export default new PopupsState()
+export default new PopupsState();

@@ -84,7 +84,7 @@ onMount(() => {
 
 $effect(() => {
 	updateDatasets(SerialState.log.charts);
-})
+});
 </script>
 
 <canvas bind:this={element}></canvas>

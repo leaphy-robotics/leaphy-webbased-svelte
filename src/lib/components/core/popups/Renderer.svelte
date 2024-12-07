@@ -4,7 +4,7 @@ import { onMount } from "svelte";
 import Popup from "./Popup.svelte";
 
 onMount(async () => {
-	await PopupState.setup()
+	await PopupState.setup();
 });
 </script>
 

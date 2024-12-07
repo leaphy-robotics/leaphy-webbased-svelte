@@ -1,6 +1,6 @@
 import Start from "$components/start/Start.svelte";
 import Workspace from "$components/workspace/Workspace.svelte";
-import type {Component} from "svelte";
+import type { Component } from "svelte";
 
 export const Screen = {
 	START: Start as Component,
@@ -24,8 +24,8 @@ if (!["light", "dark"].includes(localStorage.getItem("theme"))) {
 }
 
 class LibraryState {
-	libraries = $state<Library[]>([])
-	installed = $state<[string, string][]>([])
+	libraries = $state<Library[]>([]);
+	installed = $state<[string, string][]>([]);
 
 	async query() {
 		const res = await fetch(
@@ -57,17 +57,17 @@ class LibraryState {
 }
 
 class AppState {
-	Screen = $state(Screen.START)
-	theme = $state(localStorage.getItem("theme") as Theme)
-	libraries = new LibraryState()
+	Screen = $state(Screen.START);
+	theme = $state(localStorage.getItem("theme") as Theme);
+	libraries = new LibraryState();
 
 	constructor() {
 		$effect.root(() => {
 			$effect(() => {
 				document.body.setAttribute("data-color-scheme", this.theme);
 				localStorage.setItem("theme", this.theme);
-			})
-		})
+			});
+		});
 	}
 }
 

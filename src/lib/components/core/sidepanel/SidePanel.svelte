@@ -1,7 +1,7 @@
 <script lang="ts">
+import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import { onDestroy, onMount } from "svelte";
-import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 
 let width = $state(300);
 

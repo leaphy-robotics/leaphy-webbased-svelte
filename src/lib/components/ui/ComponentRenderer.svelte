@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Component } from 'svelte';
+import type { Component as ComponentType } from "svelte";
 
-	interface Props {
-		component: Component;
-	}
-	const { component: Component }: Props = $props();
+interface Props {
+	component: ComponentType;
+}
+const { component: Component }: Props = $props();
 </script>
 
 <Component />

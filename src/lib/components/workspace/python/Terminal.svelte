@@ -126,7 +126,7 @@ $effect(() => {
 
 		render();
 	});
-})
+});
 
 $effect(() => {
 	if (!WorkspaceState.microPythonRun) return;
@@ -139,7 +139,7 @@ $effect(() => {
 		terminal.write(`\x1b[31m${event.data}\x1b[0m`);
 	});
 	WorkspaceState.microPythonRun.addEventListener("done", render);
-})
+});
 </script>
 
 <div class="container">

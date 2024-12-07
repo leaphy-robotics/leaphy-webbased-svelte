@@ -17,7 +17,9 @@ const isInstalled = $derived(
 
 function interact() {
 	if (isInstalled)
-		return AppState.libraries.installed = AppState.libraries.installed.filter(([name]) => name !== library.name)
+		return (AppState.libraries.installed = AppState.libraries.installed.filter(
+			([name]) => name !== library.name,
+		));
 
 	AppState.libraries.installed.push([library.name, version]);
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
 import AppState, { Theme } from "$state/app.svelte";
+import { track } from "$state/utils";
 import * as monaco from "monaco-editor";
 import { onMount } from "svelte";
-import {track} from "$state/utils";
 
 interface Props {
 	value: string;
@@ -29,8 +29,10 @@ onMount(() => {
 });
 
 $effect(() => {
-	monaco.editor.setTheme(AppState.theme === Theme.DARK ? "vs-dark" : "vs-light");
-})
+	monaco.editor.setTheme(
+		AppState.theme === Theme.DARK ? "vs-dark" : "vs-light",
+	);
+});
 
 $effect(() => {
 	track(value);

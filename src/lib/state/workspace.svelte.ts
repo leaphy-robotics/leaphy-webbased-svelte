@@ -2,14 +2,14 @@ import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
 import type { Handle } from "$domain/handles";
-import { type RobotDevice } from "$domain/robots";
+import type { RobotDevice } from "$domain/robots";
+import { track } from "$state/utils";
 import { serialization } from "blockly";
 import type { Component } from "svelte";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
-import {track} from "$state/utils";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -18,38 +18,38 @@ export const Mode = {
 };
 
 class WorkspaceState {
-	uploadLog = $state<string[]>([])
-	handle = $state<Handle|undefined>()
-	robot = $state<RobotDevice>()
-	microPythonIO = $state<MicroPythonIO>()
-	microPythonRun = $state<IOEventTarget>()
+	uploadLog = $state<string[]>([]);
+	handle = $state<Handle | undefined>();
+	robot = $state<RobotDevice>();
+	microPythonIO = $state<MicroPythonIO>();
+	microPythonRun = $state<IOEventTarget>();
 
-	code = $state('')
-	saveState = $state(true)
+	code = $state("");
+	saveState = $state(true);
 
-	SidePanel = $state<Component|undefined>()
-	Mode = $state<Component>(Mode.BLOCKS)
+	SidePanel = $state<Component | undefined>();
+	Mode = $state<Component>(Mode.BLOCKS);
 
 	constructor() {
 		window.addEventListener("beforeunload", this.tempSave.bind(this));
 		$effect.root(() => {
 			$effect(() => {
-				track(this.Mode)
+				track(this.Mode);
 
-				PopupState.clear()
-				this.SidePanel = undefined
-			})
+				PopupState.clear();
+				this.SidePanel = undefined;
+			});
 
 			$effect(() => {
-				track(this.code)
+				track(this.code);
 
-				this.saveState = false
-			})
-		})
+				this.saveState = false;
+			});
+		});
 	}
 
 	toggleSidePanel(panel: Component) {
-		this.SidePanel = this.SidePanel === panel ? undefined : panel
+		this.SidePanel = this.SidePanel === panel ? undefined : panel;
 	}
 
 	tempSave() {
@@ -88,4 +88,4 @@ class WorkspaceState {
 	}
 }
 
-export default new WorkspaceState()
+export default new WorkspaceState();

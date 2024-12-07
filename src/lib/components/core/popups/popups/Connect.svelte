@@ -8,8 +8,8 @@ import { isCompatible } from "$domain/blockly/blockly";
 import { type RobotDevice, type Selector, getSelector } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
-import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
 import * as Blockly from "blockly";
 import { getContext } from "svelte";
@@ -52,12 +52,17 @@ $effect(() => {
 		.robots.find((robot) => robot.board === SerialState.board.board);
 
 	if (robotType) WorkspaceState.robot = robotType;
-})
+});
 
 const warning = $derived(
-	SerialState.board && WorkspaceState.robot && SerialState.board.board !== WorkspaceState.robot.board
+	SerialState.board &&
+		WorkspaceState.robot &&
+		SerialState.board.board !== WorkspaceState.robot.board
 		? $_("INVALID_ROBOT", {
-				values: { robot: WorkspaceState.robot.name, board: SerialState.board.name },
+				values: {
+					robot: WorkspaceState.robot.name,
+					board: SerialState.board.name,
+				},
 			})
 		: undefined,
 );
@@ -65,7 +70,9 @@ const warning = $derived(
 function checkEnabled(robot: RobotDevice): boolean {
 	if (WorkspaceState.Mode !== Mode.BLOCKS) return true;
 
-	return BlocklyState.workspace ? isCompatible(BlocklyState.workspace, robot) : true;
+	return BlocklyState.workspace
+		? isCompatible(BlocklyState.workspace, robot)
+		: true;
 }
 
 async function disabledSelect() {
@@ -80,7 +87,10 @@ async function disabledSelect() {
 	});
 	if (!value) return false;
 
-	Blockly.serialization.workspaces.load(JSON.parse(defaultProgram), BlocklyState.workspace);
+	Blockly.serialization.workspaces.load(
+		JSON.parse(defaultProgram),
+		BlocklyState.workspace,
+	);
 	WorkspaceState.handle = undefined;
 	return true;
 }

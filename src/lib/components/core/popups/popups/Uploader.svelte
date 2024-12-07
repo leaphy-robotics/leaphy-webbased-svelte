@@ -4,11 +4,14 @@ import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
+import AppState from "$state/app.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
+import SerialState, {
+	Prompt,
+	SUPPORTED_VENDOR_IDS,
+} from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
-import AppState from "$state/app.svelte"
 import WorkspaceState from "$state/workspace.svelte";
-import SerialState, { Prompt, SUPPORTED_VENDOR_IDS } from "$state/serial.svelte"
 import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
 
@@ -45,7 +48,9 @@ async function compile() {
 			board: WorkspaceState.robot.fqbn,
 			libraries: [
 				...WorkspaceState.robot.libraries,
-				...AppState.libraries.installed.map(([name, version]) => `${name}@${version}`),
+				...AppState.libraries.installed.map(
+					([name, version]) => `${name}@${version}`,
+				),
 			],
 		}),
 	});

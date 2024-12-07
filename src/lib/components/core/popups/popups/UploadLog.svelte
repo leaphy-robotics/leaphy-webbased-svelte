@@ -1,6 +1,6 @@
 <script lang="ts">
+import { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte"
 import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
 </script>

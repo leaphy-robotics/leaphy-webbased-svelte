@@ -6,8 +6,8 @@ import {
 	faFolder,
 } from "@fortawesome/free-solid-svg-icons";
 import Fa from "svelte-fa";
+import Tree from "./Tree.svelte";
 import type { Tree as TreeType } from "./Tree.types";
-import Tree from "./Tree.svelte"
 
 interface Props {
 	tree: TreeType;

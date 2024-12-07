@@ -1,6 +1,6 @@
-import type {Programmer} from "$domain/robots.types";
+import type { Programmer } from "$domain/robots.types";
+import type { LeaphyPort } from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import type { LeaphyPort } from "$state/serial.svelte"
 import Module from "@leaphy-robotics/avrdude-webassembly/avrdude.js";
 
 declare global {

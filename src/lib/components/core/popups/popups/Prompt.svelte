@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
-import { type PopupState } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 

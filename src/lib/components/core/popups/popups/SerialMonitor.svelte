@@ -5,7 +5,8 @@ import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
 import PopupsState from "$state/popup.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte"
+import SerialState, { Prompt } from "$state/serial.svelte";
+import { track } from "$state/utils";
 import {
 	faArrowDown,
 	faBars,
@@ -18,7 +19,6 @@ import { tick } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
-import {track} from "$state/utils";
 
 enum Mode {
 	TEXT = 0,
@@ -39,12 +39,14 @@ function formatDate(date: Date) {
 }
 
 $effect(() => {
-	track(SerialState.log.log)
+	track(SerialState.log.log);
 
 	if (!element) return;
 
-	tick().then(() => element.scroll({ top: element.scrollHeight, behavior: "smooth" }));
-})
+	tick().then(() =>
+		element.scroll({ top: element.scrollHeight, behavior: "smooth" }),
+	);
+});
 
 let value = $state("");
 function send(event: SubmitEvent) {

@@ -1,22 +1,22 @@
-import type {WorkspaceSvg} from "blockly";
+import type { WorkspaceSvg } from "blockly";
 
 class BlocklyState {
-	workspace = $state<WorkspaceSvg>()
+	workspace = $state<WorkspaceSvg>();
 
-	restore = $state<Record<string, any>>()
-	willRestore = $state<boolean>(true)
+	restore = $state<Record<string, any>>();
+	willRestore = $state<boolean>(true);
 
-	audio = $state<boolean>(JSON.parse(localStorage.getItem("audio")) || true)
+	audio = $state<boolean>(JSON.parse(localStorage.getItem("audio")) || true);
 
-	canUndo = $state<boolean>(false)
-	canRedo = $state<boolean>(false)
+	canUndo = $state<boolean>(false);
+	canRedo = $state<boolean>(false);
 
 	constructor() {
 		$effect.root(() => {
 			$effect(() => {
 				localStorage.setItem("audio", JSON.stringify(this.audio));
-			})
-		})
+			});
+		});
 	}
 }
 

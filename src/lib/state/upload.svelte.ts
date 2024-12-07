@@ -1,5 +1,5 @@
 class USBRequestState {
-	respond = $state<null | ((device: USBDevice) => void)>(null)
+	respond = $state<null | ((device: USBDevice) => void)>(null);
 
 	async request() {
 		const [device] = await navigator.usb.getDevices();
@@ -7,9 +7,9 @@ class USBRequestState {
 
 		return new Promise<USBDevice>((resolve) => {
 			this.respond = (device: USBDevice) => {
-				resolve(device)
-				this.respond = null
-			}
+				resolve(device);
+				this.respond = null;
+			};
 		});
 	}
 }

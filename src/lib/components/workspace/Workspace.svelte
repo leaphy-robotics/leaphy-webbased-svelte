@@ -1,6 +1,7 @@
 <script lang="ts">
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
+import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
 import SideButton from "$components/ui/SideButton.svelte";
 import PopupState from "$state/popup.svelte";
@@ -12,7 +13,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
-import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 
 function openSerial() {
 	PopupState.open({

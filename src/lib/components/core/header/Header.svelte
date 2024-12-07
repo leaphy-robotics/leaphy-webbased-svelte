@@ -13,8 +13,8 @@ import { robots } from "$domain/robots";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte"
 import {
 	faComment,
 	faDownload,
@@ -78,7 +78,9 @@ async function newProject() {
 
 function serialize() {
 	if (WorkspaceState.Mode === Mode.BLOCKS)
-		return JSON.stringify(serialization.workspaces.save(BlocklyState.workspace));
+		return JSON.stringify(
+			serialization.workspaces.save(BlocklyState.workspace),
+		);
 
 	return WorkspaceState.code;
 }
@@ -129,7 +131,9 @@ async function openProject() {
 		WorkspaceState.code = await content.text();
 	} else {
 		if (WorkspaceState.Mode === Mode.BLOCKS) {
-			if (!loadWorkspaceFromString(await content.text(), BlocklyState.workspace)) {
+			if (
+				!loadWorkspaceFromString(await content.text(), BlocklyState.workspace)
+			) {
 				return;
 			}
 		} else {
@@ -233,7 +237,9 @@ async function blocks() {
 	}
 
 	WorkspaceState.tempSave();
-	BlocklyState.restore = JSON.parse(localStorage.getItem(`${WorkspaceState.robot.id}_content`))
+	BlocklyState.restore = JSON.parse(
+		localStorage.getItem(`${WorkspaceState.robot.id}_content`),
+	);
 	WorkspaceState.Mode = Mode.BLOCKS;
 }
 

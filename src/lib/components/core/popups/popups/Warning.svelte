@@ -1,6 +1,6 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
-import { type PopupState } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 

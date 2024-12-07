@@ -35,7 +35,7 @@ onMount(() => {
 		element,
 		getTheme(AppState.theme),
 		BlocklyState.willRestore ? BlocklyState.restore : undefined,
-	)
+	);
 	updateSizing();
 
 	BlocklyState.workspace.addChangeListener((event) => {
@@ -51,7 +51,10 @@ onMount(() => {
 		BlocklyState.canUndo = BlocklyState.workspace.getUndoStack().length > 0;
 		BlocklyState.canRedo = BlocklyState.workspace.getRedoStack().length > 0;
 
-		WorkspaceState.code = arduino.workspaceToCode(BlocklyState.workspace, WorkspaceState.robot.id);
+		WorkspaceState.code = arduino.workspaceToCode(
+			BlocklyState.workspace,
+			WorkspaceState.robot.id,
+		);
 		updateSizing();
 
 		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
@@ -63,7 +66,7 @@ onMount(() => {
 		BlocklyState.workspace.updateToolbox(loadToolbox(WorkspaceState.robot));
 		BlocklyState.workspace.getToolbox().selectItemByPosition(0);
 		BlocklyState.workspace.getToolbox().refreshTheme();
-	})
+	});
 });
 
 locale.subscribe((locale) => {
@@ -73,19 +76,27 @@ locale.subscribe((locale) => {
 		const content = serialization.workspaces.save(BlocklyState.workspace);
 		BlocklyState.workspace.dispose();
 
-		BlocklyState.workspace = setupWorkspace(WorkspaceState.robot, element, getTheme(AppState.theme), content);
+		BlocklyState.workspace = setupWorkspace(
+			WorkspaceState.robot,
+			element,
+			getTheme(AppState.theme),
+			content,
+		);
 		BlocklyState.workspace.addChangeListener(() => {
-			WorkspaceState.code = arduino.workspaceToCode(BlocklyState.workspace, WorkspaceState.robot.id);
+			WorkspaceState.code = arduino.workspaceToCode(
+				BlocklyState.workspace,
+				WorkspaceState.robot.id,
+			);
 		});
 	}
 });
 
 $effect(() => {
-	const theme = getTheme(AppState.theme)
+	const theme = getTheme(AppState.theme);
 
 	BlocklyState.workspace?.setTheme(theme);
 	BlocklyState.workspace?.refreshTheme();
-})
+});
 </script>
 
 <div class="environment">

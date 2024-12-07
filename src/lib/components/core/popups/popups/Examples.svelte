@@ -1,7 +1,7 @@
 <script lang="ts">
 import { inFilter } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
-import { type PopupState } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import { serialization } from "blockly";
 import { getContext, onMount } from "svelte";

@@ -5,8 +5,8 @@ import { type Robot, robotListing } from "$domain/robots";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte"
 import { _ } from "svelte-i18n";
 import { flip } from "svelte/animate";
 import { cubicOut } from "svelte/easing";
@@ -32,30 +32,36 @@ async function onselect(type: Robot) {
 	if ("robot" in type) {
 		WorkspaceState.robot = SerialState.board || type.robot;
 		WorkspaceState.Mode = type.mode || Mode.BLOCKS;
-		WorkspaceState.code = (BlocklyState.willRestore && localStorage.getItem(`${type.id}_content`)) || type.defaultProgram
+		WorkspaceState.code =
+			(BlocklyState.willRestore &&
+				localStorage.getItem(`${type.id}_content`)) ||
+			type.defaultProgram;
 	} else {
 		WorkspaceState.robot = type;
 		WorkspaceState.Mode = Mode.BLOCKS;
-		BlocklyState.restore = JSON.parse(localStorage.getItem(`${type.id}_content`));
+		BlocklyState.restore = JSON.parse(
+			localStorage.getItem(`${type.id}_content`),
+		);
 
 		if (SerialState.board && type.board !== SerialState.board.id) {
-			PopupState
-				.open({
-					component: Warning,
-					data: {
-						title: "INVALID_ROBOT_TITLE",
-						message: $_("INVALID_ROBOT", {
-							values: { robot: WorkspaceState.robot.name, board: SerialState.board.name },
-						}),
-						showCancel: true,
-					},
-					allowInteraction: false,
-				})
-				.then((result) => {
-					if (result) return;
+			PopupState.open({
+				component: Warning,
+				data: {
+					title: "INVALID_ROBOT_TITLE",
+					message: $_("INVALID_ROBOT", {
+						values: {
+							robot: WorkspaceState.robot.name,
+							board: SerialState.board.name,
+						},
+					}),
+					showCancel: true,
+				},
+				allowInteraction: false,
+			}).then((result) => {
+				if (result) return;
 
-					AppState.Screen = Screen.START;
-				});
+				AppState.Screen = Screen.START;
+			});
 		}
 	}
 

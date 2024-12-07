@@ -54,15 +54,14 @@ $effect(() => {
 
 		WorkspaceState.code = await WorkspaceState.microPythonIO.fs.read("main.py");
 		WorkspaceState.handle = new PythonHandle("main.py");
-	})()
-})
+	})();
+});
 
 $effect(() => {
-	if (!(WorkspaceState.handle instanceof FileHandle))
-		return
+	if (!(WorkspaceState.handle instanceof FileHandle)) return;
 
 	tree = undefined;
-})
+});
 
 async function select(tree: string[]) {
 	selected = tree;
@@ -75,14 +74,14 @@ async function select(tree: string[]) {
 }
 
 async function create(path: string[], type: "file" | "folder") {
-	const name = await PopupState.open({
+	const name = (await PopupState.open({
 		component: Prompt,
 		data: {
 			name: type === "file" ? "CREATE_FILE" : "CREATE_FOLDER",
 			confirm: "OK_VARIABLE",
 		},
 		allowInteraction: false,
-	}) as string;
+	})) as string;
 	if (!name) return;
 
 	const io = WorkspaceState.microPythonIO;
