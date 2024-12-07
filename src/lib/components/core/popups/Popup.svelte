@@ -24,10 +24,7 @@ $effect(() => {
             style:left={`${popupState.position.x}px`}
             style:top={`${popupState.position.y}px`}
         >
-            <svelte:component
-                this={popupState.popup.component}
-                {...popupState.popup.data}
-            />
+			<popupState.popup.component {...popupState.popup.data} />
         </div>
     </div>
 </div>

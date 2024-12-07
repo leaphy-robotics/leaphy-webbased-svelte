@@ -38,7 +38,7 @@ onDestroy(() => {
 			<div class="loading"></div>
 		</div>
 	{:then explanation}
-		<SvelteMarkdown source="{explanation}" />
+		<SvelteMarkdown source={explanation} />
 	{:catch error }
 		<div class="container">
 			{$_("AI_RATE_LIMITED")}

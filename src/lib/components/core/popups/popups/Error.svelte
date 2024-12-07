@@ -32,7 +32,7 @@ function feedback() {
 
 <div class="content">
 	<h2 class="title">
-		<Fa icon="{faExclamationTriangle}" />
+		<Fa icon={faExclamationTriangle} />
 		{$_(title)}
 	</h2>
 	<div class="text">{$_(message)}</div>

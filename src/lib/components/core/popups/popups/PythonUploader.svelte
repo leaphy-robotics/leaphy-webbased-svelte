@@ -8,9 +8,7 @@ import { type RobotDevice, robots } from "$domain/robots";
 import { type PopupState, popups } from "$state/popup.svelte";
 import { usbRequest } from "$state/upload.svelte";
 import {
-	Prompt,
 	SUPPORTED_VENDOR_IDS,
-	installed,
 	port,
 	robot,
 } from "$state/workspace.svelte";
@@ -131,7 +129,7 @@ async function connectUSB() {
                 <ProgressBar {progress} />
 
 				{#if robotRequest}
-					<RobotSelector onselect="{robotRequest}" robots={[[robots.l_nano_rp2040, robots.l_nano_esp32]]} secondary="{false}" compact />
+					<RobotSelector onselect={robotRequest} robots={[[robots.l_nano_rp2040, robots.l_nano_esp32]]} secondary={false} compact />
 				{/if}
             {/if}
         {/if}

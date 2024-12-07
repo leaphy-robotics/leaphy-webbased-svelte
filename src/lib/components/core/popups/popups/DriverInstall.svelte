@@ -15,7 +15,10 @@ function close() {
 <div class="content">
 	<h1>{$_("DRIVER_INSTALL_TITLE")}</h1>
 	<p>{$_("DRIVER_INSTALL_TEXT")}</p>
+
+	<!-- svelte-ignore a11y-media-has-caption -->
 	<video src={install_drivers} controls={true} width={600}></video>
+
     <Button name={$_("CLOSE")} mode={"accent"} onclick={close} bold={true} />
 </div>
 

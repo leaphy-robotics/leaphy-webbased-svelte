@@ -27,7 +27,7 @@ const { board } = port;
 <div class="container" class:secondary class:compact>
 	<div class="selector">
 		{#if secondary}
-			<Button onclick="{() => port.connect(Prompt.ALWAYS)}" mode="tint" icon="{faUsb}" name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold="{!!$port}" large />
+			<Button onclick={() => port.connect(Prompt.ALWAYS)} mode="tint" icon={faUsb} name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!$port} large />
 		{/if}
 		{#each robots as row}
 			<div class="row">

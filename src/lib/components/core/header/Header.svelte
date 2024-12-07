@@ -9,7 +9,7 @@ import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
-import { getSelector, robots } from "$domain/robots";
+import { robots } from "$domain/robots";
 import { Screen, Theme, screen, theme } from "$state/app.svelte";
 import {
 	audio,

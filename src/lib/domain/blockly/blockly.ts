@@ -334,7 +334,7 @@ export async function explain(block: Blockly.BlockSvg) {
 						model: "Llama3-70b-8192",
 					}),
 				}).then(async (res) => {
-					if (!res.ok) throw new ErrorPopup(res.statusText);
+					if (!res.ok) throw new Error(res.statusText);
 					return JSON.parse(await res.text());
 				}),
 			},

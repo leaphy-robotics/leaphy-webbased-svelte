@@ -6,10 +6,11 @@ import {
 	faFolder,
 } from "@fortawesome/free-solid-svg-icons";
 import Fa from "svelte-fa";
-import type { Tree } from "./Tree.types";
+import type { Tree as TreeType } from "./Tree.types";
+import Tree from "./Tree.svelte"
 
 interface Props {
-	tree: Tree;
+	tree: TreeType;
 	selected: string[] | null;
 	onselect: (selection: string[]) => void;
 	oncreate: (path: string[], type: "file" | "folder") => void;
@@ -49,13 +50,13 @@ function createFolder() {
         <div class="content">
             {#each tree.contents as item (item)}
                 {#if typeof item === "string"}
-                    <div class="item" class:selected={selected?.at(0) === item} onclick={() => onselect([item])}>{item}</div>
+                    <button class="item" class:selected={selected?.at(0) === item} onclick={() => onselect([item])}>{item}</button>
                 {:else}
-                    <svelte:self 
-                        tree={item} 
-                        selected={selected?.at(0) === item.name ? selected.slice(1) : null} 
-                        indent={indent + 25} 
-                        onselect={(selection: string[]) => onselect([item.name, ...selection])} 
+                    <Tree
+                        tree={item}
+                        selected={selected?.at(0) === item.name ? selected.slice(1) : null}
+                        indent={indent + 25}
+                        onselect={(selection: string[]) => onselect([item.name, ...selection])}
                         oncreate={(path: string[], type: "file"|"folder") => oncreate([item.name, ...path], type)}
                     />
                 {/if}
@@ -69,9 +70,16 @@ function createFolder() {
         display: flex;
         flex-direction: column;
     }
+
     .header-wrap {
         position: relative;
     }
+
+	.item {
+		all: unset;
+		padding-left: calc(var(--indent) + 25px);
+	}
+
     .header, .item {
         display: flex;
         gap: 3px;
@@ -81,9 +89,6 @@ function createFolder() {
         padding-left: var(--indent);
         width: 100%;
         text-align: left;
-    }
-    .item {
-        padding-left: calc(var(--indent) + 25px);
     }
 
     .header:hover, .item:hover {

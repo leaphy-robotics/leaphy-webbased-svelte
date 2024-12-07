@@ -24,13 +24,13 @@ interface Props {
 const { connectOverride }: Props = $props();
 const { board } = port;
 
-const categories = getSelector($robot) as Selector[];
+const categories = getSelector() as Selector[];
 const categoriesFilter = $derived(
 	categories.map((cat) => [cat.name, cat] as [string, Selector]),
 );
 let category = $state(
 	categories.find((cat) =>
-		cat.robots.find((robot) => $state.is(robot, $robot)),
+		cat.robots.find((robot) => robot.id === $robot.id),
 	),
 );
 
@@ -48,9 +48,9 @@ board.subscribe((board) => {
 	if (!connectOverride || !board) return;
 
 	const robotDevice = get(robot);
-	const robotType = getSelector(robotDevice)
+	const robotType = getSelector()
 		.find((category) =>
-			category.robots.find((robot) => $state.is(robot, robotDevice)),
+			category.robots.find((robot) => robot.id === robotDevice.id),
 		)
 		.robots.find((robot) => robot.board === board.board);
 
@@ -90,12 +90,12 @@ async function disabledSelect() {
 </script>
 
 <div class="content">
-	<Button onclick="{() => port.connect(Prompt.ALWAYS)}" mode="secondary" icon="{faUsb}" name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold="{!!$port}" large />
+	<Button onclick={() => port.connect(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!$port} large />
 	{#if categories.length > 1}
-		<ChipSelect options="{categoriesFilter}" bind:value={category} />
+		<ChipSelect options={categoriesFilter} bind:value={category} />
 	{/if}
-	<ListSelect {warning} options="{values}" {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={$robot} />
-	<Button onclick="{start}" mode="primary" name={$_("CONTINUE")} center bold />
+	<ListSelect {warning} options={values} {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={$robot} />
+	<Button onclick={start} mode="primary" name={$_("CONTINUE")} center bold />
 </div>
 
 <style>

@@ -2,7 +2,7 @@ import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import type { RobotDevice } from "$domain/robots";
 import { popups } from "$state/popup.svelte";
-import { port } from "$state/workspace.svelte";
+import {type LeaphyPort, port} from "$state/workspace.svelte";
 import base64 from "base64-js";
 import { get } from "svelte/store";
 import { delay } from "../programmers/utils";
@@ -62,7 +62,7 @@ export default class MicroPythonIO {
 	public commands: Commands = new Commands(this);
 	public fs: FileSystem = new FileSystem(this);
 	public packageManager: PackageManager = new PackageManager(this);
-	public port: SerialPort;
+	public port: LeaphyPort;
 	public reader: ReadableStreamDefaultReader<Uint8Array>;
 	public writer: WritableStreamDefaultWriter<Uint8Array>;
 	public running: boolean;
