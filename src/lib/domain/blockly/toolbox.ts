@@ -234,6 +234,9 @@ export default [
 					type: "leaphy_io_digitalwrite",
 				},
 				{
+					type: "leaphy_multiplexer_digitalwrite"
+				},
+				{
 					type: "leaphy_io_analogwrite",
 					inputs: {
 						NUM: number(0),
