@@ -2,7 +2,6 @@ import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSuppor
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import type { Component } from "svelte";
-import { writable } from "svelte/store";
 
 export enum Anchor {
 	TopLeft = "0 0",

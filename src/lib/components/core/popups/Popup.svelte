@@ -1,7 +1,6 @@
 <script lang="ts">
 import type { PopupState } from "$state/popup.svelte";
 import { setContext } from "svelte";
-import { writable } from "svelte/store";
 
 interface Props {
 	state: PopupState;

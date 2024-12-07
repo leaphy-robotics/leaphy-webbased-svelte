@@ -3,10 +3,8 @@ import { explain } from "$domain/blockly/blockly";
 import BlocklyState from "$state/blockly.svelte";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 import type * as Blockly from "blockly";
-import type { WorkspaceSvg } from "blockly";
 import { onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
-import { get } from "svelte/store";
 
 function getBlockForPosition(event: PointerEvent) {
 	return BlocklyState.workspace

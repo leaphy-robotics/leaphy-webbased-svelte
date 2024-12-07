@@ -17,7 +17,6 @@ import { format } from "date-fns";
 import { tick } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
-import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
 import {track} from "$state/utils";
 
@@ -102,34 +101,35 @@ function insertDate() {
 }
 </script>
 
-{#snippet actions()}
-    <WindowButton icon={faArrowDown} onclick={download} />
-	<WindowButton icon={mode === Mode.TEXT ? faChartLine : faBars} onclick={switchMode} />
-    <WindowButton icon={faTrash} onclick={SerialState.log.clear.bind(SerialState.log)} />
-{/snippet}
-{#snippet content()}
-    {#if !SerialState.port}
-	    <div class="warning">
-	        <div class="desc">
-	            <div class="name">{$_("NOT_CONNECTED")}</div>
-	            <div class="description">{$_("NOT_CONNECTED_DESC")}</div>
-	        </div>
-	        <Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
-	    </div>
-    {/if}
-    {#if mode === Mode.TEXT}
-	    <div class="content" bind:this={element}>
-	        {#each SerialState.log.log as item (item.id)}
-	            <div class="item">
-	                <div class="date">{formatDate(item.date)}</div>
-	                <div class="text">{item.content}</div>
-	            </div>
-	        {/each}
-	    </div>
+<Windowed title={$_("SERIAL_OUTPUT")}>
+	{#snippet actions()}
+		<WindowButton icon={faArrowDown} onclick={download} />
+		<WindowButton icon={mode === Mode.TEXT ? faChartLine : faBars} onclick={switchMode} />
+		<WindowButton icon={faTrash} onclick={SerialState.log.clear.bind(SerialState.log)} />
+	{/snippet}
+
+	{#if !SerialState.port}
+		<div class="warning">
+			<div class="desc">
+				<div class="name">{$_("NOT_CONNECTED")}</div>
+				<div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+			</div>
+			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
+		</div>
+	{/if}
+	{#if mode === Mode.TEXT}
+		<div class="content" bind:this={element}>
+			{#each SerialState.log.log as item (item.id)}
+				<div class="item">
+					<div class="date">{formatDate(item.date)}</div>
+					<div class="text">{item.content}</div>
+				</div>
+			{/each}
+		</div>
 	{:else if mode === Mode.CHART}
 		<Chart />
 	{/if}
-    {#if SerialState.port}
+	{#if SerialState.port}
 		<div class="send">
 			<div class="suggestions">
 				<Button mode={"accent"} name={format(new Date(), 'yyMMddiHHmmss')} icon={faClock} inline onclick={insertDate} />
@@ -144,10 +144,8 @@ function insertDate() {
 				/>
 			</form>
 		</div>
-    {/if}
-{/snippet}
-
-<Windowed title={$_("SERIAL_OUTPUT")} {content} {actions} />
+	{/if}
+</Windowed>
 
 <style>
     .content {

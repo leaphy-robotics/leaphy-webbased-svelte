@@ -31,22 +31,20 @@ function openCode() {
 }
 </script>
 
-{#snippet actions()}
-    {#if WorkspaceState.Mode === Mode.BLOCKS}
-        <SideButton icon={faCode} action="CODE" onclick={openCode} />
-    {/if}
-    {#if WorkspaceState.Mode !== Mode.PYTHON}
-        <SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
-    {/if}
-    {#if WorkspaceState.Mode === Mode.ADVANCED}
-        <SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
-    {/if}
-{/snippet}
-
 <div class="content">
 	<ComponentRenderer component={WorkspaceState.Mode} />
     <div class="container">
-        <SideBar buttons={actions} />
+        <SideBar>
+			{#if WorkspaceState.Mode === Mode.BLOCKS}
+				<SideButton icon={faCode} action="CODE" onclick={openCode} />
+			{/if}
+			{#if WorkspaceState.Mode !== Mode.PYTHON}
+				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
+			{/if}
+			{#if WorkspaceState.Mode === Mode.ADVANCED}
+				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
+			{/if}
+		</SideBar>
         {#if WorkspaceState.SidePanel}
             <SidePanel />
         {/if}

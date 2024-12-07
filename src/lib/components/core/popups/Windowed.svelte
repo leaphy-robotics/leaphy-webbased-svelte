@@ -7,12 +7,12 @@ import Fa from "svelte-fa";
 
 interface Props {
 	title: string;
-	content: Snippet;
+	children: Snippet;
 	actions?: Snippet;
 }
 
 const popupState = getContext<PopupState>("state");
-const { content, actions, title }: Props = $props();
+const { children, actions, title }: Props = $props();
 
 let x: number;
 let y: number;
@@ -57,7 +57,7 @@ onDestroy(() => {
             {#if actions}{@render actions()}{/if}
         </div>
     </div>
-    {@render content()}
+    {@render children()}
 </div>
 
 <style>

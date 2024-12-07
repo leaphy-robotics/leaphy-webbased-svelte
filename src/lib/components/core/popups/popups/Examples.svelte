@@ -40,17 +40,16 @@ async function loadExample(example: Example) {
 }
 </script>
 
-{#snippet content()}
-    <div class="content">
-        {#each visible as example}
-            <button class="example" onclick={() => loadExample(example)}>
-                <img class="icon" src={example.icon} alt="" />
-                <span class="name">{example.name}</span>
-            </button>
-        {/each}
-    </div>
-{/snippet}
-<Windowed title={$_("EXAMPLES")} {content} />
+<Windowed title={$_("EXAMPLES")}>
+	<div class="content">
+		{#each visible as example}
+			<button class="example" onclick={() => loadExample(example)}>
+				<img class="icon" src={example.icon} alt="" />
+				<span class="name">{example.name}</span>
+			</button>
+		{/each}
+	</div>
+</Windowed>
 
 <style>
     .content {

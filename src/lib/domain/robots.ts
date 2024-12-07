@@ -15,7 +15,6 @@ import nanoIcon from "$assets/robots/icons/l_nano.svg";
 import originalIcon from "$assets/robots/icons/l_original.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { get } from "svelte/store";
 import AvrDude from "../programmers/AvrDude";
 import DFU from "../programmers/DFU";
 import Pico from "../programmers/Pico";

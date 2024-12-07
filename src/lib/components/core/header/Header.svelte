@@ -36,7 +36,6 @@ import {
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { serialization } from "blockly";
-import type { Writable } from "svelte/store";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
@@ -262,109 +261,6 @@ function runPython() {
 }
 </script>
 
-{#snippet projectContext(open: Writable<boolean>)}
-    <ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} {open} />
-    <ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} {open} />
-    <ContextItem
-        icon={faFloppyDisk}
-        name={$_("SAVE")}
-        onclick={saveProject}
-        disabled={!WorkspaceState.handle}
-        {open}
-    />
-    <ContextItem
-        icon={faFloppyDisk}
-        name={$_("SAVEAS")}
-        onclick={saveProjectAs}
-        {open}
-    />
-{/snippet}
-{#snippet helpContext(open: Writable<boolean>)}
-    {#if WorkspaceState.Mode === Mode.BLOCKS}
-        <ContextItem
-            icon={faGraduationCap}
-            name={$_("EXAMPLES")}
-            onclick={examples}
-            {open}
-        />
-    {/if}
-    <ContextItem
-        icon={faQuestionCircle}
-        name={$_("HELP_FORUM")}
-        onclick={discord}
-        {open}
-    />
-    <ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
-    <ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
-{/snippet}
-{#snippet moreContext(open: Writable<boolean>)}
-    {#snippet languageContext(open: Writable<boolean>)}
-        <ContextItem
-            selected={$locale === "en"}
-            name={"English"}
-            onclick={() => setLocale("en")}
-            {open}
-        />
-        <ContextItem
-            selected={$locale === "nl"}
-            name={"Nederlands"}
-            onclick={() => setLocale("nl")}
-            {open}
-        />
-    {/snippet}
-    {#snippet themeContext(open: Writable<boolean>)}
-        <ContextItem
-            selected={AppState.theme === Theme.LIGHT}
-            name={$_("LIGHT_THEME")}
-            onclick={() => AppState.theme = Theme.LIGHT}
-            {open}
-        />
-        <ContextItem
-            selected={AppState.theme === Theme.DARK}
-            name={$_("DARK_THEME")}
-            onclick={() => AppState.theme = Theme.DARK}
-            {open}
-        />
-    {/snippet}
-
-    <ContextItem
-        icon={faQuestionCircle}
-        name={$_("MORE_ABOUT")}
-        onclick={about}
-        {open}
-    />
-    <ContextItem
-        icon={faGlobe}
-        name={$_("LANGUAGE")}
-        context={languageContext}
-        {open}
-    />
-    <ContextItem
-        icon={AppState.theme === Theme.LIGHT ? faLightbulb : faMoon}
-        name={$_("THEME")}
-        context={themeContext}
-        {open}
-    />
-    <ContextItem
-        icon={BlocklyState.audio ? faVolumeXmark : faVolumeHigh}
-        name={$_(BlocklyState.audio ? "SOUND_OFF" : "SOUND_ON")}
-        onclick={() => BlocklyState.audio = !BlocklyState.audio}
-        {open}
-    />
-    <ContextItem
-        icon={faSquarePollHorizontal}
-        name={$_("VIEW_LOG")}
-        onclick={log}
-        {open}
-    />
-    <ContextItem
-        icon={faDownload}
-        name={$_("DOWNLOAD_DRIVERS")}
-        onclick={downloadDrivers}
-        {open}
-    />
-{/snippet}
-
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
@@ -372,10 +268,113 @@ function runPython() {
             <Button
                 name={$_("PROJECT")}
                 mode={"outlined"}
-                context={projectContext}
-            />
-            <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
-            <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
+            >
+				{#snippet context(open)}
+					<ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} {open} />
+					<ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} {open} />
+					<ContextItem
+						icon={faFloppyDisk}
+						name={$_("SAVE")}
+						onclick={saveProject}
+						disabled={!WorkspaceState.handle}
+						{open}
+					/>
+					<ContextItem
+						icon={faFloppyDisk}
+						name={$_("SAVEAS")}
+						onclick={saveProjectAs}
+						{open}
+					/>
+				{/snippet}
+			</Button>
+            <Button name={$_("HELP")} mode={"outlined"}>
+				{#snippet context(open)}
+					{#if WorkspaceState.Mode === Mode.BLOCKS}
+						<ContextItem
+							icon={faGraduationCap}
+							name={$_("EXAMPLES")}
+							onclick={examples}
+							{open}
+						/>
+					{/if}
+					<ContextItem
+						icon={faQuestionCircle}
+						name={$_("HELP_FORUM")}
+						onclick={discord}
+						{open}
+					/>
+					<ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
+					<ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
+				{/snippet}
+			</Button>
+            <Button name={$_("MORE")} mode={"outlined"}>
+				{#snippet context(open)}
+					<ContextItem
+						icon={faQuestionCircle}
+						name={$_("MORE_ABOUT")}
+						onclick={about}
+						{open}
+					/>
+					<ContextItem
+						icon={faGlobe}
+						name={$_("LANGUAGE")}
+						{open}
+					>
+						{#snippet context()}
+							<ContextItem
+								selected={$locale === "en"}
+								name={"English"}
+								onclick={() => setLocale("en")}
+								{open}
+							/>
+							<ContextItem
+								selected={$locale === "nl"}
+								name={"Nederlands"}
+								onclick={() => setLocale("nl")}
+								{open}
+							/>
+						{/snippet}
+					</ContextItem>
+					<ContextItem
+						icon={AppState.theme === Theme.LIGHT ? faLightbulb : faMoon}
+						name={$_("THEME")}
+						{open}
+					>
+						{#snippet context(open)}
+							<ContextItem
+								selected={AppState.theme === Theme.LIGHT}
+								name={$_("LIGHT_THEME")}
+								onclick={() => AppState.theme = Theme.LIGHT}
+								{open}
+							/>
+							<ContextItem
+								selected={AppState.theme === Theme.DARK}
+								name={$_("DARK_THEME")}
+								onclick={() => AppState.theme = Theme.DARK}
+								{open}
+							/>
+						{/snippet}
+					</ContextItem>
+					<ContextItem
+						icon={BlocklyState.audio ? faVolumeXmark : faVolumeHigh}
+						name={$_(BlocklyState.audio ? "SOUND_OFF" : "SOUND_ON")}
+						onclick={() => BlocklyState.audio = !BlocklyState.audio}
+						{open}
+					/>
+					<ContextItem
+						icon={faSquarePollHorizontal}
+						name={$_("VIEW_LOG")}
+						onclick={log}
+						{open}
+					/>
+					<ContextItem
+						icon={faDownload}
+						name={$_("DOWNLOAD_DRIVERS")}
+						onclick={downloadDrivers}
+						{open}
+					/>
+				{/snippet}
+			</Button>
             {#if WorkspaceState.Mode !== Mode.PYTHON}
                 <Button
                     name={$_("CHOOSE_ROBOT")}

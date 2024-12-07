@@ -1,5 +1,4 @@
 import type {WorkspaceSvg} from "blockly";
-import { writable } from "svelte/store";
 
 class BlocklyState {
 	workspace = $state<WorkspaceSvg>()
