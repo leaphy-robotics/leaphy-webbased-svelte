@@ -66,13 +66,13 @@ async function onselect(type: Robot) {
 				.then((result) => {
 					if (result) return;
 
-					AppState.screen = Screen.START;
+					AppState.Screen = Screen.START;
 				});
 		}
 	}
 
 	saveState.set(true);
-	AppState.screen = Screen.WORKSPACE;
+	AppState.Screen = Screen.WORKSPACE;
 }
 
 const animationOptions = {

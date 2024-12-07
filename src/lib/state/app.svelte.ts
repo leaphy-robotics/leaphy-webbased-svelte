@@ -56,8 +56,8 @@ class LibraryState {
 }
 
 class AppState {
+	Screen = $state(Screen.START)
 	theme = $state(localStorage.getItem("theme") as Theme)
-	screen = $state(Screen.START)
 	libraries = new LibraryState()
 
 	constructor() {

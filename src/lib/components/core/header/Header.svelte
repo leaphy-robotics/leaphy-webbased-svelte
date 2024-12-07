@@ -86,7 +86,7 @@ async function newProject() {
 	BlocklyState.willRestore = false;
 	BlocklyState.workspace?.clear();
 
-	AppState.screen = Screen.START;
+	AppState.Screen = Screen.START;
 }
 
 function serialize() {
@@ -382,7 +382,7 @@ function runPython() {
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if AppState.screen === Screen.WORKSPACE}
+        {#if AppState.Screen === Screen.WORKSPACE}
             <Button
                 name={$_("PROJECT")}
                 mode={"outlined"}
@@ -401,14 +401,14 @@ function runPython() {
     </div>
 
     <div class="comp">
-        {#if AppState.screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
+        {#if AppState.Screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
             <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!BlocklyState.canUndo} />
             <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!BlocklyState.canRedo} />
         {/if}
     </div>
 
     <div class="comp">
-        {#if AppState.screen === Screen.WORKSPACE}
+        {#if AppState.Screen === Screen.WORKSPACE}
             {#if $mode === Mode.BLOCKS}
                 <Button
                     mode={"outlined"}
