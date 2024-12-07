@@ -2,11 +2,10 @@
 import { inFilter } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import { type PopupState } from "$state/popup.svelte";
-import { robot } from "$state/workspace.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { serialization } from "blockly";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import type { Writable } from "svelte/store";
 import Windowed from "../Windowed.svelte";
 
 interface Example {
@@ -18,7 +17,7 @@ interface Example {
 
 let examples = $state<Example[]>([]);
 const visible = $derived(
-	examples.filter(({ boards }) => inFilter($robot, boards)),
+	examples.filter(({ boards }) => inFilter(WorkspaceState.robot, boards)),
 );
 
 async function getExamples() {

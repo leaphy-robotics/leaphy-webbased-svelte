@@ -1,8 +1,6 @@
 <script lang="ts">
-import {
-	SUPPORTED_VENDOR_IDS,
-	uploadLog,
-} from "$state/workspace.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+import { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte"
 import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
 </script>
@@ -10,7 +8,7 @@ import Windowed from "../Windowed.svelte";
 {#snippet content()}
     <div class="content">
         <div class="log">
-            {#each $uploadLog as item}
+            {#each WorkspaceState.uploadLog as item}
                 <div class="item">{item}</div>
             {/each}
         </div>

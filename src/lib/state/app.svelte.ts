@@ -24,7 +24,8 @@ if (!["light", "dark"].includes(localStorage.getItem("theme"))) {
 }
 
 class LibraryState {
-	libraries = $state<Library[]>()
+	libraries = $state<Library[]>([])
+	installed = $state<[string, string][]>([])
 
 	async query() {
 		const res = await fetch(

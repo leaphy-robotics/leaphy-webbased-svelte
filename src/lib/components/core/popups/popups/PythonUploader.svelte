@@ -1,19 +1,15 @@
 <script lang="ts">
-import { _ } from "svelte-i18n";
+import {_} from "svelte-i18n";
 
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import { type RobotDevice, robots } from "$domain/robots";
-import { type PopupState } from "$state/popup.svelte";
+import {type RobotDevice, robots} from "$domain/robots";
+import {type PopupState} from "$state/popup.svelte";
 import USBRequestState from "$state/upload.svelte";
-import {
-	SUPPORTED_VENDOR_IDS,
-	port,
-	robot,
-} from "$state/workspace.svelte";
-import { getContext, onMount } from "svelte";
-import { get } from "svelte/store";
+import WorkspaceState from "$state/workspace.svelte";
+import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte"
+import {getContext, onMount} from "svelte";
 import type MicroPythonIO from "../../../../micropython";
 
 interface Props {
@@ -38,13 +34,13 @@ class UploadError extends Error {
 
 async function upload(res: Record<string, string>) {
 	try {
-		await port.reserve();
-		await $robot.programmer.upload($port, res);
+		await SerialState.reserve();
+		await WorkspaceState.robot.programmer.upload(SerialState.port, res);
 	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
 	}
-	port.release();
+	SerialState.release();
 }
 
 onMount(async () => {
@@ -54,17 +50,16 @@ onMount(async () => {
 
 		currentState = "CHOOSING_ROBOT";
 		if (!installed) {
-			const newRobot = await new Promise<RobotDevice>(
+			WorkspaceState.robot = await new Promise<RobotDevice>(
 				(resolve) => (robotRequest = resolve),
 			);
-			robot.set(newRobot);
 		}
 		robotRequest = undefined;
 		progress += 100 / 6;
 
 		currentState = "DOWNLOADING_FIRMWARE";
 		let firmware: Record<string, string>;
-		if (!installed) firmware = await io.getFirmware(get(robot));
+		if (!installed) firmware = await io.getFirmware(WorkspaceState.robot);
 		progress += 100 / 6;
 
 		currentState = "UPLOADING_FIRMWARE";

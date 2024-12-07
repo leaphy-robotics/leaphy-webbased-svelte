@@ -18,14 +18,6 @@ interface Popup {
 	anchor?: Anchor
 }
 
-// export interface PopupState {
-// 	id: string;
-// 	popup: Popup;
-// 	position: { x: number; y: number };
-// 	onclose: (value: any) => void;
-// 	anchor: Anchor;
-// }
-
 export class PopupState {
 	id = $state<number>()
 

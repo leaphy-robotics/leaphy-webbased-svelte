@@ -590,7 +590,7 @@
   dependencies:
     blockly "^10.4.3"
 
-"@leaphy-robotics/picotool-wasm@^1.0.3":
+"@leaphy-robotics/picotool-wasm@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/picotool-wasm/-/picotool-wasm-1.0.3.tgz#9047c984c7c261685f6e88d49c9ed54eaeb29391"
   integrity sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==

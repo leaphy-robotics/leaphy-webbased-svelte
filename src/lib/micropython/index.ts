@@ -1,9 +1,9 @@
 import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte";
 import type { RobotDevice } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
-import {type LeaphyPort, port} from "$state/workspace.svelte";
+import SerialState from "$state/serial.svelte"
+import {type LeaphyPort} from "$state/serial.svelte";
 import base64 from "base64-js";
-import { get } from "svelte/store";
 import { delay } from "../programmers/utils";
 import { Commands } from "./commands";
 import { FileSystem } from "./filesystem";
@@ -91,10 +91,10 @@ export default class MicroPythonIO {
 	}
 
 	async enterREPLMode() {
-		await port.ready;
-		await port.reserve();
+		await SerialState.ready;
+		await SerialState.reserve();
 
-		this.port = get(port);
+		this.port = SerialState.port;
 		this.reader = this.port.readable.getReader();
 		this.writer = this.port.writable.getWriter();
 
@@ -117,7 +117,7 @@ export default class MicroPythonIO {
 			this.reader.releaseLock();
 			this.writer.releaseLock();
 
-			port.release();
+			SerialState.release();
 			return false;
 		}
 

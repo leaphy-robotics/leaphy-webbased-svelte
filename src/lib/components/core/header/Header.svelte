@@ -13,19 +13,8 @@ import { robots } from "$domain/robots";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
-import {
-	Mode,
-	Prompt,
-	code,
-	handle,
-	microPythonIO,
-	microPythonRun,
-	mode,
-	port,
-	robot,
-	saveState,
-	tempSave,
-} from "$state/workspace.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte"
 import {
 	faComment,
 	faDownload,
@@ -48,7 +37,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { serialization } from "blockly";
 import type { Writable } from "svelte/store";
-import { get } from "svelte/store";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
@@ -64,20 +52,20 @@ async function upload() {
 	PopupState.open({
 		component: Uploader,
 		data: {
-			source: $code,
+			source: WorkspaceState.code,
 		},
 		allowInteraction: false,
 	});
 }
 
 async function connect() {
-	if ($mode === Mode.ADVANCED)
+	if (WorkspaceState.Mode === Mode.ADVANCED)
 		PopupState.open({
 			component: Connect,
 			data: {},
 			allowInteraction: false,
 		});
-	else port.connect(Prompt.ALWAYS);
+	else SerialState.connect(Prompt.ALWAYS);
 }
 
 async function newProject() {
@@ -90,10 +78,10 @@ async function newProject() {
 }
 
 function serialize() {
-	if ($mode === Mode.BLOCKS)
+	if (WorkspaceState.Mode === Mode.BLOCKS)
 		return JSON.stringify(serialization.workspaces.save(BlocklyState.workspace));
 
-	return $code;
+	return WorkspaceState.code;
 }
 
 async function saveProjectAs() {
@@ -109,9 +97,9 @@ async function saveProjectAs() {
 	});
 	if (!name) return;
 
-	let extension = $robot.id;
-	if ($mode === Mode.ADVANCED) extension = "ino";
-	if ($mode === Mode.PYTHON) extension = "py";
+	let extension = WorkspaceState.robot.id;
+	if (WorkspaceState.Mode === Mode.ADVANCED) extension = "ino";
+	if (WorkspaceState.Mode === Mode.PYTHON) extension = "py";
 
 	const url = URL.createObjectURL(
 		new Blob([serialize()], { type: "text/plain" }),
@@ -123,31 +111,31 @@ async function saveProjectAs() {
 	URL.revokeObjectURL(url);
 	link.remove();
 
-	saveState.set(true);
+	WorkspaceState.saveState = true;
 }
 
 async function openProject() {
 	const [file] = await window.showOpenFilePicker();
 	if (!file) return;
 
-	handle.set(new FileHandle(file));
+	WorkspaceState.handle = new FileHandle(file);
 	const content = await file.getFile();
 
 	if (file.name.endsWith(".ino")) {
-		mode.set(Mode.ADVANCED);
-		code.set(await content.text());
+		WorkspaceState.Mode = Mode.ADVANCED;
+		WorkspaceState.code = await content.text();
 	} else if (file.name.endsWith(".py")) {
-		mode.set(Mode.PYTHON);
-		robot.set(robots.l_nano_rp2040);
-		code.set(await content.text());
+		WorkspaceState.Mode = Mode.PYTHON;
+		WorkspaceState.robot = robots.l_nano_rp2040;
+		WorkspaceState.code = await content.text();
 	} else {
-		if (get(mode) === Mode.BLOCKS) {
+		if (WorkspaceState.Mode === Mode.BLOCKS) {
 			if (!loadWorkspaceFromString(await content.text(), BlocklyState.workspace)) {
 				return;
 			}
 		} else {
-			BlocklyState.restore.set(JSON.parse(await content.text()));
-			mode.set(Mode.BLOCKS);
+			BlocklyState.restore = JSON.parse(await content.text());
+			WorkspaceState.Mode = Mode.BLOCKS;
 		}
 
 		if (!robots[file.name.split(".").at(-1)]) {
@@ -162,19 +150,19 @@ async function openProject() {
 			return;
 		}
 
-		robot.set(robots[file.name.split(".").at(-1)]);
+		WorkspaceState.robot = robots[file.name.split(".").at(-1)];
 	}
 }
 
 async function saveProject() {
-	if (!$handle) return;
+	if (!WorkspaceState.handle) return;
 
-	await get(handle).write(serialize());
-	saveState.set(true);
+	await WorkspaceState.handle.write(serialize());
+	WorkspaceState.saveState = true;
 }
 
 function saveDynamic() {
-	if ($handle) return saveProject();
+	if (WorkspaceState.handle) return saveProject();
 
 	saveProjectAs();
 }
@@ -233,7 +221,7 @@ function redo() {
 
 async function blocks() {
 	PopupState.clear();
-	if (!$saveState) {
+	if (!WorkspaceState.saveState) {
 		const ok = await PopupState.open({
 			component: Warning,
 			data: {
@@ -245,34 +233,32 @@ async function blocks() {
 		if (!ok) return;
 	}
 
-	tempSave();
-	BlocklyState.restore.set(
-		JSON.parse(localStorage.getItem(`session_blocks_${get(robot).id}`)),
-	);
-	mode.set(Mode.BLOCKS);
+	WorkspaceState.tempSave();
+	BlocklyState.restore = JSON.parse(localStorage.getItem(`${WorkspaceState.robot.id}_content`))
+	WorkspaceState.Mode = Mode.BLOCKS;
 }
 
 async function cpp() {
 	PopupState.clear();
-	tempSave();
-	mode.set(Mode.ADVANCED);
+	WorkspaceState.tempSave();
+	WorkspaceState.Mode = Mode.ADVANCED;
 }
 
 async function connectPython() {
 	try {
-		await port.connect(Prompt.MAYBE);
+		await SerialState.connect(Prompt.MAYBE);
 	} catch {
 		return;
 	}
 
 	const io = new MicroPythonIO();
 	await io.initialize();
-	microPythonIO.set(io);
+	WorkspaceState.microPythonIO = io;
 }
 
 function runPython() {
-	const io = get(microPythonIO);
-	microPythonRun.set(io.runCode(get(code)));
+	const io = WorkspaceState.microPythonIO;
+	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 </script>
 
@@ -283,7 +269,7 @@ function runPython() {
         icon={faFloppyDisk}
         name={$_("SAVE")}
         onclick={saveProject}
-        disabled={!$handle}
+        disabled={!WorkspaceState.handle}
         {open}
     />
     <ContextItem
@@ -294,7 +280,7 @@ function runPython() {
     />
 {/snippet}
 {#snippet helpContext(open: Writable<boolean>)}
-    {#if $mode === Mode.BLOCKS}
+    {#if WorkspaceState.Mode === Mode.BLOCKS}
         <ContextItem
             icon={faGraduationCap}
             name={$_("EXAMPLES")}
@@ -390,7 +376,7 @@ function runPython() {
             />
             <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
             <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
-            {#if $mode !== Mode.PYTHON}
+            {#if WorkspaceState.Mode !== Mode.PYTHON}
                 <Button
                     name={$_("CHOOSE_ROBOT")}
                     mode={"outlined"}
@@ -401,7 +387,7 @@ function runPython() {
     </div>
 
     <div class="comp">
-        {#if AppState.Screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
+        {#if AppState.Screen === Screen.WORKSPACE && WorkspaceState.Mode === Mode.BLOCKS}
             <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!BlocklyState.canUndo} />
             <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!BlocklyState.canRedo} />
         {/if}
@@ -409,14 +395,14 @@ function runPython() {
 
     <div class="comp">
         {#if AppState.Screen === Screen.WORKSPACE}
-            {#if $mode === Mode.BLOCKS}
+            {#if WorkspaceState.Mode === Mode.BLOCKS}
                 <Button
                     mode={"outlined"}
                     icon={faPen}
                     name={$_("CODE")}
                     onclick={cpp}
                 />
-            {:else if $mode === Mode.ADVANCED}
+            {:else if WorkspaceState.Mode === Mode.ADVANCED}
                 <Button
                     mode={"outlined"}
                     icon={block}
@@ -431,8 +417,8 @@ function runPython() {
                 mode={"outlined"}
                 onclick={saveDynamic}
             />
-            {#if $mode === Mode.PYTHON}
-                {#if $microPythonIO}
+            {#if WorkspaceState.Mode === Mode.PYTHON}
+                {#if WorkspaceState.microPythonIO}
                     <Button
                         name={$_("RUN_CODE")}
                         mode={"accent"}

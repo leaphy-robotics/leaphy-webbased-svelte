@@ -1,5 +1,6 @@
-import type { Programmer } from "$domain/robots.types";
-import { type LeaphyPort, uploadLog } from "$state/workspace.svelte";
+import type {Programmer} from "$domain/robots.types";
+import WorkspaceState from "$state/workspace.svelte";
+import type { LeaphyPort } from "$state/serial.svelte"
 import Module from "@leaphy-robotics/avrdude-webassembly/avrdude.js";
 
 declare global {
@@ -80,9 +81,7 @@ export default class AvrDude implements Programmer {
 
 		if (window.writeStream) window.writeStream.releaseLock();
 
-		const log = window.avrdudeLog;
-		uploadLog.set(log);
-
+		WorkspaceState.uploadLog = window.avrdudeLog;
 		if (race !== 0) {
 			if (race === -2) {
 				throw new Error("Port disconnected");

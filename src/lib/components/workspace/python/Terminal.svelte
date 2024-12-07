@@ -1,9 +1,8 @@
 <script lang="ts">
-import { microPythonIO, microPythonRun } from "$state/workspace.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
 import { onMount } from "svelte";
-import { get } from "svelte/store";
 
 const terminal = new Terminal();
 const fitAddon = new FitAddon();
@@ -21,7 +20,7 @@ const history = [line];
 let pos = 0;
 
 function render() {
-	if (get(microPythonIO).running) return;
+	if (WorkspaceState.microPythonIO.running) return;
 	terminal.write(`\x1b[2K\r${PROMPT}${line}`);
 
 	// move cursor back to pos
@@ -31,12 +30,12 @@ function render() {
 }
 
 const PROMPT = "$ ";
-microPythonIO.subscribe((io) => {
-	if (!io) return;
+$effect(() => {
+	if (!WorkspaceState.microPythonIO) return;
 	render();
 
 	terminal.onData((data) => {
-		if (io.running) {
+		if (WorkspaceState.microPythonIO.running) {
 			return;
 		}
 
@@ -95,7 +94,7 @@ microPythonIO.subscribe((io) => {
 				history.push("");
 
 				if (!line) break;
-				const events = io.runCode(line);
+				const events = WorkspaceState.microPythonIO.runCode(line);
 				line = "";
 				pos = 0;
 
@@ -127,20 +126,20 @@ microPythonIO.subscribe((io) => {
 
 		render();
 	});
-});
+})
 
-microPythonRun.subscribe((events) => {
-	if (!events) return;
+$effect(() => {
+	if (!WorkspaceState.microPythonRun) return;
 
 	terminal.write("\r\n");
-	events.addEventListener("stdout", (event) => {
+	WorkspaceState.microPythonRun.addEventListener("stdout", (event) => {
 		terminal.write(event.data);
 	});
-	events.addEventListener("stderr", (event) => {
+	WorkspaceState.microPythonRun.addEventListener("stderr", (event) => {
 		terminal.write(`\x1b[31m${event.data}\x1b[0m`);
 	});
-	events.addEventListener("done", render);
-});
+	WorkspaceState.microPythonRun.addEventListener("done", render);
+})
 </script>
 
 <div class="container">

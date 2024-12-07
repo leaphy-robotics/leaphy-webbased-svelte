@@ -1,5 +1,4 @@
-import { microPythonIO } from "$state/workspace.svelte";
-import { get } from "svelte/store";
+import WorkspaceState from "$state/workspace.svelte";
 
 export interface Handle {
 	write: (content: string) => Promise<void>;
@@ -23,7 +22,7 @@ export class PythonHandle implements Handle {
 	constructor(private path: string) {}
 
 	async write(content: string) {
-		const io = get(microPythonIO);
+		const io = WorkspaceState.microPythonIO;
 
 		await io.fs.write(this.path, content);
 	}

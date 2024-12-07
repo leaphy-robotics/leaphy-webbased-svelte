@@ -1,6 +1,6 @@
 import type { Programmer } from "$domain/robots.types";
 import USBRequestState from "$state/upload.svelte";
-import { type LeaphyPort, port as portState } from "$state/workspace.svelte";
+import SerialState, { type LeaphyPort } from "$state/serial.svelte"
 import DFUUtil from "@leaphy-robotics/dfu-util-wasm";
 import base64 from "base64-js";
 import { delay } from "./utils";
@@ -17,6 +17,6 @@ export default class DFU implements Programmer {
 		await dfu.flash(sketch);
 		await delay(1000);
 
-		await portState.reconnect();
+		await SerialState.reconnect();
 	}
 }

@@ -14,8 +14,7 @@ import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
 import nanoIcon from "$assets/robots/icons/l_nano.svg";
 import originalIcon from "$assets/robots/icons/l_original.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
-import robotsGroups from "$domain/robots.groups";
-import { Mode, mode } from "$state/workspace.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { get } from "svelte/store";
 import AvrDude from "../programmers/AvrDude";
 import DFU from "../programmers/DFU";
@@ -310,7 +309,7 @@ export interface Selector {
 }
 
 export function getSelector(): Selector[] {
-	if (get(mode) === Mode.ADVANCED) {
+	if (WorkspaceState.Mode === Mode.ADVANCED) {
 		return [
 			{
 				id: "leaphy",

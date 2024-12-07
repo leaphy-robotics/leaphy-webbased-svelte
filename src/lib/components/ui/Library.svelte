@@ -1,8 +1,7 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
 
-import type { Library } from "$state/app.svelte";
-import { installed } from "$state/workspace.svelte";
+import AppState, { type Library } from "$state/app.svelte";
 import Button from "./Button.svelte";
 import Select from "./Select.svelte";
 
@@ -13,17 +12,14 @@ const { library }: Props = $props();
 
 let version = $state(library.versions[0]);
 const isInstalled = $derived(
-	!!$installed.find(([name]) => name === library.name),
+	!!AppState.libraries.installed.find(([name]) => name === library.name),
 );
 
 function interact() {
 	if (isInstalled)
-		return installed.update((libraries) =>
-			libraries.filter(([name]) => name !== library.name),
-		);
+		return AppState.libraries.installed = AppState.libraries.installed.filter(([name]) => name !== library.name)
 
-	installed.update((libraries) => [...libraries, [library.name, version]]);
-	console.log($installed);
+	AppState.libraries.installed.push([library.name, version]);
 }
 </script>
 

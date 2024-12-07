@@ -6,13 +6,9 @@ import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import USBRequestState from "$state/upload.svelte";
-import {
-	Prompt,
-	SUPPORTED_VENDOR_IDS,
-	installed,
-	port,
-	robot,
-} from "$state/workspace.svelte";
+import AppState from "$state/app.svelte"
+import WorkspaceState from "$state/workspace.svelte";
+import SerialState, { Prompt, SUPPORTED_VENDOR_IDS } from "$state/serial.svelte"
 import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
 
@@ -46,10 +42,10 @@ async function compile() {
 		},
 		body: JSON.stringify({
 			source_code: source,
-			board: $robot.fqbn,
+			board: WorkspaceState.robot.fqbn,
 			libraries: [
-				...$robot.libraries,
-				...$installed.map(([name, version]) => `${name}@${version}`),
+				...WorkspaceState.robot.libraries,
+				...AppState.libraries.installed.map(([name, version]) => `${name}@${version}`),
 			],
 		}),
 	});
@@ -65,11 +61,11 @@ async function upload(res: Record<string, string>) {
 	try {
 		try {
 			currentState = "WAITING_FOR_PORT";
-			await port.ready;
+			await SerialState.ready;
 			progress += 100 / 4;
 
 			currentState = "UPDATE_STARTED";
-			await port.reserve();
+			await SerialState.reserve();
 		} catch {
 			popupState.close();
 			return PopupsState.open({
@@ -82,19 +78,19 @@ async function upload(res: Record<string, string>) {
 			});
 		}
 
-		await $robot.programmer.upload($port, res);
+		await WorkspaceState.robot.programmer.upload(SerialState.port, res);
 	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
 	} finally {
-		port.release();
+		SerialState.release();
 	}
 }
 
 onMount(async () => {
 	try {
 		try {
-			if (!$port) await port.connect(Prompt.MAYBE);
+			if (!SerialState.port) await SerialState.connect(Prompt.MAYBE);
 			progress += 100 / 4;
 		} catch {
 			throw new UploadError("NO_DEVICE_SELECTED", "");
@@ -135,7 +131,7 @@ async function connectUSB() {
 </script>
 
 <div class="content" class:error={!!failed}>
-    {#if USBRequestState.request}
+    {#if USBRequestState.respond}
         <h2 class="state">{$_("RECONNECT")}</h2>
         <div class="info">{$_("RECONNECT_INFO")}</div>
         <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />

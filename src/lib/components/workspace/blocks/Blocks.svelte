@@ -8,12 +8,11 @@ import {
 import { dark, light } from "$domain/blockly/theme";
 import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
-import { code, robot } from "$state/workspace.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import { Events, WorkspaceSvg, serialization } from "blockly";
+import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
-import { get } from "svelte/store";
 
 let backgroundX = $state(0);
 
@@ -32,7 +31,7 @@ function updateSizing() {
 let element: HTMLDivElement;
 onMount(() => {
 	BlocklyState.workspace = setupWorkspace(
-		$robot,
+		WorkspaceState.robot,
 		element,
 		getTheme(AppState.theme),
 		BlocklyState.willRestore ? BlocklyState.restore : undefined,
@@ -52,7 +51,7 @@ onMount(() => {
 		BlocklyState.canUndo = BlocklyState.workspace.getUndoStack().length > 0;
 		BlocklyState.canRedo = BlocklyState.workspace.getRedoStack().length > 0;
 
-		code.set(arduino.workspaceToCode(BlocklyState.workspace, $robot.id));
+		WorkspaceState.code = arduino.workspaceToCode(BlocklyState.workspace, WorkspaceState.robot.id);
 		updateSizing();
 
 		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
@@ -60,23 +59,23 @@ onMount(() => {
 		}
 	});
 
-	robot.subscribe(() => {
-		BlocklyState.workspace.updateToolbox(loadToolbox($robot));
+	$effect(() => {
+		BlocklyState.workspace.updateToolbox(loadToolbox(WorkspaceState.robot));
 		BlocklyState.workspace.getToolbox().selectItemByPosition(0);
 		BlocklyState.workspace.getToolbox().refreshTheme();
-	});
+	})
 });
 
 locale.subscribe((locale) => {
-	setLocale($robot, locale);
+	setLocale(WorkspaceState.robot, locale);
 
 	if (BlocklyState.workspace && element) {
 		const content = serialization.workspaces.save(BlocklyState.workspace);
 		BlocklyState.workspace.dispose();
 
-		BlocklyState.workspace = setupWorkspace($robot, element, getTheme(AppState.theme), content);
+		BlocklyState.workspace = setupWorkspace(WorkspaceState.robot, element, getTheme(AppState.theme), content);
 		BlocklyState.workspace.addChangeListener(() => {
-			code.set(arduino.workspaceToCode(BlocklyState.workspace, $robot.id));
+			WorkspaceState.code = arduino.workspaceToCode(BlocklyState.workspace, WorkspaceState.robot.id);
 		});
 	}
 });
@@ -90,8 +89,8 @@ $effect(() => {
 </script>
 
 <div class="environment">
-	{#if $robot.background}
-		<img class="background" src="{$robot.background}" alt="{$robot.name}" style:left={`${backgroundX}px`}>
+	{#if WorkspaceState.robot.background}
+		<img class="background" src="{WorkspaceState.robot.background}" alt="{WorkspaceState.robot.name}" style:left={`${backgroundX}px`}>
 	{/if}
     <div class="blockly" bind:this={element}></div>
 	<Dropper />

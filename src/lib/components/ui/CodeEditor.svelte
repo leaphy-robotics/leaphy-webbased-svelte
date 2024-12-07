@@ -2,6 +2,7 @@
 import AppState, { Theme } from "$state/app.svelte";
 import * as monaco from "monaco-editor";
 import { onMount } from "svelte";
+import {track} from "$state/utils";
 
 interface Props {
 	value: string;
@@ -10,7 +11,6 @@ interface Props {
 }
 let { value = $bindable(""), editable = true, language }: Props = $props();
 
-let updating = false;
 let ignoreUpdate = false;
 let element: HTMLDivElement;
 let editor: monaco.editor.IStandaloneCodeEditor;
@@ -23,9 +23,7 @@ onMount(() => {
 		readOnly: !editable,
 	});
 	editor.getModel().onDidChangeContent(() => {
-		if (updating) updating = false;
-		else ignoreUpdate = true;
-
+		ignoreUpdate = true;
 		value = editor.getValue();
 	});
 });
@@ -35,14 +33,13 @@ $effect(() => {
 })
 
 $effect(() => {
-	const newContent = value; // marks value as dependency, do not remove
+	track(value);
 	if (ignoreUpdate || !editor) {
 		ignoreUpdate = false;
 		return;
 	}
 
-	updating = true;
-	editor.getModel().setValue(newContent as string);
+	editor.getModel().setValue(value);
 });
 </script>
 

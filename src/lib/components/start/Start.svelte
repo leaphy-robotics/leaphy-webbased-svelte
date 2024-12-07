@@ -5,25 +5,16 @@ import { type Robot, robotListing } from "$domain/robots";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
-import {
-	Mode,
-	Prompt,
-	code,
-	mode,
-	port,
-	robot,
-	saveState,
-} from "$state/workspace.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte"
 import { _ } from "svelte-i18n";
 import { flip } from "svelte/animate";
 import { cubicOut } from "svelte/easing";
 import { fly } from "svelte/transition";
 
-const { board } = port;
-
 async function connect() {
 	try {
-		await port.connect(Prompt.NEVER);
+		await SerialState.connect(Prompt.NEVER);
 	} catch {}
 }
 
@@ -39,25 +30,22 @@ async function onselect(type: Robot) {
 	}
 
 	if ("robot" in type) {
-		robot.set($board || type.robot);
-		mode.set(type.mode || Mode.BLOCKS);
-		code.set(
-			(BlocklyState.willRestore && localStorage.getItem(`${type.id}_content`)) ||
-				type.defaultProgram,
-		);
+		WorkspaceState.robot = SerialState.board || type.robot;
+		WorkspaceState.Mode = type.mode || Mode.BLOCKS;
+		WorkspaceState.code = (BlocklyState.willRestore && localStorage.getItem(`${type.id}_content`)) || type.defaultProgram
 	} else {
-		robot.set(type);
-		mode.set(Mode.BLOCKS);
+		WorkspaceState.robot = type;
+		WorkspaceState.Mode = Mode.BLOCKS;
 		BlocklyState.restore = JSON.parse(localStorage.getItem(`${type.id}_content`));
 
-		if ($board && type.board !== $board.id) {
+		if (SerialState.board && type.board !== SerialState.board.id) {
 			PopupState
 				.open({
 					component: Warning,
 					data: {
 						title: "INVALID_ROBOT_TITLE",
 						message: $_("INVALID_ROBOT", {
-							values: { robot: $robot.name, board: $board.name },
+							values: { robot: WorkspaceState.robot.name, board: SerialState.board.name },
 						}),
 						showCancel: true,
 					},
@@ -71,7 +59,7 @@ async function onselect(type: Robot) {
 		}
 	}
 
-	saveState.set(true);
+	WorkspaceState.saveState = true;
 	AppState.Screen = Screen.WORKSPACE;
 }
 

@@ -6,13 +6,7 @@ import Tree from "$components/ui/Tree.svelte";
 import type { Tree as TreeType } from "$components/ui/Tree.types";
 import { FileHandle, PythonHandle } from "$domain/handles";
 import PopupState from "$state/popup.svelte";
-import {
-	code,
-	handle,
-	microPythonIO,
-	saveState,
-} from "$state/workspace.svelte";
-import { get } from "svelte/store";
+import WorkspaceState from "$state/workspace.svelte";
 import type MicroPythonIO from "../../../micropython";
 import Terminal from "./Terminal.svelte";
 
@@ -46,33 +40,38 @@ async function getTree(io: MicroPythonIO, folder: string): Promise<TreeType> {
 	};
 }
 
-microPythonIO.subscribe(async (io) => {
-	if (!io) return;
-	if (!get(saveState) || get(handle)) return;
+$effect(() => {
+	if (!WorkspaceState.microPythonIO) return;
+	if (!WorkspaceState.saveState || WorkspaceState.handle) return;
 
-	if (!(await io.fs.exists("main.py"))) {
-		await io.fs.write("main.py", defaultProgram);
-	}
+	(async () => {
+		if (!(await WorkspaceState.microPythonIO.fs.exists("main.py"))) {
+			await WorkspaceState.microPythonIO.fs.write("main.py", defaultProgram);
+		}
 
-	tree = await getTree(io, "/");
-	tree.name = "robot";
+		tree = await getTree(WorkspaceState.microPythonIO, "/");
+		tree.name = "robot";
 
-	code.set(await io.fs.read("main.py"));
-	handle.set(new PythonHandle("main.py"));
-});
+		WorkspaceState.code = await WorkspaceState.microPythonIO.fs.read("main.py");
+		WorkspaceState.handle = new PythonHandle("main.py");
+	})()
+})
 
-handle.subscribe((handle) => {
-	if (handle instanceof FileHandle) tree = undefined;
-});
+$effect(() => {
+	if (!(WorkspaceState.handle instanceof FileHandle))
+		return
+
+	tree = undefined;
+})
 
 async function select(tree: string[]) {
 	selected = tree;
 
-	await get(handle)?.write(get(code));
-	const data = await get(microPythonIO).fs.read(tree.join("/"));
-	code.set(data.replaceAll("\r\n", "\n"));
+	await WorkspaceState.handle?.write(WorkspaceState.code);
+	const data = await WorkspaceState.microPythonIO.fs.read(tree.join("/"));
+	WorkspaceState.code = data.replaceAll("\r\n", "\n");
 	console.log(data);
-	handle.set(new PythonHandle(tree.join("/")));
+	WorkspaceState.handle = new PythonHandle(tree.join("/"));
 }
 
 async function create(path: string[], type: "file" | "folder") {
@@ -86,7 +85,7 @@ async function create(path: string[], type: "file" | "folder") {
 	}) as string;
 	if (!name) return;
 
-	const io = get(microPythonIO);
+	const io = WorkspaceState.microPythonIO;
 	const parent = path.reduce(
 		(prev, curr) => prev.contents.find((e) => (e as TreeType).name === curr),
 		tree,
@@ -101,7 +100,7 @@ async function create(path: string[], type: "file" | "folder") {
 		});
 	}
 	if (type === "file") {
-		await get(handle)?.write(get(code));
+		await WorkspaceState.handle?.write(WorkspaceState.code);
 		io.fs.write(`${path.join("/")}/${name}.py`, defaultProgram);
 
 		parent.contents.push(`${name}.py`);
@@ -118,7 +117,7 @@ async function create(path: string[], type: "file" | "folder") {
             </div>
         {/if}
         <div class="code">
-            <CodeEditor bind:value={$code} language="python" />
+            <CodeEditor bind:value={WorkspaceState.code} language="python" />
         </div>
     </div>
     <Terminal />

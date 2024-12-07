@@ -5,7 +5,7 @@ import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
 import PopupsState from "$state/popup.svelte";
-import { Prompt, log, port } from "$state/workspace.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte"
 import {
 	faArrowDown,
 	faBars,
@@ -19,6 +19,7 @@ import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
+import {track} from "$state/utils";
 
 enum Mode {
 	TEXT = 0,
@@ -38,18 +39,19 @@ function formatDate(date: Date) {
 	).padStart(3, "0")}`;
 }
 
-log.subscribe(async () => {
+$effect(() => {
+	track(SerialState.log.log)
+
 	if (!element) return;
 
-	await tick();
-	element.scroll({ top: element.scrollHeight, behavior: "smooth" });
-});
+	tick().then(() => element.scroll({ top: element.scrollHeight, behavior: "smooth" }));
+})
 
 let value = $state("");
 function send(event: SubmitEvent) {
 	event.preventDefault();
 	try {
-		log.write(`${value}\n`);
+		SerialState.log.write(`${value}\n`);
 	} catch {
 		PopupsState.open({
 			component: ErrorPopup,
@@ -67,7 +69,7 @@ function send(event: SubmitEvent) {
 function download() {
 	const data: string[][] = [["date", "time", "data"]];
 
-	for (const item of get(log)) {
+	for (const item of SerialState.log.log) {
 		data.push([
 			item.date.toLocaleDateString("nl-NL"),
 			item.date.toLocaleTimeString("nl-NL"),
@@ -86,7 +88,7 @@ function download() {
 }
 
 async function connect() {
-	await port.connect(Prompt.MAYBE);
+	await SerialState.connect(Prompt.MAYBE);
 }
 
 function switchMode() {
@@ -103,10 +105,10 @@ function insertDate() {
 {#snippet actions()}
     <WindowButton icon={faArrowDown} onclick={download} />
 	<WindowButton icon={mode === Mode.TEXT ? faChartLine : faBars} onclick={switchMode} />
-    <WindowButton icon={faTrash} onclick={log.clear} />
+    <WindowButton icon={faTrash} onclick={SerialState.log.clear.bind(SerialState.log)} />
 {/snippet}
 {#snippet content()}
-    {#if !$port}
+    {#if !SerialState.port}
 	    <div class="warning">
 	        <div class="desc">
 	            <div class="name">{$_("NOT_CONNECTED")}</div>
@@ -117,7 +119,7 @@ function insertDate() {
     {/if}
     {#if mode === Mode.TEXT}
 	    <div class="content" bind:this={element}>
-	        {#each $log as item (item.id)}
+	        {#each SerialState.log.log as item (item.id)}
 	            <div class="item">
 	                <div class="date">{formatDate(item.date)}</div>
 	                <div class="text">{item.content}</div>
@@ -127,7 +129,7 @@ function insertDate() {
 	{:else if mode === Mode.CHART}
 		<Chart />
 	{/if}
-    {#if $port}
+    {#if SerialState.port}
 		<div class="send">
 			<div class="suggestions">
 				<Button mode={"accent"} name={format(new Date(), 'yyMMddiHHmmss')} icon={faClock} inline onclick={insertDate} />
