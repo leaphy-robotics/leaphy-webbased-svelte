@@ -1,6 +1,6 @@
 <script lang="ts">
 import { type Placement, computePosition } from "@floating-ui/dom";
-import { type Snippet, getContext, onDestroy, onMount } from "svelte";
+import { type Snippet, onDestroy, onMount } from "svelte";
 import type { Writable } from "svelte/store";
 
 interface Props {

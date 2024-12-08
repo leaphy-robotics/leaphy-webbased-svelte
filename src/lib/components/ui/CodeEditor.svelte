@@ -1,5 +1,6 @@
 <script lang="ts">
-import { Theme, theme } from "$state/app.svelte";
+import AppState, { Theme } from "$state/app.svelte";
+import { track } from "$state/utils";
 import * as monaco from "monaco-editor";
 import { onMount } from "svelte";
 
@@ -10,40 +11,34 @@ interface Props {
 }
 let { value = $bindable(""), editable = true, language }: Props = $props();
 
-let updating = false;
-let ignoreUpdate = false;
 let element: HTMLDivElement;
 let editor: monaco.editor.IStandaloneCodeEditor;
 onMount(() => {
 	editor = monaco.editor.create(element, {
-		theme: $theme === Theme.DARK ? "vs-dark" : "vs-light",
+		theme: AppState.theme === Theme.DARK ? "vs-dark" : "vs-light",
 		language,
 		value: value as string,
 		automaticLayout: true,
 		readOnly: !editable,
 	});
 	editor.getModel().onDidChangeContent(() => {
-		if (updating) updating = false;
-		else ignoreUpdate = true;
+		if (value === editor.getValue()) return;
 
 		value = editor.getValue();
 	});
 });
 
-theme.subscribe((theme) => {
-	if (!editor) return;
-	monaco.editor.setTheme(theme === Theme.DARK ? "vs-dark" : "vs-light");
+$effect(() => {
+	monaco.editor.setTheme(
+		AppState.theme === Theme.DARK ? "vs-dark" : "vs-light",
+	);
 });
 
 $effect(() => {
-	const newContent = value; // marks value as dependency, do not remove
-	if (ignoreUpdate || !editor) {
-		ignoreUpdate = false;
-		return;
-	}
+	track(value);
 
-	updating = true;
-	editor.getModel().setValue(newContent as string);
+	if (editor.getValue() === value) return;
+	editor.getModel().setValue(value);
 });
 </script>
 

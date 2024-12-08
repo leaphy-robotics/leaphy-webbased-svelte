@@ -9,30 +9,12 @@ import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
-import { getSelector, robots } from "$domain/robots";
-import { Screen, Theme, screen, theme } from "$state/app.svelte";
-import {
-	audio,
-	canRedo,
-	canUndo,
-	restore,
-	willRestore,
-	workspace,
-} from "$state/blockly.svelte";
-import { popups } from "$state/popup.svelte";
-import {
-	Mode,
-	Prompt,
-	code,
-	handle,
-	microPythonIO,
-	microPythonRun,
-	mode,
-	port,
-	robot,
-	saveState,
-	tempSave,
-} from "$state/workspace.svelte";
+import { robots } from "$domain/robots";
+import AppState, { Screen, Theme } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import PopupState from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faComment,
 	faDownload,
@@ -54,9 +36,6 @@ import {
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { serialization } from "blockly";
-import JSZip from "jszip";
-import type { Writable } from "svelte/store";
-import { get } from "svelte/store";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
@@ -69,41 +48,45 @@ import Warning from "../popups/popups/Warning.svelte";
 
 async function upload() {
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
-	popups.open({
+	PopupState.open({
 		component: Uploader,
 		data: {
-			source: $code,
+			source: WorkspaceState.code,
 		},
 		allowInteraction: false,
 	});
 }
 
 async function connect() {
-	if ($mode === Mode.ADVANCED)
-		popups.open({
+	if (WorkspaceState.Mode === Mode.ADVANCED)
+		PopupState.open({
 			component: Connect,
 			data: {},
 			allowInteraction: false,
 		});
-	else port.connect(Prompt.ALWAYS);
+	else SerialState.connect(Prompt.ALWAYS);
 }
 
 async function newProject() {
-	popups.clear();
-	willRestore.set(false);
-	if ($workspace) $workspace.clear();
-	screen.set(Screen.START);
+	PopupState.clear();
+
+	BlocklyState.willRestore = false;
+	BlocklyState.workspace?.clear();
+
+	AppState.Screen = Screen.START;
 }
 
 function serialize() {
-	if ($mode === Mode.BLOCKS)
-		return JSON.stringify(serialization.workspaces.save($workspace));
+	if (WorkspaceState.Mode === Mode.BLOCKS)
+		return JSON.stringify(
+			serialization.workspaces.save(BlocklyState.workspace),
+		);
 
-	return $code;
+	return WorkspaceState.code;
 }
 
 async function saveProjectAs() {
-	const name = await popups.open({
+	const name = await PopupState.open({
 		component: SaveProject,
 		data: {
 			name: "SAVEAS",
@@ -115,9 +98,9 @@ async function saveProjectAs() {
 	});
 	if (!name) return;
 
-	let extension = $robot.id;
-	if ($mode === Mode.ADVANCED) extension = "ino";
-	if ($mode === Mode.PYTHON) extension = "py";
+	let extension = WorkspaceState.robot.id;
+	if (WorkspaceState.Mode === Mode.ADVANCED) extension = "ino";
+	if (WorkspaceState.Mode === Mode.PYTHON) extension = "py";
 
 	const url = URL.createObjectURL(
 		new Blob([serialize()], { type: "text/plain" }),
@@ -129,35 +112,37 @@ async function saveProjectAs() {
 	URL.revokeObjectURL(url);
 	link.remove();
 
-	saveState.set(true);
+	WorkspaceState.saveState = true;
 }
 
 async function openProject() {
 	const [file] = await window.showOpenFilePicker();
 	if (!file) return;
 
-	handle.set(new FileHandle(file));
+	WorkspaceState.handle = new FileHandle(file);
 	const content = await file.getFile();
 
 	if (file.name.endsWith(".ino")) {
-		mode.set(Mode.ADVANCED);
-		code.set(await content.text());
+		WorkspaceState.Mode = Mode.ADVANCED;
+		WorkspaceState.code = await content.text();
 	} else if (file.name.endsWith(".py")) {
-		mode.set(Mode.PYTHON);
-		robot.set(robots.l_nano_rp2040);
-		code.set(await content.text());
+		WorkspaceState.Mode = Mode.PYTHON;
+		WorkspaceState.robot = robots.l_nano_rp2040;
+		WorkspaceState.code = await content.text();
 	} else {
-		if (get(mode) === Mode.BLOCKS) {
-			if (!loadWorkspaceFromString(await content.text(), $workspace)) {
+		if (WorkspaceState.Mode === Mode.BLOCKS) {
+			if (
+				!loadWorkspaceFromString(await content.text(), BlocklyState.workspace)
+			) {
 				return;
 			}
 		} else {
-			restore.set(JSON.parse(await content.text()));
-			mode.set(Mode.BLOCKS);
+			BlocklyState.restore = JSON.parse(await content.text());
+			WorkspaceState.Mode = Mode.BLOCKS;
 		}
 
 		if (!robots[file.name.split(".").at(-1)]) {
-			popups.open({
+			PopupState.open({
 				component: ErrorPopup,
 				data: {
 					title: "UNDEFINED_ROBOT",
@@ -168,25 +153,25 @@ async function openProject() {
 			return;
 		}
 
-		robot.set(robots[file.name.split(".").at(-1)]);
+		WorkspaceState.robot = robots[file.name.split(".").at(-1)];
 	}
 }
 
 async function saveProject() {
-	if (!$handle) return;
+	if (!WorkspaceState.handle) return;
 
-	await get(handle).write(serialize());
-	saveState.set(true);
+	await WorkspaceState.handle.write(serialize());
+	WorkspaceState.saveState = true;
 }
 
 function saveDynamic() {
-	if ($handle) return saveProject();
+	if (WorkspaceState.handle) return saveProject();
 
 	saveProjectAs();
 }
 
 function examples() {
-	popups.open({
+	PopupState.open({
 		component: Examples,
 		data: {},
 		allowInteraction: true,
@@ -199,7 +184,7 @@ function setLocale(language: string) {
 }
 
 function log() {
-	popups.open({
+	PopupState.open({
 		component: UploadLog,
 		data: {},
 		allowInteraction: true,
@@ -214,7 +199,7 @@ function email() {
 }
 
 function feedback() {
-	popups.open({
+	PopupState.open({
 		component: Feedback,
 		data: {},
 		allowInteraction: true,
@@ -222,7 +207,7 @@ function feedback() {
 }
 
 function about() {
-	popups.open({
+	PopupState.open({
 		component: About,
 		data: {},
 		allowInteraction: true,
@@ -230,21 +215,17 @@ function about() {
 }
 
 function undo() {
-	if (!$workspace) return;
-
-	$workspace.undo(false);
+	BlocklyState.workspace?.undo(false);
 }
 
 function redo() {
-	if (!$workspace) return;
-
-	$workspace.undo(true);
+	BlocklyState.workspace?.undo(true);
 }
 
 async function blocks() {
-	popups.clear();
-	if (!$saveState) {
-		const ok = await popups.open({
+	PopupState.clear();
+	if (!WorkspaceState.saveState) {
+		const ok = await PopupState.open({
 			component: Warning,
 			data: {
 				title: "CONFIRMEDITORCHANGE_TITLE",
@@ -255,152 +236,152 @@ async function blocks() {
 		if (!ok) return;
 	}
 
-	tempSave();
-	restore.set(
-		JSON.parse(localStorage.getItem(`session_blocks_${get(robot).id}`)),
+	WorkspaceState.tempSave();
+	BlocklyState.restore = JSON.parse(
+		localStorage.getItem(`${WorkspaceState.robot.id}_content`),
 	);
-	mode.set(Mode.BLOCKS);
+	WorkspaceState.Mode = Mode.BLOCKS;
 }
 
 async function cpp() {
-	popups.clear();
-	tempSave();
-	mode.set(Mode.ADVANCED);
+	PopupState.clear();
+	WorkspaceState.tempSave();
+	WorkspaceState.Mode = Mode.ADVANCED;
 }
 
 async function connectPython() {
 	try {
-		await port.connect(Prompt.MAYBE);
+		await SerialState.connect(Prompt.MAYBE);
 	} catch {
 		return;
 	}
 
 	const io = new MicroPythonIO();
 	await io.initialize();
-	microPythonIO.set(io);
+	WorkspaceState.microPythonIO = io;
 }
 
 function runPython() {
-	const io = get(microPythonIO);
-	microPythonRun.set(io.runCode(get(code)));
+	const io = WorkspaceState.microPythonIO;
+	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 </script>
-
-{#snippet projectContext(open: Writable<boolean>)}
-    <ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} {open} />
-    <ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} {open} />
-    <ContextItem
-        icon={faFloppyDisk}
-        name={$_("SAVE")}
-        onclick={saveProject}
-        disabled={!$handle}
-        {open}
-    />
-    <ContextItem
-        icon={faFloppyDisk}
-        name={$_("SAVEAS")}
-        onclick={saveProjectAs}
-        {open}
-    />
-{/snippet}
-{#snippet helpContext(open: Writable<boolean>)}
-    {#if $mode === Mode.BLOCKS}
-        <ContextItem
-            icon={faGraduationCap}
-            name={$_("EXAMPLES")}
-            onclick={examples}
-            {open}
-        />
-    {/if}
-    <ContextItem
-        icon={faQuestionCircle}
-        name={$_("HELP_FORUM")}
-        onclick={discord}
-        {open}
-    />
-    <ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
-    <ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
-{/snippet}
-{#snippet moreContext(open: Writable<boolean>)}
-    {#snippet languageContext(open: Writable<boolean>)}
-        <ContextItem
-            selected={$locale === "en"}
-            name={"English"}
-            onclick={() => setLocale("en")}
-            {open}
-        />
-        <ContextItem
-            selected={$locale === "nl"}
-            name={"Nederlands"}
-            onclick={() => setLocale("nl")}
-            {open}
-        />
-    {/snippet}
-    {#snippet themeContext(open: Writable<boolean>)}
-        <ContextItem
-            selected={$theme === Theme.LIGHT}
-            name={$_("LIGHT_THEME")}
-            onclick={() => theme.set(Theme.LIGHT)}
-            {open}
-        />
-        <ContextItem
-            selected={$theme === Theme.DARK}
-            name={$_("DARK_THEME")}
-            onclick={() => theme.set(Theme.DARK)}
-            {open}
-        />
-    {/snippet}
-
-    <ContextItem
-        icon={faQuestionCircle}
-        name={$_("MORE_ABOUT")}
-        onclick={about}
-        {open}
-    />
-    <ContextItem
-        icon={faGlobe}
-        name={$_("LANGUAGE")}
-        context={languageContext}
-        {open}
-    />
-    <ContextItem
-        icon={$theme === Theme.LIGHT ? faLightbulb : faMoon}
-        name={$_("THEME")}
-        context={themeContext}
-        {open}
-    />
-    <ContextItem
-        icon={$audio ? faVolumeXmark : faVolumeHigh}
-        name={$_($audio ? "SOUND_OFF" : "SOUND_ON")}
-        onclick={() => audio.update((audio) => !audio)}
-        {open}
-    />
-    <ContextItem
-        icon={faSquarePollHorizontal}
-        name={$_("VIEW_LOG")}
-        onclick={log}
-        {open}
-    />
-    <ContextItem
-        icon={faDownload}
-        name={$_("DOWNLOAD_DRIVERS")}
-        onclick={downloadDrivers}
-        {open}
-    />
-{/snippet}
 
 <div class="header">
     <div class="comp">
         <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if $screen === Screen.WORKSPACE}
+        {#if AppState.Screen === Screen.WORKSPACE}
             <Button
                 name={$_("PROJECT")}
                 mode={"outlined"}
-                context={projectContext}
-            />
-            <Button name={$_("HELP")} mode={"outlined"} context={helpContext} />
-            <Button name={$_("MORE")} mode={"outlined"} context={moreContext} />
-            {#if $mode !== Mode.PYTHON}
+            >
+				{#snippet context(open)}
+					<ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} {open} />
+					<ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} {open} />
+					<ContextItem
+						icon={faFloppyDisk}
+						name={$_("SAVE")}
+						onclick={saveProject}
+						disabled={!WorkspaceState.handle}
+						{open}
+					/>
+					<ContextItem
+						icon={faFloppyDisk}
+						name={$_("SAVEAS")}
+						onclick={saveProjectAs}
+						{open}
+					/>
+				{/snippet}
+			</Button>
+            <Button name={$_("HELP")} mode={"outlined"}>
+				{#snippet context(open)}
+					{#if WorkspaceState.Mode === Mode.BLOCKS}
+						<ContextItem
+							icon={faGraduationCap}
+							name={$_("EXAMPLES")}
+							onclick={examples}
+							{open}
+						/>
+					{/if}
+					<ContextItem
+						icon={faQuestionCircle}
+						name={$_("HELP_FORUM")}
+						onclick={discord}
+						{open}
+					/>
+					<ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
+					<ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
+				{/snippet}
+			</Button>
+            <Button name={$_("MORE")} mode={"outlined"}>
+				{#snippet context(open)}
+					<ContextItem
+						icon={faQuestionCircle}
+						name={$_("MORE_ABOUT")}
+						onclick={about}
+						{open}
+					/>
+					<ContextItem
+						icon={faGlobe}
+						name={$_("LANGUAGE")}
+						{open}
+					>
+						{#snippet context()}
+							<ContextItem
+								selected={$locale === "en"}
+								name={"English"}
+								onclick={() => setLocale("en")}
+								{open}
+							/>
+							<ContextItem
+								selected={$locale === "nl"}
+								name={"Nederlands"}
+								onclick={() => setLocale("nl")}
+								{open}
+							/>
+						{/snippet}
+					</ContextItem>
+					<ContextItem
+						icon={AppState.theme === Theme.LIGHT ? faLightbulb : faMoon}
+						name={$_("THEME")}
+						{open}
+					>
+						{#snippet context(open)}
+							<ContextItem
+								selected={AppState.theme === Theme.LIGHT}
+								name={$_("LIGHT_THEME")}
+								onclick={() => AppState.theme = Theme.LIGHT}
+								{open}
+							/>
+							<ContextItem
+								selected={AppState.theme === Theme.DARK}
+								name={$_("DARK_THEME")}
+								onclick={() => AppState.theme = Theme.DARK}
+								{open}
+							/>
+						{/snippet}
+					</ContextItem>
+					<ContextItem
+						icon={BlocklyState.audio ? faVolumeXmark : faVolumeHigh}
+						name={$_(BlocklyState.audio ? "SOUND_OFF" : "SOUND_ON")}
+						onclick={() => BlocklyState.audio = !BlocklyState.audio}
+						{open}
+					/>
+					<ContextItem
+						icon={faSquarePollHorizontal}
+						name={$_("VIEW_LOG")}
+						onclick={log}
+						{open}
+					/>
+					<ContextItem
+						icon={faDownload}
+						name={$_("DOWNLOAD_DRIVERS")}
+						onclick={downloadDrivers}
+						{open}
+					/>
+				{/snippet}
+			</Button>
+            {#if WorkspaceState.Mode !== Mode.PYTHON}
                 <Button
                     name={$_("CHOOSE_ROBOT")}
                     mode={"outlined"}
@@ -411,22 +392,22 @@ function runPython() {
     </div>
 
     <div class="comp">
-        {#if $screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
-            <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!$canUndo} />
-            <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!$canRedo} />
+        {#if AppState.Screen === Screen.WORKSPACE && WorkspaceState.Mode === Mode.BLOCKS}
+            <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!BlocklyState.canUndo} />
+            <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!BlocklyState.canRedo} />
         {/if}
     </div>
 
     <div class="comp">
-        {#if $screen === Screen.WORKSPACE}
-            {#if $mode === Mode.BLOCKS}
+        {#if AppState.Screen === Screen.WORKSPACE}
+            {#if WorkspaceState.Mode === Mode.BLOCKS}
                 <Button
                     mode={"outlined"}
                     icon={faPen}
                     name={$_("CODE")}
                     onclick={cpp}
                 />
-            {:else if $mode === Mode.ADVANCED}
+            {:else if WorkspaceState.Mode === Mode.ADVANCED}
                 <Button
                     mode={"outlined"}
                     icon={block}
@@ -441,8 +422,8 @@ function runPython() {
                 mode={"outlined"}
                 onclick={saveDynamic}
             />
-            {#if $mode === Mode.PYTHON}
-                {#if $microPythonIO}
+            {#if WorkspaceState.Mode === Mode.PYTHON}
+                {#if WorkspaceState.microPythonIO}
                     <Button
                         name={$_("RUN_CODE")}
                         mode={"accent"}

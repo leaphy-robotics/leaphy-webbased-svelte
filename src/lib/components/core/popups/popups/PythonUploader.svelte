@@ -5,23 +5,17 @@ import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
-import { type PopupState, popups } from "$state/popup.svelte";
-import { usbRequest } from "$state/upload.svelte";
-import {
-	Prompt,
-	SUPPORTED_VENDOR_IDS,
-	installed,
-	port,
-	robot,
-} from "$state/workspace.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte";
+import USBRequestState from "$state/upload.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { getContext, onMount } from "svelte";
-import { type Writable, get } from "svelte/store";
 import type MicroPythonIO from "../../../../micropython";
 
 interface Props {
 	io: MicroPythonIO;
 }
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 const { io }: Props = $props();
 let progress = $state(0);
 let currentState = $state("CONNECTING");
@@ -40,13 +34,13 @@ class UploadError extends Error {
 
 async function upload(res: Record<string, string>) {
 	try {
-		await port.reserve();
-		await $robot.programmer.upload($port, res);
+		await SerialState.reserve();
+		await WorkspaceState.robot.programmer.upload(SerialState.port, res);
 	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
 	}
-	port.release();
+	SerialState.release();
 }
 
 onMount(async () => {
@@ -56,17 +50,16 @@ onMount(async () => {
 
 		currentState = "CHOOSING_ROBOT";
 		if (!installed) {
-			const newRobot = await new Promise<RobotDevice>(
+			WorkspaceState.robot = await new Promise<RobotDevice>(
 				(resolve) => (robotRequest = resolve),
 			);
-			robot.set(newRobot);
 		}
 		robotRequest = undefined;
 		progress += 100 / 6;
 
 		currentState = "DOWNLOADING_FIRMWARE";
 		let firmware: Record<string, string>;
-		if (!installed) firmware = await io.getFirmware(get(robot));
+		if (!installed) firmware = await io.getFirmware(WorkspaceState.robot);
 		progress += 100 / 6;
 
 		currentState = "UPLOADING_FIRMWARE";
@@ -83,7 +76,7 @@ onMount(async () => {
 		);
 		progress += 100 / 6;
 
-		popups.close($popupState.id);
+		popupState.close();
 	} catch (e) {
 		done = true;
 		currentState = e?.name || "UPDATE_FAILED";
@@ -93,14 +86,14 @@ onMount(async () => {
 });
 
 function close() {
-	popups.close($popupState.id);
+	popupState.close();
 }
 
 async function connectUSB() {
 	const [device] = await navigator.usb.getDevices();
-	if (device) return usbRequest.respond(device);
+	if (device) return USBRequestState.respond(device);
 
-	usbRequest.respond(
+	USBRequestState.respond(
 		await navigator.usb.requestDevice({
 			filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
 				vendorId: vendor,
@@ -111,7 +104,7 @@ async function connectUSB() {
 </script>
 
     <div class="content" class:error={!!error}>
-        {#if $usbRequest}
+        {#if USBRequestState.request}
             <h2 class="state">{$_("RECONNECT")}</h2>
             <div class="info">{$_("RECONNECT_INFO")}</div>
             <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
@@ -131,7 +124,7 @@ async function connectUSB() {
                 <ProgressBar {progress} />
 
 				{#if robotRequest}
-					<RobotSelector onselect="{robotRequest}" robots={[[robots.l_nano_rp2040, robots.l_nano_esp32]]} secondary="{false}" compact />
+					<RobotSelector onselect={robotRequest} robots={[[robots.l_nano_rp2040, robots.l_nano_esp32]]} secondary={false} compact />
 				{/if}
             {/if}
         {/if}

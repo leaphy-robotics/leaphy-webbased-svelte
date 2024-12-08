@@ -1,10 +1,10 @@
 <script lang="ts">
 import CodeEditor from "$components/ui/CodeEditor.svelte";
-import { code } from "$state/workspace.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 </script>
 
 <div class="environment">
-    <CodeEditor bind:value={$code} language="cpp" />
+    <CodeEditor bind:value={WorkspaceState.code} language="cpp" />
 </div>
 
 <style>

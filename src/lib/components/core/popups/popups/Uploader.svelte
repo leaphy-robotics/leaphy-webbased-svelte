@@ -1,29 +1,25 @@
 <script lang="ts">
 import { _ } from "svelte-i18n";
 
-import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
-import { usbRequest } from "$state/upload.svelte";
-import {
+import AppState from "$state/app.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
+import SerialState, {
 	Prompt,
 	SUPPORTED_VENDOR_IDS,
-	installed,
-	port,
-	robot,
-} from "$state/workspace.svelte";
-import JSZip from "jszip";
+} from "$state/serial.svelte";
+import USBRequestState from "$state/upload.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { getContext, onMount } from "svelte";
-import type { Writable } from "svelte/store";
 import { downloadDrivers } from "../../../../drivers";
 
 interface Props {
 	source?: string;
 	program?: Record<string, string>;
 }
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 const { source, program }: Props = $props();
 let progress = $state(0);
 let currentState = $state("CONNECTING");
@@ -49,10 +45,12 @@ async function compile() {
 		},
 		body: JSON.stringify({
 			source_code: source,
-			board: $robot.fqbn,
+			board: WorkspaceState.robot.fqbn,
 			libraries: [
-				...$robot.libraries,
-				...$installed.map(([name, version]) => `${name}@${version}`),
+				...WorkspaceState.robot.libraries,
+				...AppState.libraries.installed.map(
+					([name, version]) => `${name}@${version}`,
+				),
 			],
 		}),
 	});
@@ -68,14 +66,14 @@ async function upload(res: Record<string, string>) {
 	try {
 		try {
 			currentState = "WAITING_FOR_PORT";
-			await port.ready;
+			await SerialState.ready;
 			progress += 100 / 4;
 
 			currentState = "UPDATE_STARTED";
-			await port.reserve();
+			await SerialState.reserve();
 		} catch {
-			popups.close($popupState.id);
-			return popups.open({
+			popupState.close();
+			return PopupsState.open({
 				component: ErrorPopup,
 				data: {
 					title: "ROBOT_RESERVED",
@@ -85,19 +83,19 @@ async function upload(res: Record<string, string>) {
 			});
 		}
 
-		await $robot.programmer.upload($port, res);
+		await WorkspaceState.robot.programmer.upload(SerialState.port, res);
 	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
 	} finally {
-		port.release();
+		SerialState.release();
 	}
 }
 
 onMount(async () => {
 	try {
 		try {
-			if (!$port) await port.connect(Prompt.MAYBE);
+			if (!SerialState.port) await SerialState.connect(Prompt.MAYBE);
 			progress += 100 / 4;
 		} catch {
 			throw new UploadError("NO_DEVICE_SELECTED", "");
@@ -120,14 +118,14 @@ onMount(async () => {
 });
 
 function close() {
-	popups.close($popupState.id);
+	popupState.close();
 }
 
 async function connectUSB() {
 	const [device] = await navigator.usb.getDevices();
-	if (device) return usbRequest.respond(device);
+	if (device) return USBRequestState.respond(device);
 
-	usbRequest.respond(
+	USBRequestState.respond(
 		await navigator.usb.requestDevice({
 			filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
 				vendorId: vendor,
@@ -138,7 +136,7 @@ async function connectUSB() {
 </script>
 
 <div class="content" class:error={!!failed}>
-    {#if $usbRequest}
+    {#if USBRequestState.respond}
         <h2 class="state">{$_("RECONNECT")}</h2>
         <div class="info">{$_("RECONNECT_INFO")}</div>
         <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />

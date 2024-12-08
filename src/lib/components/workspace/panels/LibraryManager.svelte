@@ -3,16 +3,16 @@ import { _ } from "svelte-i18n";
 
 import Library from "$components/ui/Library.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
-import { libraries } from "$state/app.svelte";
+import AppState from "$state/app.svelte";
 import { onMount } from "svelte";
 
 let filter = $state("");
 onMount(() => {
-	libraries.query();
+	AppState.libraries.query();
 });
 
 const visible = $derived(
-	$libraries
+	AppState.libraries.libraries
 		.filter(({ name }) => name.toUpperCase().includes(filter.toUpperCase()))
 		.slice(0, 100),
 );

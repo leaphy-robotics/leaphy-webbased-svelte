@@ -1,16 +1,23 @@
-import type { Workspace } from "blockly";
-import { writable } from "svelte/store";
+import type { WorkspaceSvg } from "blockly";
 
-export const workspace = writable<Workspace>();
-export const restore = writable<Record<string, any>>();
-export const willRestore = writable<boolean>(true);
+class BlocklyState {
+	workspace = $state<WorkspaceSvg>();
 
-export const audio = writable<boolean>(
-	JSON.parse(localStorage.getItem("audio")) || true,
-);
-audio.subscribe((audio) => {
-	localStorage.setItem("audio", JSON.stringify(audio));
-});
+	restore = $state<Record<string, any>>();
+	willRestore = $state<boolean>(true);
 
-export const canUndo = writable<boolean>(false);
-export const canRedo = writable<boolean>(false);
+	audio = $state<boolean>(JSON.parse(localStorage.getItem("audio")) || true);
+
+	canUndo = $state<boolean>(false);
+	canRedo = $state<boolean>(false);
+
+	constructor() {
+		$effect.root(() => {
+			$effect(() => {
+				localStorage.setItem("audio", JSON.stringify(this.audio));
+			});
+		});
+	}
+}
+
+export default new BlocklyState();

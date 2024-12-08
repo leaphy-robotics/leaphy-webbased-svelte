@@ -6,20 +6,13 @@ import {
 	setupWorkspace,
 } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
-import { Theme, theme } from "$state/app.svelte";
-import {
-	canRedo,
-	canUndo,
-	restore,
-	willRestore,
-	workspace,
-} from "$state/blockly.svelte";
-import { code, robot } from "$state/workspace.svelte";
+import AppState, { Theme } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import { Events, WorkspaceSvg, serialization } from "blockly";
+import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
-import { get } from "svelte/store";
 
 let backgroundX = $state(0);
 
@@ -28,7 +21,7 @@ function getTheme(theme: Theme) {
 }
 
 function updateSizing() {
-	const toolbox = ($workspace as WorkspaceSvg).getToolbox();
+	const toolbox = BlocklyState.workspace.getToolbox();
 	backgroundX =
 		window.innerWidth / 2 +
 		(toolbox.getFlyout().isVisible() ? toolbox.getFlyout().getWidth() : 0) / 2 +
@@ -37,70 +30,78 @@ function updateSizing() {
 
 let element: HTMLDivElement;
 onMount(() => {
-	workspace.set(
-		setupWorkspace(
-			$robot,
-			element,
-			getTheme($theme),
-			get(willRestore) ? get(restore) : undefined,
-		),
+	BlocklyState.workspace = setupWorkspace(
+		WorkspaceState.robot,
+		element,
+		getTheme(AppState.theme),
+		BlocklyState.willRestore ? BlocklyState.restore : undefined,
 	);
 	updateSizing();
-	$workspace.addChangeListener((event) => {
+
+	BlocklyState.workspace.addChangeListener((event) => {
 		if (
 			"blockId" in event &&
-			$workspace
+			BlocklyState.workspace
 				.getBlockById(event.blockId as string)
 				?.type?.includes("procedures")
 		) {
-			($workspace as WorkspaceSvg).getToolbox().refreshSelection();
+			BlocklyState.workspace.getToolbox().refreshSelection();
 		}
 
-		canUndo.set(get(workspace).getUndoStack().length > 0);
-		canRedo.set(get(workspace).getRedoStack().length > 0);
+		BlocklyState.canUndo = BlocklyState.workspace.getUndoStack().length > 0;
+		BlocklyState.canRedo = BlocklyState.workspace.getRedoStack().length > 0;
 
-		code.set(arduino.workspaceToCode($workspace, $robot.id));
+		WorkspaceState.code = arduino.workspaceToCode(
+			BlocklyState.workspace,
+			WorkspaceState.robot.id,
+		);
 		updateSizing();
 
 		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
-			($workspace as WorkspaceSvg).resize();
+			BlocklyState.workspace.resize();
 		}
 	});
 
-	robot.subscribe(() => {
-		($workspace as WorkspaceSvg).updateToolbox(loadToolbox($robot));
-		($workspace as WorkspaceSvg).getToolbox().selectItemByPosition(0);
-		($workspace as WorkspaceSvg).getToolbox().refreshTheme();
+	$effect(() => {
+		BlocklyState.workspace.updateToolbox(loadToolbox(WorkspaceState.robot));
+		BlocklyState.workspace.getToolbox().selectItemByPosition(0);
+		BlocklyState.workspace.getToolbox().refreshTheme();
 	});
 });
 
 locale.subscribe((locale) => {
-	setLocale($robot, locale);
+	setLocale(WorkspaceState.robot, locale);
 
-	if ($workspace && element) {
-		const content = serialization.workspaces.save($workspace);
-		$workspace.dispose();
+	if (BlocklyState.workspace && element) {
+		const content = serialization.workspaces.save(BlocklyState.workspace);
+		BlocklyState.workspace.dispose();
 
-		workspace.update(() =>
-			setupWorkspace($robot, element, getTheme($theme), content),
+		BlocklyState.workspace = setupWorkspace(
+			WorkspaceState.robot,
+			element,
+			getTheme(AppState.theme),
+			content,
 		);
-		$workspace.addChangeListener(() => {
-			code.set(arduino.workspaceToCode($workspace, $robot.id));
+		BlocklyState.workspace.addChangeListener(() => {
+			WorkspaceState.code = arduino.workspaceToCode(
+				BlocklyState.workspace,
+				WorkspaceState.robot.id,
+			);
 		});
 	}
 });
 
-theme.subscribe((theme) => {
-	if (!$workspace || !($workspace instanceof WorkspaceSvg)) return;
+$effect(() => {
+	const theme = getTheme(AppState.theme);
 
-	$workspace.setTheme(getTheme(theme));
-	$workspace.refreshTheme();
+	BlocklyState.workspace?.setTheme(theme);
+	BlocklyState.workspace?.refreshTheme();
 });
 </script>
 
 <div class="environment">
-	{#if $robot.background}
-		<img class="background" src="{$robot.background}" alt="{$robot.name}" style:left={`${backgroundX}px`}>
+	{#if WorkspaceState.robot.background}
+		<img class="background" src="{WorkspaceState.robot.background}" alt="{WorkspaceState.robot.name}" style:left={`${backgroundX}px`}>
 	{/if}
     <div class="blockly" bind:this={element}></div>
 	<Dropper />

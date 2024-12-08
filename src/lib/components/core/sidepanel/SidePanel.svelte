@@ -1,5 +1,6 @@
 <script lang="ts">
-import { sidePanel } from "$state/workspace.svelte";
+import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { onDestroy, onMount } from "svelte";
 
 let width = $state(300);
@@ -34,7 +35,7 @@ onDestroy(() => {
 
 <div class="panel" style:width={`${width}px`}>
     <div class="dragger" onmousedown={mousedown}></div>
-    <svelte:component this={$sidePanel} />
+    <ComponentRenderer component={WorkspaceState.SidePanel} />
 </div>
 
 <style>

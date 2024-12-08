@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { onMount } from "svelte";
 import "chartjs-adapter-date-fns";
-import { charts } from "$state/workspace.svelte";
+import SerialState from "$state/serial.svelte";
 import { Tooltip } from "chart.js";
 import { enUS, nl } from "date-fns/locale";
 import { locale } from "svelte-i18n";
@@ -45,7 +45,7 @@ function updateDatasets(charts: Record<string, { x: Date; y: number }[]>) {
 			chart.data.datasets.push(dataset);
 		}
 
-		dataset.data = contents;
+		dataset.data = Array.from(contents);
 	}
 
 	chart.update();
@@ -79,10 +79,12 @@ onMount(() => {
 		},
 	});
 
-	updateDatasets(get(charts));
+	updateDatasets(SerialState.log.charts);
 });
 
-charts.subscribe(updateDatasets);
+$effect(() => {
+	updateDatasets(SerialState.log.charts);
+});
 </script>
 
 <canvas bind:this={element}></canvas>

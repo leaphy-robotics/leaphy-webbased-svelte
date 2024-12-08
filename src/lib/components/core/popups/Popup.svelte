@@ -1,33 +1,24 @@
 <script lang="ts">
 import type { PopupState } from "$state/popup.svelte";
 import { setContext } from "svelte";
-import { writable } from "svelte/store";
 
 interface Props {
 	state: PopupState;
 }
-const { state: popupState }: Props = $props();
+const { state }: Props = $props();
 
-const internalState = writable(popupState);
-setContext("state", internalState);
-
-$effect(() => {
-	internalState.update(() => popupState);
-});
+setContext("state", state);
 </script>
 
-<div class="container" class:full={!popupState.popup.allowInteraction}>
+<div class="container" class:full={!state.allowInteraction}>
     <div class="localRoot">
         <div
             class="popup"
-			style:translate="{popupState.anchor}"
-            style:left={`${popupState.position.x}px`}
-            style:top={`${popupState.position.y}px`}
+			style:translate="{state.anchor}"
+            style:left={`${state.position.x}px`}
+            style:top={`${state.position.y}px`}
         >
-            <svelte:component
-                this={popupState.popup.component}
-                {...popupState.popup.data}
-            />
+			<state.component {...state.data} />
         </div>
     </div>
 </div>

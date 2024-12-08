@@ -1,7 +1,7 @@
 <script lang="ts">
-interface Props {
-	options: [string, unknown][];
-	value: unknown;
+interface Props<Type extends { id: string }> {
+	options: [string, Type][];
+	value: Type;
 	warning?: undefined | string;
 	checkEnabled?: (value: unknown) => boolean;
 	disabledText?: string;
@@ -14,7 +14,7 @@ let {
 	checkEnabled,
 	disabledText,
 	disabledSelect,
-}: Props = $props();
+}: Props<any> = $props();
 
 let reloadEnabled = $state(0);
 
@@ -39,7 +39,7 @@ async function onselect(option: unknown, enabled: boolean) {
 	{#key reloadEnabled}
 		{#each options as option}
 			{@const enabled = checkEnabled ? checkEnabled(option[1]) : true}
-			<button onclick={() => onselect(option[1], enabled)} class="item" class:selected={$state.is(value, option[1])}>
+			<button onclick={() => onselect(option[1], enabled)} class="item" class:selected={value.id === option[1].id}>
 				{option[0]}
 				{#if !enabled}
 					<span class="disabled">{disabledText}</span>

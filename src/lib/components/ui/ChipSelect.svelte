@@ -1,9 +1,9 @@
 <script lang="ts">
-interface Props {
-	options: [string, unknown][];
-	value: unknown;
+interface Props<Type extends { id: string }> {
+	options: [string, Type][];
+	value: Type;
 }
-let { options, value = $bindable() }: Props = $props();
+let { options, value = $bindable() }: Props<any> = $props();
 
 function onselect(newValue: unknown) {
 	value = newValue;
@@ -14,7 +14,7 @@ function getWidth() {
 }
 
 function getPosition() {
-	return options.findIndex(([_, v]) => $state.is(v, value));
+	return options.findIndex(([_, v]) => v.id === value.id);
 }
 </script>
 

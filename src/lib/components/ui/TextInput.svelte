@@ -9,7 +9,7 @@ interface Props {
 	focus?: boolean;
 	required?: boolean;
 	type?: string;
-	input: HTMLInputElement;
+	input?: HTMLInputElement;
 }
 
 let {

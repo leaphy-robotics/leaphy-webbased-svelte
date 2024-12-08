@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
 import type { Robot } from "$domain/robots";
-import { Prompt, port } from "$state/workspace.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
 import { _ } from "svelte-i18n";
 
@@ -20,21 +20,19 @@ const {
 	selected,
 	secondary,
 }: Props = $props();
-
-const { board } = port;
 </script>
 
 <div class="container" class:secondary class:compact>
 	<div class="selector">
 		{#if secondary}
-			<Button onclick="{() => port.connect(Prompt.ALWAYS)}" mode="tint" icon="{faUsb}" name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold="{!!$port}" large />
+			<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="tint" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
 		{/if}
 		{#each robots as row}
 			<div class="row">
 				{#each row as robot}
 					<button
 						class="robot"
-						class:selected={robot.id === selected?.id || ("board" in robot && $board?.id === robot.board)}
+						class:selected={robot.id === selected?.id || ("board" in robot && SerialState.board?.id === robot.board)}
 						onclick={() => onselect(robot)}
 					>
 						<span class="icon">

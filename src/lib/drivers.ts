@@ -1,5 +1,5 @@
 import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
-import { popups } from "$state/popup.svelte";
+import PopupState from "$state/popup.svelte";
 import JSZip from "jszip";
 
 async function downloadDrivers() {
@@ -23,7 +23,7 @@ async function downloadDrivers() {
 	a.download = "leaphy-drivers.zip";
 	a.click();
 	URL.revokeObjectURL(url);
-	await popups.open({
+	await PopupState.open({
 		component: DriverInstall,
 		data: {},
 		allowInteraction: true,

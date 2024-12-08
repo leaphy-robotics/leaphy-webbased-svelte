@@ -1,10 +1,9 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
-import type { Writable } from "svelte/store";
 
 interface Props {
 	name: string;
@@ -21,14 +20,14 @@ let {
 	value = $bindable(""),
 	requireValue = false,
 }: Props = $props();
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 
 function cancel() {
-	popups.close($popupState.id, false);
+	popupState.close(false);
 }
 
 function save() {
-	popups.close($popupState.id, value);
+	popupState.close(value);
 }
 
 function onsubmit(event: SubmitEvent) {
