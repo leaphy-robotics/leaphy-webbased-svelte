@@ -3,7 +3,7 @@ import {
 	type IconDefinition,
 	faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { type Snippet, getContext, onDestroy, onMount } from "svelte";
+import { type Snippet, onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
 import type { Writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";

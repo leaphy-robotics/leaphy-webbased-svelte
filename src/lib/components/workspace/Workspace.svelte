@@ -1,10 +1,11 @@
 <script lang="ts">
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
+import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
 import SideButton from "$components/ui/SideButton.svelte";
-import { popups } from "$state/popup.svelte";
-import { Mode, mode, sidePanel } from "$state/workspace.svelte";
+import PopupState from "$state/popup.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faBook,
 	faCode,
@@ -14,7 +15,7 @@ import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
 
 function openSerial() {
-	popups.open({
+	PopupState.open({
 		component: SerialMonitor,
 		data: {},
 		allowInteraction: true,
@@ -22,33 +23,29 @@ function openSerial() {
 }
 
 function openLibraryManager() {
-	if ($sidePanel === LibraryManager) sidePanel.set(undefined);
-	else sidePanel.set(LibraryManager);
+	WorkspaceState.toggleSidePanel(LibraryManager);
 }
 
 function openCode() {
-	if ($sidePanel === Code) sidePanel.set(undefined);
-	else sidePanel.set(Code);
+	WorkspaceState.toggleSidePanel(Code);
 }
 </script>
 
-{#snippet actions()}
-    {#if $mode === Mode.BLOCKS}
-        <SideButton icon={faCode} action="CODE" onclick={openCode} />
-    {/if}
-    {#if $mode !== Mode.PYTHON}
-        <SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
-    {/if}
-    {#if $mode === Mode.ADVANCED}
-        <SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
-    {/if}
-{/snippet}
-
 <div class="content">
-    <svelte:component this={$mode} />
+	<ComponentRenderer component={WorkspaceState.Mode} />
     <div class="container">
-        <SideBar buttons={actions} />
-        {#if $sidePanel}
+        <SideBar>
+			{#if WorkspaceState.Mode === Mode.BLOCKS}
+				<SideButton icon={faCode} action="CODE" onclick={openCode} />
+			{/if}
+			{#if WorkspaceState.Mode !== Mode.PYTHON}
+				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
+			{/if}
+			{#if WorkspaceState.Mode === Mode.ADVANCED}
+				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
+			{/if}
+		</SideBar>
+        {#if WorkspaceState.SidePanel}
             <SidePanel />
         {/if}
     </div>

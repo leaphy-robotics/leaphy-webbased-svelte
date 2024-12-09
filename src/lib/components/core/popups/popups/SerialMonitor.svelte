@@ -4,8 +4,9 @@ import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import WindowButton from "$components/ui/WindowButton.svelte";
-import { popups } from "$state/popup.svelte";
-import { Prompt, log, port } from "$state/workspace.svelte";
+import PopupsState from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import { track } from "$state/utils";
 import {
 	faArrowDown,
 	faBars,
@@ -17,7 +18,6 @@ import { format } from "date-fns";
 import { tick } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
-import { get } from "svelte/store";
 import Windowed from "../Windowed.svelte";
 
 enum Mode {
@@ -38,20 +38,23 @@ function formatDate(date: Date) {
 	).padStart(3, "0")}`;
 }
 
-log.subscribe(async () => {
+$effect(() => {
+	track(SerialState.log.log);
+
 	if (!element) return;
 
-	await tick();
-	element.scroll({ top: element.scrollHeight, behavior: "smooth" });
+	tick().then(() =>
+		element.scroll({ top: element.scrollHeight, behavior: "smooth" }),
+	);
 });
 
 let value = $state("");
 function send(event: SubmitEvent) {
 	event.preventDefault();
 	try {
-		log.write(`${value}\n`);
+		SerialState.log.write(`${value}\n`);
 	} catch {
-		popups.open({
+		PopupsState.open({
 			component: ErrorPopup,
 			data: {
 				title: "ROBOT_RESERVED",
@@ -67,7 +70,7 @@ function send(event: SubmitEvent) {
 function download() {
 	const data: string[][] = [["date", "time", "data"]];
 
-	for (const item of get(log)) {
+	for (const item of SerialState.log.log) {
 		data.push([
 			item.date.toLocaleDateString("nl-NL"),
 			item.date.toLocaleTimeString("nl-NL"),
@@ -86,7 +89,7 @@ function download() {
 }
 
 async function connect() {
-	await port.connect(Prompt.MAYBE);
+	await SerialState.connect(Prompt.MAYBE);
 }
 
 function switchMode() {
@@ -100,34 +103,35 @@ function insertDate() {
 }
 </script>
 
-{#snippet actions()}
-    <WindowButton icon={faArrowDown} onclick={download} />
-	<WindowButton icon={mode === Mode.TEXT ? faChartLine : faBars} onclick={switchMode} />
-    <WindowButton icon={faTrash} onclick={log.clear} />
-{/snippet}
-{#snippet content()}
-    {#if !$port}
-	    <div class="warning">
-	        <div class="desc">
-	            <div class="name">{$_("NOT_CONNECTED")}</div>
-	            <div class="description">{$_("NOT_CONNECTED_DESC")}</div>
-	        </div>
-	        <Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
-	    </div>
-    {/if}
-    {#if mode === Mode.TEXT}
-	    <div class="content" bind:this={element}>
-	        {#each $log as item (item.id)}
-	            <div class="item">
-	                <div class="date">{formatDate(item.date)}</div>
-	                <div class="text">{item.content}</div>
-	            </div>
-	        {/each}
-	    </div>
+<Windowed title={$_("SERIAL_OUTPUT")}>
+	{#snippet actions()}
+		<WindowButton icon={faArrowDown} onclick={download} />
+		<WindowButton icon={mode === Mode.TEXT ? faChartLine : faBars} onclick={switchMode} />
+		<WindowButton icon={faTrash} onclick={SerialState.log.clear.bind(SerialState.log)} />
+	{/snippet}
+
+	{#if !SerialState.port}
+		<div class="warning">
+			<div class="desc">
+				<div class="name">{$_("NOT_CONNECTED")}</div>
+				<div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+			</div>
+			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
+		</div>
+	{/if}
+	{#if mode === Mode.TEXT}
+		<div class="content" bind:this={element}>
+			{#each SerialState.log.log as item (item.id)}
+				<div class="item">
+					<div class="date">{formatDate(item.date)}</div>
+					<div class="text">{item.content}</div>
+				</div>
+			{/each}
+		</div>
 	{:else if mode === Mode.CHART}
 		<Chart />
 	{/if}
-    {#if $port}
+	{#if SerialState.port}
 		<div class="send">
 			<div class="suggestions">
 				<Button mode={"accent"} name={format(new Date(), 'yyMMddiHHmmss')} icon={faClock} inline onclick={insertDate} />
@@ -142,10 +146,8 @@ function insertDate() {
 				/>
 			</form>
 		</div>
-    {/if}
-{/snippet}
-
-<Windowed title={$_("SERIAL_OUTPUT")} {content} {actions} />
+	{/if}
+</Windowed>
 
 <style>
     .content {

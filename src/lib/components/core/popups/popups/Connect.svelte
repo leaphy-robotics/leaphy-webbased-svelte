@@ -6,31 +6,28 @@ import ChipSelect from "$components/ui/ChipSelect.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import { isCompatible } from "$domain/blockly/blockly";
 import { type RobotDevice, type Selector, getSelector } from "$domain/robots";
-import { workspace } from "$state/blockly.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
-import { Mode, Prompt, handle, mode, robot } from "$state/workspace.svelte";
-import { port } from "$state/workspace.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import type { WorkspaceSvg } from "blockly";
 import * as Blockly from "blockly";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
-import { type Writable, get } from "svelte/store";
 
 interface Props {
 	connectOverride: boolean;
 }
 
 const { connectOverride }: Props = $props();
-const { board } = port;
 
-const categories = getSelector($robot) as Selector[];
+const categories = getSelector() as Selector[];
 const categoriesFilter = $derived(
 	categories.map((cat) => [cat.name, cat] as [string, Selector]),
 );
 let category = $state(
 	categories.find((cat) =>
-		cat.robots.find((robot) => $state.is(robot, $robot)),
+		cat.robots.find((robot) => robot.id === WorkspaceState.robot.id),
 	),
 );
 
@@ -38,41 +35,48 @@ const values = $derived(
 	category.robots.map((robot) => [robot.name, robot] as [string, RobotDevice]),
 );
 
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 function start() {
-	window._paq.push(["trackEvent", "SelectRobot", $robot.name]);
-	popups.close($popupState.id);
+	window._paq.push(["trackEvent", "SelectRobot", WorkspaceState.robot.name]);
+	popupState.close();
 }
 
-board.subscribe((board) => {
-	if (!connectOverride || !board) return;
+$effect(() => {
+	if (!connectOverride || !SerialState.board) return;
 
-	const robotDevice = get(robot);
-	const robotType = getSelector(robotDevice)
+	const robotDevice = WorkspaceState.robot;
+	const robotType = getSelector()
 		.find((category) =>
-			category.robots.find((robot) => $state.is(robot, robotDevice)),
+			category.robots.find((robot) => robot.id === robotDevice.id),
 		)
-		.robots.find((robot) => robot.board === board.board);
+		.robots.find((robot) => robot.board === SerialState.board.board);
 
-	if (robotType) robot.set(robotType);
+	if (robotType) WorkspaceState.robot = robotType;
 });
 
 const warning = $derived(
-	$board && $robot && $board.board !== $robot.board
+	SerialState.board &&
+		WorkspaceState.robot &&
+		SerialState.board.board !== WorkspaceState.robot.board
 		? $_("INVALID_ROBOT", {
-				values: { robot: $robot.name, board: $board.name },
+				values: {
+					robot: WorkspaceState.robot.name,
+					board: SerialState.board.name,
+				},
 			})
 		: undefined,
 );
 
 function checkEnabled(robot: RobotDevice): boolean {
-	if ($mode !== Mode.BLOCKS) return true;
+	if (WorkspaceState.Mode !== Mode.BLOCKS) return true;
 
-	return $workspace ? isCompatible($workspace as WorkspaceSvg, robot) : true;
+	return BlocklyState.workspace
+		? isCompatible(BlocklyState.workspace, robot)
+		: true;
 }
 
 async function disabledSelect() {
-	const value = await popups.open({
+	const value = await PopupsState.open({
 		component: Warning,
 		data: {
 			title: "CLEAR_PROJECT",
@@ -83,19 +87,22 @@ async function disabledSelect() {
 	});
 	if (!value) return false;
 
-	Blockly.serialization.workspaces.load(JSON.parse(defaultProgram), $workspace);
-	handle.set(undefined);
+	Blockly.serialization.workspaces.load(
+		JSON.parse(defaultProgram),
+		BlocklyState.workspace,
+	);
+	WorkspaceState.handle = undefined;
 	return true;
 }
 </script>
 
 <div class="content">
-	<Button onclick="{() => port.connect(Prompt.ALWAYS)}" mode="secondary" icon="{faUsb}" name={$port ? $board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold="{!!$port}" large />
+	<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
 	{#if categories.length > 1}
-		<ChipSelect options="{categoriesFilter}" bind:value={category} />
+		<ChipSelect options={categoriesFilter} bind:value={category} />
 	{/if}
-	<ListSelect {warning} options="{values}" {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={$robot} />
-	<Button onclick="{start}" mode="primary" name={$_("CONTINUE")} center bold />
+	<ListSelect {warning} options={values} {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={WorkspaceState.Mode} />
+	<Button onclick={start} mode="primary" name={$_("CONTINUE")} center bold />
 </div>
 
 <style>

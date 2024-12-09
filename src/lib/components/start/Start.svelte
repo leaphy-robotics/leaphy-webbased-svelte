@@ -2,29 +2,19 @@
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import { type Robot, robotListing } from "$domain/robots";
-import { Screen, screen } from "$state/app.svelte";
-import { restore } from "$state/blockly.svelte";
-import { willRestore } from "$state/blockly.svelte.js";
-import { popups } from "$state/popup.svelte";
-import {
-	Mode,
-	Prompt,
-	code,
-	mode,
-	port,
-	robot,
-	saveState,
-} from "$state/workspace.svelte";
+import AppState, { Screen } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import PopupState from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { _ } from "svelte-i18n";
 import { flip } from "svelte/animate";
 import { cubicOut } from "svelte/easing";
 import { fly } from "svelte/transition";
 
-const { board } = port;
-
 async function connect() {
 	try {
-		await port.connect(Prompt.NEVER);
+		await SerialState.connect(Prompt.NEVER);
 	} catch {}
 }
 
@@ -40,40 +30,43 @@ async function onselect(type: Robot) {
 	}
 
 	if ("robot" in type) {
-		robot.set($board || type.robot);
-		mode.set(type.mode || Mode.BLOCKS);
-		code.set(
-			($willRestore && localStorage.getItem(`${type.id}_content`)) ||
-				type.defaultProgram,
-		);
+		WorkspaceState.robot = SerialState.board || type.robot;
+		WorkspaceState.Mode = type.mode || Mode.BLOCKS;
+		WorkspaceState.code =
+			(BlocklyState.willRestore &&
+				localStorage.getItem(`${type.id}_content`)) ||
+			type.defaultProgram;
 	} else {
-		robot.set(type);
-		mode.set(Mode.BLOCKS);
-		restore.set(JSON.parse(localStorage.getItem(`${type.id}_content`)));
+		WorkspaceState.robot = type;
+		WorkspaceState.Mode = Mode.BLOCKS;
+		BlocklyState.restore = JSON.parse(
+			localStorage.getItem(`${type.id}_content`),
+		);
 
-		if ($board && type.board !== $board.id) {
-			popups
-				.open({
-					component: Warning,
-					data: {
-						title: "INVALID_ROBOT_TITLE",
-						message: $_("INVALID_ROBOT", {
-							values: { robot: $robot.name, board: $board.name },
-						}),
-						showCancel: true,
-					},
-					allowInteraction: false,
-				})
-				.then((result) => {
-					if (result) return;
+		if (SerialState.board && type.board !== SerialState.board.id) {
+			PopupState.open({
+				component: Warning,
+				data: {
+					title: "INVALID_ROBOT_TITLE",
+					message: $_("INVALID_ROBOT", {
+						values: {
+							robot: WorkspaceState.robot.name,
+							board: SerialState.board.name,
+						},
+					}),
+					showCancel: true,
+				},
+				allowInteraction: false,
+			}).then((result) => {
+				if (result) return;
 
-					screen.set(Screen.START);
-				});
+				AppState.Screen = Screen.START;
+			});
 		}
 	}
 
-	saveState.set(true);
-	screen.set(Screen.WORKSPACE);
+	WorkspaceState.saveState = true;
+	AppState.Screen = Screen.WORKSPACE;
 }
 
 const animationOptions = {

@@ -3,19 +3,18 @@ import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import TextArea from "$components/ui/TextArea.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
 import * as Sentry from "@sentry/browser";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
-import type { Writable } from "svelte/store";
 
 let comments = "";
 let senderName = "";
 let senderEmail = "";
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 
 function cancel() {
-	popups.close($popupState.id, false);
+	popupState.close(false);
 }
 
 async function save() {
@@ -28,7 +27,7 @@ async function save() {
 	};
 	Sentry.captureUserFeedback(userFeedback);
 
-	await popups.open({
+	await PopupsState.open({
 		component: Warning,
 		data: {
 			title: "FEEDBACK",
@@ -38,7 +37,7 @@ async function save() {
 		allowInteraction: true,
 	});
 
-	popups.close($popupState.id, comments);
+	popupState.close(comments);
 }
 
 function onsubmit(event: SubmitEvent) {
