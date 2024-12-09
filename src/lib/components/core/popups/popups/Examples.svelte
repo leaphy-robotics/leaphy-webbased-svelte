@@ -1,12 +1,11 @@
 <script lang="ts">
 import { inFilter } from "$domain/robots";
-import { workspace } from "$state/blockly.svelte";
-import { type PopupState, popups } from "$state/popup.svelte";
-import { robot } from "$state/workspace.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import { serialization } from "blockly";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import type { Writable } from "svelte/store";
 import Windowed from "../Windowed.svelte";
 
 interface Example {
@@ -18,7 +17,7 @@ interface Example {
 
 let examples = $state<Example[]>([]);
 const visible = $derived(
-	examples.filter(({ boards }) => inFilter($robot, boards)),
+	examples.filter(({ boards }) => inFilter(WorkspaceState.robot, boards)),
 );
 
 async function getExamples() {
@@ -33,25 +32,24 @@ async function getExamples() {
 }
 onMount(getExamples);
 
-const popupState = getContext<Writable<PopupState>>("state");
+const popupState = getContext<PopupState>("state");
 async function loadExample(example: Example) {
-	popups.close($popupState.id);
+	popupState.close();
 	const sketch = await example.sketch();
-	serialization.workspaces.load(sketch.default, $workspace);
+	serialization.workspaces.load(sketch.default, BlocklyState.workspace);
 }
 </script>
 
-{#snippet content()}
-    <div class="content">
-        {#each visible as example}
-            <button class="example" onclick={() => loadExample(example)}>
-                <img class="icon" src={example.icon} alt="" />
-                <div class="name">{example.name}</div>
-            </button>
-        {/each}
-    </div>
-{/snippet}
-<Windowed title={$_("EXAMPLES")} {content} />
+<Windowed title={$_("EXAMPLES")}>
+	<div class="content">
+		{#each visible as example}
+			<button class="example" onclick={() => loadExample(example)}>
+				<img class="icon" src={example.icon} alt="" />
+				<span class="name">{example.name}</span>
+			</button>
+		{/each}
+	</div>
+</Windowed>
 
 <style>
     .content {

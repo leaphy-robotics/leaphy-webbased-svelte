@@ -1,4 +1,4 @@
-import type { LeaphyPort } from "$state/workspace.svelte";
+import type { LeaphyPort } from "$state/serial.svelte";
 
 export const RobotType = {
 	L_FLITZ_UNO: 1,

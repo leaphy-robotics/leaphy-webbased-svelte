@@ -1,36 +1,34 @@
 <script lang="ts">
 import WindowButton from "$components/ui/WindowButton.svelte";
 import type { PopupState } from "$state/popup.svelte";
-import { popups } from "$state/popup.svelte";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import { type Snippet, getContext, onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
-import type { Writable } from "svelte/store";
 
 interface Props {
 	title: string;
-	content: Snippet;
+	children: Snippet;
 	actions?: Snippet;
 }
 
-const state = getContext<Writable<PopupState>>("state");
-const { content, actions, title }: Props = $props();
+const popupState = getContext<PopupState>("state");
+const { children, actions, title }: Props = $props();
 
 let x: number;
 let y: number;
 let moving: boolean;
 function ondown(e: MouseEvent) {
-	x = e.pageX - $state.position.x;
-	y = e.pageY - $state.position.y;
+	x = e.pageX - popupState.position.x;
+	y = e.pageY - popupState.position.y;
 	moving = true;
 }
 
 function onmove(e: MouseEvent) {
 	if (!moving) return;
-	popups.move($state.id, {
+	popupState.position = {
 		x: e.pageX - x,
 		y: e.pageY - y,
-	});
+	};
 }
 
 function onup() {
@@ -38,7 +36,7 @@ function onup() {
 }
 
 function close() {
-	popups.close($state.id);
+	popupState.close();
 }
 
 onMount(() => {
@@ -59,7 +57,7 @@ onDestroy(() => {
             {#if actions}{@render actions()}{/if}
         </div>
     </div>
-    {@render content()}
+    {@render children()}
 </div>
 
 <style>

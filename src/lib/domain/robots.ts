@@ -14,9 +14,7 @@ import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
 import nanoIcon from "$assets/robots/icons/l_nano.svg";
 import originalIcon from "$assets/robots/icons/l_original.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
-import robotsGroups from "$domain/robots.groups";
-import { Mode, mode } from "$state/workspace.svelte";
-import { get } from "svelte/store";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import AvrDude from "../programmers/AvrDude";
 import DFU from "../programmers/DFU";
 import Pico from "../programmers/Pico";
@@ -304,29 +302,16 @@ export function inFilter(robot: RobotDevice, filter: number[]) {
 }
 
 export interface Selector {
+	id: string;
 	name: string;
 	robots: RobotDevice[];
 }
 
-export function getSelector(robot: RobotDevice): Selector[] {
-	const NANO_SELECTOR: Selector[] = [
-		{
-			name: "Leaphy Original",
-			robots: [
-				robots.l_original_nano,
-				robots.l_original_nano_esp32,
-				robots.l_original_nano_rp2040,
-			],
-		},
-		{
-			name: "Arduino",
-			robots: [robots.l_nano, robots.l_nano_esp32, robots.l_nano_rp2040],
-		},
-	];
-
-	if (get(mode) === Mode.ADVANCED) {
+export function getSelector(): Selector[] {
+	if (WorkspaceState.Mode === Mode.ADVANCED) {
 		return [
 			{
+				id: "leaphy",
 				name: "Leaphy",
 				robots: [
 					robots.l_flitz_uno,
@@ -339,6 +324,7 @@ export function getSelector(robot: RobotDevice): Selector[] {
 				],
 			},
 			{
+				id: "arduino",
 				name: "Arduino",
 				robots: [
 					robots.l_uno,
@@ -347,45 +333,6 @@ export function getSelector(robot: RobotDevice): Selector[] {
 					robots.l_nano_rp2040,
 					robots.l_mega,
 				],
-			},
-		];
-	}
-
-	if (get(mode) === Mode.PYTHON) {
-		return [
-			{
-				name: "Arduino",
-				robots: [robots.l_nano_rp2040, robots.l_nano_esp32],
-			},
-		];
-	}
-
-	if (inFilter(robot, robotsGroups.L_ARDUINO_NANO_ALL)) {
-		return NANO_SELECTOR;
-	}
-
-	if (inFilter(robot, robotsGroups.L_ORIGINAL_ALL)) {
-		const originalSelector = [...NANO_SELECTOR].map((e) => ({ ...e }));
-		originalSelector[0].robots.unshift(robots.l_original_uno);
-		originalSelector[1].robots.unshift(robots.l_uno);
-
-		return originalSelector;
-	}
-
-	if (inFilter(robot, [RobotType.L_UNO])) {
-		return [
-			{
-				name: "Uno",
-				robots: [robots.l_uno, robots.l_original_uno],
-			},
-		];
-	}
-
-	if (inFilter(robot, robotsGroups.L_FLITZ_ALL)) {
-		return [
-			{
-				name: "Leaphy Flitz",
-				robots: [robots.l_flitz_uno, robots.l_flitz_nano],
 			},
 		];
 	}

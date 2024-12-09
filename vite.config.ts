@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import {svelte, vitePreprocess} from '@sveltejs/vite-plugin-svelte'
 import path from 'path'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { sentryVitePlugin } from "@sentry/vite-plugin";
@@ -7,7 +7,11 @@ import topLevelAwait from "vite-plugin-top-level-await";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [svelte(), topLevelAwait(), viteStaticCopy({
+  plugins: [svelte({
+	  preprocess: vitePreprocess({
+	  	script: true
+	  })
+  }), topLevelAwait(), viteStaticCopy({
     targets: [
       {
         src: './node_modules/@leaphy-robotics/leaphy-blocks/media/*',

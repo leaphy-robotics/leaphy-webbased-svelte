@@ -2,13 +2,13 @@
 import type { Snippet } from "svelte";
 
 interface Props {
-	buttons: Snippet;
+	children: Snippet;
 }
-const { buttons }: Props = $props();
+const { children }: Props = $props();
 </script>
 
 <div class="sidebar">
-    {@render buttons()}
+    {@render children()}
 </div>
 
 <style>

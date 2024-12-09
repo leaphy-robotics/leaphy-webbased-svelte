@@ -1,10 +1,9 @@
 import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte";
-import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import type { RobotDevice } from "$domain/robots";
-import { popups } from "$state/popup.svelte";
-import { port } from "$state/workspace.svelte";
+import PopupState from "$state/popup.svelte";
+import SerialState from "$state/serial.svelte";
+import type { LeaphyPort } from "$state/serial.svelte";
 import base64 from "base64-js";
-import { get } from "svelte/store";
 import { delay } from "../programmers/utils";
 import { Commands } from "./commands";
 import { FileSystem } from "./filesystem";
@@ -62,13 +61,13 @@ export default class MicroPythonIO {
 	public commands: Commands = new Commands(this);
 	public fs: FileSystem = new FileSystem(this);
 	public packageManager: PackageManager = new PackageManager(this);
-	public port: SerialPort;
+	public port: LeaphyPort;
 	public reader: ReadableStreamDefaultReader<Uint8Array>;
 	public writer: WritableStreamDefaultWriter<Uint8Array>;
 	public running: boolean;
 
 	async initialize() {
-		await popups.open({
+		await PopupState.open({
 			component: PythonUploader,
 			data: { io: this },
 			allowInteraction: false,
@@ -92,10 +91,10 @@ export default class MicroPythonIO {
 	}
 
 	async enterREPLMode() {
-		await port.ready;
-		await port.reserve();
+		await SerialState.ready;
+		await SerialState.reserve();
 
-		this.port = get(port);
+		this.port = SerialState.port;
 		this.reader = this.port.readable.getReader();
 		this.writer = this.port.writable.getWriter();
 
@@ -118,7 +117,7 @@ export default class MicroPythonIO {
 			this.reader.releaseLock();
 			this.writer.releaseLock();
 
-			port.release();
+			SerialState.release();
 			return false;
 		}
 
