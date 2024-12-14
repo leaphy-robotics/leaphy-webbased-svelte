@@ -500,7 +500,30 @@ export default [
 				{
 					type: "bluetooth_on_disconnect",
 				},
+				{
+					type: "bluetooth_on_characteristic_updated",
+					inputs: {
+						NAME: text("LED"),
+					},
+				}
 			],
+			[
+				{
+					type: "create_binary_characteristic",
+					inputs: {
+						NAME: text("LED"),
+						INITIAL_VALUE: boolean(),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_characteristic_read",
+					inputs: {
+						NAME: text("LED"),
+					}
+				},
+			]
 		],
 	},
 	{
