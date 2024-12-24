@@ -80,7 +80,7 @@ function onsubmit(event: SubmitEvent) {
 		</div>
 	</form>
 {:else}
-	<form action="https://leaphyeasybloqs.com" class="content">
+	<form action={import.meta.env.VITE_BACKEND_URL} class="content">
 		<h2>{$_("PROJECT_SUBMISSIONS_CLOSED")}</h2>
 		<p class="description">{$_("SUBMISSIONS_CLOSED_DESCRIPTION")}</p>
 		<div class="actions">

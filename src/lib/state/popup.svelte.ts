@@ -116,7 +116,7 @@ class PopupsState {
 				);
 				config = await res.json();
 			} catch (e) {
-				window.location.replace("https://leaphyeasybloqs.com");
+				window.location.replace(import.meta.env.VITE_BACKEND_URL);
 				return;
 			}
 
