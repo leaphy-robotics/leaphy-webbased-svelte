@@ -1,7 +1,9 @@
 import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSupported.svelte";
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
+import Recording from "$components/core/popups/popups/Recording.svelte";
 import type { Component } from "svelte";
+import { requestRecording } from "../recording";
 
 export enum Anchor {
 	TopLeft = "0 0",
@@ -98,6 +100,27 @@ class PopupsState {
 				data: {},
 				allowInteraction: false,
 			});
+		}
+
+		const [project] = location.hostname.split(
+			import.meta.env.VITE_RECORDINGS_ADDRESS,
+		);
+		if (
+			project &&
+			location.hostname.endsWith(import.meta.env.VITE_RECORDINGS_ADDRESS)
+		) {
+			let config: any;
+			try {
+				const res = await fetch(
+					`${import.meta.env.VITE_RECORDINGS_API}/api/projects/${project}`,
+				);
+				config = await res.json();
+			} catch (e) {
+				window.location.replace("https://leaphyeasybloqs.com");
+				return;
+			}
+
+			await requestRecording(config);
 		}
 	}
 

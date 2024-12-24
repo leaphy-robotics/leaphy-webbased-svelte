@@ -1,5 +1,6 @@
 <script lang="ts">
-import { onMount } from "svelte";
+import SelectContext from "$components/ui/SelectContext.svelte";
+import { onMount, tick } from "svelte";
 
 interface Props {
 	placeholder?: string;
@@ -10,6 +11,7 @@ interface Props {
 	required?: boolean;
 	type?: string;
 	input?: HTMLInputElement;
+	suggestions?: string[];
 }
 
 let {
@@ -21,26 +23,62 @@ let {
 	required,
 	type = "text",
 	input = $bindable(),
+	suggestions = [],
 }: Props = $props();
 
+let selected = $state(false);
+let container = $state<HTMLDivElement>();
 onMount(() => {
 	if (focus) input.focus();
 });
+
+function getSuggestions(value: string) {
+	return suggestions.filter((suggestion) =>
+		suggestion.toUpperCase().includes(value.toUpperCase()),
+	);
+}
+
+const relevantSuggestions = $derived(getSuggestions(value));
+
+function onclick(event: MouseEvent) {
+	if (container.contains(event.target as Node)) return;
+	selected = false;
+}
 </script>
 
-<input
-	bind:this={input}
-	class="input"
-	{type}
-	{placeholder}
-	bind:value
-	class:primary={mode === "primary"}
-	class:secondary={mode === "secondary"}
-	class:rounded
-	{required}
-/>
+<svelte:body {onclick} />
+<div bind:this={container} class="container">
+	<input
+		bind:this={input}
+		class="input"
+		{type}
+		{placeholder}
+		bind:value
+		class:primary={mode === "primary"}
+		class:secondary={mode === "secondary"}
+		class:disableBottomRoundings={selected && relevantSuggestions.length > 0}
+		class:rounded
+
+		onfocus={() => selected = true}
+		{required}
+	/>
+	{#if relevantSuggestions.length > 0}
+		<SelectContext
+			{mode}
+			open={selected}
+			options={relevantSuggestions.map(suggestion => [suggestion, suggestion])}
+			onselect={newValue => {
+				value = newValue;
+				selected = false
+			}}
+		/>
+	{/if}
+</div>
 
 <style>
+	.container {
+		position: relative;
+	}
 	.input {
 		border: none;
 		padding: 5px 10px;
@@ -70,5 +108,10 @@ onMount(() => {
 
 	.secondary::placeholder {
 		color: var(--on-secondary-muted);
+	}
+
+	.disableBottomRoundings {
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
 	}
 </style>

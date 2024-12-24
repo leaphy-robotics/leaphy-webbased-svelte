@@ -28,7 +28,6 @@ setContext("state", state);
         position: absolute;
         background: var(--background);
         border-radius: 6px;
-        overflow: hidden;
         box-shadow: var(--shadow-el2);
     }
 

@@ -147,5 +147,11 @@
 	"ROBOT_RESERVED": "Verbinding onmogelijk",
 	"ROBOT_RESERVED_MESSAGE": "Het lijkt erop dat we niet kunnen verbinden met de robot, de poort zou in gebruik kunnen zijn door een ander programma of een andere app",
 	"RECORDING": "Schermopnames staan aan!",
-	"RECORDING_DESCRIPTION": "Deze versie van Leaphy EasyBloqs neemt automatisch een schermopname van je progressie voor onderzoek, door door te gaan ga je hier automatisch mee akkoord.\n\nOm schermopnames uit te zetten, kan je altijd gebruik maken van de normale site.\n\nVul je naam in om door te gaan"
+	"RECORDING_DESCRIPTION": "Deze versie van Leaphy EasyBloqs neemt automatisch schermopnames op, deze opnames worden gebruikt door externe partijen voor het project {project}, door door te gaan ga je hier automatisch mee akkoord.\n\nOm schermopnames uit te zetten, kan je altijd gebruik maken van de normale site.\n\nVul je naam in om door te gaan",
+	"SUBMISSIONS_CLOSED_DESCRIPTION": "De inzendingen voor dit project zijn gesloten, gebruik de normale site voor Leaphy EasyBloqs om verder te gaan",
+	"ERROR": "Er ging iets mis!",
+	"INVALID_PROJECT": "Ongeldig project",
+	"PROJECT_SUBMISSIONS_CLOSED": "Inzendingen gesloten",
+	"PROJECT_NO_OTHER_PARTICIPANTS": "Ongeldige naam",
+	"NO_PARTICIPANTS": "Geen deelnemers, vraag je docent om deze aan te maken"
 }

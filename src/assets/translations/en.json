@@ -147,5 +147,11 @@
 	"ROBOT_RESERVED": "Unable to connect to robot",
 	"ROBOT_RESERVED_MESSAGE": "It appears that we're unable to connect to the robot, the port might be in use by another program or another tab",
 	"RECORDING": "Recording is on!",
-	"RECORDING_DESCRIPTION": "This version of Leaphy EasyBloqs will record your progress for research purposes, by continuing you are automatically agreeing to this.\n\nTo disable recordings, you may visit our regular site.\n\nPlease enter your name to continue"
+	"RECORDING_DESCRIPTION": "This version of Leaphy EasyBloqs will record your screen for use by an external party for the project {project}, by continuing you are automatically agreeing to this.\n\nTo disable recordings, you may visit our regular site.\n\nPlease enter your name to continue",
+	"SUBMISSIONS_CLOSED_DESCRIPTION": "The submissions for this project are closed, please use the regular site for Leaphy EasyBloqs to continue building",
+	"ERROR": "Something went wrong!",
+	"INVALID_PROJECT": "Invalid project",
+	"PROJECT_SUBMISSIONS_CLOSED": "Submissions closed",
+	"PROJECT_NO_OTHER_PARTICIPANTS": "Invalid name",
+	"NO_PARTICIPANTS": "No users found, please ask your administrator to create them"
 }
