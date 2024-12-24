@@ -36,6 +36,8 @@ jobs:
           VITE_MATOMO_SITE_ID="2"
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
           VITE_SENTRY_SAMPLE_RATE="1.0"
+          VITE_RECORDINGS_API="https://recordings.leaphyeasybloqs.com"
+          VITE_RECORDINGS_ADDRESS=".testleaphyeasybloqs.com"
           EOF
           echo "ENV=test" >> "$GITHUB_ENV"
           echo "STACK=leaphy-webbased-test" >> "$GITHUB_ENV"
@@ -49,6 +51,8 @@ jobs:
           VITE_MATOMO_SITE_ID="1"
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
           VITE_SENTRY_SAMPLE_RATE="0.0"
+          VITE_RECORDINGS_API="https://recordings.leaphyeasybloqs.com"
+          VITE_RECORDINGS_ADDRESS=".leaphyeasybloqs.com"
           EOF
           echo "ENV=prod" >> "$GITHUB_ENV"
           echo "STACK=leaphy-webbased" >> "$GITHUB_ENV"
