@@ -8,6 +8,7 @@ import enTranslations from "./assets/translations/en.json";
 import nlTranslations from "./assets/translations/nl.json";
 import initMatomo from "./lib/matomo";
 import initSentry from "./lib/sentry";
+import setupRecording from "./lib/recording";
 
 initSentry();
 
@@ -20,6 +21,7 @@ init({
 });
 
 initMatomo();
+// setupRecording('Sverre')
 
 const app = mount(App, {
 	target: document.getElementById("app"),

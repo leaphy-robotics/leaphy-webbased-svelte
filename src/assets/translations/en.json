@@ -145,5 +145,7 @@
 	"UNDEFINED_ROBOT": "Project name invalid",
 	"UNDEFINED_ROBOT_MESSAGE": "This does seem like a valid Leaphy Project, but the robot type was not included in the name, we've kept your previous robot selection for now.",
 	"ROBOT_RESERVED": "Unable to connect to robot",
-	"ROBOT_RESERVED_MESSAGE": "It appears that we're unable to connect to the robot, the port might be in use by another program or another tab"
+	"ROBOT_RESERVED_MESSAGE": "It appears that we're unable to connect to the robot, the port might be in use by another program or another tab",
+	"RECORDING": "Recording is on!",
+	"RECORDING_DESCRIPTION": "This version of Leaphy EasyBloqs will record your progress for research purposes, by continuing you are automatically agreeing to this.\n\nTo disable recordings, you may visit our regular site.\n\nPlease enter your name to continue"
 }

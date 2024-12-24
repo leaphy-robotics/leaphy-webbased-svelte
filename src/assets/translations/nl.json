@@ -145,5 +145,7 @@
 	"UNDEFINED_ROBOT": "Ongeldige project naam",
 	"UNDEFINED_ROBOT_MESSAGE": "Dit project ziet er goed uit, maar het type robot staat niet in de naam, je vorige robot selectie is behouden",
 	"ROBOT_RESERVED": "Verbinding onmogelijk",
-	"ROBOT_RESERVED_MESSAGE": "Het lijkt erop dat we niet kunnen verbinden met de robot, de poort zou in gebruik kunnen zijn door een ander programma of een andere app"
+	"ROBOT_RESERVED_MESSAGE": "Het lijkt erop dat we niet kunnen verbinden met de robot, de poort zou in gebruik kunnen zijn door een ander programma of een andere app",
+	"RECORDING": "Schermopnames staan aan!",
+	"RECORDING_DESCRIPTION": "Deze versie van Leaphy EasyBloqs neemt automatisch een schermopname van je progressie voor onderzoek, door door te gaan ga je hier automatisch mee akkoord.\n\nOm schermopnames uit te zetten, kan je altijd gebruik maken van de normale site.\n\nVul je naam in om door te gaan"
 }
