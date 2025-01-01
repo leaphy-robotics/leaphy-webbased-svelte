@@ -45,6 +45,11 @@ export default defineConfig({
     project: "leaphy-webbased-svelte",
     org: 'leaphy',
     authToken: process.env.SENTRY_AUTH_TOKEN,
+    release: {
+      deploy: {
+        env: process.env.ENV,
+      }
+    }
   })
   ],
   resolve: {
