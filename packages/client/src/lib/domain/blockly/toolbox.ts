@@ -518,9 +518,26 @@ export default [
 			],
 			[
 				{
-					type: "bluetooth_characteristic_read",
+					type: "create_string_characteristic",
+					inputs: {
+						NAME: text("DISPLAY"),
+						INITIAL_VALUE: text("Hello"),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_bool_characteristic_read",
 					inputs: {
 						NAME: text("LED"),
+					}
+				},
+			],
+			[
+				{
+					type: "bluetooth_string_characteristic_read",
+					inputs: {
+						NAME: text("DISPLAY"),
 					}
 				},
 			]
