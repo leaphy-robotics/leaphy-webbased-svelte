@@ -71,7 +71,8 @@ async function upload(res: Record<string, string>) {
 
 			currentState = "UPDATE_STARTED";
 			await SerialState.reserve();
-		} catch {
+		} catch (e) {
+			console.log(e);
 			popupState.close();
 			return PopupsState.open({
 				component: ErrorPopup,

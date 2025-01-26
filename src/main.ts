@@ -7,8 +7,10 @@ import App from "./App.svelte";
 import enTranslations from "./assets/translations/en.json";
 import nlTranslations from "./assets/translations/nl.json";
 import initMatomo from "./lib/matomo";
-import setupRecording from "./lib/recording";
 import initSentry from "./lib/sentry";
+
+import { Buffer } from "buffer";
+window.Buffer = Buffer;
 
 initSentry();
 

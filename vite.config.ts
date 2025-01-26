@@ -18,18 +18,6 @@ export default defineConfig({
         dest: 'blockly-assets'
       },
       {
-        src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude.wasm',
-        dest: ''
-      },
-      {
-        src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude-worker.js',
-        dest: ''
-      },
-      {
-        src: './node_modules/@leaphy-robotics/avrdude-webassembly/avrdude.conf',
-        dest: ''
-      },
-      {
         src: "./node_modules/@leaphy-robotics/dfu-util-wasm/build/*",
         dest: 'dfu-util'
       },
