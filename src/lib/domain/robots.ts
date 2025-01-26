@@ -15,9 +15,10 @@ import nanoIcon from "$assets/robots/icons/l_nano.svg";
 import originalIcon from "$assets/robots/icons/l_original.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import AvrDude from "../programmers/AvrDude";
 import DFU from "../programmers/DFU";
 import Pico from "../programmers/Pico";
+import STK500v1 from "../programmers/STK500v1/STK500v1";
+import STK500v2 from "../programmers/STK500v2";
 import { type Programmer, RobotType } from "./robots.types";
 
 const DEFAULT_LIBRARIES = [
@@ -74,14 +75,14 @@ export enum PinMapping {
 const baseUno = {
 	mapping: PinMapping.UNO,
 	fqbn: "arduino:avr:uno",
-	programmer: new AvrDude("atmega328p"),
+	programmer: new STK500v1(),
 	board: "l_uno",
 };
 
 const baseNano = {
 	mapping: PinMapping.NANO,
 	fqbn: "arduino:avr:nano",
-	programmer: new AvrDude("atmega328p"),
+	programmer: new STK500v1(),
 	board: "l_nano",
 };
 
@@ -227,7 +228,7 @@ const robotDevices: RobotDevice[] = [
 		type: RobotType.L_MEGA,
 		mapping: PinMapping.MEGA,
 		name: "Arduino Mega",
-		programmer: new AvrDude("atmega2560"),
+		programmer: new STK500v2(),
 		fqbn: "arduino:avr:mega",
 		libraries: DEFAULT_LIBRARIES.concat([
 			"QMC5883LCompass",
