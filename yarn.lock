@@ -588,10 +588,10 @@
   dependencies:
     serialport "^12.0.0"
 
-"@leaphy-robotics/webusb-ftdi@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@leaphy-robotics/webusb-ftdi/-/webusb-ftdi-1.0.2.tgz#1d84826b6b3823f5dc62d70aceb15e100972d9c8"
-  integrity sha512-8u34rfbkgk+BsYd2/SgRozTIm1cZO+pHZYxg27d+FhWyJEgTSMsZ7xdrRLptOOj9BtOGYACXPo9MDI1Wf9QIRQ==
+"@leaphy-robotics/webusb-ftdi@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/webusb-ftdi/-/webusb-ftdi-1.0.3.tgz#befe4d60479c3ffc4c13a61be16f866ccef29623"
+  integrity sha512-9j3cGGsT7M0k5Y9rl7xnm9/TqRDSbC5LRBEC88MMntNDpoV1rBB9HKLXGiTZV26161Qmm2xhquEuVzG1RQkryA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

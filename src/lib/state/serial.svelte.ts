@@ -236,15 +236,16 @@ class SerialState {
 		const port = await this.requestPort(prompt);
 		if (this.port === port) return this.onReady();
 
-		if ("addEventListener" in port) {
-			port.addEventListener("disconnect", async () => {
+		this.port = this.getLeaphyPort(port);
+		if ("addEventListener" in this.port) {
+			this.port.addEventListener("disconnect", async () => {
 				this.reserved = false;
 				this.port = undefined;
 				this.board = undefined;
 				this.onFailure();
 			});
 		}
-		this.port = this.getLeaphyPort(port);
+
 		this.board = this.detectBoard(port);
 
 		return port;
