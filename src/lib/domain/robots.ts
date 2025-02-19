@@ -33,7 +33,6 @@ const DEFAULT_LIBRARIES = [
 	"Adafruit_VL53L0X",
 	"Adafruit BMP280 Library",
 	"TM1637",
-	"LedControl",
 	"DS3231",
 ];
 
