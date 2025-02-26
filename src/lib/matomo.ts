@@ -7,13 +7,12 @@ declare global {
 function initMatomo() {
 	// Always create the _paq array so dev code works
 	const _paq = (window._paq = window._paq || []);
-	// Only track prod builds
-	if (!import.meta.env.PROD) return;
+	const url = import.meta.env.VITE_MATOMO_URL;
+	if (!url) return;
 
-	const u = import.meta.env.VITE_MATOMO_URL;
 	_paq.push(["trackPageView"]);
 	_paq.push(["enableLinkTracking"]);
-	_paq.push(["setTrackerUrl", `${u}matomo.php`]);
+	_paq.push(["setTrackerUrl", `${url}matomo.php`]);
 	_paq.push(["setSiteId", import.meta.env.VITE_MATOMO_SITE_ID]);
 
 	const d = document;
@@ -21,7 +20,7 @@ function initMatomo() {
 	const s = d.getElementsByTagName("script")[0];
 	g.type = "text/javascript";
 	g.async = true;
-	g.src = `${u}matomo.js`;
+	g.src = `${url}matomo.js`;
 	s.parentNode.insertBefore(g, s);
 }
 
