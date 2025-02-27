@@ -94,8 +94,12 @@ async function newProject() {
 }
 
 function serialize() {
-	if ($mode === Mode.BLOCKS)
+	if ($mode === Mode.BLOCKS) {
 		return JSON.stringify(serialization.workspaces.save($workspace));
+	} else if ($mode === Mode.PYTHONBLOCKS) {
+		// Serialiseer de werkruimte voor de Python-blocks modus
+		return JSON.stringify(serialization.workspaces.save($workspace)); // Of een andere specifieke functie
+	}
 
 	return $code;
 }
@@ -116,6 +120,7 @@ async function saveProjectAs() {
 	let extension = $robot.id;
 	if ($mode === Mode.ADVANCED) extension = "ino";
 	if ($mode === Mode.PYTHON) extension = "py";
+    if ($mode === Mode.PYTHONBLOCKS) extension = "py.json";
 
 	const url = URL.createObjectURL(
 		new Blob([serialize()], { type: "text/plain" }),
@@ -144,14 +149,13 @@ async function openProject() {
 		mode.set(Mode.PYTHON);
 		robot.set(robots.l_nano_rp2040);
 		code.set(await content.text());
-	} else {
-		if (get(mode) === Mode.BLOCKS) {
-			loadWorkspaceFromString(await content.text(), $workspace);
-		} else {
-			restore.set(JSON.parse(await content.text()));
-			mode.set(Mode.BLOCKS);
-		}
-		robot.set(robots[file.name.split(".").at(-1)]);
+	} else if (file.name.endsWith(".py.json")) {
+		mode.set(Mode.PYTHONBLOCKS);
+		robot.set(robots.l_nano_rp2040);
+		loadWorkspaceFromString(await content.text(), $workspace);
+	} else if (file.name.endsWith(".json")) {
+		mode.set(Mode.BLOCKS);
+		loadWorkspaceFromString(await content.text(), $workspace);
 	}
 }
 
@@ -290,6 +294,14 @@ function runPython() {
 	const io = get(microPythonIO);
 	microPythonRun.set(io.runCode(get(code)));
 }
+
+function switchToPythonCode() {
+	mode.set(Mode.PYTHON);
+}
+
+function switchToPythonBlocks() {
+	mode.set(Mode.PYTHONBLOCKS);
+}
 </script>
 
 {#snippet projectContext(open: Writable<boolean>)}
@@ -417,7 +429,7 @@ function runPython() {
     </div>
 
     <div class="comp">
-        {#if $screen === Screen.WORKSPACE && $mode === Mode.BLOCKS}
+        {#if $screen === Screen.WORKSPACE && ($mode === Mode.BLOCKS || $mode === Mode.PYTHONBLOCKS)}
             <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!$canUndo} />
             <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!$canRedo} />
         {/if}
@@ -441,12 +453,29 @@ function runPython() {
                 />
             {/if}
 
+            {#if $mode === Mode.PYTHONBLOCKS}
+                <Button
+                    mode={"outlined"}
+                    icon={faPen}
+                    name={$_("CODE")}
+                    onclick={switchToPythonCode}
+                />
+            {:else if $mode === Mode.PYTHON}
+                <Button
+                    mode={"outlined"}
+                    icon={block}
+                    name={$_("BLOCKS")}
+                    onclick={switchToPythonBlocks}
+                />
+            {/if}
+
             <Button
                 icon={faSave}
                 name={$_("SAVE")}
                 mode={"outlined"}
                 onclick={saveDynamic}
             />
+
             {#if $mode === Mode.PYTHON || $mode === Mode.PYTHONBLOCKS}
                 {#if $microPythonIO}
                     <Button

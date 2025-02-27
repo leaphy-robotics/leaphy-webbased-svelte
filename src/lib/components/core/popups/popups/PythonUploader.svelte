@@ -50,46 +50,51 @@ async function upload(res: Record<string, string>) {
 }
 
 onMount(async () => {
-	try {
-		const installed = await io.enterREPLMode();
-		progress += 100 / 6;
+    try {
+        console.log("Entering REPL mode...");
+        const installed = await io.enterREPLMode();
+        progress += 100 / 6;
 
-		currentState = "CHOOSING_ROBOT";
-		if (!installed) {
-			const newRobot = await new Promise<RobotDevice>(
-				(resolve) => (robotRequest = resolve),
-			);
-			robot.set(newRobot);
-		}
-		robotRequest = undefined;
-		progress += 100 / 6;
+        currentState = "CHOOSING_ROBOT";
+        if (!installed) {
+            const newRobot = await new Promise<RobotDevice>(
+                (resolve) => (robotRequest = resolve),
+            );
+            robot.set(newRobot);
+        }
+        robotRequest = undefined;
+        progress += 100 / 6;
 
-		currentState = "DOWNLOADING_FIRMWARE";
-		let firmware: Record<string, string>;
-		if (!installed) firmware = await io.getFirmware(get(robot));
-		progress += 100 / 6;
+        currentState = "DOWNLOADING_FIRMWARE";
+        let firmware: Record<string, string>;
+        if (!installed) {
+            firmware = await io.getFirmware(get(robot));
+            console.log("Firmware downloaded:", firmware); // Log de firmware
+        }
+        progress += 100 / 6;
 
-		currentState = "UPLOADING_FIRMWARE";
-		if (!installed) await upload(firmware);
-		progress += 100 / 6;
+        currentState = "UPLOADING_FIRMWARE";
+        if (!installed) await upload(firmware);
+        progress += 100 / 6;
 
-		currentState = "CONNECTING";
-		if (!installed) await io.enterREPLMode();
-		progress += 100 / 6;
+        currentState = "CONNECTING";
+        if (!installed) await io.enterREPLMode();
+        progress += 100 / 6;
 
-		currentState = "INSTALLING_LIBRARIES";
-		await io.packageManager.flashLibrary(
-			"github:leaphy-robotics/leaphy-micropython/package.json",
-		);
-		progress += 100 / 6;
+        currentState = "INSTALLING_LIBRARIES";
+        await io.packageManager.flashLibrary(
+            "github:leaphy-robotics/leaphy-micropython/package.json",
+        );
+        progress += 100 / 6;
 
-		popups.close($popupState.id);
-	} catch (e) {
-		done = true;
-		currentState = e?.name || "UPDATE_FAILED";
-		error = e.description;
-		throw e;
-	}
+        popups.close($popupState.id);
+    } catch (e) {
+        done = true;
+        currentState = e?.name || "UPDATE_FAILED";
+        error = e.description;
+        console.error("Error during upload:", e); // Log de fout
+        throw e;
+    }
 });
 
 function close() {

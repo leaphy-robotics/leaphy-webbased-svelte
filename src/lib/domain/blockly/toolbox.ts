@@ -704,32 +704,4 @@ export default [
 		id: "l_functions",
 		custom: "PROCEDURE",
 	},
-	{
-		name: "MicroPython",
-		style: "micropython_category",
-		id: "micropython",
-		groups: [
-			[
-				{
-						type: "time_delay",
-						inputs: {
-							DELAY_TIME_MILI: number(1000),
-					},
-
-
-				},
-				{
-					type: "leaphy_original_set_led",
-					inputs: {
-						LED_RED: number(0),
-						LED_GREEN: number(0),
-						LED_BLUE: number(0),
-					},
-				},
-				{
-					type: "controls_repeat_forever",
-				},
-			],
-		],
-	},
 ];

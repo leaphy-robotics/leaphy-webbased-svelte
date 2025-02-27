@@ -1,6 +1,7 @@
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
+import PythonBlocks from "$components/workspace/pythonblocks/pythonBlocks.svelte";
 import type { Handle } from "$domain/handles";
 import { type RobotDevice, robots } from "$domain/robots";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
@@ -12,7 +13,7 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import { workspace } from "./blockly.svelte";
 import { popups } from "./popup.svelte";
-import PythonBlocks from "$components/workspace/pythonblocks/pythonBlocks.svelte";
+
 
 export type LeaphyPort =
 	| SerialPort
