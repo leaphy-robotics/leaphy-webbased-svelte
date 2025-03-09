@@ -22,7 +22,7 @@ const ALL = [
 	...L_ORIGINAL_ALL,
 	...L_ARDUINO_ALL,
 	...L_FLITZ_ALL,
-	RobotType.L_CLICK,
+	RobotType.L_STARLING,
 ];
 
 export default {

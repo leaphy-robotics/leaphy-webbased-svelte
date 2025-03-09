@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:realworld="http://www.rw-designer.com/export-svg" width="437px" height="437px">
+  <g inkscape:groupmode="layer" inkscape:label="layer 6">
+    <ellipse cx="161.194" cy="163.375" fill="#5d5c5c" fill-opacity="0" realworld:stroke-pos="-1" rx="60.4841" ry="75.2132" stroke="#454459" stroke-linejoin="round" stroke-width="6" />
+    <ellipse cx="269.606" cy="152.439" fill="#5d5c5c" fill-opacity="0" realworld:stroke-pos="-1" rx="60.6924" ry="81.5518" stroke="#e0e1e1" stroke-linejoin="round" stroke-width="6" />
+    <ellipse cx="259.619" cy="150.052" fill="#5d5c5c" fill-opacity="0" realworld:stroke-pos="-1" rx="54.9483" ry="87.8281" stroke="#178ace" stroke-linejoin="round" stroke-width="6" />
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="layer 7">
+    <rect fill="#5d5c5c" height="41" width="30.9974" x="197.708" y="134" />
+    <rect fill="#3e3e3e" height="41" width="30.9974" x="302.708" y="134" />
+    <rect fill="#3e3e3e" height="41" width="30.9974" x="94.7083" y="134" />
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="layer 0">
+    <rect fill="#454459" height="122.273" width="272.72" x="80.407" y="174.855" />
+    <rect fill="#5d5c5c" height="27.6454" width="15.9612" x="205.416" y="311.957" />
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="layer 3">
+    <rect fill="#dcdcdc" height="166.472" width="10.2546" x="371.214" y="174.173" />
+    <rect fill="#5f5f5e" height="166.376" width="20.2846" x="381.22" y="174.959" />
+    <rect fill="#dcdcdc" height="166.775" width="10.2546" x="402.214" y="174.173" />
+    <rect fill="#dcdcdc" height="166.149" width="10.2546" x="24.2137" y="174.173" />
+    <rect fill="#5f5f5e" height="164.885" width="20.9722" x="33.7199" y="175.459" />
+    <rect fill="#dcdcdc" height="165.566" width="10.2546" x="55.2137" y="174.174" />
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="layer 1">
+    <rect fill="#7a7a7b" height="5.07874" width="407.264" x="13.821" y="170.536" />
+    <rect fill="#d3d2d2" height="11.1547" width="406.978" x="14.077" y="160.004" />
+    <rect fill="#7a7a7b" height="5.07874" width="416.89" x="11.181" y="307.536" />
+    <rect fill="#d3d2d2" height="11.1547" width="417.26" x="10.505" y="297.004" />
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="layer 2">
+    <ellipse cx="171.75" cy="236.75" fill="none" realworld:stroke-pos="-1" rx="35.066" ry="35.066" stroke="#e8e9e9" stroke-linejoin="round" stroke-width="6" />
+    <ellipse cx="257.75" cy="236.75" fill="none" realworld:stroke-pos="-1" rx="35.066" ry="35.066" stroke="#e8e9e9" stroke-linejoin="round" stroke-width="6" />
+    <ellipse cx="173" cy="237.5" fill="#0fb801" rx="20.8596" ry="20.8596" />
+    <ellipse cx="257" cy="237.5" fill="#0fb801" rx="20.8596" ry="20.8596" />
+    <ellipse cx="172.545" cy="237.199" fill="#f4f5f5" rx="10.8097" ry="10.8097" />
+    <ellipse cx="257.545" cy="237.199" fill="#f4f5f5" rx="10.8097" ry="10.8097" />
+  </g>
+  <g inkscape:groupmode="layer" inkscape:label="layer 5" />
+</svg>

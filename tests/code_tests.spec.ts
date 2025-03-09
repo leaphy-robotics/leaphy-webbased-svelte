@@ -39,9 +39,9 @@ async function testExtension(page: Page, extension: string) {
 	}
 }
 
-test("Code blocks - Leaphy Click", async ({ page }) => {
-	await page.getByText("Leaphy Click").click();
-	await testExtension(page, ".l_click");
+test("Code blocks - Leaphy Starling", async ({ page }) => {
+	await page.getByText("Leaphy Starling").click();
+	await testExtension(page, ".l_starling");
 });
 
 test("Code blocks - Original Uno", async ({ page }) => {
