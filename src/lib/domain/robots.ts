@@ -7,12 +7,12 @@ import originalNanoESP32Background from "$assets/robots/backgrounds/orig_nano_es
 import originalNanoRP2040Background from "$assets/robots/backgrounds/orig_nano_rp2040.svg";
 import originalUnoBackground from "$assets/robots/backgrounds/orig_uno.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
-import starlingIcon from "$assets/robots/icons/l_starling.svg";
 import flitzIcon from "$assets/robots/icons/l_flitz.svg";
 import megaIcon from "$assets/robots/icons/l_mega.svg";
 import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
 import nanoIcon from "$assets/robots/icons/l_nano.svg";
 import originalIcon from "$assets/robots/icons/l_original.svg";
+import starlingIcon from "$assets/robots/icons/l_starling.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import DFU from "../programmers/DFU";
