@@ -7,7 +7,7 @@ import originalNanoESP32Background from "$assets/robots/backgrounds/orig_nano_es
 import originalNanoRP2040Background from "$assets/robots/backgrounds/orig_nano_rp2040.svg";
 import originalUnoBackground from "$assets/robots/backgrounds/orig_uno.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
-import clickIcon from "$assets/robots/icons/l_click.svg";
+import starlingIcon from "$assets/robots/icons/l_starling.svg";
 import flitzIcon from "$assets/robots/icons/l_flitz.svg";
 import megaIcon from "$assets/robots/icons/l_mega.svg";
 import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
@@ -169,12 +169,12 @@ const robotDevices: RobotDevice[] = [
 		background: originalNanoRP2040Background,
 	},
 	{
-		...baseUno,
-		id: "l_click",
-		type: RobotType.L_CLICK,
-		name: "Leaphy Click",
+		...baseNano,
+		id: "l_starling",
+		type: RobotType.L_STARLING,
+		name: "Leaphy Starling",
 		libraries: DEFAULT_LIBRARIES,
-		icon: clickIcon,
+		icon: starlingIcon,
 	},
 	{
 		...baseNano,
@@ -263,7 +263,7 @@ export const robotListing: Robot[][] = [
 				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
 			],
 		},
-		robots.l_click,
+		robots.l_starling,
 	],
 	[
 		{
@@ -320,7 +320,7 @@ export function getSelector(): Selector[] {
 					robots.l_original_nano,
 					robots.l_original_nano_esp32,
 					robots.l_original_nano_rp2040,
-					robots.l_click,
+					robots.l_starling,
 				],
 			},
 			{
