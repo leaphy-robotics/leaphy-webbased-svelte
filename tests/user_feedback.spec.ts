@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import {goToHomePage, selectRobot} from "./utils";
+import { goToHomePage, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
