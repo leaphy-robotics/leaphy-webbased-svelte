@@ -4,7 +4,7 @@ import { goToHomePage, selectRobot } from "./utils";
 test.beforeEach(goToHomePage);
 
 test("User Feedback", async ({ page }) => {
-	await selectRobot(page, "Leaphy Starling", "Nano");
+	await selectRobot(page, "Leaphy Starling", "Leaphy Starling");
 
 	await page.getByRole("button", { name: "Tips" }).click();
 	await page.getByRole("cell", { name: "Suggestion / Feedback" }).click();

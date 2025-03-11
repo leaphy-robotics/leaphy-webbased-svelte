@@ -24,9 +24,7 @@ test("Saving - Backpack", async ({ page }) => {
 	await page.reload();
 
 	// Load a different robot type than before, cause why not
-	await page
-		.getByRole("button", { name: "Leaphy Starling Leaphy Starling" })
-		.click();
+	await selectRobot(page, "Leaphy Starling", "Leaphy Starling");
 
 	await expect(page.getByText("repeat forever")).toBeHidden();
 	await page.locator(".blocklyBackpack").click();
