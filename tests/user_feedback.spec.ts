@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage } from "./utils";
+import {goToHomePage, selectRobot} from "./utils";
 
 test.beforeEach(goToHomePage);
 
 test("User Feedback", async ({ page }) => {
-	await page.getByText("Leaphy Starling").click();
+	await selectRobot(page, "Leaphy Starling", "Nano");
 
 	await page.getByRole("button", { name: "Tips" }).click();
 	await page.getByRole("cell", { name: "Suggestion / Feedback" }).click();
