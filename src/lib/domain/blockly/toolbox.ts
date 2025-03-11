@@ -392,7 +392,11 @@ export default [
 		name: "Mesh",
 		style: "mesh_category",
 		id: "l_mesh",
-		robots: [RobotType.L_NANO_ESP32, RobotType.L_ORIGINAL_NANO_ESP32],
+		robots: [
+			RobotType.L_NANO_ESP32,
+			RobotType.L_ORIGINAL_NANO_ESP32,
+			RobotType.L_STARLING_NANO_ESP32,
+		],
 		groups: [
 			[
 				{

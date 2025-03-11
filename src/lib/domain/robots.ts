@@ -170,9 +170,25 @@ const robotDevices: RobotDevice[] = [
 	},
 	{
 		...baseNano,
-		id: "l_starling",
-		type: RobotType.L_STARLING,
+		id: "l_starling_nano",
+		type: RobotType.L_STARLING_NANO,
 		name: "Leaphy Starling",
+		libraries: DEFAULT_LIBRARIES,
+		icon: starlingIcon,
+	},
+	{
+		...baseNanoESP32,
+		id: "l_starling_esp32",
+		type: RobotType.L_STARLING_NANO_ESP32,
+		name: "Leaphy Starling ESP32",
+		libraries: DEFAULT_LIBRARIES.concat(["Painless Mesh", "AsyncTCP"]),
+		icon: starlingIcon,
+	},
+	{
+		...baseNanoRP2040,
+		id: "l_starling_rp2040",
+		type: RobotType.L_STARLING_NANO_RP2040,
+		name: "Leaphy Starling RP2040",
 		libraries: DEFAULT_LIBRARIES,
 		icon: starlingIcon,
 	},
@@ -263,7 +279,15 @@ export const robotListing: Robot[][] = [
 				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
 			],
 		},
-		robots.l_starling,
+		{
+			id: "l_starling_select",
+			name: "Leaphy Starling",
+			icon: starlingIcon,
+			variants: [
+				[robots.l_starling_nano],
+				[robots.l_starling_esp32, robots.l_starling_rp2040],
+			],
+		},
 	],
 	[
 		{
