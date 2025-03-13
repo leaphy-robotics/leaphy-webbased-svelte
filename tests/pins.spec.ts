@@ -84,7 +84,7 @@ async function test_pins(
 }
 
 test("Pins - Uno", async ({ page }) => {
-	await page.getByText("Leaphy Click").click();
+	await page.getByText("Arduino Uno").click();
 
 	await test_pins(page, uno_pins);
 });

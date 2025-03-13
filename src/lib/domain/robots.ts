@@ -7,12 +7,12 @@ import originalNanoESP32Background from "$assets/robots/backgrounds/orig_nano_es
 import originalNanoRP2040Background from "$assets/robots/backgrounds/orig_nano_rp2040.svg";
 import originalUnoBackground from "$assets/robots/backgrounds/orig_uno.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
-import clickIcon from "$assets/robots/icons/l_click.svg";
 import flitzIcon from "$assets/robots/icons/l_flitz.svg";
 import megaIcon from "$assets/robots/icons/l_mega.svg";
 import microPythonIcon from "$assets/robots/icons/l_micropython.svg";
 import nanoIcon from "$assets/robots/icons/l_nano.svg";
 import originalIcon from "$assets/robots/icons/l_original.svg";
+import starlingIcon from "$assets/robots/icons/l_starling.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import DFU from "../programmers/DFU";
@@ -169,12 +169,28 @@ const robotDevices: RobotDevice[] = [
 		background: originalNanoRP2040Background,
 	},
 	{
-		...baseUno,
-		id: "l_click",
-		type: RobotType.L_CLICK,
-		name: "Leaphy Click",
+		...baseNano,
+		id: "l_starling_nano",
+		type: RobotType.L_STARLING_NANO,
+		name: "Starling Nano",
 		libraries: DEFAULT_LIBRARIES,
-		icon: clickIcon,
+		icon: starlingIcon,
+	},
+	{
+		...baseNanoESP32,
+		id: "l_starling_nano_esp32",
+		type: RobotType.L_STARLING_NANO_ESP32,
+		name: "Starling Nano ESP32",
+		libraries: DEFAULT_LIBRARIES.concat(["Painless Mesh", "AsyncTCP"]),
+		icon: starlingIcon,
+	},
+	{
+		...baseNanoRP2040,
+		id: "l_starling_nano_rp2040",
+		type: RobotType.L_STARLING_NANO_RP2040,
+		name: "Starling Nano RP2040",
+		libraries: DEFAULT_LIBRARIES,
+		icon: starlingIcon,
 	},
 	{
 		...baseNano,
@@ -263,7 +279,15 @@ export const robotListing: Robot[][] = [
 				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
 			],
 		},
-		robots.l_click,
+		{
+			id: "l_starling_select",
+			name: "Leaphy Starling",
+			icon: starlingIcon,
+			variants: [
+				[robots.l_starling_nano],
+				[robots.l_starling_nano_esp32, robots.l_starling_nano_rp2040],
+			],
+		},
 	],
 	[
 		{
@@ -320,7 +344,9 @@ export function getSelector(): Selector[] {
 					robots.l_original_nano,
 					robots.l_original_nano_esp32,
 					robots.l_original_nano_rp2040,
-					robots.l_click,
+					robots.l_starling_nano,
+					robots.l_starling_nano_esp32,
+					robots.l_starling_nano_rp2040,
 				],
 			},
 			{
