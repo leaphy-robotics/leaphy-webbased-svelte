@@ -40,7 +40,7 @@ async function testExtension(page: Page, extension: string) {
 }
 
 test("Code blocks - Leaphy Starling", async ({ page }) => {
-	await selectRobot(page, "Leaphy Starling", "Leaphy Starling Nano");
+	await selectRobot(page, "Leaphy Starling", "Starling Nano");
 	await testExtension(page, ".l_starling_nano");
 });
 
