@@ -185,12 +185,20 @@ export default [
 					},
 				},
 				{
+					robots: [
+						...robotGroups.ALL,
+						...robotGroups.L_STARLING_ALL.map((e) => -e)
+					],
 					type: "leaphy_original_set_motor",
 					inputs: {
 						MOTOR_SPEED: number(100),
 					},
 				},
 				{
+					robots: [
+						...robotGroups.ALL,
+						...robotGroups.L_STARLING_ALL.map((e) => -e)
+					],
 					type: "leaphy_original_move_motors",
 					inputs: {
 						MOTOR_SPEED: number(100),

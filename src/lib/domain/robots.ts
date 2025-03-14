@@ -271,21 +271,21 @@ export const robotListing: Robot[][] = [
 			variants: [[robots.l_flitz_uno, robots.l_flitz_nano]],
 		},
 		{
-			id: "l_original_select",
-			name: "Leaphy Original",
-			icon: originalIcon,
-			variants: [
-				[robots.l_original_uno, robots.l_original_nano],
-				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
-			],
-		},
-		{
 			id: "l_starling_select",
 			name: "Leaphy Starling",
 			icon: starlingIcon,
 			variants: [
 				[robots.l_starling_nano],
 				[robots.l_starling_nano_esp32, robots.l_starling_nano_rp2040],
+			],
+		},
+		{
+			id: "l_original_select",
+			name: "Leaphy Original",
+			icon: originalIcon,
+			variants: [
+				[robots.l_original_uno, robots.l_original_nano],
+				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
 			],
 		},
 	],
