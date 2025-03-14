@@ -187,7 +187,7 @@ export default [
 				{
 					robots: [
 						...robotGroups.ALL,
-						...robotGroups.L_STARLING_ALL.map((e) => -e)
+						...robotGroups.L_STARLING_ALL.map((e) => -e),
 					],
 					type: "leaphy_original_set_motor",
 					inputs: {
@@ -197,7 +197,7 @@ export default [
 				{
 					robots: [
 						...robotGroups.ALL,
-						...robotGroups.L_STARLING_ALL.map((e) => -e)
+						...robotGroups.L_STARLING_ALL.map((e) => -e),
 					],
 					type: "leaphy_original_move_motors",
 					inputs: {
