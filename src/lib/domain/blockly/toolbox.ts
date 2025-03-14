@@ -206,14 +206,20 @@ export default [
 				},
 				{
 					type: "leaphy_original_servo_set",
-					robots: robotGroups.L_NANO_ALL,
+					robots: [
+						...robotGroups.L_NANO_ALL,
+						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+					],
 					inputs: {
 						SPEED: number(100),
 					},
 				},
 				{
 					type: "leaphy_original_servo_move",
-					robots: robotGroups.L_NANO_ALL,
+					robots: [
+						...robotGroups.L_NANO_ALL,
+						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+					],
 					inputs: {
 						SPEED: number(100),
 					},
