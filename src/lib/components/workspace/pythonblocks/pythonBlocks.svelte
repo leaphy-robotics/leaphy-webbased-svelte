@@ -11,8 +11,6 @@
         workspace,
     } from "$state/blockly.svelte";
     import { code, robot } from "$state/workspace.svelte";
-    // MicroPython import moet hier komen
-    //import { arduino } from "@leaphy-robotics/leaphy-blocks";
     import { micropython } from "@leaphy-robotics/leaphy-blocks";
     import { Events, WorkspaceSvg, serialization } from "blockly";
     import { onMount } from "svelte";
@@ -116,4 +114,3 @@
             z-index: -1;
         }
     </style>
-    

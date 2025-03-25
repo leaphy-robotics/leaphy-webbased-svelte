@@ -15,7 +15,7 @@
     import Code from "./panels/Code.svelte";
     import LibraryManager from "./panels/LibraryManager.svelte";
   
-    // Reactive variabele voor de zichtbaarheid van de terminal-popup
+    // Variabele terminal-popup
     let showTerminal: boolean = false;
   
     function toggleTerminal() {
@@ -41,7 +41,6 @@
     }
   </script>
   
-  <!-- Zijbalk met knoppen -->
   {#snippet actions()}
     {#if $mode === Mode.BLOCKS || $mode === Mode.PYTHONBLOCKS}
       <SideButton icon={faCode} action="CODE" onclick={openCode} />
@@ -68,7 +67,6 @@
     </div>
   </div>
   
-  <!-- Toon de TerminalPopup als showTerminal true is. We vangen het "close" event op -->
   {#if showTerminal}
     <TerminalPopup on:close={() => showTerminal = false} />
   {/if}

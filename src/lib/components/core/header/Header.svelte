@@ -97,8 +97,7 @@ function serialize() {
 	if ($mode === Mode.BLOCKS) {
 		return JSON.stringify(serialization.workspaces.save($workspace));
 	} else if ($mode === Mode.PYTHONBLOCKS) {
-		// Serialiseer de werkruimte voor de Python-blocks modus
-		return JSON.stringify(serialization.workspaces.save($workspace)); // Of een andere specifieke functie
+		return JSON.stringify(serialization.workspaces.save($workspace)); 
 	}
 
 	return $code;

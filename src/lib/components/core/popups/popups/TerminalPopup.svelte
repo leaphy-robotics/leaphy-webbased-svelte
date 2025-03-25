@@ -5,7 +5,6 @@
     import { microPythonIO, microPythonRun } from "$state/workspace.svelte";
     import { get } from "svelte/store";
   
-    // Maak een dispatcher aan om events naar de parent te sturen
     const dispatch = createEventDispatcher();
   
     const PROMPT = "$ ";
@@ -39,7 +38,6 @@
   
       terminal.write(PROMPT);
   
-      // Abonneer op microPythonIO voor invoerverwerking
       const unsubscribeIO = microPythonIO.subscribe((io) => {
         if (!io) return;
         renderPrompt();
@@ -48,18 +46,18 @@
           if (io.running) return;
   
           switch (data) {
-            case "\x1b[D": // Pijl-links
+            case "\x1b[D": // left
               pos = Math.max(0, pos - 1);
               break;
-            case "\x1b[C": // Pijl-rechts
+            case "\x1b[C": // right
               pos = Math.min(line.length, pos + 1);
               break;
-            case "\x1b[A": // Omhoog
+            case "\x1b[A": // up
               historyPosition = Math.max(0, historyPosition - 1);
               line = history[historyPosition];
               pos = line.length;
               break;
-            case "\x1b[B": // Omlaag
+            case "\x1b[B": // down
               historyPosition = Math.min(history.length - 1, historyPosition + 1);
               line = history[historyPosition];
               pos = line.length;
@@ -108,7 +106,6 @@
         });
       });
   
-      // Abonneer op microPythonRun voor externe output
       const unsubscribeRun = microPythonRun.subscribe((events) => {
         if (!events) return;
         terminal.write("\r\n");
@@ -132,7 +129,6 @@
   <div class="popup">
     <div class="header">
       <h2>Terminal Monitor</h2>
-      <!-- Klik op de knop dispatcht een "close" event -->
       <button on:click={() => dispatch("close")}>Close</button>
     </div>
     <div class="terminal-container" bind:this={terminalContainer}></div>
