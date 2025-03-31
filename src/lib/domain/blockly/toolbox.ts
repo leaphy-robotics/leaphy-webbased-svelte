@@ -156,7 +156,7 @@ export default [
 				},
 				{
 					type: "leaphy_read_gyroscope",
-				}
+				},
 			],
 			/*[
 			],*/
