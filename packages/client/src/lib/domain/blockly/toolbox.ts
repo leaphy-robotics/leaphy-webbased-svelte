@@ -501,6 +501,15 @@ export default [
 					type: "bluetooth_on_disconnect",
 				},
 				{
+					type: "bluetooth_on_discover",
+				},
+				{
+					type: "bluetooth_start_filtered_scan",
+				},
+				{
+					type: "bluetooth_stop_scan",
+				},
+				{
 					type: "bluetooth_on_characteristic_update",
 					inputs: {
 						NAME: text("LED"),
