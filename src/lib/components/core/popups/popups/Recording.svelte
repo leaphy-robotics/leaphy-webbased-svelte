@@ -7,23 +7,13 @@ import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
-
-interface Props {
-	id: string;
-	name: string;
-	acceptsSubmissions: boolean;
-	suggestNames: boolean;
-	acceptsNewParticipants: boolean;
-	showSubmit: boolean;
-	names: { id: string; name: string }[];
-}
-const config: Props = $props();
+import RecordingState from "$state/recordings.svelte"
 
 const popupState = getContext<PopupState>("state");
 let name = $state(
-	config.acceptsNewParticipants
+	RecordingState.project.acceptsNewParticipants
 		? localStorage.getItem("name") || ""
-		: config.names[0]?.name,
+		: RecordingState.project.names[0]?.name,
 );
 
 async function done() {
@@ -37,7 +27,7 @@ function onsubmit(event: SubmitEvent) {
 }
 </script>
 
-{#if config.acceptsSubmissions}
+{#if RecordingState.project.acceptsSubmissions}
 	<form class="content" {onsubmit}>
 		<h2>
 			<span class="icon">
@@ -47,24 +37,24 @@ function onsubmit(event: SubmitEvent) {
 		</h2>
 
 		<p class="description">{$_("RECORDING_DESCRIPTION", { values: {
-				project: config.name
+				project: RecordingState.project.name
 			}})}</p>
 
 		<div class="input">
-			{#if config.acceptsNewParticipants}
+			{#if RecordingState.project.acceptsNewParticipants}
 				<TextInput
 					placeholder={$_("NAME")}
 					bind:value={name}
-					suggestions={config.names?.map(name => name.name)}
+					suggestions={RecordingState.project.names?.map(name => name.name)}
 					mode="secondary"
 					required
 					focus
 					rounded={true}>
 				</TextInput>
 			{:else}
-				{#if config.names.length > 0}
+				{#if RecordingState.project.names.length > 0}
 					<Select
-						options={config.names.map(name => ([name.name, name.name]))}
+						options={RecordingState.project.names.map(name => ([name.name, name.name]))}
 						bind:value={name}
 						mode="secondary" full
 					/>

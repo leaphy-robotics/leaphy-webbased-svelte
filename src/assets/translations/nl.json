@@ -153,5 +153,19 @@
 	"INVALID_PROJECT": "Ongeldig project",
 	"PROJECT_SUBMISSIONS_CLOSED": "Inzendingen gesloten",
 	"PROJECT_NO_OTHER_PARTICIPANTS": "Ongeldige naam",
-	"NO_PARTICIPANTS": "Geen deelnemers, vraag je docent om deze aan te maken"
+	"TEST_MODE_ENABLED": "Toets modus is ingeschakeld",
+	"TEST_MODE_SELECT": "Selecteer hieronder een opdracht",
+	"NO_PARTICIPANTS": "Geen deelnemers, vraag je docent om deze aan te maken",
+	"TUTORIALS": "Tutorials",
+	"CONFIRMSUBMIT_TITLE": "Weet je het zeker?",
+	"CONFIRMSUBMIT_MESSAGE": "Hierna kan je deze opdracht niet opnieuw inleveren",
+	"SUBMIT": "Inleveren",
+	"GRADING": "Onze AI bekijkt je werk...",
+	"SUBMITTING": "Inleveren...",
+	"LOADING_ASSIGNMENTS": "Opdrachten laden...",
+	"PLEASE_WAIT": "Een moment",
+	"AUTOGRADING_PASSED": "Gelukt!",
+	"AUTOGRADING_PASSED_DESC": "Gefeliciteerd met het sucessvol afronden van deze opdracht!",
+	"AUTOGRADING_FAILED": "Volgende keer beter...",
+	"DONE_ASSIGNMENT": "Ingeveleverd"
 }

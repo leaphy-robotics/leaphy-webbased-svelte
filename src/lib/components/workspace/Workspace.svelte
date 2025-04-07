@@ -7,12 +7,13 @@ import SideButton from "$components/ui/SideButton.svelte";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
-	faBook,
+	faBook, faChalkboardTeacher,
 	faCode,
 	faSquarePollHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
+import Tutorials from "$components/core/popups/popups/Tutorials.svelte";
 
 function openSerial() {
 	PopupState.open({
@@ -29,6 +30,14 @@ function openLibraryManager() {
 function openCode() {
 	WorkspaceState.toggleSidePanel(Code);
 }
+
+function openTutorials() {
+	PopupState.open({
+		component: Tutorials,
+		data: {},
+		allowInteraction: true,
+	})
+}
 </script>
 
 <div class="content">
@@ -43,6 +52,9 @@ function openCode() {
 			{/if}
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
+			{/if}
+			{#if WorkspaceState.Mode === Mode.BLOCKS}
+				<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />
 			{/if}
 		</SideBar>
         {#if WorkspaceState.SidePanel}

@@ -1,8 +1,8 @@
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
-import type { Handle } from "$domain/handles";
-import type { RobotDevice } from "$domain/robots";
+import {FileHandle, type Handle} from "$domain/handles";
+import {type RobotDevice, robots} from "$domain/robots";
 import { track } from "$state/utils";
 import { serialization } from "blockly";
 import type { Component } from "svelte";
@@ -10,6 +10,8 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
+import {loadWorkspaceFromString} from "$domain/blockly/blockly";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -84,6 +86,41 @@ class WorkspaceState {
 				localStorage.setItem(contentAddress, this.code);
 				break;
 			}
+		}
+	}
+
+	open(name: string, content: string) {
+		if (name.endsWith(".ino")) {
+			this.Mode = Mode.ADVANCED;
+			this.code = content;
+		} else if (name.endsWith(".py")) {
+			this.Mode = Mode.PYTHON;
+			this.robot = robots.l_nano_rp2040;
+			this.code = content;
+		} else {
+			if (this.Mode === Mode.BLOCKS && BlocklyState.workspace) {
+				if (
+					!loadWorkspaceFromString(content, BlocklyState.workspace)
+				) {
+					return;
+				}
+			} else {
+				BlocklyState.restore = JSON.parse(content);
+				this.Mode = Mode.BLOCKS;
+			}
+			if (!robots[name.split(".").at(-1)]) {
+				PopupState.open({
+					component: ErrorPopup,
+					data: {
+						title: "UNDEFINED_ROBOT",
+						message: "UNDEFINED_ROBOT_MESSAGE",
+					},
+					allowInteraction: false,
+				});
+				return;
+			}
+
+			this.robot = robots[name.split(".").at(-1)];
 		}
 	}
 }

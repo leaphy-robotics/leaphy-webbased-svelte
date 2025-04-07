@@ -181,8 +181,8 @@ function insertDate() {
         background: var(--primary);
         color: var(--on-primary);
         width: 100%;
-        padding: 5px;
-    }
+		padding: 5px 5px 5px 10px;
+	}
     .name {
         font-size: 1.1em;
         font-weight: bold;

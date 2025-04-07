@@ -1,10 +1,12 @@
 <script lang="ts">
 import PopupState from "$state/popup.svelte";
+import RecordingsState from "$state/recordings.svelte";
 import { onMount } from "svelte";
 import Popup from "./Popup.svelte";
 
 onMount(async () => {
 	await PopupState.setup();
+	await RecordingsState.setup();
 });
 </script>
 

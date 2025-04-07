@@ -41,7 +41,7 @@ export default defineConfig({
       $assets: path.resolve(__dirname, './src/assets'),
       $domain: path.resolve(__dirname, './src/lib/domain'),
       $state: path.resolve(__dirname, './src/lib/state'),
-      $examples: path.resolve(__dirname, './src/lib/examples')
+      $education: path.resolve(__dirname, './src/lib/education')
     }
   },
   server: {
