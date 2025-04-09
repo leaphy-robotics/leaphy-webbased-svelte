@@ -228,6 +228,14 @@ const robotDevices: RobotDevice[] = [
 		icon: nanoIcon,
 	},
 	{
+		...baseNanoRP2040,
+		id: "l_nano_rp2040_python",
+		type: RobotType.L_NANO_RP2040_MICROPYTHON,
+		name: "Arduino Nano RP2040 (python)",
+		libraries: [],
+		icon: nanoIcon,
+	},
+	{
 		...baseUno,
 		id: "l_uno",
 		type: RobotType.L_UNO,
@@ -294,7 +302,7 @@ export const robotListing: Robot[][] = [
 			id: "l_nano_select",
 			name: "Arduino Nano",
 			icon: nanoIcon,
-			variants: [[robots.l_nano], [robots.l_nano_esp32, robots.l_nano_rp2040]],
+			variants: [[robots.l_nano, robots.l_nano_rp2040_python], [robots.l_nano_esp32, robots.l_nano_rp2040]],
 		},
 		robots.l_uno,
 		robots.l_mega,
