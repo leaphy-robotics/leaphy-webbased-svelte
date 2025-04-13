@@ -64,13 +64,6 @@ jobs:
           yarn --frozen-lockfile --prefer-offline
           yarn build
 
-      - name: Upload build files
-        if: github.ref_type == 'tag'
-        uses: actions/upload-artifact@v4
-        with:
-          name: leaphyeasybloqs-${{ github.ref_name }}
-          path: ./dist
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
