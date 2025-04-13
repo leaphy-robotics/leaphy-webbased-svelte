@@ -53,9 +53,10 @@ function openTutorials() {
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
 			{/if}
-			{#if WorkspaceState.Mode === Mode.BLOCKS}
-				<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />
-			{/if}
+			<!-- TODO: add all tutorials first -->
+			<!--{#if WorkspaceState.Mode === Mode.BLOCKS}-->
+			<!--	<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />-->
+			<!--{/if}-->
 		</SideBar>
         {#if WorkspaceState.SidePanel}
             <SidePanel />
