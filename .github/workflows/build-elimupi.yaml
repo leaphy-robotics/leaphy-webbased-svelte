@@ -1,4 +1,4 @@
-name: Deploy
+name: Build for ElimuPi
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  push:
+  build-elimu:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,8 +30,6 @@ jobs:
           echo "ENV=elimu" >> "$GITHUB_ENV"
 
       - name: Build application
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
           yarn --frozen-lockfile --prefer-offline
