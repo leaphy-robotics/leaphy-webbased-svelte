@@ -1,0 +1,44 @@
+name: Deploy
+
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+  workflow_dispatch: {}
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Create ElimuPi env file
+        run: |
+          cat << EOF > .env
+          VITE_BACKEND_URL=""
+          VITE_SENTRY_DSN=""
+          VITE_SENTRY_SAMPLE_RATE="0.0"
+          EOF
+          echo "ENV=elimu" >> "$GITHUB_ENV"
+
+      - name: Build application
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          yarn --frozen-lockfile --prefer-offline
+          yarn build
+
+      - name: Upload build files
+        uses: actions/upload-artifact@v4
+        with:
+          name: leaphyeasybloqs-${{ github.ref_name }}
+          path: ./dist
