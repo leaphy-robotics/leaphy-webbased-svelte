@@ -1,38 +1,44 @@
 <script lang="ts">
-	import { _, locale } from 'svelte-i18n'
-	import tutorials, {type Tutorial, type TutorialItem, type Video} from '$education/tutorials'
-	import Windowed from "$components/core/popups/Windowed.svelte";
-	import {get} from "svelte/store";
-	import Select from "$components/ui/Select.svelte";
+import Windowed from "$components/core/popups/Windowed.svelte";
+import Select from "$components/ui/Select.svelte";
+import tutorials, {
+	type Tutorial,
+	type TutorialItem,
+	type Video,
+} from "$education/tutorials";
+import { _, locale } from "svelte-i18n";
+import { get } from "svelte/store";
 
-	type State = "START" | "TYPE" | "VIDEO"
-	let screen = $state<State>("START")
+type State = "START" | "TYPE" | "VIDEO";
+let screen = $state<State>("START");
 
-	let tutorial = $state<Tutorial>()
-	let items = $state<TutorialItem[]>()
-	let videos = $state<[string, string][]>()
-	let reversedVideos = $derived(videos?.map(video => video.toReversed() as [string, string]))
-	let video = $state<string>()
+let tutorial = $state<Tutorial>();
+let items = $state<TutorialItem[]>();
+let videos = $state<[string, string][]>();
+let reversedVideos = $derived(
+	videos?.map((video) => video.toReversed() as [string, string]),
+);
+let video = $state<string>();
 
-	function setVideo(item: Video) {
-		if (Array.isArray(item[get(locale)])) {
-			videos = item[get(locale)] as [string, string][]
-			video = videos[0][0]
-		} else {
-			video = item[get(locale)] as string
-		}
-		screen = "VIDEO"
+function setVideo(item: Video) {
+	if (Array.isArray(item[get(locale)])) {
+		videos = item[get(locale)] as [string, string][];
+		video = videos[0][0];
+	} else {
+		video = item[get(locale)] as string;
 	}
+	screen = "VIDEO";
+}
 
-	function selectTutorial(newTutorial: Tutorial) {
-		tutorial = newTutorial
-		if (Array.isArray(tutorial.item)) {
-			items = tutorial.item
-			screen = "TYPE"
-		} else {
-			setVideo(tutorial.item)
-		}
+function selectTutorial(newTutorial: Tutorial) {
+	tutorial = newTutorial;
+	if (Array.isArray(tutorial.item)) {
+		items = tutorial.item;
+		screen = "TYPE";
+	} else {
+		setVideo(tutorial.item);
 	}
+}
 </script>
 
 <Windowed title={$_("TUTORIALS")}>

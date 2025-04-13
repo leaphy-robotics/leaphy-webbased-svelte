@@ -1,11 +1,11 @@
-import {type Block, ContextMenuRegistry, type Workspace} from "blockly";
-import * as Blockly from "blockly";
 import Explanation from "$components/core/popups/popups/Explanation.svelte";
-import {get} from "svelte/store";
-import {_, locale} from "svelte-i18n";
-import {Anchor} from "$state/popup.svelte";
+import { Anchor } from "$state/popup.svelte";
 import PopupState from "$state/popup.svelte";
-import type {ISerializer} from "blockly/core/interfaces/i_serializer";
+import { type Block, ContextMenuRegistry, type Workspace } from "blockly";
+import type * as Blockly from "blockly";
+import type { ISerializer } from "blockly/core/interfaces/i_serializer";
+import { _, locale } from "svelte-i18n";
+import { get } from "svelte/store";
 
 function serializeBlock(
 	block: Block,

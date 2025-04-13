@@ -13,9 +13,9 @@ import { robots } from "$domain/robots";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
+import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import RecordingsState from "$state/recordings.svelte"
 import {
 	faCircleCheck,
 	faComment,
@@ -124,7 +124,7 @@ async function openProject() {
 	WorkspaceState.handle = new FileHandle(file);
 	const content = await file.getFile();
 
-	WorkspaceState.open(file.name, await content.text())
+	WorkspaceState.open(file.name, await content.text());
 }
 
 async function saveProject() {
@@ -247,7 +247,7 @@ async function submit() {
 	});
 	if (!ok) return;
 
-	await RecordingsState.submit()
+	await RecordingsState.submit();
 }
 </script>
 

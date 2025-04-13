@@ -1,29 +1,32 @@
-import type {Workspace} from "blockly";
+import type { Workspace } from "blockly";
 import * as Blockly from "blockly";
-import {ContextMenuRegistry, serialization, type WorkspaceSvg} from "blockly";
+import { ContextMenuRegistry, type WorkspaceSvg, serialization } from "blockly";
 import "@blockly/field-bitmap";
 import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
-import {inFilter, type RobotDevice} from "$domain/robots";
-import {RobotType} from "$domain/robots.types";
+import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
+import { type RobotDevice, inFilter } from "$domain/robots";
+import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
-import {BackpackChange} from "@blockly/workspace-backpack";
+import { BackpackChange } from "@blockly/workspace-backpack";
 import {
-	blocks,
 	CATEGORIES,
 	ProcedureSerializer,
+	blocks,
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
-import type {CategoryInfo, ToolboxDefinition,} from "blockly/core/utils/toolbox";
-import {Backpack} from "./backpack";
-import {LeaphyCategory} from "./category-ui/category";
-import {LeaphyToolbox} from "./category-ui/toolbox";
+import type {
+	CategoryInfo,
+	ToolboxDefinition,
+} from "blockly/core/utils/toolbox";
+import { Backpack } from "./backpack";
+import { LeaphyCategory } from "./category-ui/category";
+import { LeaphyToolbox } from "./category-ui/toolbox";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
-import {explainBlockOption, PseudoSerializer} from "$domain/blockly/pseudo";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -48,7 +51,11 @@ Blockly.registry.register(
 	"procedures",
 	new ProcedureSerializer(),
 );
-Blockly.registry.register(Blockly.registry.Type.SERIALIZER, "pseudo", new PseudoSerializer());
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"pseudo",
+	new PseudoSerializer(),
+);
 
 registerExtensions(Blockly);
 

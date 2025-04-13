@@ -1,5 +1,5 @@
 <script lang="ts">
-import type {Snippet} from "svelte";
+import type { Snippet } from "svelte";
 
 interface Props<Type extends { id: string }> {
 	options: [string, Type][];

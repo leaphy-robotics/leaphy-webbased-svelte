@@ -1,39 +1,39 @@
 <script lang="ts">
-	import RecordingState from '$state/recordings.svelte';
-	import ListSelect from "$components/ui/ListSelect.svelte";
-	import Button from "$components/ui/Button.svelte";
-	import {getContext} from "svelte";
-	import type {PopupState} from "$state/popup.svelte";
-	import Fa from "svelte-fa";
-	import {faCircleCheck} from "@fortawesome/free-solid-svg-icons";
-	import { Circle, DoubleBounce, RingLoader } from 'svelte-loading-spinners';
-	import { _ } from 'svelte-i18n'
+import Button from "$components/ui/Button.svelte";
+import ListSelect from "$components/ui/ListSelect.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import RecordingState from "$state/recordings.svelte";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { getContext } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
+import { Circle, DoubleBounce, RingLoader } from "svelte-loading-spinners";
 
-	interface Props {
-		waitingMessage?: string
-		waitingPromise?: Promise<any>
-	}
-	const { waitingMessage, waitingPromise }: Props = $props()
-	let waiting = $state(false)
+interface Props {
+	waitingMessage?: string;
+	waitingPromise?: Promise<any>;
+}
+const { waitingMessage, waitingPromise }: Props = $props();
+let waiting = $state(false);
 
-	$effect(() => {
-		waiting = !!waitingPromise
-		waitingPromise?.then(() => {
-			waiting = false;
-		})
-	})
+$effect(() => {
+	waiting = !!waitingPromise;
+	waitingPromise?.then(() => {
+		waiting = false;
+	});
+});
 
-	const popupState = getContext<PopupState>("state");
-	let value = $state('');
+const popupState = getContext<PopupState>("state");
+let value = $state("");
 
-	function start() {
-		if (!value) return
-		popupState.close(value)
-	}
+function start() {
+	if (!value) return;
+	popupState.close(value);
+}
 
-	function checkEnabled(value: { done: boolean }) {
-		return !value.done
-	}
+function checkEnabled(value: { done: boolean }) {
+	return !value.done;
+}
 </script>
 
 <div class="content">

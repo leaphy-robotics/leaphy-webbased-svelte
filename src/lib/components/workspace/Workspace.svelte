@@ -1,5 +1,6 @@
 <script lang="ts">
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
+import Tutorials from "$components/core/popups/popups/Tutorials.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
@@ -7,13 +8,13 @@ import SideButton from "$components/ui/SideButton.svelte";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
-	faBook, faChalkboardTeacher,
+	faBook,
+	faChalkboardTeacher,
 	faCode,
 	faSquarePollHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
-import Tutorials from "$components/core/popups/popups/Tutorials.svelte";
 
 function openSerial() {
 	PopupState.open({
@@ -36,7 +37,7 @@ function openTutorials() {
 		component: Tutorials,
 		data: {},
 		allowInteraction: true,
-	})
+	});
 }
 </script>
 

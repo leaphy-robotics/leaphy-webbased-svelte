@@ -1,8 +1,10 @@
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
 import Python from "$components/workspace/python/Python.svelte";
-import {FileHandle, type Handle} from "$domain/handles";
-import {type RobotDevice, robots} from "$domain/robots";
+import { loadWorkspaceFromString } from "$domain/blockly/blockly";
+import { FileHandle, type Handle } from "$domain/handles";
+import { type RobotDevice, robots } from "$domain/robots";
 import { track } from "$state/utils";
 import { serialization } from "blockly";
 import type { Component } from "svelte";
@@ -10,8 +12,6 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
-import {loadWorkspaceFromString} from "$domain/blockly/blockly";
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -99,9 +99,7 @@ class WorkspaceState {
 			this.code = content;
 		} else {
 			if (this.Mode === Mode.BLOCKS && BlocklyState.workspace) {
-				if (
-					!loadWorkspaceFromString(content, BlocklyState.workspace)
-				) {
+				if (!loadWorkspaceFromString(content, BlocklyState.workspace)) {
 					return;
 				}
 			} else {
