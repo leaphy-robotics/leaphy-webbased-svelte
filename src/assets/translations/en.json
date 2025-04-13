@@ -153,6 +153,8 @@
 	"INVALID_PROJECT": "Invalid project",
 	"PROJECT_SUBMISSIONS_CLOSED": "Submissions closed",
 	"PROJECT_NO_OTHER_PARTICIPANTS": "Invalid name",
+	"PROJECT_INVALID_USERNAME": "Username should be at least 3 characters long",
+	"LICENSE_QUOTA": "Out of licenses",
 	"TEST_MODE_ENABLED": "Test mode is enabled",
 	"TEST_MODE_SELECT": "Please select an assignment below",
 	"NO_PARTICIPANTS": "No users found, please ask your administrator to create them",

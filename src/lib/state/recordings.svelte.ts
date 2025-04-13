@@ -82,7 +82,23 @@ class RecordingsState {
 				name: this.name
 			})
 		})
-			.then(res => res.json())
+			.then(async res => {
+				if (!res.ok) {
+					const { message } = await res.json()
+					PopupState.clear()
+					await PopupState.open({
+						component: ErrorPopup,
+						data: {
+							title: "ERROR",
+							message,
+						},
+						allowInteraction: false,
+					});
+					await this.initializeProject()
+				}
+
+				return res.json();
+			})
 	}
 
 	private async startProject(promise?: Promise<any>, message?: string) {

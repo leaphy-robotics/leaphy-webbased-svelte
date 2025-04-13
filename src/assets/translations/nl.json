@@ -153,6 +153,8 @@
 	"INVALID_PROJECT": "Ongeldig project",
 	"PROJECT_SUBMISSIONS_CLOSED": "Inzendingen gesloten",
 	"PROJECT_NO_OTHER_PARTICIPANTS": "Ongeldige naam",
+	"PROJECT_INVALID_USERNAME": "Gebruikersnaam moet minstens 3 karakters lang zijn",
+	"LICENSE_QUOTA": "Geen licenties",
 	"TEST_MODE_ENABLED": "Toets modus is ingeschakeld",
 	"TEST_MODE_SELECT": "Selecteer hieronder een opdracht",
 	"NO_PARTICIPANTS": "Geen deelnemers, vraag je docent om deze aan te maken",
