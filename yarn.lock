@@ -576,12 +576,6 @@
   dependencies:
     blockly "^10.4.3"
 
-"@leaphy-robotics/leaphy-blocks@leaphy-robotics/leaphy-blocks":
-  version "3.5.0"
-  resolved "https://codeload.github.com/leaphy-robotics/leaphy-blocks/tar.gz/9222b66ebdf2758b4cc289d310ba8b0560c9ee8d"
-  dependencies:
-    blockly "^10.4.3"
-
 "@leaphy-robotics/picotool-wasm@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/picotool-wasm/-/picotool-wasm-1.0.3.tgz#9047c984c7c261685f6e88d49c9ed54eaeb29391"
