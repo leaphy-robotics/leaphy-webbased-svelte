@@ -569,10 +569,16 @@
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/dfu-util-wasm/-/dfu-util-wasm-1.0.2.tgz#29afcc01266655e1c7b5da0eeceb0ead48c86fd7"
   integrity sha512-lvS+tJFO049b4ERYKX0HcoUtnQv76A1z9sZrAvbs7s3bvdMW0BObKmktZeJ7emcp3lU/+OJWsD2h0EY5rnkiNg==
 
-"@leaphy-robotics/leaphy-blocks@^3.4.5":
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/@leaphy-robotics/leaphy-blocks/-/leaphy-blocks-3.4.5.tgz#0ce7a4608ecb68e9fb82f731fe3c7ce9d0e5546f"
-  integrity sha512-flTia2G/TeCwOnHnBuJ7b6M2Z+kHMFOGwB+QOFbB8Ocliwe7YQct7ely0RD3Z2Yejh5Gxv8mrBGWElCXbDJHnA==
+"@leaphy-robotics/leaphy-blocks@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/leaphy-blocks/-/leaphy-blocks-3.5.0.tgz#45a81af44cc06b9d5467dde53c5f1c88921b9c14"
+  integrity sha512-K/V7UTzoZYhKJnGsShmoLmqdM+zjUhmRvq2ZDKdru2tA1GS8WJ1xTzQiecheoGlKZN8nHKDa4bHkPu2ZqreUPA==
+  dependencies:
+    blockly "^10.4.3"
+
+"@leaphy-robotics/leaphy-blocks@leaphy-robotics/leaphy-blocks":
+  version "3.5.0"
+  resolved "https://codeload.github.com/leaphy-robotics/leaphy-blocks/tar.gz/9222b66ebdf2758b4cc289d310ba8b0560c9ee8d"
   dependencies:
     blockly "^10.4.3"
 
