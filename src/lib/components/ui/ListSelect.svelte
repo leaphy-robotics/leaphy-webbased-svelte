@@ -1,10 +1,13 @@
 <script lang="ts">
+import type { Snippet } from "svelte";
+
 interface Props<Type extends { id: string }> {
 	options: [string, Type][];
 	value: Type;
 	warning?: undefined | string;
 	checkEnabled?: (value: unknown) => boolean;
 	disabledText?: string;
+	disabled?: Snippet;
 	disabledSelect?: (value: unknown) => Promise<boolean>;
 }
 let {
@@ -13,6 +16,7 @@ let {
 	warning,
 	checkEnabled,
 	disabledText,
+	disabled,
 	disabledSelect,
 }: Props<any> = $props();
 
@@ -42,7 +46,11 @@ async function onselect(option: unknown, enabled: boolean) {
 			<button onclick={() => onselect(option[1], enabled)} class="item" class:selected={value.id === option[1].id}>
 				{option[0]}
 				{#if !enabled}
-					<span class="disabled">{disabledText}</span>
+					{#if disabled}
+						{@render disabled()}
+					{:else}
+						<span class="disabledText">{disabledText}</span>
+					{/if}
 				{/if}
 			</button>
 		{/each}
@@ -82,7 +90,7 @@ async function onselect(option: unknown, enabled: boolean) {
 		border-bottom: none;
 	}
 
-	.disabled {
+	.disabledText {
 		color: #DD6929;
 	}
 </style>

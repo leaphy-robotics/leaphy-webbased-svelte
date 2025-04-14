@@ -153,5 +153,21 @@
 	"INVALID_PROJECT": "Invalid project",
 	"PROJECT_SUBMISSIONS_CLOSED": "Submissions closed",
 	"PROJECT_NO_OTHER_PARTICIPANTS": "Invalid name",
-	"NO_PARTICIPANTS": "No users found, please ask your administrator to create them"
+	"PROJECT_INVALID_USERNAME": "Username should be at least 3 characters long",
+	"LICENSE_QUOTA": "Out of licenses",
+	"TEST_MODE_ENABLED": "Test mode is enabled",
+	"TEST_MODE_SELECT": "Please select an assignment below",
+	"NO_PARTICIPANTS": "No users found, please ask your administrator to create them",
+	"TUTORIALS": "Tutorials",
+	"CONFIRMSUBMIT_TITLE": "Are you sure?",
+	"CONFIRMSUBMIT_MESSAGE": "You won't be able to edit your work later",
+	"SUBMIT": "Submit",
+	"GRADING": "Our AI is deciding your fate...",
+	"SUBMITTING": "Submitting your work...",
+	"LOADING_ASSIGNMENTS": "Loading assignments...",
+	"PLEASE_WAIT": "Please wait",
+	"AUTOGRADING_PASSED": "You did it!",
+	"AUTOGRADING_PASSED_DESC": "Congrats on completing the assignments sucessfully",
+	"AUTOGRADING_FAILED": "Oh no...",
+	"DONE_ASSIGNMENT": "Done"
 }

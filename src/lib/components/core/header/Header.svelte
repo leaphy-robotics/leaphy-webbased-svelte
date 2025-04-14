@@ -13,9 +13,11 @@ import { robots } from "$domain/robots";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
+import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
+	faCircleCheck,
 	faComment,
 	faDownload,
 	faEnvelope,
@@ -122,39 +124,7 @@ async function openProject() {
 	WorkspaceState.handle = new FileHandle(file);
 	const content = await file.getFile();
 
-	if (file.name.endsWith(".ino")) {
-		WorkspaceState.Mode = Mode.ADVANCED;
-		WorkspaceState.code = await content.text();
-	} else if (file.name.endsWith(".py")) {
-		WorkspaceState.Mode = Mode.PYTHON;
-		WorkspaceState.robot = robots.l_nano_rp2040;
-		WorkspaceState.code = await content.text();
-	} else {
-		if (WorkspaceState.Mode === Mode.BLOCKS) {
-			if (
-				!loadWorkspaceFromString(await content.text(), BlocklyState.workspace)
-			) {
-				return;
-			}
-		} else {
-			BlocklyState.restore = JSON.parse(await content.text());
-			WorkspaceState.Mode = Mode.BLOCKS;
-		}
-
-		if (!robots[file.name.split(".").at(-1)]) {
-			PopupState.open({
-				component: ErrorPopup,
-				data: {
-					title: "UNDEFINED_ROBOT",
-					message: "UNDEFINED_ROBOT_MESSAGE",
-				},
-				allowInteraction: false,
-			});
-			return;
-		}
-
-		WorkspaceState.robot = robots[file.name.split(".").at(-1)];
-	}
+	WorkspaceState.open(file.name, await content.text());
 }
 
 async function saveProject() {
@@ -264,6 +234,20 @@ async function connectPython() {
 function runPython() {
 	const io = WorkspaceState.microPythonIO;
 	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
+}
+
+async function submit() {
+	const ok = await PopupState.open({
+		component: Warning,
+		data: {
+			title: "CONFIRMSUBMIT_TITLE",
+			message: "CONFIRMSUBMIT_MESSAGE",
+		},
+		allowInteraction: false,
+	});
+	if (!ok) return;
+
+	await RecordingsState.submit();
 }
 </script>
 
@@ -422,6 +406,15 @@ function runPython() {
                 mode={"outlined"}
                 onclick={saveDynamic}
             />
+			{#if RecordingsState.project?.testMode && RecordingsState.selectedAssignment}
+				<Button
+					icon={faCircleCheck}
+					name={$_("SUBMIT")}
+					mode="tint"
+					onclick={submit}
+				/>
+			{/if}
+
             {#if WorkspaceState.Mode === Mode.PYTHON}
                 {#if WorkspaceState.microPythonIO}
                     <Button
