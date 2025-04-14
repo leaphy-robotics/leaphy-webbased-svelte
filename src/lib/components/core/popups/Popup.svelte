@@ -27,8 +27,9 @@ setContext("state", state);
     .popup {
         position: absolute;
         background: var(--background);
-        border-radius: 6px;
+        border-radius: 10px;
         box-shadow: var(--shadow-el2);
+		overflow: hidden;
     }
 
     .full {

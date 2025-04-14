@@ -31,7 +31,7 @@ jobs:
         if: github.ref_type == 'branch'
         run: |
           cat << EOF > .env
-          VITE_BACKEND_URL=""
+          VITE_BACKEND_URL="https://testleaphyeasybloqs.com"
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
           VITE_SENTRY_SAMPLE_RATE="0.0"
           VITE_RECORDINGS_API="https://recordings.leaphyeasybloqs.com"
@@ -44,7 +44,7 @@ jobs:
         if: github.ref_type == 'tag'
         run: |
           cat << EOF > .env
-          VITE_BACKEND_URL=""
+          VITE_BACKEND_URL="https://leaphyeasybloqs.com"
           VITE_MATOMO_URL="/matomo/"
           VITE_MATOMO_SITE_ID="1"
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
@@ -63,13 +63,6 @@ jobs:
           export NODE_OPTIONS="--max-old-space-size=4096"
           yarn --frozen-lockfile --prefer-offline
           yarn build
-
-      - name: Upload build files
-        if: github.ref_type == 'tag'
-        uses: actions/upload-artifact@v4
-        with:
-          name: leaphyeasybloqs-${{ github.ref_name }}
-          path: ./dist
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5

@@ -53,9 +53,9 @@ onDestroy(() => {
     <div class="top" onmousedown={ondown}>
         <div class="title">{title}</div>
         <div class="actions">
-            <WindowButton icon={faClose} onclick={close} />
             {#if actions}{@render actions()}{/if}
-        </div>
+			<WindowButton icon={faClose} onclick={close} />
+		</div>
     </div>
     {@render children()}
 </div>
@@ -67,7 +67,8 @@ onDestroy(() => {
     }
 
     .title {
-        padding: 5px;
+		padding-left: 5px;
+		font-size: 18px;
     }
 
     .top {
@@ -76,5 +77,11 @@ onDestroy(() => {
         align-items: center;
         color: var(--on-primary);
         display: flex;
+		padding: 5px;
     }
+
+	.actions {
+		display: flex;
+		gap: 5px;
+	}
 </style>

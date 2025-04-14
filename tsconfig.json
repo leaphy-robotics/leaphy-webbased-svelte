@@ -6,7 +6,7 @@
       "$assets/*": ["./src/lib/assets/*"],
       "$domain/*": ["./src/lib/domain/*"],
       "$state/*": ["./src/lib/state/*"],
-      "$examples/*": ["./src/lib/examples/*"]
+      "$education/*": ["./src/lib/education/*"]
     },
 
     "target": "ESNext",

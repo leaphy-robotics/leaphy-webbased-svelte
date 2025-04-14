@@ -1,5 +1,5 @@
 <script lang="ts">
-import { explain } from "$domain/blockly/blockly";
+import { explain } from "$domain/blockly/pseudo";
 import BlocklyState from "$state/blockly.svelte";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 import type * as Blockly from "blockly";
