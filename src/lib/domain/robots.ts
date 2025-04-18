@@ -152,7 +152,7 @@ const robotDevices: RobotDevice[] = [
 			"QMC5883LCompass",
 			"Arduino_APDS9960",
 			"Painless Mesh",
-			"AsyncTCP",
+			"AsyncTCP"
 		]),
 		icon: originalIcon,
 		background: originalNanoESP32Background,
@@ -214,6 +214,7 @@ const robotDevices: RobotDevice[] = [
 			"Arduino_APDS9960",
 			"Painless Mesh",
 			"AsyncTCP",
+			"ArduinoBLE",
 		]),
 		icon: nanoIcon,
 	},
