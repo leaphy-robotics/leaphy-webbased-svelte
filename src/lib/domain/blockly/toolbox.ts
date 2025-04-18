@@ -151,6 +151,12 @@ export default [
 						},
 					],
 				},
+				{
+					type: "leaphy_read_accelerometer",
+				},
+				{
+					type: "leaphy_read_gyroscope",
+				},
 			],
 			[
 				{
