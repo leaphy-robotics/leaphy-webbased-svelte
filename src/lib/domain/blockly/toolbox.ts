@@ -158,8 +158,6 @@ export default [
 					type: "leaphy_read_gyroscope",
 				},
 			],
-			/*[
-			],*/
 			[
 				{
 					kind: "block",
