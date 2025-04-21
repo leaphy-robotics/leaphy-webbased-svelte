@@ -569,10 +569,10 @@
   resolved "https://registry.yarnpkg.com/@leaphy-robotics/dfu-util-wasm/-/dfu-util-wasm-1.0.2.tgz#29afcc01266655e1c7b5da0eeceb0ead48c86fd7"
   integrity sha512-lvS+tJFO049b4ERYKX0HcoUtnQv76A1z9sZrAvbs7s3bvdMW0BObKmktZeJ7emcp3lU/+OJWsD2h0EY5rnkiNg==
 
-"@leaphy-robotics/leaphy-blocks@^3.4.5":
-  version "3.4.5"
-  resolved "https://registry.yarnpkg.com/@leaphy-robotics/leaphy-blocks/-/leaphy-blocks-3.4.5.tgz#0ce7a4608ecb68e9fb82f731fe3c7ce9d0e5546f"
-  integrity sha512-flTia2G/TeCwOnHnBuJ7b6M2Z+kHMFOGwB+QOFbB8Ocliwe7YQct7ely0RD3Z2Yejh5Gxv8mrBGWElCXbDJHnA==
+"@leaphy-robotics/leaphy-blocks@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@leaphy-robotics/leaphy-blocks/-/leaphy-blocks-3.5.0.tgz#45a81af44cc06b9d5467dde53c5f1c88921b9c14"
+  integrity sha512-K/V7UTzoZYhKJnGsShmoLmqdM+zjUhmRvq2ZDKdru2tA1GS8WJ1xTzQiecheoGlKZN8nHKDa4bHkPu2ZqreUPA==
   dependencies:
     blockly "^10.4.3"
 
@@ -2367,6 +2367,11 @@ svelte-i18n@^4.0.0:
     sade "^1.8.1"
     tiny-glob "^0.2.9"
 
+svelte-loading-spinners@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/svelte-loading-spinners/-/svelte-loading-spinners-0.3.6.tgz#75c301b6322dc61cdcce8a0600c03dea9c1c3890"
+  integrity sha512-mthHQ2TwiwzTWzbFry3CBnVEfzqPOD9WkVw84OfSYzHRq6N9wgQ+yv37u81uPeuLU/ZOIPqhujpXquB1aol5ZQ==
+
 svelte-markdown@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/svelte-markdown/-/svelte-markdown-0.4.1.tgz#ddf13cfd6e0f29a02a82854b48766b527ec90f8d"
@@ -2534,10 +2539,10 @@ vite-plugin-top-level-await@^1.4.1:
     "@swc/core" "^1.7.0"
     uuid "^10.0.0"
 
-vite@^6.0.9:
-  version "6.0.9"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.0.9.tgz#0a830b767ef7aa762360b56bdef955c1395dc1ee"
-  integrity sha512-MSgUxHcaXLtnBPktkbUSoQUANApKYuxZ6DrbVENlIorbhL2dZydTLaZ01tjUoE3szeFzlFk9ANOKk0xurh4MKA==
+vite@^6.0.15:
+  version "6.0.15"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.0.15.tgz#b43167e6bf93195a460424a56bb323abe0bf1cce"
+  integrity sha512-uC/aEgK2B7Ryaznyfj6h1PMUe4G7/6cKG97idqJFcgasmaoIRoemtlDQbsTTb6y5n3ly2L3kTgMR3sso9ASz0g==
   dependencies:
     esbuild "^0.24.2"
     postcss "^8.4.49"

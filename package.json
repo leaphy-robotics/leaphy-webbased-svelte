@@ -1,7 +1,7 @@
 {
   "name": "leaphy-webbased-svelte",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -25,7 +25,7 @@
     "svelte-check": "^4.1.1",
     "tslib": "^2.6.2",
     "typescript": "^5.2.2",
-    "vite": "^6.0.9",
+    "vite": "^6.0.15",
     "vite-plugin-top-level-await": "^1.4.1"
   },
   "dependencies": {
@@ -35,7 +35,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@leaphy-robotics/dfu-util-wasm": "^1.0.2",
-    "@leaphy-robotics/leaphy-blocks": "^3.4.5",
+    "@leaphy-robotics/leaphy-blocks": "^3.5.0",
     "@leaphy-robotics/picotool-wasm": "1.0.3",
     "@leaphy-robotics/webusb-ftdi": "1.0.3",
     "@sentry/svelte": "^8.34.0",
@@ -55,6 +55,7 @@
     "socket.io-client": "^4.8.1",
     "svelte-fa": "^4.0.2",
     "svelte-i18n": "^4.0.0",
+    "svelte-loading-spinners": "^0.3.6",
     "svelte-markdown": "^0.4.1",
     "vite-plugin-static-copy": "^2.2.0",
     "web-serial-polyfill": "^1.0.15"

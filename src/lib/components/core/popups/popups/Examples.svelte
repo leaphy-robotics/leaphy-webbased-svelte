@@ -22,7 +22,7 @@ const visible = $derived(
 
 async function getExamples() {
 	examples = await Promise.all(
-		Object.values(import.meta.glob("$examples/*.ts")).map(
+		Object.values(import.meta.glob("$education/examples/*.ts")).map(
 			async (module: () => Promise<{ default: Example }>) => {
 				const example = await module();
 				return example.default;
