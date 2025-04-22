@@ -53,3 +53,8 @@ test("Code blocks - Flitz Uno", async ({ page }) => {
 	await selectRobot(page, "Leaphy Flitz", "Flitz Uno");
 	await testExtension(page, ".l_flitz_uno");
 });
+
+test("Code blocks - Arduino Uno", async ({ page }) => {
+	await selectRobot(page, "Arduino Uno");
+	await testExtension(page, ".l_uno");
+});
