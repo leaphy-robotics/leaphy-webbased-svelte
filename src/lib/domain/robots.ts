@@ -24,7 +24,7 @@ import { type Programmer, RobotType } from "./robots.types";
 const DEFAULT_LIBRARIES = [
 	"Leaphy Extensions",
 	"Servo",
-	"ESPServo",
+	"ESP32Servo",
 	"Adafruit GFX Library",
 	"Adafruit SSD1306",
 	"Adafruit LSM9DS1 Library",
