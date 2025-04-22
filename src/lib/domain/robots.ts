@@ -24,6 +24,7 @@ import { type Programmer, RobotType } from "./robots.types";
 const DEFAULT_LIBRARIES = [
 	"Leaphy Extensions",
 	"Servo",
+	"ESP32Servo",
 	"Adafruit GFX Library",
 	"Adafruit SSD1306",
 	"Adafruit LSM9DS1 Library",
@@ -151,7 +152,7 @@ const robotDevices: RobotDevice[] = [
 		libraries: DEFAULT_LIBRARIES.concat([
 			"QMC5883LCompass",
 			"Arduino_APDS9960",
-			"Painless Mesh",
+			"painlessMesh",
 			"AsyncTCP",
 		]),
 		icon: originalIcon,
@@ -182,7 +183,7 @@ const robotDevices: RobotDevice[] = [
 		id: "l_starling_nano_esp32",
 		type: RobotType.L_STARLING_NANO_ESP32,
 		name: "Starling Nano ESP32",
-		libraries: DEFAULT_LIBRARIES.concat(["Painless Mesh", "AsyncTCP"]),
+		libraries: DEFAULT_LIBRARIES.concat(["painlessMesh", "AsyncTCP"]),
 		icon: starlingIcon,
 	},
 	{
@@ -212,7 +213,7 @@ const robotDevices: RobotDevice[] = [
 		libraries: DEFAULT_LIBRARIES.concat([
 			"QMC5883LCompass",
 			"Arduino_APDS9960",
-			"Painless Mesh",
+			"painlessMesh",
 			"AsyncTCP",
 		]),
 		icon: nanoIcon,
