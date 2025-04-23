@@ -8,20 +8,20 @@ async function test_sonar_pins(
 	first_pin: string,
 	second_pin: string,
 ) {
-	let values = page.locator(".blocklyDraggable")
+	let values = page
+		.locator(".blocklyDraggable")
 		.filter({
-			has: page.getByText('Get distance Trig')
+			has: page.getByText("Get distance Trig"),
 		})
 		.first()
 		.locator(".blocklyEditableText");
-	
+
 	expect(values.nth(0)).toHaveText(first_pin);
 	expect(values.nth(1)).toHaveText(second_pin);
 }
 
 test("Pins - Uno", async ({ page }) => {
 	await selectRobot(page, "Arduino Uno");
- 
 
 	await test_sonar_pins(page, "8", "7");
 });
@@ -31,4 +31,3 @@ test("Pins - Nano", async ({ page }) => {
 
 	await test_sonar_pins(page, "17", "16");
 });
-
