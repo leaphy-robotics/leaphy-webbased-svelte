@@ -1,11 +1,6 @@
 import { promises as fs } from "node:fs";
 import { type Page, expect, test } from "@playwright/test";
-import {
-	goToHomePage,
-	mockShowOpenFilePicker,
-	openExample,
-	selectRobot,
-} from "./utils";
+import { goToHomePage, mockShowOpenFilePicker, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -39,22 +34,43 @@ async function testExtension(page: Page, extension: string) {
 	}
 }
 
-test("Code blocks - Leaphy Starling", async ({ page }) => {
-	await selectRobot(page, "Leaphy Starling", "Starling Nano");
-	await testExtension(page, ".l_starling_nano");
-});
+// TODO: Import all robot types from robots.ts and figure out how to make it work with the enums
+const robotTypes = [
+	{
+		robot: "Leaphy Flitz",
+		model: "Flitz Uno",
+		extension: ".l_flitz_uno",
+	},
+	{
+		robot: "Leaphy Starling",
+		model: "Starling Nano",
+		extension: ".l_starling_nano",
+	},
+	{
+		robot: "Leaphy Original",
+		model: "Original Uno",
+		extension: ".l_original_uno",
+	},
+	{
+		robot: "Arduino Nano",
+		model: "Arduino Nano ESP32",
+		extension: ".l_nano_esp32",
+	},
+	{
+		robot: "Arduino Uno",
+		model: undefined,
+		extension: ".l_uno",
+	},
+	{
+		robot: "Arduino Mega",
+		model: undefined,
+		extension: ".l_mega",
+	},
+];
 
-test("Code blocks - Original Uno", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
-	await testExtension(page, ".l_original_uno");
-});
-
-test("Code blocks - Flitz Uno", async ({ page }) => {
-	await selectRobot(page, "Leaphy Flitz", "Flitz Uno");
-	await testExtension(page, ".l_flitz_uno");
-});
-
-test("Code blocks - Arduino Uno", async ({ page }) => {
-	await selectRobot(page, "Arduino Uno");
-	await testExtension(page, ".l_uno");
-});
+for (const { robot, model, extension } of robotTypes) {
+	test(`Code blocks - ${model ? model : robot}`, async ({ page }) => {
+		await selectRobot(page, robot, model);
+		await testExtension(page, extension);
+	});
+}
