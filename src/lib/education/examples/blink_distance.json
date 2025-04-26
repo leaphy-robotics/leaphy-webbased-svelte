@@ -36,8 +36,8 @@
 																"type": "leaphy_sonar_read",
 																"id": "u$GWvK~;BHT//.)aajeR",
 																"fields": {
-																	"TRIG_PIN": "8",
-																	"ECHO_PIN": "7"
+																	"TRIG_PIN": "17",
+																	"ECHO_PIN": "16"
 																}
 															}
 														},
