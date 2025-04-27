@@ -22,20 +22,19 @@ import STK500v2 from "../programmers/STK500v2";
 import { type Programmer, RobotType } from "./robots.types";
 
 const DEFAULT_LIBRARIES = [
-	"Leaphy Extensions",
-	"Servo",
-	"ESP32Servo",
-	"Adafruit GFX Library",
-	"Adafruit SSD1306",
-	"Adafruit LSM9DS1 Library",
-	"Adafruit Unified Sensor",
-	"List",
-	"Adafruit SGP30 Sensor",
-	"Adafruit_VL53L0X",
-	"Adafruit BMP280 Library",
-	"TM1637",
-	"DS3231",
-	"Adafruit LSM6DS",
+	"Leaphy Extensions@1.2.0",
+	"Servo@1.2.2",
+	"ESP32Servo@3",
+	"Adafruit GFX Library@1.12",
+	"Adafruit SSD1306@2.5",
+	"Adafruit LSM9DS1 Library@2.2.1",
+	"Adafruit Unified Sensor@1.1.15",
+	"List@3.0.1",
+	"Adafruit SGP30 Sensor@2.0.3",
+	"Adafruit_VL53L0X@1.2.4",
+	"Adafruit BMP280 Library@2.6.8",
+	"DS3231@1.1.2",
+	"Adafruit LSM6DS@4.7.4",
 ];
 
 interface BaseRobot {
