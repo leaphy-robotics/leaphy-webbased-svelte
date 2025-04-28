@@ -21,6 +21,7 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Create ElimuPi env file
+        working_directory: ./packages/client
         run: |
           cat << EOF > .env
           VITE_BACKEND_URL=""
@@ -30,13 +31,15 @@ jobs:
           echo "ENV=elimu" >> "$GITHUB_ENV"
 
       - name: Build application
+        working_directory: ./packages/client
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
-          yarn --frozen-lockfile --prefer-offline
-          yarn build
+          pnpm install
+          pnpm build
 
       - name: Upload build files
         uses: actions/upload-artifact@v4
+        working_directory: ./packages/client
         with:
           name: leaphyeasybloqs-${{ github.ref_name }}
           path: ./dist

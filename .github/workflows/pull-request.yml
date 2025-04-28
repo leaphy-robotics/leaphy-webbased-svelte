@@ -15,22 +15,21 @@ jobs:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org"
       - name: Install node modules
-        run: yarn --frozen-lockfile --prefer-offline
-      - name: Run Biome
-        run: yarn biome ci src tests
+        run: pnpm install
       - name: Install libsimavr
         run: |
           apt-get update
           apt-get install -y libsimavr2 libsimavrparts1
-      - name: Run Playwright tests
-        run: yarn playwright test
+      - name: Run tests
+        run: pnpm test
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report
-          path: playwright-report/
+          path: packages/client/playwright-report/
           retention-days: 30
       - name: Build application
+        working_directory: ./packages/client
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
-          yarn build
+          pnpm build
