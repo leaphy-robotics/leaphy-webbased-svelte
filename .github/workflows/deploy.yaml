@@ -70,10 +70,9 @@ jobs:
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
-        working-directory: ./packages/client
         with:
           file: Dockerfile
-          context: .
+          context: ./packages/client
           push: true
           tags: ghcr.io/leaphy-robotics/leaphy-webbased-svelte/leaphy-webbased-svelte:${{ env.ENV }}
 
