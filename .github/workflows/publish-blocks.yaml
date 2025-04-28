@@ -17,12 +17,12 @@ jobs:
           registry-url: "https://registry.npmjs.org"
 
       - name: Build
-        working_directory: packages/blocks
+        working-directory: packages/blocks
         run: |
           pnpm ci && pnpm run build
 
       - name: Publish to npm
-        working_directory: packages/blocks
+        working-directory: packages/blocks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |

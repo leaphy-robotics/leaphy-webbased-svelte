@@ -29,7 +29,7 @@ jobs:
           path: packages/client/playwright-report/
           retention-days: 30
       - name: Build application
-        working_directory: ./packages/client
+        working-directory: ./packages/client
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
           pnpm build
