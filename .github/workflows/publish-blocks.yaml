@@ -1,0 +1,30 @@
+name: Publish to npm
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Build
+        working-directory: packages/blocks
+        run: |
+          pnpm install && pnpm run build
+
+      - name: Publish to npm
+        working-directory: packages/blocks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          pnpm publish --access public

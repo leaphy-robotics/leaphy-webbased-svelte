@@ -15,12 +15,12 @@ The following should be installed:
 
 -   NodeJS (Version 20.X)
     On Windows: Be sure to install the build tools by checking the box during the NodeJS installation process
--   Yarn v1
+-   pnpm
 
 ### Running locally
 
-First install the dependencies by running `yarn intall`. This will take a while the first time.
-Then run `yarn dev` to start the website.
+First install the dependencies by running `pnpm intall`. This will take a while the first time.
+Then run `pnpm dev` to start the website.
 
 ### Pull Requests
 
