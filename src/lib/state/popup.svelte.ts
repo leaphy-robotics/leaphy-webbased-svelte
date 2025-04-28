@@ -59,6 +59,7 @@ class PopupsState {
 		return new Promise((resolve) => {
 			if (this.popups.find((popup) => popup.component === props.component)) {
 				resolve(undefined);
+				return;
 			}
 
 			const id = this.getID();
