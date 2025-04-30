@@ -73,9 +73,6 @@ importers:
       '@leaphy-robotics/dfu-util-wasm':
         specifier: ^1.0.2
         version: 1.0.2
-      '@leaphy-robotics/leaphy-blocks':
-        specifier: workspace:*
-        version: link:../blocks
       '@leaphy-robotics/picotool-wasm':
         specifier: 1.0.3
         version: 1.0.3
