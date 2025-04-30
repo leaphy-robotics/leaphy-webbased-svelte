@@ -17,7 +17,7 @@ export default defineConfig({
 		viteStaticCopy({
 			targets: [
 				{
-					src: "./node_modules/@leaphy-robotics/leaphy-blocks/media/*",
+					src: "../blocks/media/*",
 					dest: "blockly-assets",
 				},
 				{
