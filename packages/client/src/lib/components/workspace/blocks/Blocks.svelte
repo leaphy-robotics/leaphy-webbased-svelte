@@ -9,7 +9,8 @@ import { dark, light } from "$domain/blockly/theme";
 import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import { RobotType } from "$domain/robots.types";
+import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
 import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
@@ -26,6 +27,14 @@ function updateSizing() {
 		window.innerWidth / 2 +
 		(toolbox.getFlyout().isVisible() ? toolbox.getFlyout().getWidth() : 0) / 2 +
 		40;
+}
+
+function getCodeGenerator(): typeof python | typeof arduino {
+	if ( WorkspaceState.robot.type == RobotType.L_NANO_RP2040_MICROPYTHON ) {
+		return python;
+	} else {
+		return arduino;
+	}
 }
 
 let element: HTMLDivElement;
@@ -51,7 +60,7 @@ onMount(() => {
 		BlocklyState.canUndo = BlocklyState.workspace.getUndoStack().length > 0;
 		BlocklyState.canRedo = BlocklyState.workspace.getRedoStack().length > 0;
 
-		WorkspaceState.code = arduino.workspaceToCode(
+		WorkspaceState.code = getCodeGenerator().workspaceToCode(
 			BlocklyState.workspace,
 			WorkspaceState.robot.id,
 		);
@@ -83,7 +92,7 @@ locale.subscribe((locale) => {
 			content,
 		);
 		BlocklyState.workspace.addChangeListener(() => {
-			WorkspaceState.code = arduino.workspaceToCode(
+			WorkspaceState.code = getCodeGenerator().workspaceToCode(
 				BlocklyState.workspace,
 				WorkspaceState.robot.id,
 			);
