@@ -8,16 +8,16 @@ import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
-import BlocklyState from "$state/blockly.svelte";
-import PopupState from "$state/popup.svelte";
-import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	CATEGORIES,
 	ProcedureSerializer,
 	blocks,
 	registerExtensions,
 	translations,
-} from "@leaphy-robotics/leaphy-blocks";
+} from "$leaphy_blocks";
+import BlocklyState from "$state/blockly.svelte";
+import PopupState from "$state/popup.svelte";
+import { BackpackChange } from "@blockly/workspace-backpack";
 import type {
 	CategoryInfo,
 	ToolboxDefinition,

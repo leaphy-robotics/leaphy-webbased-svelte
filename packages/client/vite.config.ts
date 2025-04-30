@@ -45,6 +45,7 @@ export default defineConfig({
 			$domain: path.resolve(__dirname, "./src/lib/domain"),
 			$state: path.resolve(__dirname, "./src/lib/state"),
 			$education: path.resolve(__dirname, "./src/lib/education"),
+			$leaphy_blocks: path.resolve(__dirname, "../blocks/src"),
 		},
 	},
 	server: {

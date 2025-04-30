@@ -6,10 +6,10 @@ import {
 	setupWorkspace,
 } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
+import { arduino } from "$leaphy_blocks";
 import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
