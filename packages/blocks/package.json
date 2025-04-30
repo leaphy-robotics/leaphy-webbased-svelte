@@ -1,0 +1,33 @@
+{
+	"type": "module",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "tsup",
+		"watch": "tsup --watch --ignore-watch tmp"
+	},
+	"dependencies": {
+		"blockly": "^11.2.2"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.26.10",
+		"@babel/preset-env": "^7.26.9",
+		"@eslint/js": "^9.25.1",
+		"babel-loader": "^10.0.0",
+		"eslint": "^9.25.1",
+		"prettier": "3.5.3",
+		"tsup": "^8.4.0",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.31.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/leaphy-robotics/leaphy-blocks.git"
+	},
+	"bugs": {
+		"url": "https://github.com/leaphy-robotics/leaphy-blocks/issues"
+	},
+	"files": ["dist", "media"],
+	"version": "4.0.0",
+	"description": "Leaphy custom Blockly blocks and arduino code generator",
+	"name": "@leaphy-robotics/leaphy-blocks"
+}
