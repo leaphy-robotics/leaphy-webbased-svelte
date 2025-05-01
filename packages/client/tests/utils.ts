@@ -16,6 +16,11 @@ export async function selectRobot(page: Page, tile: string, robot?: string) {
 	if (robot) await page.getByText(robot).first().click();
 }
 
+export async function newProject(page: Page) {
+	await page.getByRole("button", { name: "My projects" }).click();
+	await page.getByRole("cell", { name: "New" }).click();
+}
+
 export async function setupArduino({ page }: PlaywrightTestArgs) {
 	let board = await setupPlaywrightArduino(page);
 	page.once("close", (_) => {
