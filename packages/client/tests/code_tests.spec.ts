@@ -27,9 +27,7 @@ async function testExtension(page: Page, extension: string) {
 	const files = await getAllFiles("./tests/code_tests");
 	let num_tests = 0;
 
-	await page.locator(".sidebar")
-		.getByRole("button", { name: "Code" })
-		.click();
+	await page.locator(".sidebar").getByRole("button", { name: "Code" }).click();
 
 	for (const workspace_file of files) {
 		if (!workspace_file.endsWith(extension)) {
