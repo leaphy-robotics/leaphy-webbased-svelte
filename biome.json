@@ -14,8 +14,12 @@
 				"noAssignInExpressions": "off",
 				"noExplicitAny": "off"
 			},
+			"complexity": {
+				"noForEach": "off"
+			},
 			"style": {
-				"useConst": "off"
+				"useConst": "off",
+				"useNodejsImportProtocol": "off"
 			}
 		}
 	}

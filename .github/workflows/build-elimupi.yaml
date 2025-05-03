@@ -15,12 +15,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "20.x"
           registry-url: "https://registry.npmjs.org"
 
       - name: Create ElimuPi env file
+        working-directory: ./packages/client
         run: |
           cat << EOF > .env
           VITE_BACKEND_URL=""
@@ -30,13 +32,14 @@ jobs:
           echo "ENV=elimu" >> "$GITHUB_ENV"
 
       - name: Build application
+        working-directory: ./packages/client
         run: |
           export NODE_OPTIONS="--max-old-space-size=4096"
-          yarn --frozen-lockfile --prefer-offline
-          yarn build
+          pnpm install
+          pnpm build
 
       - name: Upload build files
         uses: actions/upload-artifact@v4
         with:
           name: leaphyeasybloqs-${{ github.ref_name }}
-          path: ./dist
+          path: ./packages/client/dist

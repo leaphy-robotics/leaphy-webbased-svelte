@@ -1,0 +1,62 @@
+{
+	"blocks": {
+		"languageVersion": 0,
+		"blocks": [
+			{
+				"type": "leaphy_start",
+				"id": "rzE0Ve:6bHB~8aIqyj-U",
+				"x": 333,
+				"y": 73,
+				"deletable": false,
+				"inputs": {
+					"STACK": {
+						"block": {
+							"type": "controls_repeat_forever",
+							"id": "vlzMwx|fe~ici7Hrw]=Y",
+							"inputs": {
+								"DO": {
+									"block": {
+										"type": "leaphy_serial_print_line",
+										"id": "[}A3n8|[0PRYA5VG,ix|",
+										"inputs": {
+											"VALUE": {
+												"shadow": {
+													"type": "text",
+													"id": "?dKF%Bc^Q^jO95!)iU0O",
+													"fields": { "TEXT": "text" }
+												},
+												"block": {
+													"type": "leaphy_sonar_read",
+													"id": "6.[a1G|zx+jJ#{X`Lc/J",
+													"fields": {
+														"TRIG_PIN": "17",
+														"ECHO_PIN": "16"
+													}
+												}
+											}
+										},
+										"next": {
+											"block": {
+												"type": "time_delay",
+												"id": "Gk7Pu^1:zd3fL{*:!l5K",
+												"inputs": {
+													"DELAY_TIME_MILI": {
+														"shadow": {
+															"type": "math_number",
+															"id": "`jL.ylVqT$H2^fqi.dAQ",
+															"fields": { "NUM": 100 }
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		]
+	}
+}
