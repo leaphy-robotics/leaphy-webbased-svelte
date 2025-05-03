@@ -1,27 +1,51 @@
 import { promises as fs } from "node:fs";
 import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage, mockShowOpenFilePicker, selectRobot } from "./utils";
+import {
+	goToHomePage,
+	mockShowOpenFilePicker,
+	newProject,
+	selectRobot,
+} from "./utils";
 
 test.beforeEach(goToHomePage);
 
 async function testExtension(page: Page, extension: string) {
-	await page.getByRole("button", { name: "Code" }).nth(1).click();
+	async function getAllFiles(dir: string): Promise<string[]> {
+		let entries = await fs.readdir(dir, { withFileTypes: true });
+		let files = entries
+			.filter((file) => !file.isDirectory())
+			.map((file) => `${dir}/${file.name}`);
+		let folders = entries.filter((folder) => folder.isDirectory());
 
-	const files = await fs.readdir("./tests/code_tests");
+		for (const folder of folders) {
+			files = files.concat(await getAllFiles(`${dir}/${folder.name}`));
+		}
+
+		return files;
+	}
+
+	const files = await getAllFiles("./tests/code_tests");
+	let num_tests = 0;
+
+	await page.locator(".sidebar")
+		.getByRole("button", { name: "Code" })
+		.click();
+
 	for (const workspace_file of files) {
 		if (!workspace_file.endsWith(extension)) {
 			continue;
 		}
 
+		console.log(`Running test: ${workspace_file}`);
+		num_tests += 1;
+
 		await page.getByRole("button", { name: "My projects" }).click();
 
-		await mockShowOpenFilePicker(page, `./tests/code_tests/${workspace_file}`);
+		await mockShowOpenFilePicker(page, workspace_file);
 
 		await page.getByRole("cell", { name: "Open" }).click();
 
-		let code = (
-			await fs.readFile(`./tests/code_tests/${workspace_file}_code`)
-		).toString();
+		let code = (await fs.readFile(`${workspace_file}_code`)).toString();
 
 		for (const segment of code.split("\n\n")) {
 			// Create a regex of the segment instead of directly searching for the segment so whitespace becomes optional
@@ -32,6 +56,8 @@ async function testExtension(page: Page, extension: string) {
 			await expect(page.locator(".view-lines")).toContainText(regex);
 		}
 	}
+
+	expect(num_tests).toBeGreaterThan(0);
 }
 
 // TODO: Import all robot types from robots.ts and figure out how to make it work with the enums
@@ -47,9 +73,19 @@ const robotTypes = [
 		extension: ".l_starling_nano",
 	},
 	{
+		robot: "Leaphy Starling",
+		model: "Starling Nano ESP32",
+		extension: ".l_starling_nano_esp32",
+	},
+	{
 		robot: "Leaphy Original",
 		model: "Original Uno",
 		extension: ".l_original_uno",
+	},
+	{
+		robot: "Leaphy Original",
+		model: "Original Nano ESP32",
+		extension: ".l_original_nano_esp32",
 	},
 	{
 		robot: "Arduino Nano",
