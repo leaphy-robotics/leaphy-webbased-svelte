@@ -48,6 +48,7 @@
 		"chart.js": "^4.4.9",
 		"chartjs-adapter-date-fns": "^3.0.0",
 		"date-fns": "^4.1.0",
+		"esbuild": "^0.25.3",
 		"intel-hex": "^0.2.0",
 		"jszip": "^3.10.1",
 		"monaco-editor": "^0.52.0",
