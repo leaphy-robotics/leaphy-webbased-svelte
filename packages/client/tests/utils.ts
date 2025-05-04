@@ -12,12 +12,12 @@ test.beforeEach(async ({ context }) => {
 });
 
 export async function selectRobot(page: Page, tile: string, robot?: string) {
-	await page.getByText(tile).click();
+	await page.getByText(tile, { exact: true }).click();
 
 	if (robot) {
 		await page
 			.locator(".container")
-			.filter({ hasText: "Not connected" })
+			.nth(1)
 			.getByText(robot, { exact: true })
 			.click();
 	}

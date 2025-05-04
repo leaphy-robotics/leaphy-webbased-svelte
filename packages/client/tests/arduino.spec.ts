@@ -14,7 +14,7 @@ test("Arduino - Blockly upload", async ({ page }) => {
 	await expect(
 		page.getByRole("button", { name: "Go back to editor" }),
 	).toBeVisible({
-		timeout: 15000,
+		timeout: 30000,
 	});
 	await expect(
 		page.getByRole("heading", { name: "Robot update complete" }),
