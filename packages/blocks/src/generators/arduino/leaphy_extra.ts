@@ -189,56 +189,76 @@ function getCodeGenerators(arduino: Arduino) {
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
-	const addDisplaySetupCode = () => {
+	const addDisplaySetupCode = (large: boolean) => {
 		const displaySetup =
-			'if(!display.begin())\n  {\n    Serial.println(F("Contact with the display failed: Check the connections"));\n  }\n';
+			'if(!display.begin(0x3C, true))\n  {\n' +
+			'    Serial.println(F("Contact with the display failed: Check the connections"));\n' +
+			'  }\n\n' +
+			'  display.clearDisplay();\n' +
+			'  display.setTextSize(1);\n' +
+			`  display.setTextColor(${large ? 'SH110X_WHITE' : 'SSD1306_WHITE'});\n` +
+			'  display.setCursor(0, 0);\n' +
+			'  display.println(F("Leaphy OLED"));\n' +
+			'  display.display();\n';
+
 		const setup = arduino.addI2CSetup("oled", displaySetup);
 
-		arduino.addInclude("include_display", '#include "OLED_Display.h"');
-		arduino.addInclude("define_display", "OLEDDISPLAY display;");
+		arduino.addInclude("include_display", large ?
+			"#include <Adafruit_SH110X.h>" :
+			'#include <Adafruit_SSD1306.h>'
+		);
+		arduino.addInclude("define_display", large ?
+			"Adafruit_SH1106G display(128, 64, &Wire, -1);" :
+			"Adafruit_SSD1306 display(128, 32, &Wire, -1);"
+		);
 		arduino.addSetup("serial", "Serial.begin(115200);");
 		return setup;
 	};
 
-	arduino.forBlock.leaphy_display_clear = () => {
-		const setup = addDisplaySetupCode();
-		return `${setup}display.clearDisplay();\n`;
-	};
+	function createDisplayBlocks(prefix: string, large: boolean) {
+		arduino.forBlock[`${prefix}_clear`] = () => {
+			const setup = addDisplaySetupCode(large);
+			return `${setup}display.clearDisplay();\n`;
+		};
 
-	arduino.forBlock.leaphy_display_set_text_size = (block) => {
-		const setup = addDisplaySetupCode();
+		arduino.forBlock[`${prefix}_set_text_size`] = (block) => {
+			const setup = addDisplaySetupCode(large);
 
-		const stateOutput =
-			arduino.valueToCode(block, "NUM", arduino.ORDER_ATOMIC) || "0";
-		return `${setup}display.setTextSize(${stateOutput});\n`;
-	};
+			const stateOutput =
+				arduino.valueToCode(block, "NUM", arduino.ORDER_ATOMIC) || "0";
+			return `${setup}display.setTextSize(${stateOutput});\n`;
+		};
 
-	arduino.forBlock.leaphy_display_print_line = (block) => {
-		const setup = addDisplaySetupCode();
+		arduino.forBlock[`${prefix}_print_line`] = (block) => {
+			const setup = addDisplaySetupCode(large);
 
-		const value =
-			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
-		const row = block.getFieldValue("DISPLAY_ROW");
-		const cursorHeight = row * 12;
-		return `${setup}display.setCursor(0, ${cursorHeight});\ndisplay.println(${value});\n`;
-	};
+			const value =
+				arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
+			const row = block.getFieldValue("DISPLAY_ROW");
+			const cursorHeight = row * 12;
+			return `${setup}display.setCursor(0, ${cursorHeight});\ndisplay.println(${value});\n`;
+		};
 
-	arduino.forBlock.leaphy_display_print_value = (block) => {
-		const setup = addDisplaySetupCode();
+		arduino.forBlock[`${prefix}_print_value`] = (block) => {
+			const setup = addDisplaySetupCode(large);
 
-		const name =
-			arduino.valueToCode(block, "NAME", arduino.ORDER_ATOMIC) || "0";
-		const value =
-			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
-		const row = block.getFieldValue("DISPLAY_ROW");
-		const cursorHeight = row * 12;
-		return `${setup}display.setCursor(0, ${cursorHeight});\ndisplay.print(${name});\ndisplay.print(" = ");\ndisplay.println(${value});\n`;
-	};
+			const name =
+				arduino.valueToCode(block, "NAME", arduino.ORDER_ATOMIC) || "0";
+			const value =
+				arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
+			const row = block.getFieldValue("DISPLAY_ROW");
+			const cursorHeight = row * 12;
+			return `${setup}display.setCursor(0, ${cursorHeight});\ndisplay.print(${name});\ndisplay.print(" = ");\ndisplay.println(${value});\n`;
+		};
 
-	arduino.forBlock.leaphy_display_display = () => {
-		const setup = addDisplaySetupCode();
-		return `${setup}display.display();\n`;
-	};
+		arduino.forBlock[`${prefix}_display`] = () => {
+			const setup = addDisplaySetupCode(large);
+			return `${setup}display.display();\n`;
+		};
+	}
+
+	createDisplayBlocks('leaphy_display', false)
+	createDisplayBlocks('leaphy_display_large', true)
 }
 
 export default getCodeGenerators;
