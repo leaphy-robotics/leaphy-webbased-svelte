@@ -1,4 +1,4 @@
-import { PythonGenerator, pythonGenerator } from "blockly/python";
+import { type PythonGenerator, pythonGenerator } from "blockly/python";
 
 /**
  * Generator for microPython code from blockly blocks, based
@@ -16,16 +16,29 @@ type AnyDuringMigration = any;
  * @param package_name the name of the package; the part after `from `
  * @param member_name the item to be imported; the part after `import `
  */
-export function registerImport(generator:PythonGenerator,package_name:string,member_name:string) {
-    let current_import:string = (generator as AnyDuringMigration).definitions_["import_" + package_name] || "";
-    if (current_import == "") {
-        (generator as AnyDuringMigration).definitions_["import_" + package_name] = "from " + package_name + " import " + member_name;
-    }
-    let members = current_import.substring(current_import.indexOf("import ")+7).split(", ").filter((item) => {item != ""});
-    if (!members.includes(member_name)) {
-        members.push(member_name)
-    }
-    (generator as AnyDuringMigration).definitions_["import_" + package_name] = "from " + package_name + " import " + members.join(", ");
+export function registerImport(
+	generator: PythonGenerator,
+	package_name: string,
+	member_name: string,
+) {
+	const def_key = `import_${package_name}`;
+	let current_import: string =
+		(generator as AnyDuringMigration).definitions_[def_key] || "";
+	if (current_import === "") {
+		(generator as AnyDuringMigration).definitions_[def_key] =
+			`from ${package_name} import ${member_name}`;
+	}
+	let members = current_import
+		.substring(current_import.indexOf("import ") + 7)
+		.split(", ")
+		.filter((item) => {
+			item !== "";
+		});
+	if (!members.includes(member_name)) {
+		members.push(member_name);
+	}
+	(generator as AnyDuringMigration).definitions_[def_key] =
+		`from ${package_name} import ${members.join(", ")}`;
 }
 
 /**
@@ -34,8 +47,12 @@ export function registerImport(generator:PythonGenerator,package_name:string,mem
  * @param definition_name the name of the definition (for de-duplication purposes)
  * @param contents the contents of the definition, such as a function's body
  */
-export function registerDefinition(generator:PythonGenerator,definition_name:string,contents:string) {
-    (generator as AnyDuringMigration).definitions_[definition_name] = contents;
+export function registerDefinition(
+	generator: PythonGenerator,
+	definition_name: string,
+	contents: string,
+) {
+	(generator as AnyDuringMigration).definitions_[definition_name] = contents;
 }
 
 const generator = pythonGenerator;

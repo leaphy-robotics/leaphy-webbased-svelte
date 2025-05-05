@@ -6,10 +6,10 @@ import {
 	setupWorkspace,
 } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
+import { RobotType } from "$domain/robots.types";
 import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { RobotType } from "$domain/robots.types";
 import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
 import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
@@ -30,11 +30,10 @@ function updateSizing() {
 }
 
 function getCodeGenerator(): typeof python | typeof arduino {
-	if ( WorkspaceState.robot.type == RobotType.L_NANO_RP2040_MICROPYTHON ) {
+	if (WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON) {
 		return python;
-	} else {
-		return arduino;
 	}
+	return arduino;
 }
 
 let element: HTMLDivElement;

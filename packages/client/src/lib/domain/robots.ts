@@ -303,7 +303,10 @@ export const robotListing: Robot[][] = [
 			id: "l_nano_select",
 			name: "Arduino Nano",
 			icon: nanoIcon,
-			variants: [[robots.l_nano, robots.l_nano_rp2040_python], [robots.l_nano_esp32, robots.l_nano_rp2040]],
+			variants: [
+				[robots.l_nano, robots.l_nano_rp2040_python],
+				[robots.l_nano_esp32, robots.l_nano_rp2040],
+			],
 		},
 		robots.l_uno,
 		robots.l_mega,
