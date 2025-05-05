@@ -22,6 +22,7 @@ function getCodeGenerators(python: PythonGenerator) {
 	//The default python generator does not innately support infinite loops, surprisingly.
 	python.forBlock.controls_repeat_forever = (block, generator) => {
 		const branch = generator.statementToCode(block, "DO");
+		//biome-ignore lint: a templated string is *slightly* harder to read here; the + breaks up the line in a natural way.
 		const code = "while True:\n" + branch;
 		return code;
 	};
