@@ -1,8 +1,8 @@
-import { Python } from "../python";
+import { PythonGenerator } from "blockly/python";
+import { registerDefinition } from "../python";
 
-function getCodeGenerators(python:Python) {
+function getCodeGenerators(python:PythonGenerator) {
     python.forBlock["leaphy_start"] = function (block, generator) {
-
         const funcName = "leaphy_program";
         let branch = generator.statementToCode(block, "STACK");
         if (generator.STATEMENT_PREFIX) {
@@ -22,12 +22,10 @@ function getCodeGenerators(python:Python) {
         }
 
         let code = "def " + funcName + "():\n" + branch;
-        generator.registerDefinition(funcName,code);
+        registerDefinition(generator,funcName,code);
 
         return funcName + "()\n";
     }
-
-
 }
 
 export default getCodeGenerators;
