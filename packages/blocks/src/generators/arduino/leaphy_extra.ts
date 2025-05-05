@@ -190,7 +190,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	const addDisplaySetupCode = (large: boolean) => {
-		const displaySetup = `if(!display.begin(${large ? '0x3C, true' : 'SSD1306_SWITCHCAPVCC, 0x3C'}))\n  {\n    Serial.println(F("Contact with the display failed: Check the connections"));\n  }\n\n  display.clearDisplay();\n  display.setTextSize(1);\n  display.setTextColor(${large ? "SH110X_WHITE" : "SSD1306_WHITE"});\n  display.setCursor(0, 0);\n  display.println(F("Leaphy OLED"));\n  display.display();\n`;
+		const displaySetup = `if(!display.begin(${large ? "0x3C, true" : "SSD1306_SWITCHCAPVCC, 0x3C"}))\n  {\n    Serial.println(F("Contact with the display failed: Check the connections"));\n  }\n\n  display.clearDisplay();\n  display.setTextSize(1);\n  display.setTextColor(${large ? "SH110X_WHITE" : "SSD1306_WHITE"});\n  display.setCursor(0, 0);\n  display.println(F("Leaphy OLED"));\n  display.display();\n`;
 
 		const setup = arduino.addI2CSetup("oled", displaySetup);
 
