@@ -190,26 +190,19 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	const addDisplaySetupCode = (large: boolean) => {
-		const displaySetup =
-			'if(!display.begin(0x3C, true))\n  {\n' +
-			'    Serial.println(F("Contact with the display failed: Check the connections"));\n' +
-			'  }\n\n' +
-			'  display.clearDisplay();\n' +
-			'  display.setTextSize(1);\n' +
-			`  display.setTextColor(${large ? 'SH110X_WHITE' : 'SSD1306_WHITE'});\n` +
-			'  display.setCursor(0, 0);\n' +
-			'  display.println(F("Leaphy OLED"));\n' +
-			'  display.display();\n';
+		const displaySetup = `if(!display.begin(0x3C, true))\n  {\n    Serial.println(F("Contact with the display failed: Check the connections"));\n  }\n\n  display.clearDisplay();\n  display.setTextSize(1);\n  display.setTextColor(${large ? "SH110X_WHITE" : "SSD1306_WHITE"});\n  display.setCursor(0, 0);\n  display.println(F("Leaphy OLED"));\n  display.display();\n`;
 
 		const setup = arduino.addI2CSetup("oled", displaySetup);
 
-		arduino.addInclude("include_display", large ?
-			"#include <Adafruit_SH110X.h>" :
-			'#include <Adafruit_SSD1306.h>'
+		arduino.addInclude(
+			"include_display",
+			large ? "#include <Adafruit_SH110X.h>" : "#include <Adafruit_SSD1306.h>",
 		);
-		arduino.addInclude("define_display", large ?
-			"Adafruit_SH1106G display(128, 64, &Wire, -1);" :
-			"Adafruit_SSD1306 display(128, 32, &Wire, -1);"
+		arduino.addInclude(
+			"define_display",
+			large
+				? "Adafruit_SH1106G display(128, 64, &Wire, -1);"
+				: "Adafruit_SSD1306 display(128, 32, &Wire, -1);",
 		);
 		arduino.addSetup("serial", "Serial.begin(115200);");
 		return setup;
@@ -257,8 +250,8 @@ function getCodeGenerators(arduino: Arduino) {
 		};
 	}
 
-	createDisplayBlocks('leaphy_display', false)
-	createDisplayBlocks('leaphy_display_large', true)
+	createDisplayBlocks("leaphy_display", false);
+	createDisplayBlocks("leaphy_display_large", true);
 }
 
 export default getCodeGenerators;

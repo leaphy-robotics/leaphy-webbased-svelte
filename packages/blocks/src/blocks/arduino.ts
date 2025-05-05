@@ -45,12 +45,14 @@ const gyroscope_axis = [
 	["%{BKY_LEAPHY_GYROSCOPE_AXIS_Z}", "2"],
 ];
 
-function getLeaphyDisplayBlocks(prefix: string, translatePrefix: string, lines: number) {
+function getLeaphyDisplayBlocks(
+	prefix: string,
+	translatePrefix: string,
+	lines: number,
+) {
 	const displayLines = new Array(lines)
 		.fill(null)
-		.map((_, index) => (
-			[(index + 1).toString(), index.toString()]
-		))
+		.map((_, index) => [(index + 1).toString(), index.toString()]);
 
 	return [
 		{
@@ -120,7 +122,7 @@ function getLeaphyDisplayBlocks(prefix: string, translatePrefix: string, lines: 
 			// "extensions": "updateDisplay",
 			helpUrl: "",
 		},
-	]
+	];
 }
 
 const blocks: BlockDefinition = [
@@ -341,8 +343,12 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
 	},
-	...getLeaphyDisplayBlocks('leaphy_display', 'BKY_LEAPHY_DISPLAY', 3),
-	...getLeaphyDisplayBlocks('leaphy_display_large', 'BKY_LEAPHY_DISPLAY_LARGE', 6),
+	...getLeaphyDisplayBlocks("leaphy_display", "BKY_LEAPHY_DISPLAY", 3),
+	...getLeaphyDisplayBlocks(
+		"leaphy_display_large",
+		"BKY_LEAPHY_DISPLAY_LARGE",
+		6,
+	),
 	{
 		type: "leaphy_use_lsm9ds1",
 		message0: "%1 %2",
