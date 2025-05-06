@@ -12,8 +12,15 @@ test.beforeEach(async ({ context }) => {
 });
 
 export async function selectRobot(page: Page, tile: string, robot?: string) {
-	await page.getByText(tile).click();
-	if (robot) await page.getByText(robot).first().click();
+	await page.getByText(tile, { exact: true }).click();
+
+	if (robot) {
+		await page
+			.locator(".container")
+			.nth(1)
+			.getByText(robot, { exact: true })
+			.click();
+	}
 }
 
 export async function newProject(page: Page) {
@@ -29,7 +36,7 @@ export async function setupArduino({ page }: PlaywrightTestArgs) {
 }
 
 export async function goToHomePage({ page }: PlaywrightTestArgs) {
-	await page.goto("/");
+	await page.goto("/", { waitUntil: "commit" });
 	await page.getByRole("button", { name: "English" }).click();
 	await page.getByRole("button", { name: "Let's get started!" }).click();
 }
