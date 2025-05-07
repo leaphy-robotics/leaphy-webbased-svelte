@@ -1,7 +1,6 @@
-import type { PythonGenerator } from "blockly/python";
-import { registerDefinition } from "../python";
+import type { MicroPythonGenerator } from "../python";
 
-function getCodeGenerators(python: PythonGenerator) {
+function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.leaphy_start = (block, generator) => {
 		const funcName = "leaphy_program";
 		let branch = generator.statementToCode(block, "STACK");
@@ -19,7 +18,7 @@ function getCodeGenerators(python: PythonGenerator) {
 		}
 
 		let code = `def ${funcName}():\n${branch}`;
-		registerDefinition(generator, funcName, code);
+		generator.addDefinition(funcName, code);
 
 		return `${funcName}()\n`;
 	};
