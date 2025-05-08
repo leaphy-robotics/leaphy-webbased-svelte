@@ -1,5 +1,5 @@
+import { Variables } from "blockly/core";
 import type { MicroPythonGenerator } from "../python";
-import {Variables} from "blockly/core"
 
 function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.leaphy_start = (block, generator) => {
@@ -7,9 +7,13 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		// TODO: find out which variables are actually *used* in the function.
 		// Currently *all* variables are included, even when they are not used.
 		const workspace = block.workspace;
-		const variableNames = Variables.allUsedVarModels(workspace)
-			.map((variableModel) => variableModel.name);
-		const variableLines = variableNames.length > 0 ? `${generator.INDENT}global ${variableNames.join(", ")}\n` : ""; 
+		const variableNames = Variables.allUsedVarModels(workspace).map(
+			(variableModel) => variableModel.name,
+		);
+		const variableLines =
+			variableNames.length > 0
+				? `${generator.INDENT}global ${variableNames.join(", ")}\n`
+				: "";
 		let branch = generator.statementToCode(block, "STACK");
 		if (generator.STATEMENT_PREFIX) {
 			const id = block.id.replace(/\$/g, "$$$$");

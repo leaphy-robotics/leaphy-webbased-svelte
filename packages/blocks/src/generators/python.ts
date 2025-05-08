@@ -41,9 +41,9 @@ Object.entries(pythonGenerator).forEach((fieldValue) => {
 	(microPythonGenerator as any)[fieldValue[0]] = fieldValue[1];
 });
 
+import * as operators from "./python/operators";
 import * as python_blocks from "./python/python";
 import * as situation from "./python/situation";
-import * as operators from "./python/operators";
 
 python_blocks.default(microPythonGenerator);
 situation.default(microPythonGenerator);
