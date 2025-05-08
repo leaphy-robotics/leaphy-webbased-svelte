@@ -619,7 +619,7 @@ export default [
 		name: "%{BKY_LEAPHY_OPERATORS_CATEGORY}",
 		style: "numbers_category",
 		id: "l_numbers",
-		robots: robotGroups.L_ARDUINO_ALL,
+		robots: [...robotGroups.L_ARDUINO_ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 		groups: [
 			[
 				{

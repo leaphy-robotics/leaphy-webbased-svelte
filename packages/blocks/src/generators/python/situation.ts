@@ -1,7 +1,7 @@
 import { Order } from "blockly/python";
 import type { MicroPythonGenerator } from "../python";
 
-/********
+/**
  * Block definitions for the BKY_LEAPHY_SITUATION_CATEGORY toolbox-category.
  * Includes loops, conditionals and delays.
  */

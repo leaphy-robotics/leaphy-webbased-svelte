@@ -43,8 +43,10 @@ Object.entries(pythonGenerator).forEach((fieldValue) => {
 
 import * as python_blocks from "./python/python";
 import * as situation from "./python/situation";
+import * as operators from "./python/operators";
 
 python_blocks.default(microPythonGenerator);
 situation.default(microPythonGenerator);
+operators.default(microPythonGenerator);
 
 export default microPythonGenerator;
