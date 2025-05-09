@@ -45,6 +45,86 @@ const gyroscope_axis = [
 	["%{BKY_LEAPHY_GYROSCOPE_AXIS_Z}", "2"],
 ];
 
+function getLeaphyDisplayBlocks(
+	prefix: string,
+	translatePrefix: string,
+	lines: number,
+) {
+	const displayLines = new Array(lines)
+		.fill(null)
+		.map((_, index) => [(index + 1).toString(), index.toString()]);
+
+	return [
+		{
+			type: `${prefix}_clear`,
+			message0: `%%{${translatePrefix}_CLEAR}`,
+			previousStatement: null,
+			nextStatement: null,
+			style: "leaphy_blocks",
+			helpUrl: "",
+		},
+		{
+			type: `${prefix}_display`,
+			message0: `%%{${translatePrefix}_DISPLAY}`,
+			previousStatement: null,
+			nextStatement: null,
+			style: "leaphy_blocks",
+			helpUrl: "",
+		},
+		{
+			type: `${prefix}_print_line`,
+			message0: `%%{${translatePrefix}_PRINT} %1 %2 %3`,
+			args0: [
+				{ type: "input_dummy" },
+				{
+					type: "field_dropdown",
+					name: "DISPLAY_ROW",
+					options: displayLines,
+				},
+				{ type: "input_value", name: "VALUE" },
+			],
+			inputsInline: true,
+			previousStatement: null,
+			nextStatement: null,
+			style: "leaphy_blocks",
+			// "extensions": "updateDisplay",
+			helpUrl: "",
+		},
+		{
+			type: `${prefix}_set_text_size`,
+			message0: `%%{${translatePrefix}_SET_TEXT_SIZE} %1`,
+			args0: [{ type: "input_value", name: "NUM", check: "Number" }],
+			inputsInline: true,
+			previousStatement: null,
+			nextStatement: null,
+			style: "leaphy_blocks",
+			// "extensions": "updateDisplay",
+			helpUrl: "",
+		},
+		{
+			type: `${prefix}_print_value`,
+			message0: `%%{${translatePrefix}_PRINT} %1 %2 %3 = %4 %5`,
+			args0: [
+				{ type: "input_dummy" },
+				{
+					type: "field_dropdown",
+					name: "DISPLAY_ROW",
+					options: displayLines,
+				},
+				{ type: "input_value", name: "NAME" },
+				{ type: "input_dummy" },
+				{ type: "input_value", name: "VALUE" },
+			],
+			inputsInline: true,
+			previousStatement: null,
+			nextStatement: null,
+			style: "leaphy_blocks",
+			// "extensions": "updateDisplay",
+			helpUrl: "",
+		},
+	];
+}
+
 const blocks: BlockDefinition = [
 	{
 		type: "time_delay",
@@ -263,73 +343,12 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
 	},
-	{
-		type: "leaphy_display_clear",
-		message0: "%%{BKY_LEAPHY_DISPLAY_CLEAR}",
-		previousStatement: null,
-		nextStatement: null,
-		style: "leaphy_blocks",
-		helpUrl: "",
-	},
-	{
-		type: "leaphy_display_display",
-		message0: "%%{BKY_LEAPHY_DISPLAY_DISPLAY}",
-		previousStatement: null,
-		nextStatement: null,
-		style: "leaphy_blocks",
-		helpUrl: "",
-	},
-	{
-		type: "leaphy_display_print_line",
-		message0: "%%{BKY_LEAPHY_DISPLAY_PRINT} %1 %2 %3",
-		args0: [
-			{ type: "input_dummy" },
-			{
-				type: "field_dropdown",
-				name: "DISPLAY_ROW",
-				options: displayPinNumbers,
-			},
-			{ type: "input_value", name: "VALUE" },
-		],
-		inputsInline: true,
-		previousStatement: null,
-		nextStatement: null,
-		style: "leaphy_blocks",
-		// "extensions": "updateDisplay",
-		helpUrl: "",
-	},
-	{
-		type: "leaphy_display_set_text_size",
-		message0: "%%{BKY_LEAPHY_DISPLAY_SET_TEXT_SIZE} %1",
-		args0: [{ type: "input_value", name: "NUM", check: "Number" }],
-		inputsInline: true,
-		previousStatement: null,
-		nextStatement: null,
-		style: "leaphy_blocks",
-		// "extensions": "updateDisplay",
-		helpUrl: "",
-	},
-	{
-		type: "leaphy_display_print_value",
-		message0: "%%{BKY_LEAPHY_DISPLAY_PRINT} %1 %2 %3 = %4 %5",
-		args0: [
-			{ type: "input_dummy" },
-			{
-				type: "field_dropdown",
-				name: "DISPLAY_ROW",
-				options: displayPinNumbers,
-			},
-			{ type: "input_value", name: "NAME" },
-			{ type: "input_dummy" },
-			{ type: "input_value", name: "VALUE" },
-		],
-		inputsInline: true,
-		previousStatement: null,
-		nextStatement: null,
-		style: "leaphy_blocks",
-		// "extensions": "updateDisplay",
-		helpUrl: "",
-	},
+	...getLeaphyDisplayBlocks("leaphy_display", "BKY_LEAPHY_DISPLAY", 3),
+	...getLeaphyDisplayBlocks(
+		"leaphy_display_large",
+		"BKY_LEAPHY_DISPLAY_LARGE",
+		6,
+	),
 	{
 		type: "leaphy_use_lsm9ds1",
 		message0: "%1 %2",

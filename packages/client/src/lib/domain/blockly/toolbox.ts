@@ -327,6 +327,33 @@ export default [
 			],
 			[
 				{
+					type: "leaphy_display_large_clear",
+				},
+				{
+					type: "leaphy_display_large_set_text_size",
+					inputs: {
+						NUM: number(0),
+					},
+				},
+				{
+					type: "leaphy_display_large_print_line",
+					inputs: {
+						VALUE: text("text"),
+					},
+				},
+				{
+					type: "leaphy_display_large_print_value",
+					inputs: {
+						NAME: text("text"),
+						VALUE: number(0),
+					},
+				},
+				{
+					type: "leaphy_display_large_display",
+				},
+			],
+			[
+				{
 					type: "leaphy_matrix_init",
 				},
 				{

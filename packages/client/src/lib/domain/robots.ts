@@ -27,6 +27,7 @@ const DEFAULT_LIBRARIES = [
 	"ESP32Servo@3",
 	"Adafruit GFX Library@1.12",
 	"Adafruit SSD1306@2.5",
+	"Adafruit SH110X@2.1.12",
 	"Adafruit LSM9DS1 Library@2.2.1",
 	"Adafruit Unified Sensor@1.1.15",
 	"List@3.0.1",
