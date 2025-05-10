@@ -1,0 +1,62 @@
+#####
+## DO NOT INCLUDE THIS FILE IN THE FINAL PULL REQUEST
+#####
+
+name: Deploy Python
+
+on:
+  push:
+    branches:
+      - python_blocks
+  workflow_dispatch: {}
+
+jobs:
+  push_python:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Create TEST env file
+        if: github.ref_type == 'branch'
+        working-directory: ./packages/client
+        run: |
+          cat << EOF > .env
+          VITE_BACKEND_URL="https://testleaphyeasybloqs.com"
+          VITE_SENTRY_DSN=""
+          VITE_SENTRY_SAMPLE_RATE="0.0"
+          EOF
+          echo "ENV=python" >> "$GITHUB_ENV"
+          echo "STACK=leaphy-webbased-python" >> "$GITHUB_ENV"
+
+      - name: Build application
+        working-directory: ./packages/client
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          pnpm install
+          pnpm build
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          file: ./packages/client/Dockerfile
+          context: ./packages/client
+          push: true
+          tags: ghcr.io/leaphy-robotics/leaphy-webbased-svelte/leaphy-webbased-svelte:${{ env.ENV }}
+
+      - name: Redeploy
+        run: |
+          curl https://admin.leaphyeasybloqs.com/hooks/update-docker-image?stack=$STACK -H "X-Token: ${{ secrets.WEBHOOK_TOKEN }}"
