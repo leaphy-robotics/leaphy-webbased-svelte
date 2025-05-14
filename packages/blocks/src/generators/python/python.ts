@@ -1,4 +1,5 @@
 import { Variables } from "blockly/core";
+import { Order } from "blockly/python";
 import type { MicroPythonGenerator } from "../python";
 
 function getCodeGenerators(python: MicroPythonGenerator) {
@@ -32,6 +33,13 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		generator.addDefinition(funcName, code);
 
 		return `${funcName}()\n`;
+	};
+
+	python.forBlock.math_change = (block, generator) => {
+		// Micropython does not support the Number type that the default block uses.
+		const amount = generator.valueToCode(block, "DELTA", Order.ADDITIVE);
+		const target_var = generator.getVariableName(block.getFieldValue("VAR"));
+		return `${target_var} = (${target_var} if isinstance(${target_var},int) or isinstance(${target_var},float) else 0) + ${amount}\n`;
 	};
 }
 
