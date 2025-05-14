@@ -21,15 +21,19 @@ export class MicroPythonGenerator extends PythonGenerator {
 		if (current_import === "") {
 			this.definitions_[def_key] = `from ${packageName} import ${memberName}`;
 		}
+		// 3rd space is after the `import` keyword.
+		let part_start = current_import.indexOf(" ", 5) + 1;
+		part_start = current_import.indexOf(" ", part_start) + 1;
 		let members = current_import
-			.substring(current_import.indexOf("import ") + 7)
+			.substring(part_start)
 			.split(", ")
-			.filter((item) => {
-				item !== "";
-			});
+			.map((item) => item.trim())
+			.filter((item) => item.length > 0);
+
 		if (!members.includes(memberName)) {
 			members.push(memberName);
 		}
+
 		this.definitions_[def_key] =
 			`from ${packageName} import ${members.join(", ")}`;
 	}

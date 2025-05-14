@@ -8,15 +8,22 @@ import type { MicroPythonGenerator } from "../python";
 
 function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.time_delay = (block, generator) => {
-		//Python's sleep expects seconds.
-		const delayTime =
-			Number.parseInt(
-				generator.valueToCode(block, "DELAY_TIME_MILI", Order.ATOMIC) || "0",
-				10,
-			) / 1000;
-
-		generator.addImport("time", "sleep");
-		return `sleep(${delayTime})\n`;
+		//Micropython recommends the utime module instead of the default time-keeping module.
+		//Said module offers both a sleep(seconds) function and a sleep_ms(ms) function, along
+		//with a warning that some Micropython ports "may not accept [a] floating point argument
+		// [for the sleep function.]"
+		const delayMilis = Number.parseInt(
+			generator.valueToCode(block, "DELAY_TIME_MILI", Order.ATOMIC),
+		);
+		if (delayMilis % 1000 === 0) {
+			//Whole seconds.
+			const delaySeconds = delayMilis / 1000;
+			generator.addImport("utime", "sleep");
+			return `sleep(${delaySeconds})\n`;
+		}
+		//whole mililseconds.
+		generator.addImport("utime", "sleep_ms");
+		return `sleep_ms(${delayMilis})\n`;
 	};
 
 	//The default python generator does not innately support infinite loops, surprisingly.
