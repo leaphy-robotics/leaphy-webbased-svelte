@@ -38,20 +38,6 @@ function getCodeGenerators(arduino: Arduino) {
 		return `Serial.print(${name});\nSerial.print(" = ");\nSerial.println(${value});\n`;
 	};
 
-	arduino.forBlock.leaphy_compass_degrees = () => {
-		arduino.addInclude("leaphy_compass", "#include <QMC5883LCompass.h>");
-		arduino.addDeclaration("leaphy_compass", "QMC5883LCompass compass;");
-		const setup = arduino.addI2CSetup(
-			"compass",
-			"compass.init();\n    compass.setMagneticDeclination(2, 30);\n",
-		);
-		arduino.addDeclaration(
-			"leaphy_compass_read",
-			`int getCompassDegrees() {\n    ${setup}\n    compass.read();\n    int azimuth = compass.getAzimuth();\n    return round((azimuth > -0.5) ? azimuth : azimuth + 360);\n}\n`,
-		);
-		return ["getCompassDegrees()", arduino.ORDER_ATOMIC];
-	};
-
 	arduino.forBlock.leaphy_start = (block) => {
 		// Define the Start procedure
 		const funcName = "leaphyProgram";

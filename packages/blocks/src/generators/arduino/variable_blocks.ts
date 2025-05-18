@@ -5,7 +5,7 @@ function getCodeGenerators(arduino: Arduino) {
 		const clk = block.getFieldValue("CLK");
 		const dio = block.getFieldValue("DIO");
 
-		arduino.addInclude("tm1637", "#include <TM1637Display.h>");
+		arduino.addInclude("tm1637", "#include <SegmentDisplay.h>");
 		arduino.addDeclaration(
 			"segment",
 			`TM1637Display segment_display(${clk}, ${dio});`,
