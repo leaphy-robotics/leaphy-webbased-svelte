@@ -76,9 +76,6 @@ export default [
 					type: "leaphy_rgb_color_raw",
 				},
 				{
-					type: "leaphy_compass_degrees",
-				},
-				{
 					type: "leaphy_gas_sensor",
 				},
 				{
