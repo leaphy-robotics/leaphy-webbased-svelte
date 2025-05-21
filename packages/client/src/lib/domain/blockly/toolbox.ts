@@ -96,7 +96,7 @@ export default [
 				},
 				{
 					type: "leaphy_tof_get_distance",
-					robots: [...robotGroups.ALL],
+					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 				{
 					type: "leaphy_get_air_pressure",

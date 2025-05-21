@@ -14,7 +14,17 @@ import { PythonGenerator, pythonGenerator } from "blockly/python";
 export class MicroPythonGenerator extends PythonGenerator {
 	private i2c_stack_: number[] | null = null;
 
-	need_i2c_switch_ = false;
+	private need_i2c_switch_ = false;
+	private used_i2c_channels_: boolean[] = [
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+	];
 	i2c_channel_clean_ = true;
 
 	public init(workspace: Workspace): void {
@@ -51,15 +61,40 @@ export class MicroPythonGenerator extends PythonGenerator {
 			`from ${packageName} import ${members.join(", ")}`;
 	}
 
+	public addI2cSupport(need_multiplexer = true) {
+		this.addImport("utils.i2c_helper", "select_channel");
+		this.addImport("machine", "I2C");
+		this.addDefinition(
+			"i2c_object",
+			`${this.getVariableName("I2C_CONNECTION")} = I2C()`,
+		);
+		if (need_multiplexer) {
+			this.addDefinition(
+				"const_multiplexer_address",
+				"MULTIPLEXER_ADDRESS = 0x70",
+			);
+		}
+	}
+
 	public startI2cBlock(pin_no: number) {
 		this.i2c_stack_?.push(pin_no);
 	}
 
 	public endI2cBlock() {
-		this.i2c_stack_?.pop();
+		let removedChannel = this.i2c_stack_?.pop() || -1;
+		this.i2c_channel_clean_ =
+			removedChannel === this.currentI2cChannel() && this.i2c_channel_clean_;
 	}
 
-	public currentI2cPin(): number | null {
+	public insertI2cChannel() {
+		if (this.i2c_stack_ && this.i2c_stack_.length > 0) {
+			this.addI2cSupport();
+			this.need_i2c_switch_ = true;
+			this.used_i2c_channels_[this.currentI2cChannel() || 0] = true;
+		}
+	}
+
+	public currentI2cChannel(): number | null {
 		if (this.i2c_stack_ == null || this.i2c_stack_?.length === 0) {
 			return null;
 		}
@@ -67,16 +102,16 @@ export class MicroPythonGenerator extends PythonGenerator {
 	}
 
 	public scrub_(block: Block, code: string, thisOnly?: boolean): string {
+		if (this.i2c_channel_clean_) {
+			this.need_i2c_switch_ = false;
+		}
 		if (
 			this.need_i2c_switch_ &&
 			(block.nextConnection != null || block.previousConnection != null) &&
 			this.i2c_stack_ &&
 			this.i2c_stack_.length > 0
 		) {
-			this.addImport("utils.i2c_helper", "select_channel");
-			this.addImport("machine", "I2C");
-			this.addDefinition("I2C", "i2c_object = I2C()");
-			let patchedCode = `select_channel(i2c_object, MULTIPLEXER_ADDRESS, ${this.currentI2cPin() || ""})\n${code}`;
+			let patchedCode = `select_channel(i2c_object, MULTIPLEXER_ADDRESS, ${this.currentI2cChannel() || ""})\n${code}`;
 			this.need_i2c_switch_ = false;
 			return patchedCode;
 		}
@@ -84,7 +119,6 @@ export class MicroPythonGenerator extends PythonGenerator {
 	}
 
 	public finish(code: string): string {
-		console.log("Finishing up.");
 		return super.finish(code);
 	}
 }

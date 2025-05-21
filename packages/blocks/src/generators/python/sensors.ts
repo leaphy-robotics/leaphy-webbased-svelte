@@ -20,12 +20,6 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const code = generator.blockToCode(statements, false);
 
 		generator.endI2cBlock();
-
-		generator.addImport("utils.i2c_helper", "select_channel");
-		generator.addDefinition(
-			"const_multiplexer_address",
-			"MULTIPLEXER_ADDRESS = 0x70",
-		);
 		return code;
 	};
 
@@ -52,6 +46,22 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const pin = block.getFieldValue("PIN") || "0";
 
 		return [`read_pin(${pin})`, Order.FUNCTION_CALL];
+	};
+
+	python.forBlock.leaphy_tof_get_distance = (block, generator) => {
+		const active_channel = generator.currentI2cChannel() || "255";
+		const variable_name = generator.getVariableName(
+			`CHANNEL_${active_channel}_TOF`,
+		);
+		generator.addI2cSupport(false);
+		generator.addImport("leaphymicropython.sensors.tof", "TimeOfFlight");
+		generator.addDefinition(
+			`channel${active_channel}obj`,
+			`${variable_name} = TimeOfFlight(${active_channel})\n${variable_name}.initialize_device()`,
+		);
+
+		generator.i2c_channel_clean_ = true;
+		return [`${variable_name}.get_distance()`, Order.FUNCTION_CALL];
 	};
 }
 
