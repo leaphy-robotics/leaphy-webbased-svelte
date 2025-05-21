@@ -1,5 +1,5 @@
-import { PythonGenerator, pythonGenerator } from "blockly/python";
 import type { Block } from "blockly";
+import { PythonGenerator, pythonGenerator } from "blockly/python";
 
 /**
  * Generator for microPython code from blockly blocks, based
@@ -12,7 +12,7 @@ import type { Block } from "blockly";
 // moving its contents into an instance of the new class.
 
 export class MicroPythonGenerator extends PythonGenerator {
-	private i2c_stack_ : number[] | null = null;
+	private i2c_stack_: number[] | null = null;
 
 	need_i2c_switch_ = false;
 	i2c_channel_clean_ = true;
@@ -51,7 +51,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 			`from ${packageName} import ${members.join(", ")}`;
 	}
 
-	public startI2cBlock(pin_no:number) {
+	public startI2cBlock(pin_no: number) {
 		this.i2c_stack_?.push(pin_no);
 	}
 
@@ -59,26 +59,28 @@ export class MicroPythonGenerator extends PythonGenerator {
 		this.i2c_stack_?.pop();
 	}
 
-	public currentI2cPin(): number|null {
+	public currentI2cPin(): number | null {
 		if (this.i2c_stack_ == null || this.i2c_stack_?.length === 0) {
-			return null
+			return null;
 		}
-		return this.i2c_stack_[this.i2c_stack_.length-1];
+		return this.i2c_stack_[this.i2c_stack_.length - 1];
 	}
 
 	public scrub_(block: Block, code: string, thisOnly?: boolean): string {
-		console.log(`scrubbing ${code}`);
-		if (this.need_i2c_switch_ && 
-			(block.nextConnection != null || block.previousConnection != null) && 
-			(this.i2c_stack_ && this.i2c_stack_.length > 0)) {
-			this.addImport("utils.i2c_helper","select_channel");
-			this.addImport("machine","I2C")
-			this.addDefinition("I2C","i2c_object = I2C()");
-			code = `select_channel(i2c_object, MULTIPLEXER_ADDRESS, ${this.currentI2cPin() || ""})\n${code}`;
+		if (
+			this.need_i2c_switch_ &&
+			(block.nextConnection != null || block.previousConnection != null) &&
+			this.i2c_stack_ &&
+			this.i2c_stack_.length > 0
+		) {
+			this.addImport("utils.i2c_helper", "select_channel");
+			this.addImport("machine", "I2C");
+			this.addDefinition("I2C", "i2c_object = I2C()");
+			let patchedCode = `select_channel(i2c_object, MULTIPLEXER_ADDRESS, ${this.currentI2cPin() || ""})\n${code}`;
 			this.need_i2c_switch_ = false;
-			return code;
+			return patchedCode;
 		}
-		return super.scrub_(block,code,thisOnly);
+		return super.scrub_(block, code, thisOnly);
 	}
 
 	public finish(code: string): string {
@@ -93,17 +95,17 @@ Object.entries(pythonGenerator).forEach((fieldValue) => {
 	(microPythonGenerator as any)[fieldValue[0]] = fieldValue[1];
 });
 
+import type { Workspace } from "blockly";
+import * as actuators from "./python/actuators";
 import * as operators from "./python/operators";
 import * as python_blocks from "./python/python";
-import { Workspace } from "blockly";
-import * as situation from "./python/situation";
 import * as sensors from "./python/sensors";
-import * as actuators from "./python/actuators";
+import * as situation from "./python/situation";
 
-operators.default(microPythonGenerator);
 actuators.default(microPythonGenerator);
+operators.default(microPythonGenerator);
 python_blocks.default(microPythonGenerator);
-situation.default(microPythonGenerator);
 sensors.default(microPythonGenerator);
+situation.default(microPythonGenerator);
 
 export default microPythonGenerator;
