@@ -35,6 +35,7 @@ export default [
 		id: "%robot%_sensors",
 		robots: [
 			...robotGroups.ALL,
+			RobotType.L_NANO_RP2040_MICROPYTHON,
 			-RobotType.L_FLITZ_UNO,
 			-RobotType.L_FLITZ_NANO,
 		],
@@ -42,7 +43,7 @@ export default [
 			[
 				{
 					type: "i2c_use_channel",
-					robots: robotGroups.L_NANO_ALL,
+					robots: [...robotGroups.L_NANO_ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 			],
 			[
