@@ -98,8 +98,10 @@ import * as python_blocks from "./python/python";
 import { Workspace } from "blockly";
 import * as situation from "./python/situation";
 import * as sensors from "./python/sensors";
+import * as actuators from "./python/actuators";
 
 operators.default(microPythonGenerator);
+actuators.default(microPythonGenerator);
 python_blocks.default(microPythonGenerator);
 situation.default(microPythonGenerator);
 sensors.default(microPythonGenerator);
