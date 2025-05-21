@@ -125,7 +125,6 @@ messages.LEAPHY_BUZZ_BUZZ = "Buzz"; // untranslated
 messages.LEAPHY_BUZZ_HERTZ = "Hertz"; // untranslated
 messages.LEAPHY_BUZZ_MS = "ms"; // untranslated
 messages.LEAPHY_CLICK_CATEGORY = "Leaphy Click"; // untranslated
-messages.LEAPHY_COMPASS = "Lees kompas";
 messages.LEAPHY_DIGITAL_READ = "Lees digipin";
 messages.LEAPHY_CHOOSE_GAS = "Lees gas";
 messages.LEAPHY_DISPLAY_CLEAR = "Maak display leeg";

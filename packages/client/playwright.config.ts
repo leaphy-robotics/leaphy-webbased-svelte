@@ -39,13 +39,13 @@ export default defineConfig({
 				contextOptions: {
 					screen: {
 						width: 1920,
-						height: 1080
-					}
+						height: 1080,
+					},
 				},
 				viewport: {
 					width: 1920,
-					height: 1080
-				}
+					height: 1080,
+				},
 			},
 		},
 

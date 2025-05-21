@@ -121,7 +121,6 @@ messages.LEAPHY_BUZZ_BUZZ = "Buzz";
 messages.LEAPHY_BUZZ_HERTZ = "Hertz";
 messages.LEAPHY_BUZZ_MS = "ms";
 messages.LEAPHY_CLICK_CATEGORY = "Leaphy Click";
-messages.LEAPHY_COMPASS = "Read compass";
 messages.LEAPHY_DIGITAL_READ = "Read digipin";
 messages.LEAPHY_CHOOSE_GAS = "Read gas";
 messages.LEAPHY_DISPLAY_CLEAR = "Clear display";
