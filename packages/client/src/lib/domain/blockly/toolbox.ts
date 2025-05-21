@@ -35,6 +35,7 @@ export default [
 		id: "%robot%_sensors",
 		robots: [
 			...robotGroups.ALL,
+			RobotType.L_NANO_RP2040_MICROPYTHON,
 			-RobotType.L_FLITZ_UNO,
 			-RobotType.L_FLITZ_NANO,
 		],
@@ -42,15 +43,20 @@ export default [
 			[
 				{
 					type: "i2c_use_channel",
-					robots: robotGroups.L_NANO_ALL,
+					robots: [
+						...robotGroups.L_NANO_ALL,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
+					],
 				},
 			],
 			[
 				{
 					type: "digital_read",
+					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 				{
 					type: "analog_read",
+					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 			],
 			[
@@ -65,36 +71,48 @@ export default [
 				{
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-					robots: robotGroups.L_NANO_ALL,
+					robots: [
+						...robotGroups.L_NANO_ALL,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
+					],
 				},
 			],
 			[
 				{
 					type: "leaphy_rgb_color",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_rgb_color_raw",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_gas_sensor",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_i2c_rgb_color",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_tof_get_distance",
+					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 				{
 					type: "leaphy_get_air_pressure",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_i2c_gesture",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_i2c_rtc_get",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_i2c_rtc_format",
+					robots: [...robotGroups.ALL],
 					extraState: [
 						{
 							type: "item",
@@ -150,19 +168,23 @@ export default [
 				},
 				{
 					type: "leaphy_read_accelerometer",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					type: "leaphy_read_gyroscope",
+					robots: [...robotGroups.ALL],
 				},
 			],
 			[
 				{
 					kind: "block",
 					type: "leaphy_serial_available",
+					robots: [...robotGroups.ALL],
 				},
 				{
 					kind: "block",
 					type: "leaphy_serial_read_line",
+					robots: [...robotGroups.ALL],
 				},
 			],
 		],
@@ -176,6 +198,7 @@ export default [
 			...robotGroups.ALL,
 			-RobotType.L_FLITZ_UNO,
 			-RobotType.L_FLITZ_NANO,
+			RobotType.L_NANO_RP2040_MICROPYTHON,
 		],
 		groups: [
 			[
@@ -186,6 +209,11 @@ export default [
 						LED_GREEN: number(0),
 						LED_BLUE: number(0),
 					},
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					robots: [
@@ -229,6 +257,11 @@ export default [
 				},
 				{
 					type: "leaphy_original_buzz",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						FREQUENCY: number(440),
 						DURATION: number(100),
@@ -236,12 +269,23 @@ export default [
 				},
 				{
 					type: "leaphy_serial_print_line",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
+					],
 					inputs: {
 						VALUE: text("text"),
 					},
 				},
 				{
 					type: "leaphy_serial_print_value",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						NAME: text("text"),
 						VALUE: number(0),
@@ -249,15 +293,32 @@ export default [
 				},
 				{
 					type: "leaphy_io_digitalwrite",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
+					],
 				},
 				{
 					type: "leaphy_io_analogwrite",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
+					],
 					inputs: {
 						NUM: number(0),
 					},
 				},
 				{
 					type: "leaphy_servo_write",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						SERVO_ANGLE: number(90),
 					},
@@ -266,6 +327,11 @@ export default [
 			[
 				{
 					type: "leaphy_led_set_strip",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						LED_SET_PIN: number(0),
 						LED_SET_LEDS: number(0),
@@ -273,6 +339,11 @@ export default [
 				},
 				{
 					type: "leaphy_led_set_basic",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						LED_SET_LED: number(0),
 						LED_BASIC_RED: number(0),
@@ -282,12 +353,22 @@ export default [
 				},
 				{
 					type: "leaphy_led_set_speed",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						LED_SET_SPEEDVALUE: number(0),
 					},
 				},
 				{
 					type: "leaphy_led_strip_demo",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						LED_STRIP_DEMO_RED: number(0),
 						LED_STRIP_DEMO_GREEN: number(0),
@@ -298,21 +379,41 @@ export default [
 			[
 				{
 					type: "leaphy_display_clear",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_display_set_text_size",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						NUM: number(0),
 					},
 				},
 				{
 					type: "leaphy_display_print_line",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						VALUE: text("text"),
 					},
 				},
 				{
 					type: "leaphy_display_print_value",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						NAME: text("text"),
 						VALUE: number(0),
@@ -320,26 +421,51 @@ export default [
 				},
 				{
 					type: "leaphy_display_display",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 			],
 			[
 				{
 					type: "leaphy_display_large_clear",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_display_large_set_text_size",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						NUM: number(0),
 					},
 				},
 				{
 					type: "leaphy_display_large_print_line",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						VALUE: text("text"),
 					},
 				},
 				{
 					type: "leaphy_display_large_print_value",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						NAME: text("text"),
 						VALUE: number(0),
@@ -347,17 +473,37 @@ export default [
 				},
 				{
 					type: "leaphy_display_large_display",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 			],
 			[
 				{
 					type: "leaphy_matrix_init",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_matrix_fill",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_matrix_set",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						X: number(0),
 						Y: number(0),
@@ -366,29 +512,59 @@ export default [
 				},
 				{
 					type: "leaphy_matrix_set_brightness",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						BRIGHTNESS: number(100),
 					},
 				},
 				{
 					type: "leaphy_matrix_clear",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 			],
 			[
 				{
 					type: "leaphy_segment_init",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_segment_set",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						NUM: number(0),
 					},
 				},
 				{
 					type: "leaphy_segment_clear",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_segment_set_brightness",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						BRIGHTNESS: number(0),
 					},
@@ -397,21 +573,41 @@ export default [
 			[
 				{
 					type: "leaphy_sound_init",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 				{
 					type: "leaphy_sound_play",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						ITEM: number(1),
 					},
 				},
 				{
 					type: "leaphy_sound_set_volume",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						VOLUME: number(100),
 					},
 				},
 				{
 					type: "leaphy_sound_stop",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 				},
 			],
 			[
@@ -425,6 +621,11 @@ export default [
 				},
 				{
 					type: "leaphy_i2c_rtc_set",
+					robots: [
+						...robotGroups.ALL,
+						-RobotType.L_FLITZ_UNO,
+						-RobotType.L_FLITZ_NANO,
+					],
 					inputs: {
 						VALUE: text(format(new Date(), "yyMMddiHHmmss")),
 					},
@@ -643,7 +844,7 @@ export default [
 		name: "%{BKY_LEAPHY_OPERATORS_CATEGORY}",
 		style: "numbers_category",
 		id: "l_numbers",
-		robots: robotGroups.L_ARDUINO_ALL,
+		robots: [...robotGroups.L_ARDUINO_ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 		groups: [
 			[
 				{
