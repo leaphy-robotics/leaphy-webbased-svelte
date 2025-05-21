@@ -28,7 +28,10 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 	//The default python generator does not innately support infinite loops, surprisingly.
 	python.forBlock.controls_repeat_forever = (block, generator) => {
-		const branch = generator.statementToCode(block, "DO");
+		let branch = generator.statementToCode(block, "DO");
+		if (branch === "") {
+			branch = generator.PASS;
+		}
 		const code = `while True:\n${branch}`;
 		return code;
 	};
