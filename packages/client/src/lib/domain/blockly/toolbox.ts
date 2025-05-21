@@ -52,11 +52,11 @@ export default [
 			[
 				{
 					type: "digital_read",
-					robots: [...robotGroups.ALL],
+					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 				{
 					type: "analog_read",
-					robots: [...robotGroups.ALL],
+					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
 				},
 			],
 			[
@@ -297,6 +297,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
 					],
 				},
 				{
@@ -305,6 +306,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
 					],
 					inputs: {
 						NUM: number(0),

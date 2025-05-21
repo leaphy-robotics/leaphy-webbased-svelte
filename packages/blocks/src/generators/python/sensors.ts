@@ -37,6 +37,22 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		return [`read_distance(${trigger},${echo})`, Order.FUNCTION_CALL];
 	};
+
+	python.forBlock.analog_read = (block, generator) => {
+		generator.addImport("leaphymicropython.utils.pins", "read_analog");
+
+		const pin = block.getFieldValue("PIN") || "0";
+
+		return [`read_analog(${pin})`, Order.FUNCTION_CALL];
+	};
+
+	python.forBlock.digital_read = (block, generator) => {
+		generator.addImport("leaphymicropython.utils.pins", "read_pin");
+
+		const pin = block.getFieldValue("PIN") || "0";
+
+		return [`read_pin(${pin})`, Order.FUNCTION_CALL];
+	};
 }
 
 export default getCodeGenerators;
