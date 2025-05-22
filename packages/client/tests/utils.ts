@@ -1,6 +1,11 @@
 import { promises as fs } from "node:fs";
 import setupPlaywrightArduino from "@leaphy-robotics/playwright-arduino";
-import { type Page, type PlaywrightTestArgs, test } from "@playwright/test";
+import {
+	type Download,
+	type Page,
+	type PlaywrightTestArgs,
+	test,
+} from "@playwright/test";
 
 // Prevent sentry events from actually being sent
 test.beforeEach(async ({ context }) => {
@@ -105,4 +110,18 @@ export async function mockShowOpenFilePicker(
 	};
 
 	return createOnWritePromise;
+}
+
+export async function getDownloadContents(
+	downloadPromise: Promise<Download>,
+): Promise<string> {
+	const download = await downloadPromise;
+	const stream = await download.createReadStream();
+
+	const chunks: Buffer<any>[] = [];
+	return new Promise((resolve, reject) => {
+		stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
+		stream.on("error", (err) => reject(err));
+		stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+	});
 }
