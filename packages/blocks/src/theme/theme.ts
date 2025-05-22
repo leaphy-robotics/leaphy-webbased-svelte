@@ -8,6 +8,7 @@ const defaultBlockStyles = {
 	list_blocks: { colourPrimary: "#a500cf" },
 	procedure_blocks: { colourPrimary: "#4095CE" },
 	mesh_blocks: { colourPrimary: "#56cb9a" },
+	bluetooth_blocks: { colourPrimary: "#0082FC" },
 };
 
 const categoryStyles = {
@@ -18,6 +19,7 @@ const categoryStyles = {
 	lists_category: { colour: "#a500cf" },
 	functions_category: { colour: "#4095CE" },
 	mesh_category: { colour: "#56cb9a" },
+	bluetooth_category: { colour: "#0082FC" },
 };
 
 const componentStyles = {

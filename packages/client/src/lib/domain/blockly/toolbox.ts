@@ -480,6 +480,85 @@ export default [
 		],
 	},
 	{
+		name: "Bluetooth",
+		style: "bluetooth_category",
+		id: "l_bluetooth",
+		robots: [RobotType.L_NANO_ESP32, RobotType.L_ORIGINAL_NANO_ESP32],
+		groups: [
+			[
+				{
+					type: "bluetooth_setup",
+					inputs: {
+						NAME: text("Leaphy"),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_on_connect",
+				},
+				{
+					type: "bluetooth_on_disconnect",
+				},
+				{
+					type: "bluetooth_on_discover",
+				},
+				{
+					type: "bluetooth_start_leaphy_filtered_scan",
+				},
+				{
+					type: "bluetooth_start_name_filtered_scan",
+					inputs: {
+						NAME: text("Willy"),
+					},
+				},
+				{
+					type: "bluetooth_stop_scan",
+				},
+				{
+					type: "bluetooth_on_characteristic_update",
+					inputs: {
+						NAME: text("LED"),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_create_binary_characteristic",
+					inputs: {
+						NAME: text("LED"),
+						INITIAL_VALUE: boolean(),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_create_string_characteristic",
+					inputs: {
+						NAME: text("DISPLAY"),
+						INITIAL_VALUE: text("Hello"),
+					},
+				}
+			],
+			[
+				{
+					type: "bluetooth_read_bool_characteristic",
+					inputs: {
+						NAME: text("LED"),
+					}
+				},
+			],
+			[
+				{
+					type: "bluetooth_read_string_characteristic",
+					inputs: {
+						NAME: text("DISPLAY"),
+					}
+				},
+			]
+		],
+	},
+	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",
 		style: "leaphy_category",
 		id: "%robot%",
