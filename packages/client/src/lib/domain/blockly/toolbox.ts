@@ -504,7 +504,13 @@ export default [
 					type: "bluetooth_on_discover",
 				},
 				{
-					type: "bluetooth_start_filtered_scan",
+					type: "bluetooth_start_leaphy_filtered_scan",
+				},
+				{
+					type: "bluetooth_start_name_filtered_scan",
+					inputs: {
+						NAME: text("Willy"),
+					},
 				},
 				{
 					type: "bluetooth_stop_scan",
