@@ -1,6 +1,7 @@
-import { promises as fs } from "node:fs";
+import { promises as fs, existsSync as fileExists } from "node:fs";
 import { type Page, expect, test } from "@playwright/test";
 import {
+	getDownloadContents,
 	goToHomePage,
 	mockShowOpenFilePicker,
 	newProject,
@@ -24,10 +25,13 @@ async function testExtension(page: Page, extension: string) {
 		return files;
 	}
 
-	const files = await getAllFiles("./tests/code_tests");
-	let num_tests = 0;
+	let path = "./tests/code_tests";
+	if (!fileExists("./tests/code_tests")) {
+		path = "./packages/client/tests/code_tests";
+	}
+	let files = await getAllFiles(path);
 
-	await page.locator(".sidebar").getByRole("button", { name: "Code" }).click();
+	let num_tests = 0;
 
 	for (const workspace_file of files) {
 		if (!workspace_file.endsWith(extension)) {
@@ -45,14 +49,28 @@ async function testExtension(page: Page, extension: string) {
 
 		let code = (await fs.readFile(`${workspace_file}_code`)).toString();
 
+		await page.locator(".header").getByRole("button", { name: "Code" }).click();
+		await page.getByRole("button", { name: "My projects" }).click();
+
+		await page.getByRole("cell", { name: "Save As" }).click();
+
+		await page
+			.getByRole("textbox", { name: "Give your download a name" })
+			.fill("Test");
+		const downloadPromise = page.waitForEvent("download");
+		await page.locator("form").getByRole("button", { name: "Save" }).click();
+		const download = await getDownloadContents(downloadPromise);
+
 		for (const segment of code.split("\n\n")) {
 			// Create a regex of the segment instead of directly searching for the segment so whitespace becomes optional
-			let escaped = segment.replace(/([\\\.\(\)\[\]\*\+\?\}\{])/g, "\\$1");
+			let escaped = segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 			let whitespace = escaped.replace(/(\s)+/g, "\\s*");
 			let regex = new RegExp(`${whitespace}`);
 
-			await expect(page.locator(".view-lines")).toContainText(regex);
+			expect(download).toMatch(regex);
 		}
+
+		await page.getByRole("button", { name: "Blocks" }).click();
 	}
 
 	expect(num_tests).toBeGreaterThan(0);
