@@ -1,7 +1,7 @@
 import type { Block } from "blockly";
 import type { Arduino } from "../arduino";
+import { Dependencies } from "./dependencies";
 import { procedureManager } from "./procedures";
-import {Dependencies} from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.mesh_setup = (block: Block) => {

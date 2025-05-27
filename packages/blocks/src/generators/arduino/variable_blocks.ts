@@ -1,5 +1,5 @@
 import type { Arduino } from "../arduino";
-import {Dependencies} from "./dependencies";
+import { Dependencies } from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.leaphy_segment_init = (block) => {

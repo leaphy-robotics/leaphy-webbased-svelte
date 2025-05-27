@@ -1,6 +1,6 @@
 import type { Arduino } from "../arduino";
+import { Dependencies } from "./dependencies";
 import { addI2CDeclarations } from "./i2c";
-import {Dependencies} from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.time_delay = (block) => {
@@ -65,7 +65,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_tof_get_distance = () => {
-		arduino.addDependency(Dependencies.ADAFRUIT_VL53L0X_TOF)
+		arduino.addDependency(Dependencies.ADAFRUIT_VL53L0X_TOF);
 		arduino.addInclude("leaphy_tof", "#include <Adafruit_VL53L0X.h>");
 		arduino.addDeclaration("leaphy_tof", "Adafruit_VL53L0X i2c_distance;");
 		const setup = arduino.addI2CSetup(
@@ -101,7 +101,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_gas_sensor = (block) => {
-		arduino.addDependency(Dependencies.ADAFRUIT_SGP30_GAS)
+		arduino.addDependency(Dependencies.ADAFRUIT_SGP30_GAS);
 		arduino.addInclude("leaphy_gas_sensor", "#include <Adafruit_SGP30.h>");
 		arduino.addDeclaration("leaphy_gas_sensor", "Adafruit_SGP30 sgp;");
 		const setup = arduino.addI2CSetup("gas", "if (! sgp.begin()) return -1;\n");

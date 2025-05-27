@@ -1,5 +1,5 @@
 import Arduino from "../arduino";
-import {Dependencies} from "./dependencies";
+import { Dependencies } from "./dependencies";
 
 const SELECT_CHANNEL =
 	"void i2cSelectChannel(uint8_t channel, bool push = true) {\n" +

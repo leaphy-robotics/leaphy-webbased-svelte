@@ -7,4 +7,4 @@ export * as THEME from "./theme/theme";
 export * as CATEGORIES from "./categories/all";
 export { ProcedureSerializer } from "./generators/arduino/procedures";
 export { translations, arduino, blocks, registerExtensions };
-export { Dependencies } from "./generators/arduino/dependencies"
+export { Dependencies } from "./generators/arduino/dependencies";

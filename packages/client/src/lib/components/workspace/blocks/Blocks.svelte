@@ -56,9 +56,9 @@ onMount(() => {
 			WorkspaceState.robot.id,
 		);
 
-		console.log(arduino.getDependencies())
-		AppState.libraries.clear()
-		AppState.libraries.install(...arduino.getDependencies())
+		console.log(arduino.getDependencies());
+		AppState.libraries.clear();
+		AppState.libraries.install(...arduino.getDependencies());
 
 		updateSizing();
 
@@ -93,8 +93,8 @@ locale.subscribe((locale) => {
 				WorkspaceState.robot.id,
 			);
 
-			AppState.libraries.clear()
-			AppState.libraries.install(...arduino.getDependencies())
+			AppState.libraries.clear();
+			AppState.libraries.install(...arduino.getDependencies());
 		});
 	}
 });

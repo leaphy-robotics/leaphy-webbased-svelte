@@ -1,5 +1,5 @@
 import type { Arduino } from "../arduino";
-import {Dependencies} from "./dependencies";
+import { Dependencies } from "./dependencies";
 
 interface Text {
 	type: "text";

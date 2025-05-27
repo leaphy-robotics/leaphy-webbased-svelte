@@ -1,5 +1,5 @@
 import type { Arduino } from "../arduino";
-import {Dependencies} from "./dependencies";
+import { Dependencies } from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	function addRGBColorDefinitions() {
@@ -201,9 +201,9 @@ function getCodeGenerators(arduino: Arduino) {
 		const setup = arduino.addI2CSetup("oled", displaySetup);
 
 		if (large) {
-			arduino.addDependency(Dependencies.ADAFRUIT_SH110X_OLED)
+			arduino.addDependency(Dependencies.ADAFRUIT_SH110X_OLED);
 		} else {
-			arduino.addDependency(Dependencies.ADAFRUIT_SSD1306_OLED)
+			arduino.addDependency(Dependencies.ADAFRUIT_SSD1306_OLED);
 		}
 
 		arduino.addInclude(
