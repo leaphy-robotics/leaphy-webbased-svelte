@@ -1,4 +1,5 @@
 import type { Arduino } from "../arduino";
+import {Dependencies} from "./dependencies";
 
 interface Text {
 	type: "text";
@@ -13,6 +14,7 @@ export type DateItem = Text | Item;
 
 function getCodeGenerators(arduino: Arduino) {
 	function addRTCGet(type: string) {
+		arduino.addDependency(Dependencies.DS3231_RTC);
 		arduino.addInclude("RTC", "#include <DS3231.h>");
 		arduino.addDeclaration("RTC", "DS3231 RTC;");
 
@@ -43,6 +45,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_i2c_rtc_set = (block) => {
+		arduino.addDependency(Dependencies.DS3231_RTC);
 		arduino.addInclude("RTC", "#include <DS3231.h>");
 		arduino.addDeclaration("RTC", "DS3231 RTC;");
 
@@ -58,6 +61,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_i2c_rtc_format = (block) => {
+		arduino.addDependency(Dependencies.DS3231_RTC);
 		arduino.addInclude("RTC", "#include <DS3231.h>");
 		arduino.addDeclaration("RTC", "DS3231 RTC;");
 

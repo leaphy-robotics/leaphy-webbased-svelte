@@ -1,4 +1,5 @@
 import type { Arduino } from "../arduino";
+import {Dependencies} from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	function addRGBColorDefinitions() {
@@ -9,6 +10,8 @@ function getCodeGenerators(arduino: Arduino) {
 			'if (tcs.begin()) {\n    Serial.println("RGB-sensor gevonden!");\n  } else {\n    Serial.println("Geen RGB-sensor gevonden... check je verbindingen...");\n  }\n';
 		const rgbColorSetup = arduino.addI2CSetup("rgb_color", rgbColorSetupCode);
 		const getColorDefinition = `double getColor(int colorCode, bool isRaw) {\n  ${rgbColorSetup}  uint16_t RawColor_Red, RawColor_Green, RawColor_Blue, RawColor_Clear;\n  byte Color_Red, Color_Green, Color_Blue, Color_Clear;\n  tcs.getRawData(&RawColor_Red, &RawColor_Green, &RawColor_Blue, &RawColor_Clear);\n  Color_Red = min(RawColor_Red/5,255); Color_Green = min(RawColor_Green/5,255); Color_Blue = min(RawColor_Blue/5,255);\n  switch(colorCode) {\n    case 0:\n      return (isRaw) ? RawColor_Red : Color_Red;\n    case 1:\n      return (isRaw) ? RawColor_Green : Color_Green;\n    case 2:\n      return (isRaw) ? RawColor_Blue : Color_Blue;\n  }\n}\n`;
+
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("define_leaphy_rgb", includeDefinition);
 		arduino.addInclude("define_leaphy_rgb_var", variablesDefinition);
 		arduino.addDeclaration("define_get_color", getColorDefinition);
@@ -52,6 +55,7 @@ function getCodeGenerators(arduino: Arduino) {
 		const leds =
 			arduino.valueToCode(block, "LED_SET_LEDS", arduino.ORDER_ATOMIC) || "0";
 
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("led_libs", '#include "ledstrip.h"');
 		arduino.addDeclaration("leds_pins", `LEDSTRIP ledstrip(${pin}, ${leds});`);
 
@@ -182,7 +186,9 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_sonar_read = (block) => {
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
+
 		const trigPin = block.getFieldValue("TRIG_PIN");
 		const echoPin = block.getFieldValue("ECHO_PIN");
 		const code = `getDistanceSonar(${trigPin}, ${echoPin})`;
@@ -193,6 +199,12 @@ function getCodeGenerators(arduino: Arduino) {
 		const displaySetup = `if (!display.begin(${large ? "0x3C, true" : "SSD1306_SWITCHCAPVCC, 0x3C"})) {\n        Serial.println(F("Contact with the display failed: Check the connections"));\n      }\n\n      display.clearDisplay();\n      display.setTextSize(1);\n      display.setTextColor(${large ? "SH110X_WHITE" : "SSD1306_WHITE"});\n      display.setCursor(0, 0);\n      display.println(F("Leaphy OLED"));\n      display.display();\n`;
 
 		const setup = arduino.addI2CSetup("oled", displaySetup);
+
+		if (large) {
+			arduino.addDependency(Dependencies.ADAFRUIT_SH110X_OLED)
+		} else {
+			arduino.addDependency(Dependencies.ADAFRUIT_SSD1306_OLED)
+		}
 
 		arduino.addInclude(
 			"include_display",

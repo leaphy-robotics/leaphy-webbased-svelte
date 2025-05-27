@@ -1,5 +1,6 @@
 import { MotorDirection } from "../../blocks/leaphy_original";
 import type { Arduino } from "../arduino";
+import {Dependencies} from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.leaphy_original_set_led = (block) => {
@@ -49,6 +50,7 @@ function getCodeGenerators(arduino: Arduino) {
 		let speed =
 			arduino.valueToCode(block, "MOTOR_SPEED", arduino.ORDER_ATOMIC) || "100";
 
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS)
 		arduino.addInclude(
 			"include_leaphy_original",
 			'#include "Leaphyoriginal1.h"',
@@ -72,6 +74,8 @@ function getCodeGenerators(arduino: Arduino) {
 		let direction = block.getFieldValue("MOTOR_DIRECTION") as MotorDirection;
 		let speed =
 			arduino.valueToCode(block, "MOTOR_SPEED", arduino.ORDER_ATOMIC) || "100";
+
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS)
 		arduino.addInclude(
 			"include_leaphy_original",
 			'#include "Leaphyoriginal1.h"',

@@ -55,6 +55,11 @@ onMount(() => {
 			BlocklyState.workspace,
 			WorkspaceState.robot.id,
 		);
+
+		console.log(arduino.getDependencies())
+		AppState.libraries.clear()
+		AppState.libraries.install(...arduino.getDependencies())
+
 		updateSizing();
 
 		if (event.type === Events.TOOLBOX_ITEM_SELECT) {
@@ -87,6 +92,9 @@ locale.subscribe((locale) => {
 				BlocklyState.workspace,
 				WorkspaceState.robot.id,
 			);
+
+			AppState.libraries.clear()
+			AppState.libraries.install(...arduino.getDependencies())
 		});
 	}
 });

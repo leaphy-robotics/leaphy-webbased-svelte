@@ -1,5 +1,6 @@
 import type { Arduino } from "../arduino";
 import { addI2CDeclarations } from "./i2c";
+import {Dependencies} from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.time_delay = (block) => {
@@ -64,6 +65,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_tof_get_distance = () => {
+		arduino.addDependency(Dependencies.ADAFRUIT_VL53L0X_TOF)
 		arduino.addInclude("leaphy_tof", "#include <Adafruit_VL53L0X.h>");
 		arduino.addDeclaration("leaphy_tof", "Adafruit_VL53L0X i2c_distance;");
 		const setup = arduino.addI2CSetup(
@@ -79,6 +81,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_get_air_pressure = () => {
+		arduino.addDependency(Dependencies.ADAFRUIT_BMP280_BAR);
 		arduino.addInclude("bmp280", "#include <Adafruit_BMP280.h>");
 		arduino.addDeclaration("bmp280", "Adafruit_BMP280 bmp280;");
 		const setup = arduino.addI2CSetup(
@@ -98,6 +101,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_gas_sensor = (block) => {
+		arduino.addDependency(Dependencies.ADAFRUIT_SGP30_GAS)
 		arduino.addInclude("leaphy_gas_sensor", "#include <Adafruit_SGP30.h>");
 		arduino.addDeclaration("leaphy_gas_sensor", "Adafruit_SGP30 sgp;");
 		const setup = arduino.addI2CSetup("gas", "if (! sgp.begin()) return -1;\n");
@@ -138,8 +142,10 @@ function getCodeGenerators(arduino: Arduino) {
 		const rgb_declaration = `int r[8], g[8], b[8], a[8];\nint getAPDS9960Color(int colorType) {\n    ${setup}    uint8_t channel = i2cGetChannel();\n    if (APDS.colorAvailable()) {\n        APDS.readColor(r[channel], g[channel], b[channel], a[channel]);\n    }\n    switch(colorType) {\n      case 0:\n        return r[channel];\n      case 1:\n        return g[channel];\n      case 2:\n        return b[channel];\n      case 3:\n        return a[channel];\n    }\n}\n`;
 		const colorType = block.getFieldValue("COLOR_TYPE");
 
+		arduino.addDependency(Dependencies.APDS9960_RGB);
 		arduino.addInclude("apds9960", "#include <Arduino_APDS9960.h>");
 		arduino.addDeclaration("apds9960_rgb", rgb_declaration);
+
 		const code = `getAPDS9960Color(${colorType})`;
 		return [code, arduino.ORDER_ATOMIC];
 	};
@@ -147,8 +153,11 @@ function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.leaphy_i2c_gesture = () => {
 		const setup = arduino.addI2CSetup("apds9960", "APDS.begin();\n");
 		const gesture_declaration = `int gesture[8];\nint getAPDS9960Gesture() {\n    ${setup}    uint8_t channel = i2cGetChannel();\n    if (APDS.gestureAvailable()) {\n        gesture[channel] = APDS.readGesture();\n    }\n    return gesture[channel];\n}\n`;
+
+		arduino.addDependency(Dependencies.APDS9960_RGB);
 		arduino.addInclude("apds9960", "#include <Arduino_APDS9960.h>");
 		arduino.addDeclaration("apds9960_gesture", gesture_declaration);
+
 		const code = "getAPDS9960Gesture()";
 		return [code, arduino.ORDER_ATOMIC];
 	};
@@ -279,6 +288,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_read_accelerometer = (block) => {
+		arduino.addDependency(Dependencies.ADAFRUIT_LSM6DS_ACCELEROMETER);
 		arduino.addInclude("GyroAccel", "#include <Adafruit_LSM6DS3TRC.h>");
 		const setup = arduino.addI2CSetup(
 			"GyroAccel",
@@ -308,7 +318,9 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_read_gyroscope = (block) => {
+		arduino.addDependency(Dependencies.ADAFRUIT_LSM6DS_ACCELEROMETER);
 		arduino.addInclude("GyroAccel", "#include <Adafruit_LSM6DS3TRC.h>");
+
 		const setup = arduino.addI2CSetup(
 			"GyroAccel",
 			"if (!lsm6ds3trc.begin_I2C()) {\n" +

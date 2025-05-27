@@ -8,6 +8,7 @@ import {
 } from "blockly/core";
 import { addI2CDeclarations } from "./arduino/i2c";
 import { procedureManager } from "./arduino/procedures";
+import {Dependencies} from "./arduino/dependencies";
 
 export class Arduino extends Blockly.Generator {
 	public ORDER_ATOMIC = 0; // 0 "" ...
@@ -59,6 +60,7 @@ export class Arduino extends Blockly.Generator {
 	public includes_: Record<string, string> = {};
 	public setups_: Record<string, string | undefined> = {};
 	public declarations_: Record<string, { priority: number; code: string }> = {};
+	public dependencies = new Set<string>();
 
 	public robotType = "l_uno";
 
@@ -216,6 +218,7 @@ export class Arduino extends Blockly.Generator {
 
 		// Create a dictionary of definitions to be printed at the top of the sketch
 		this.includes_ = Object.create(null);
+		this.dependencies = new Set()
 		// Create a dictionary of setups to be printed in the setup() function
 		this.setups_ = Object.create(null);
 		// Create a dictionary of pins to check if their use conflicts
@@ -309,14 +312,26 @@ export class Arduino extends Blockly.Generator {
 		}
 	}
 
+	public addDependency(...dependencies: string[]) {
+		dependencies.forEach((dependency) => {
+			this.dependencies.add(dependency);
+		})
+	}
+
+	public getDependencies() {
+		return Array.from(this.dependencies.values())
+	}
+
 	/*
        Includes the right header file for Servo functions
        for the current robotType
      */
 	public includeServoHeader() {
 		if (this.robotType.includes("esp32")) {
+			this.addDependency(Dependencies.ESP_SERVO);
 			this.addInclude("servo", "#include <ESP32Servo.h>");
 		} else {
+			this.addDependency(Dependencies.SERVO);
 			this.addInclude("servo", "#include <Servo.h>");
 		}
 	}
