@@ -56,7 +56,6 @@ onMount(() => {
 			WorkspaceState.robot.id,
 		);
 
-		console.log(arduino.getDependencies());
 		AppState.libraries.clear();
 		AppState.libraries.install(...arduino.getDependencies());
 
