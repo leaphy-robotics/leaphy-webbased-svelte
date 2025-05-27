@@ -1,4 +1,5 @@
 import Arduino from "../arduino";
+import { Dependencies } from "./dependencies";
 
 const SELECT_CHANNEL =
 	"void i2cSelectChannel(uint8_t channel, bool push = true) {\n" +
@@ -35,6 +36,7 @@ const BROADCAST_MODE_ESP32 =
 
 function addI2CDeclarations() {
 	Arduino.addInclude("wire", "#include <Wire.h>");
+	Arduino.addDependency(Dependencies.LIST);
 	Arduino.addInclude("lists", "#include <List.hpp>");
 	// Yes, this needs to be an include to sort it at the top
 	Arduino.addInclude("i2c_channel_stack", "List<int> i2cChannelStack;\n");
