@@ -1,10 +1,12 @@
 import type { Arduino } from "../arduino";
+import { Dependencies } from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.leaphy_segment_init = (block) => {
 		const clk = block.getFieldValue("CLK");
 		const dio = block.getFieldValue("DIO");
 
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("tm1637", "#include <SegmentDisplay.h>");
 		arduino.addDeclaration(
 			"segment",
@@ -20,6 +22,7 @@ function getCodeGenerators(arduino: Arduino) {
 		const clk = block.getFieldValue("CLK");
 		const cs = block.getFieldValue("CS");
 
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("matrix", "#include <LedControl.h>");
 		arduino.addDeclaration(
 			"matrix",
@@ -39,6 +42,7 @@ function getCodeGenerators(arduino: Arduino) {
 		const RX = block.getFieldValue("RX");
 		const TX = block.getFieldValue("TX");
 
+		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("sound", "#include <RedMP3.h>");
 		arduino.addDeclaration("sound", `MP3 mp3(${RX}, ${TX});`);
 

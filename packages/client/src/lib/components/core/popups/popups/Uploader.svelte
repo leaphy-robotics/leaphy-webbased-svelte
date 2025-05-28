@@ -11,7 +11,8 @@ import SerialState, {
 	SUPPORTED_VENDOR_IDS,
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
-import WorkspaceState from "$state/workspace.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import { Dependencies } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
 
@@ -47,7 +48,9 @@ async function compile() {
 			source_code: source,
 			board: WorkspaceState.robot.fqbn,
 			libraries: [
-				...WorkspaceState.robot.libraries,
+				...(WorkspaceState.Mode === Mode.ADVANCED
+					? [Dependencies.LEAPHY_EXTENSIONS]
+					: []),
 				...AppState.libraries.installed.map(
 					([name, version]) => `${name}@${version}`,
 				),

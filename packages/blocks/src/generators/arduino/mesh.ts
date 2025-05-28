@@ -1,9 +1,11 @@
 import type { Block } from "blockly";
 import type { Arduino } from "../arduino";
+import { Dependencies } from "./dependencies";
 import { procedureManager } from "./procedures";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.mesh_setup = (block: Block) => {
+		arduino.addDependency(Dependencies.PAINLESS_MESH, Dependencies.ASYNC_TCP);
 		arduino.addInclude("mesh", "#include <painlessMesh.h>");
 		arduino.addDeclaration("mesh", "painlessMesh mesh;", true, 3);
 		arduino.addDeclaration("node_sender", "uint32_t node_sender;", true, 3);

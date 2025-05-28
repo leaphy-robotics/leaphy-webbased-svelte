@@ -21,22 +21,6 @@ import STK500v1 from "../programmers/STK500v1/STK500v1";
 import STK500v2 from "../programmers/STK500v2";
 import { type Programmer, RobotType } from "./robots.types";
 
-const DEFAULT_LIBRARIES = [
-	"Leaphy Extensions@1.2.1",
-	"Servo@1.2.2",
-	"ESP32Servo@3",
-	"Adafruit GFX Library@1.12",
-	"Adafruit SSD1306@2.5",
-	"Adafruit SH110X@2.1.12",
-	"Adafruit Unified Sensor@1.1.15",
-	"List@3.0.1",
-	"Adafruit SGP30 Sensor@2.0.3",
-	"Adafruit_VL53L0X@1.2.4",
-	"Adafruit BMP280 Library@2.6.8",
-	"DS3231@1.1.2",
-	"Adafruit LSM6DS@4.7.4",
-];
-
 interface BaseRobot {
 	name: string;
 	icon: string;
@@ -47,7 +31,6 @@ export interface RobotDevice extends BaseRobot {
 	type: number;
 	mapping: PinMapping;
 	programmer: Programmer;
-	libraries: string[];
 	fqbn: string;
 	background?: string;
 	board: string;
@@ -106,7 +89,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_flitz_uno",
 		type: RobotType.L_FLITZ_UNO,
 		name: "Flitz Uno",
-		libraries: DEFAULT_LIBRARIES,
 		icon: flitzIcon,
 		background: flitzUnoBackground,
 	},
@@ -115,7 +97,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_flitz_nano",
 		type: RobotType.L_FLITZ_NANO,
 		name: "Flitz Nano",
-		libraries: DEFAULT_LIBRARIES,
 		icon: flitzIcon,
 		background: flitzNanoBackground,
 	},
@@ -124,7 +105,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_original_uno",
 		type: RobotType.L_ORIGINAL_UNO,
 		name: "Original Uno",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: originalIcon,
 		background: originalUnoBackground,
 	},
@@ -133,7 +113,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_original_nano",
 		type: RobotType.L_ORIGINAL_NANO,
 		name: "Original Nano",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: originalIcon,
 		background: originalNanoBackground,
 	},
@@ -142,11 +121,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_original_nano_esp32",
 		type: RobotType.L_ORIGINAL_NANO_ESP32,
 		name: "Original Nano ESP32",
-		libraries: DEFAULT_LIBRARIES.concat([
-			"Arduino_APDS9960@1.0.4",
-			"painlessMesh@1.5.4",
-			"AsyncTCP@3.3.2",
-		]),
 		icon: originalIcon,
 		background: originalNanoESP32Background,
 	},
@@ -155,7 +129,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_original_nano_rp2040",
 		type: RobotType.L_ORIGINAL_NANO_RP2040,
 		name: "Original Nano RP2040",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: originalIcon,
 		background: originalNanoRP2040Background,
 	},
@@ -164,7 +137,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_starling_nano",
 		type: RobotType.L_STARLING_NANO,
 		name: "Starling Nano",
-		libraries: DEFAULT_LIBRARIES,
 		icon: starlingIcon,
 	},
 	{
@@ -172,7 +144,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_starling_nano_esp32",
 		type: RobotType.L_STARLING_NANO_ESP32,
 		name: "Starling Nano ESP32",
-		libraries: DEFAULT_LIBRARIES.concat(["painlessMesh", "AsyncTCP"]),
 		icon: starlingIcon,
 	},
 	{
@@ -180,7 +151,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_starling_nano_rp2040",
 		type: RobotType.L_STARLING_NANO_RP2040,
 		name: "Starling Nano RP2040",
-		libraries: DEFAULT_LIBRARIES,
 		icon: starlingIcon,
 	},
 	{
@@ -188,7 +158,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_nano",
 		type: RobotType.L_NANO,
 		name: "Arduino Nano",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: nanoIcon,
 	},
 	{
@@ -196,11 +165,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_nano_esp32",
 		type: RobotType.L_NANO_ESP32,
 		name: "Arduino Nano ESP32",
-		libraries: DEFAULT_LIBRARIES.concat([
-			"Arduino_APDS9960@1.0.4",
-			"painlessMesh@1.5.4",
-			"AsyncTCP@3.3.2",
-		]),
 		icon: nanoIcon,
 	},
 	{
@@ -208,7 +172,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_nano_rp2040",
 		type: RobotType.L_NANO_RP2040,
 		name: "Arduino Nano RP2040",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: nanoIcon,
 	},
 	{
@@ -224,7 +187,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_uno",
 		type: RobotType.L_UNO,
 		name: "Arduino Uno",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: unoIcon,
 	},
 	{
@@ -234,7 +196,6 @@ const robotDevices: RobotDevice[] = [
 		name: "Arduino Mega",
 		programmer: new STK500v2(),
 		fqbn: "arduino:avr:mega",
-		libraries: DEFAULT_LIBRARIES.concat(["Arduino_APDS9960@1.0.4"]),
 		icon: megaIcon,
 		board: "l_mega",
 	},

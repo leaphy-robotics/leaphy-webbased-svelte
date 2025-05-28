@@ -54,6 +54,23 @@ class LibraryState {
 
 		this.libraries = Object.values(libraries);
 	}
+
+	install(...libraries: string[]) {
+		libraries.forEach((library) => {
+			const [name, version] = library.split("@");
+			if (!version) {
+				console.warn(
+					`Library ${name} doesn't have a version pinned, this is recommended for production purposes!`,
+				);
+			}
+
+			this.installed.push([name, version]);
+		});
+	}
+
+	clear() {
+		this.installed = [];
+	}
 }
 
 class AppState {
