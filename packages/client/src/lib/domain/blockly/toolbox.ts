@@ -383,6 +383,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
 					],
 				},
 				{
@@ -402,6 +403,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
 					],
 					inputs: {
 						VALUE: text("text"),
@@ -413,6 +415,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
 					],
 					inputs: {
 						NAME: text("text"),
@@ -425,6 +428,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
+						RobotType.L_NANO_RP2040_MICROPYTHON,
 					],
 				},
 			],

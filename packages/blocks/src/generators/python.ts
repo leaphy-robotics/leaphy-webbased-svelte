@@ -92,7 +92,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 
 	public insertI2cChannel() {
 		if (this.i2c_stack_ && this.i2c_stack_.length > 0) {
-			this.addI2cSupport();
+			this.addI2cSupport(true);
 			this.need_i2c_switch_ = true;
 			this.used_i2c_channels_[this.currentI2cChannel() || 0] = true;
 		}
