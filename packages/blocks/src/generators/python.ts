@@ -27,6 +27,10 @@ export class MicroPythonGenerator extends PythonGenerator {
 	];
 	i2c_channel_clean_ = true;
 
+	public workspaceToCode(workspace?: Workspace, robotType?: string): string {
+		return super.workspaceToCode(workspace);
+	}
+
 	public init(workspace: Workspace): void {
 		super.init(workspace);
 		this.i2c_stack_ = [];
