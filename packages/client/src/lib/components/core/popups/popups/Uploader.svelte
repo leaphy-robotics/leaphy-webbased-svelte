@@ -39,24 +39,30 @@ class UploadError extends Error {
 
 async function compile() {
 	currentState = "COMPILATION_STARTED";
-	const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			source_code: source,
-			board: WorkspaceState.robot.fqbn,
-			libraries: [
-				...(WorkspaceState.Mode === Mode.ADVANCED
-					? [Dependencies.LEAPHY_EXTENSIONS]
-					: []),
-				...AppState.libraries.installed.map(
-					([name, version]) => `${name}@${version}`,
-				),
-			],
-		}),
-	});
+	let res;
+	try {
+		res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				source_code: source,
+				board: WorkspaceState.robot.fqbn,
+				libraries: [
+					...(WorkspaceState.Mode === Mode.ADVANCED
+						? [Dependencies.LEAPHY_EXTENSIONS]
+						: []),
+					...AppState.libraries.installed.map(
+						([name, version]) => `${name}@${version}`,
+					),
+				],
+			}),
+		});
+	} catch (e) {
+		throw new UploadError("COMPILATION_FAILED", "No internet connection");
+	}
+
 	if (!res.ok) {
 		const { detail } = await res.json();
 		throw new UploadError("COMPILATION_FAILED", detail);
