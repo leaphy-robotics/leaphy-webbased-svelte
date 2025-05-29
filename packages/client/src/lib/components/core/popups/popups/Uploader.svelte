@@ -60,7 +60,7 @@ async function compile() {
 			}),
 		});
 	} catch (e) {
-		throw new UploadError("COMPILATION_FAILED", "No internet connection");
+		throw new UploadError("COMPILATION_FAILED", $_("NO_INTERNET"));
 	}
 
 	if (!res.ok) {

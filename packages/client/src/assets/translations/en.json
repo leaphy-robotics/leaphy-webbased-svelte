@@ -169,5 +169,6 @@
 	"AUTOGRADING_PASSED": "You did it!",
 	"AUTOGRADING_PASSED_DESC": "Congrats on completing the assignments sucessfully",
 	"AUTOGRADING_FAILED": "Oh no...",
-	"DONE_ASSIGNMENT": "Done"
+	"DONE_ASSIGNMENT": "Done",
+	"NO_INTERNET": "No internet, please check your connection"
 }

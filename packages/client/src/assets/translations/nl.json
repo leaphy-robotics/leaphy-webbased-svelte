@@ -169,5 +169,6 @@
 	"AUTOGRADING_PASSED": "Gelukt!",
 	"AUTOGRADING_PASSED_DESC": "Gefeliciteerd met het sucessvol afronden van deze opdracht!",
 	"AUTOGRADING_FAILED": "Volgende keer beter...",
-	"DONE_ASSIGNMENT": "Ingeleverd"
+	"DONE_ASSIGNMENT": "Ingeleverd",
+	"NO_INTERNET": "Geen internetverbinding, controleer je verbinding"
 }
