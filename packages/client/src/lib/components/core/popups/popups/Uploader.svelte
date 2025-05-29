@@ -39,7 +39,7 @@ class UploadError extends Error {
 
 async function compile() {
 	currentState = "COMPILATION_STARTED";
-	let res;
+	let res: Response;
 	try {
 		res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
 			method: "POST",
