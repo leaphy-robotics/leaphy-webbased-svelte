@@ -12,9 +12,15 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		//Said module offers both a sleep(seconds) function and a sleep_ms(ms) function, along
 		//with a warning that some Micropython ports "may not accept [a] floating point argument
 		// [for the sleep function.]"
-		const delayMilis = Number.parseInt(
-			generator.valueToCode(block, "DELAY_TIME_MILI", Order.ATOMIC),
-		);
+
+		const delay = generator.valueToCode(block,"DELAY_TIME_MILI",Order.ATOMIC);
+
+		const delayMilis = Number.parseInt(delay,10);
+
+		if (Number.isNaN(delayMilis)) {
+			generator.addImport("utime", "sleep_ms");
+			return `sleep(${delay})\n`;
+		}
 		if (delayMilis % 1000 === 0) {
 			//Whole seconds.
 			const delaySeconds = delayMilis / 1000;
