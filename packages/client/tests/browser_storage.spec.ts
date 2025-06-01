@@ -104,10 +104,6 @@ test("Saving - New project", async ({ page }) => {
 	await page.getByRole("button", { name: "My projects" }).click();
 	await page.getByRole("cell", { name: "New" }).click();
 
-	// Open the same editor
-	await page.getByText("Leaphy Original").click();
-	await page.getByText("Original Uno").click();
-
 	// Its a new project, it should not be here!
 	await expect(page.getByText("repeat forever")).toBeHidden();
 });
