@@ -1,54 +1,53 @@
 <script lang="ts">
-import { _, locale } from "svelte-i18n";
+	import {_, locale} from "svelte-i18n";
 
-import block from "$assets/block.svg";
-import leaphyLogo from "$assets/leaphy-logo.svg";
-import Connect from "$components/core/popups/popups/Connect.svelte";
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import Button from "$components/ui/Button.svelte";
-import ContextItem from "$components/ui/ContextItem.svelte";
-import { loadWorkspaceFromString } from "$domain/blockly/blockly";
-import { FileHandle } from "$domain/handles";
-import { robots } from "$domain/robots";
-import AppState, { Screen, Theme } from "$state/app.svelte";
-import BlocklyState from "$state/blockly.svelte";
-import PopupState from "$state/popup.svelte";
-import RecordingsState from "$state/recordings.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte";
-import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import {
-	faCircleCheck,
-	faComment,
-	faDownload,
-	faEnvelope,
-	faFile,
-	faFloppyDisk,
-	faFolder,
-	faGlobe,
-	faGraduationCap,
-	faLightbulb,
-	faMoon,
-	faPen,
-	faQuestionCircle,
-	faRedo,
-	faSave,
-	faSquarePollHorizontal,
-	faUndo,
-	faVolumeHigh,
-	faVolumeXmark,
-} from "@fortawesome/free-solid-svg-icons";
-import { serialization } from "blockly";
-import { downloadDrivers } from "../../../drivers";
-import MicroPythonIO from "../../../micropython";
-import About from "../popups/popups/About.svelte";
-import Examples from "../popups/popups/Examples.svelte";
-import Feedback from "../popups/popups/Feedback.svelte";
-import SaveProject from "../popups/popups/Prompt.svelte";
-import UploadLog from "../popups/popups/UploadLog.svelte";
-import Uploader from "../popups/popups/Uploader.svelte";
-import Warning from "../popups/popups/Warning.svelte";
+	import block from "$assets/block.svg";
+	import leaphyLogo from "$assets/leaphy-logo.svg";
+	import Connect from "$components/core/popups/popups/Connect.svelte";
+	import Button from "$components/ui/Button.svelte";
+	import ContextItem from "$components/ui/ContextItem.svelte";
+	import {FileHandle} from "$domain/handles";
+	import AppState, {Screen, Theme} from "$state/app.svelte";
+	import BlocklyState from "$state/blockly.svelte";
+	import PopupState from "$state/popup.svelte";
+	import RecordingsState from "$state/recordings.svelte";
+	import SerialState, {Prompt} from "$state/serial.svelte";
+	import WorkspaceState, {Mode} from "$state/workspace.svelte";
+	import {
+		faCircleCheck,
+		faComment,
+		faDownload,
+		faEnvelope,
+		faFile,
+		faFloppyDisk,
+		faFolder,
+		faGlobe,
+		faGraduationCap,
+		faLightbulb,
+		faMoon,
+		faPen,
+		faQuestionCircle,
+		faRedo,
+		faSave,
+		faSquarePollHorizontal,
+		faUndo,
+		faVolumeHigh,
+		faVolumeXmark,
+	} from "@fortawesome/free-solid-svg-icons";
+	import {serialization} from "blockly";
+	import {downloadDrivers} from "../../../drivers";
+	import MicroPythonIO from "../../../micropython";
+	import About from "../popups/popups/About.svelte";
+	import Examples from "../popups/popups/Examples.svelte";
+	import Feedback from "../popups/popups/Feedback.svelte";
+	import SaveProject from "../popups/popups/Prompt.svelte";
+	import UploadLog from "../popups/popups/UploadLog.svelte";
+	import Uploader from "../popups/popups/Uploader.svelte";
+	import Warning from "../popups/popups/Warning.svelte";
+	import {projectDB} from "$domain/storage";
+	import {findAsync} from "$state/utils";
 
-async function upload() {
+	async function upload() {
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
 	PopupState.open({
 		component: Uploader,
@@ -71,6 +70,9 @@ async function connect() {
 
 async function newProject() {
 	PopupState.clear();
+
+	WorkspaceState.handle = undefined;
+	WorkspaceState.handleSave = undefined;
 
 	BlocklyState.willRestore = false;
 	BlocklyState.workspace?.clear();
@@ -121,16 +123,14 @@ async function openProject() {
 	const [file] = await window.showOpenFilePicker();
 	if (!file) return;
 
-	WorkspaceState.handle = new FileHandle(file);
-	const content = await file.getFile();
-
-	WorkspaceState.open(file.name, await content.text());
+	await WorkspaceState.openFileHandle(file);
 }
 
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
 	await WorkspaceState.handle.write(serialize());
+	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }
 
@@ -206,7 +206,7 @@ async function blocks() {
 		if (!ok) return;
 	}
 
-	WorkspaceState.tempSave();
+	await WorkspaceState.tempSave();
 	BlocklyState.restore = JSON.parse(
 		localStorage.getItem(`${WorkspaceState.robot.id}_content`),
 	);
@@ -215,7 +215,7 @@ async function blocks() {
 
 async function cpp() {
 	PopupState.clear();
-	WorkspaceState.tempSave();
+	await WorkspaceState.tempSave();
 	WorkspaceState.Mode = Mode.ADVANCED;
 }
 

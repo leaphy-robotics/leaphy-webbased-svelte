@@ -2,6 +2,8 @@ import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSuppor
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import type { Component } from "svelte";
+import {projectDB} from "$domain/storage";
+import Restore from "$components/core/popups/popups/Restore.svelte";
 
 export enum Anchor {
 	TopLeft = "0 0",
@@ -99,6 +101,41 @@ class PopupsState {
 				data: {},
 				allowInteraction: false,
 			});
+		}
+
+		const fileSaves = await projectDB.saves.toArray()
+		const tempSaves = await projectDB.tempSaves.toArray();
+
+		let saves = [
+			...fileSaves.map(e => ({ ...e, type: 'file' as 'file', id: `file-${e.id}` })),
+			...tempSaves.map(e => ({ ...e, type: 'temp' as 'temp', id: `temp-${e.id}` }))
+		];
+
+		saves = saves.sort((a, b) => {
+			// Check for file-content linking relationship first (overrides date sorting)
+
+			// If 'a' is a temp save linked to 'b' (file save), 'a' should come after 'b'
+			if (a.type === 'temp' && a.fileSave && b.type === 'file' && b.id === `file-${a.fileSave}`) {
+				return 1; // a comes after b
+			}
+
+			// If 'b' is a temp save linked to 'a' (file save), 'b' should come after 'a'
+			if (b.type === 'temp' && b.fileSave && a.type === 'file' && a.id === `file-${b.fileSave}`) {
+				return -1; // b comes after a
+			}
+
+			// For non-linked items, sort by date (newest first)
+			return b.date - a.date;
+		});
+
+		saves = saves.slice(0, 5)
+
+		if (tempSaves.length > 0) {
+			await this.open({
+				component: Restore,
+				data: { saves },
+				allowInteraction: false
+			})
 		}
 	}
 

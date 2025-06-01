@@ -169,5 +169,9 @@
 	"AUTOGRADING_PASSED": "Gelukt!",
 	"AUTOGRADING_PASSED_DESC": "Gefeliciteerd met het sucessvol afronden van deze opdracht!",
 	"AUTOGRADING_FAILED": "Volgende keer beter...",
-	"DONE_ASSIGNMENT": "Ingeleverd"
+	"DONE_ASSIGNMENT": "Ingeleverd",
+	"CONTINUE_WORKING": "Ga door met bewerken",
+	"CONTINUE_WORKING_DESC": "Ga door waar je was gebleven door een recent project te selecteren",
+	"LOCAL_SAVE": "Lokaal opgeslagen",
+	"TEMP_SAVE": "Tijdelijk opgeslagen"
 }
