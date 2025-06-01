@@ -74,6 +74,7 @@ async function connect() {
 async function changeRobot() {
 	PopupState.clear();
 
+	await WorkspaceState.tempSave()
 	WorkspaceState.handle = undefined;
 	WorkspaceState.handleSave = undefined;
 
