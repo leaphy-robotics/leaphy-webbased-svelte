@@ -2,22 +2,22 @@
 import Button from "$components/ui/Button.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import { robots } from "$domain/robots";
-import type { SavedContent, SavedFile } from "$domain/storage";
+import { type SavedContent, type SavedFile, projectDB } from "$domain/storage";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import type { PopupState } from "$state/popup.svelte";
 import RecordingState from "$state/recordings.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCircleCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { Circle, DoubleBounce, RingLoader } from "svelte-loading-spinners";
 
 interface Props {
-	saves: (SavedContent | SavedFile)[];
+	saves: ((SavedContent | SavedFile) & { type: string; saveID: number })[];
 }
-const { saves }: Props = $props();
+let { saves = $bindable() }: Props = $props();
 
 const popupState = getContext<PopupState>("state");
 let value = $state<SavedContent | SavedFile>(saves[0]);
@@ -38,7 +38,7 @@ const saveOptions = $derived(
 		}
 
 		return [name, save];
-	}) as [string, SavedContent][],
+	}) as [string, SavedContent | SavedFile][],
 );
 
 function cancel() {
@@ -67,6 +67,22 @@ async function open() {
 	AppState.Screen = Screen.WORKSPACE;
 	popupState.close();
 }
+
+async function deleteSave(
+	e: MouseEvent,
+	save: (SavedFile | SavedContent) & { type: string; saveID: number },
+) {
+	e.stopImmediatePropagation();
+
+	saves = saves.filter((e) => e.id !== save.id);
+	if ("content" in save) {
+		await projectDB.tempSaves.delete(save.saveID);
+	} else {
+		await projectDB.saves.delete(save.saveID);
+	}
+
+	if (saves.length === 0) popupState.close();
+}
 </script>
 
 <div class="content">
@@ -80,10 +96,15 @@ async function open() {
 			{#snippet render(name, save)}
 				{@const robot = robots[save.robot]}
 				<div class="save">
-					<img src={robot.icon} alt={robot.name} class="icon">
-					<div class="detail">
-						<div class="name">{name}</div>
-						<div class="type">{'content' in save ? $_("TEMP_SAVE") : $_("LOCAL_SAVE")}</div>
+					<div class="left">
+						<img src={robot.icon} alt={robot.name} class="icon">
+						<div class="detail">
+							<div class="name">{name}</div>
+							<div class="type">{'content' in save ? $_("TEMP_SAVE") : $_("LOCAL_SAVE")}</div>
+						</div>
+					</div>
+					<div onclick={(e) => deleteSave(e, save)} class="right">
+						<Fa icon={faXmark} />
 					</div>
 				</div>
 			{/snippet}
@@ -130,9 +151,23 @@ async function open() {
 
 	.save {
 		display: flex;
-		gap: 10px;
+		justify-content: space-between;
+		width: 100%;
 		align-items: center;
 		text-align: left;
+	}
+
+	.left {
+		display: flex;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.right {
+		font-size: 24px;
+		color: salmon;
+		padding: 5px;
+		cursor: pointer;
 	}
 
 	.icon {

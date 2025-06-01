@@ -2,6 +2,7 @@
 import { _, locale } from "svelte-i18n";
 
 import block from "$assets/block.svg";
+import defaultProgram from "$assets/default-program.json?raw";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
@@ -30,6 +31,8 @@ import {
 	faPen,
 	faQuestionCircle,
 	faRedo,
+	faRobot,
+	faRotate,
 	faSave,
 	faSquarePollHorizontal,
 	faUndo,
@@ -68,16 +71,26 @@ async function connect() {
 	else SerialState.connect(Prompt.ALWAYS);
 }
 
+async function changeRobot() {
+	PopupState.clear();
+
+	WorkspaceState.handle = undefined;
+	WorkspaceState.handleSave = undefined;
+
+	AppState.Screen = Screen.START;
+}
+
 async function newProject() {
 	PopupState.clear();
 
 	WorkspaceState.handle = undefined;
 	WorkspaceState.handleSave = undefined;
 
-	BlocklyState.willRestore = false;
-	BlocklyState.workspace?.clear();
-
-	AppState.Screen = Screen.START;
+	WorkspaceState.code = "";
+	serialization.workspaces.load(
+		JSON.parse(defaultProgram),
+		BlocklyState.workspace,
+	);
 }
 
 function serialize() {
@@ -275,6 +288,7 @@ async function submit() {
 						onclick={saveProjectAs}
 						{open}
 					/>
+					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} />
 				{/snippet}
 			</Button>
             <Button name={$_("HELP")} mode={"outlined"}>

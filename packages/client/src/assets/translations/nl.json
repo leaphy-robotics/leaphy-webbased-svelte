@@ -174,5 +174,6 @@
 	"CONTINUE_WORKING_DESC": "Ga door waar je was gebleven door een recent project te selecteren",
 	"LOCAL_SAVE": "Lokaal opgeslagen",
 	"TEMP_SAVE": "Tijdelijk opgeslagen",
-	"NO_INTERNET": "Geen internetverbinding, controleer je verbinding"
+	"NO_INTERNET": "Geen internetverbinding, controleer je verbinding",
+	"CHANGE_ROBOT": "Verander robot"
 }

@@ -109,13 +109,15 @@ class PopupsState {
 		let saves = [
 			...fileSaves.map((e) => ({
 				...e,
-				type: "file" as const,
+				saveID: e.id,
 				id: `file-${e.id}`,
+				type: "file" as const,
 			})),
 			...tempSaves.map((e) => ({
 				...e,
-				type: "temp" as const,
+				saveID: e.id,
 				id: `temp-${e.id}`,
+				type: "temp" as const,
 			})),
 		];
 
@@ -127,7 +129,7 @@ class PopupsState {
 				a.type === "temp" &&
 				a.fileSave &&
 				b.type === "file" &&
-				b.id === `file-${a.fileSave}`
+				b.saveID === a.fileSave
 			) {
 				return 1; // a comes after b
 			}
@@ -137,7 +139,7 @@ class PopupsState {
 				b.type === "temp" &&
 				b.fileSave &&
 				a.type === "file" &&
-				a.id === `file-${b.fileSave}`
+				a.saveID === b.fileSave
 			) {
 				return -1; // b comes after a
 			}
@@ -146,7 +148,20 @@ class PopupsState {
 			return b.date - a.date;
 		});
 
-		saves = saves.slice(0, 5);
+		if (saves.length > 5) {
+			const deleteSaves = saves.splice(5);
+
+			await projectDB.saves.bulkDelete(
+				deleteSaves
+					.filter((save) => save.type === "file")
+					.map((save) => save.saveID),
+			);
+			await projectDB.tempSaves.bulkDelete(
+				deleteSaves
+					.filter((save) => save.type === "temp")
+					.map((save) => save.saveID),
+			);
+		}
 
 		if (tempSaves.length > 0) {
 			await this.open({
