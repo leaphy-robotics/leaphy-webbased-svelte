@@ -24,5 +24,3 @@ projectDB.version(1).stores({
 	saves: "++id, mode, robot, date, fileHandle",
 	tempSaves: "++id, mode, robot, date, content, fileSave",
 });
-
-console.log(projectDB);
