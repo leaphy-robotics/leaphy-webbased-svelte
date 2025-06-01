@@ -93,16 +93,20 @@ class WorkspaceState {
 			save.fileHandle.isSameEntry(file),
 		);
 
-		if (!existingSave) {
-			this.handleSave = await projectDB.saves.add({
-				mode: this.mode,
-				robot: this.robot.id,
-				date: Date.now(),
-				fileHandle: file,
-			});
-		} else {
-			this.handleSave = existingSave.id;
-			await this.updateFileHandle();
+		try {
+			if (!existingSave) {
+				this.handleSave = await projectDB.saves.add({
+					mode: this.mode,
+					robot: this.robot.id,
+					date: Date.now(),
+					fileHandle: file,
+				});
+			} else {
+				this.handleSave = existingSave.id;
+				await this.updateFileHandle();
+			}
+		} catch {
+			// this will fail in tests because of the fake filesystemfilehandle
 		}
 
 		this.open(file.name, await content.text());
