@@ -1,17 +1,17 @@
 <script lang="ts">
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
-import {type Robot, robotListing, robots} from "$domain/robots";
+import { type Robot, robotListing, robots } from "$domain/robots";
+import { projectDB } from "$domain/storage";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
-import WorkspaceState, {getModeID, Mode} from "$state/workspace.svelte";
+import WorkspaceState, { getModeID, Mode } from "$state/workspace.svelte";
 import { _ } from "svelte-i18n";
 import { flip } from "svelte/animate";
 import { cubicOut } from "svelte/easing";
 import { fly } from "svelte/transition";
-import {projectDB} from "$domain/storage";
 
 async function connect() {
 	try {
@@ -34,20 +34,19 @@ async function onselect(type: Robot) {
 		const tempSave = await projectDB.tempSaves
 			.where("mode")
 			.equals(getModeID(type.mode || Mode.BLOCKS))
-			.first()
+			.first();
 
-		WorkspaceState.robot = SerialState.board || robots[tempSave?.robot] || type.robot;
+		WorkspaceState.robot =
+			SerialState.board || robots[tempSave?.robot] || type.robot;
 		WorkspaceState.Mode = type.mode || Mode.BLOCKS;
 		WorkspaceState.code =
-			(BlocklyState.willRestore &&
-				tempSave?.content) ||
-			type.defaultProgram;
+			(BlocklyState.willRestore && tempSave?.content) || type.defaultProgram;
 	} else {
 		const tempSave = await projectDB.tempSaves
 			.where("mode")
 			.equals("BLOCKS")
-			.and(save => save.robot === type.id)
-			.first()
+			.and((save) => save.robot === type.id)
+			.first();
 
 		WorkspaceState.robot = type;
 		WorkspaceState.Mode = Mode.BLOCKS;

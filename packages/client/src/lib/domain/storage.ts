@@ -8,7 +8,7 @@ interface BaseSave {
 }
 
 export interface SavedFile extends BaseSave {
-	fileHandle: FileSystemFileHandle
+	fileHandle: FileSystemFileHandle;
 }
 
 export interface SavedContent extends BaseSave {
@@ -16,13 +16,13 @@ export interface SavedContent extends BaseSave {
 	fileSave?: number;
 }
 
-export const projectDB = new Dexie('ProjectStorage') as Dexie & {
-	saves: EntityTable<SavedFile, 'id'>,
-	tempSaves: EntityTable<SavedContent, 'id'>
-}
+export const projectDB = new Dexie("ProjectStorage") as Dexie & {
+	saves: EntityTable<SavedFile, "id">;
+	tempSaves: EntityTable<SavedContent, "id">;
+};
 projectDB.version(1).stores({
-	saves: '++id, mode, robot, date, fileHandle',
-	tempSaves: '++id, mode, robot, date, content, fileSave',
-})
+	saves: "++id, mode, robot, date, fileHandle",
+	tempSaves: "++id, mode, robot, date, content, fileSave",
+});
 
-console.log(projectDB)
+console.log(projectDB);

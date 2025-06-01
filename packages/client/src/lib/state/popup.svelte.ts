@@ -1,9 +1,9 @@
 import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSupported.svelte";
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
-import type { Component } from "svelte";
-import {projectDB} from "$domain/storage";
 import Restore from "$components/core/popups/popups/Restore.svelte";
+import { projectDB } from "$domain/storage";
+import type { Component } from "svelte";
 
 export enum Anchor {
 	TopLeft = "0 0",
@@ -103,24 +103,42 @@ class PopupsState {
 			});
 		}
 
-		const fileSaves = await projectDB.saves.toArray()
+		const fileSaves = await projectDB.saves.toArray();
 		const tempSaves = await projectDB.tempSaves.toArray();
 
 		let saves = [
-			...fileSaves.map(e => ({ ...e, type: 'file' as 'file', id: `file-${e.id}` })),
-			...tempSaves.map(e => ({ ...e, type: 'temp' as 'temp', id: `temp-${e.id}` }))
+			...fileSaves.map((e) => ({
+				...e,
+				type: "file" as const,
+				id: `file-${e.id}`,
+			})),
+			...tempSaves.map((e) => ({
+				...e,
+				type: "temp" as const,
+				id: `temp-${e.id}`,
+			})),
 		];
 
 		saves = saves.sort((a, b) => {
 			// Check for file-content linking relationship first (overrides date sorting)
 
 			// If 'a' is a temp save linked to 'b' (file save), 'a' should come after 'b'
-			if (a.type === 'temp' && a.fileSave && b.type === 'file' && b.id === `file-${a.fileSave}`) {
+			if (
+				a.type === "temp" &&
+				a.fileSave &&
+				b.type === "file" &&
+				b.id === `file-${a.fileSave}`
+			) {
 				return 1; // a comes after b
 			}
 
 			// If 'b' is a temp save linked to 'a' (file save), 'b' should come after 'a'
-			if (b.type === 'temp' && b.fileSave && a.type === 'file' && a.id === `file-${b.fileSave}`) {
+			if (
+				b.type === "temp" &&
+				b.fileSave &&
+				a.type === "file" &&
+				a.id === `file-${b.fileSave}`
+			) {
 				return -1; // b comes after a
 			}
 
@@ -128,14 +146,14 @@ class PopupsState {
 			return b.date - a.date;
 		});
 
-		saves = saves.slice(0, 5)
+		saves = saves.slice(0, 5);
 
 		if (tempSaves.length > 0) {
 			await this.open({
 				component: Restore,
 				data: { saves },
-				allowInteraction: false
-			})
+				allowInteraction: false,
+			});
 		}
 	}
 

@@ -3,9 +3,12 @@ export function track(state: any) {
 	}
 }
 
-export async function findAsync<Type>(arr: Type[], asyncCallback: (item: Type) => Promise<boolean>) {
+export async function findAsync<Type>(
+	arr: Type[],
+	asyncCallback: (item: Type) => Promise<boolean>,
+) {
 	const promises = arr.map(asyncCallback);
 	const results = await Promise.all(promises);
-	const index = results.findIndex(result => result);
+	const index = results.findIndex((result) => result);
 	return arr[index];
 }

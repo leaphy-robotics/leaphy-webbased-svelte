@@ -5,14 +5,14 @@ import Python from "$components/workspace/python/Python.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle, type Handle } from "$domain/handles";
 import { type RobotDevice, robots } from "$domain/robots";
-import {findAsync, track} from "$state/utils";
+import { projectDB } from "$domain/storage";
+import { findAsync, track } from "$state/utils";
 import { serialization } from "blockly";
 import type { Component } from "svelte";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
-import {projectDB} from "$domain/storage";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -23,13 +23,13 @@ export const Mode = {
 export function getModeID(mode: Component) {
 	switch (mode) {
 		case Mode.BLOCKS: {
-			return 'BLOCKS'
+			return "BLOCKS";
 		}
 		case Mode.ADVANCED: {
-			return 'ADVANCED'
+			return "ADVANCED";
 		}
 		case Mode.PYTHON: {
-			return 'PYTHON'
+			return "PYTHON";
 		}
 	}
 }
@@ -69,7 +69,7 @@ class WorkspaceState {
 	}
 
 	get mode() {
-		return getModeID(this.Mode)
+		return getModeID(this.Mode);
 	}
 
 	toggleSidePanel(panel: Component) {
@@ -77,31 +77,32 @@ class WorkspaceState {
 	}
 
 	async updateFileHandle() {
-		await projectDB.saves
-			.update(this.handleSave, {
-				mode: this.mode,
-				robot: this.robot.id,
-				date: Date.now(),
-			})
+		await projectDB.saves.update(this.handleSave, {
+			mode: this.mode,
+			robot: this.robot.id,
+			date: Date.now(),
+		});
 	}
 
 	async openFileHandle(file: FileSystemFileHandle) {
 		this.handle = new FileHandle(file);
 		const content = await file.getFile();
 
-		const existingSaves = await projectDB.saves.toArray()
-		const existingSave = await findAsync(existingSaves, (save) => save.fileHandle.isSameEntry(file));
+		const existingSaves = await projectDB.saves.toArray();
+		const existingSave = await findAsync(existingSaves, (save) =>
+			save.fileHandle.isSameEntry(file),
+		);
 
 		if (!existingSave) {
 			this.handleSave = await projectDB.saves.add({
 				mode: this.mode,
 				robot: this.robot.id,
 				date: Date.now(),
-				fileHandle: file
-			})
+				fileHandle: file,
+			});
 		} else {
 			this.handleSave = existingSave.id;
-			await this.updateFileHandle()
+			await this.updateFileHandle();
 		}
 
 		this.open(file.name, await content.text());
@@ -111,32 +112,33 @@ class WorkspaceState {
 		let mode = this.mode;
 		let content = this.code;
 
-		if (mode === 'BLOCKS') {
-			content = JSON.stringify(serialization.workspaces.save(BlocklyState.workspace))
+		if (mode === "BLOCKS") {
+			content = JSON.stringify(
+				serialization.workspaces.save(BlocklyState.workspace),
+			);
 		}
 
 		const existingSave = await projectDB.tempSaves
-			.where('mode')
+			.where("mode")
 			.equals(mode)
-			.and(save => mode === 'BLOCKS' ? save.robot === this.robot.id : true)
-			.first()
+			.and((save) => (mode === "BLOCKS" ? save.robot === this.robot.id : true))
+			.first();
 
 		if (existingSave) {
-			projectDB.tempSaves
-				.update(existingSave.id, {
-					content,
-					fileSave: this.handleSave,
-					date: Date.now(),
-					robot: this.robot.id,
-				})
+			projectDB.tempSaves.update(existingSave.id, {
+				content,
+				fileSave: this.handleSave,
+				date: Date.now(),
+				robot: this.robot.id,
+			});
 		} else {
-			projectDB.tempSaves
-				.add({
-					mode, content,
-					fileSave: this.handleSave,
-					date: Date.now(),
-					robot: this.robot.id
-				})
+			projectDB.tempSaves.add({
+				mode,
+				content,
+				fileSave: this.handleSave,
+				date: Date.now(),
+				robot: this.robot.id,
+			});
 		}
 	}
 

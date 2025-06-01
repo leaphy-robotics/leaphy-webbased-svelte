@@ -1,70 +1,72 @@
 <script lang="ts">
-	import Button from "$components/ui/Button.svelte";
-	import ListSelect from "$components/ui/ListSelect.svelte";
-	import type { PopupState } from "$state/popup.svelte";
-	import RecordingState from "$state/recordings.svelte";
-	import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-	import { getContext } from "svelte";
-	import Fa from "svelte-fa";
-	import { _ } from "svelte-i18n";
-	import { Circle, DoubleBounce, RingLoader } from "svelte-loading-spinners";
-	import type {SavedContent, SavedFile} from "$domain/storage";
-	import {robots} from "$domain/robots";
-	import WorkspaceState, {Mode} from '$state/workspace.svelte'
-	import BlocklyState from "$state/blockly.svelte";
-	import AppState, {Screen} from "$state/app.svelte";
+import Button from "$components/ui/Button.svelte";
+import ListSelect from "$components/ui/ListSelect.svelte";
+import { robots } from "$domain/robots";
+import type { SavedContent, SavedFile } from "$domain/storage";
+import AppState, { Screen } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import RecordingState from "$state/recordings.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
+import { getContext } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
+import { Circle, DoubleBounce, RingLoader } from "svelte-loading-spinners";
 
-	interface Props {
-		saves: (SavedContent | SavedFile)[]
-	}
-	const { saves }: Props = $props();
+interface Props {
+	saves: (SavedContent | SavedFile)[];
+}
+const { saves }: Props = $props();
 
-	const popupState = getContext<PopupState>("state");
-	let value = $state<SavedContent | SavedFile>(saves[0]);
+const popupState = getContext<PopupState>("state");
+let value = $state<SavedContent | SavedFile>(saves[0]);
 
-	const saveOptions = $derived(saves.map(save => {
-		const robot = robots[save.robot]
+const saveOptions = $derived(
+	saves.map((save) => {
+		const robot = robots[save.robot];
 
-		let name = robot.name
-		if (save.mode === 'ADVANCED') {
+		let name = robot.name;
+		if (save.mode === "ADVANCED") {
 			name = `C++ - ${robot.name}`;
-		} else if (save.mode === 'PYTHON') {
+		} else if (save.mode === "PYTHON") {
 			name = `MicroPython - ${robot.name}`;
 		}
 
-		if ('fileHandle' in save) {
-			name = `${save.fileHandle.name} (${name})`
+		if ("fileHandle" in save) {
+			name = `${save.fileHandle.name} (${name})`;
 		}
 
-		return [name, save]
-	}) as [string, SavedContent][])
+		return [name, save];
+	}) as [string, SavedContent][],
+);
 
-	function cancel() {
-		popupState.close()
-	}
+function cancel() {
+	popupState.close();
+}
 
-	async function open() {
-		if (!value) return
+async function open() {
+	if (!value) return;
 
-		WorkspaceState.robot = robots[value.robot]
-		WorkspaceState.Mode = Mode[value.mode]
+	WorkspaceState.robot = robots[value.robot];
+	WorkspaceState.Mode = Mode[value.mode];
 
-		if ('content' in value) {
-			if (value.mode === 'BLOCKS') {
-				BlocklyState.restore = JSON.parse(value.content)
-			} else {
-				WorkspaceState.code = value.content
-			}
+	if ("content" in value) {
+		if (value.mode === "BLOCKS") {
+			BlocklyState.restore = JSON.parse(value.content);
 		} else {
-			await value.fileHandle.requestPermission()
-			await WorkspaceState.openFileHandle(value.fileHandle)
+			WorkspaceState.code = value.content;
 		}
-
-		WorkspaceState.saveState = true;
-
-		AppState.Screen = Screen.WORKSPACE;
-		popupState.close()
+	} else {
+		await value.fileHandle.requestPermission();
+		await WorkspaceState.openFileHandle(value.fileHandle);
 	}
+
+	WorkspaceState.saveState = true;
+
+	AppState.Screen = Screen.WORKSPACE;
+	popupState.close();
+}
 </script>
 
 <div class="content">
