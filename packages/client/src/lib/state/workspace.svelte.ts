@@ -5,7 +5,8 @@ import Python from "$components/workspace/python/Python.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle, type Handle } from "$domain/handles";
 import { type RobotDevice, robots } from "$domain/robots";
-import { track } from "$state/utils";
+import { projectDB } from "$domain/storage";
+import { findAsync, track } from "$state/utils";
 import { serialization } from "blockly";
 import type { Component } from "svelte";
 import type MicroPythonIO from "../micropython";
@@ -19,9 +20,26 @@ export const Mode = {
 	PYTHON: Python as Component,
 };
 
+export function getModeID(mode: Component) {
+	switch (mode) {
+		case Mode.BLOCKS: {
+			return "BLOCKS";
+		}
+		case Mode.ADVANCED: {
+			return "ADVANCED";
+		}
+		case Mode.PYTHON: {
+			return "PYTHON";
+		}
+	}
+}
+
 class WorkspaceState {
 	uploadLog = $state<string[]>([]);
+
 	handle = $state<Handle | undefined>();
+	handleSave = $state<number>();
+
 	robot = $state<RobotDevice>();
 	microPythonIO = $state<MicroPythonIO>();
 	microPythonRun = $state<IOEventTarget>();
@@ -50,42 +68,81 @@ class WorkspaceState {
 		});
 	}
 
+	get mode() {
+		return getModeID(this.Mode);
+	}
+
 	toggleSidePanel(panel: Component) {
 		this.SidePanel = this.SidePanel === panel ? undefined : panel;
 	}
 
-	tempSave() {
-		let saveAddress = this.robot.id;
-		switch (this.Mode) {
-			case Mode.ADVANCED: {
-				saveAddress = "l_cpp";
-				break;
+	async updateFileHandle() {
+		await projectDB.saves.update(this.handleSave, {
+			mode: this.mode,
+			robot: this.robot.id,
+			date: Date.now(),
+		});
+	}
+
+	async openFileHandle(file: FileSystemFileHandle) {
+		this.handle = new FileHandle(file);
+		const content = await file.getFile();
+
+		const existingSaves = await projectDB.saves.toArray();
+		const existingSave = await findAsync(existingSaves, (save) =>
+			save.fileHandle.isSameEntry(file),
+		);
+
+		try {
+			if (!existingSave) {
+				this.handleSave = await projectDB.saves.add({
+					mode: this.mode,
+					robot: this.robot.id,
+					date: Date.now(),
+					fileHandle: file,
+				});
+			} else {
+				this.handleSave = existingSave.id;
+				await this.updateFileHandle();
 			}
-			case Mode.PYTHON: {
-				saveAddress = "l_micropython";
-				break;
-			}
+		} catch {
+			// this will fail in tests because of the fake filesystemfilehandle
 		}
 
-		const contentAddress = `${saveAddress}_content`;
-		localStorage.setItem(`${saveAddress}_robot`, this.robot.id);
+		this.open(file.name, await content.text());
+	}
 
-		switch (this.Mode) {
-			case Mode.BLOCKS: {
-				localStorage.setItem(
-					contentAddress,
-					JSON.stringify(serialization.workspaces.save(BlocklyState.workspace)),
-				);
-				break;
-			}
-			case Mode.ADVANCED: {
-				localStorage.setItem(contentAddress, this.code);
-				break;
-			}
-			case Mode.PYTHON: {
-				localStorage.setItem(contentAddress, this.code);
-				break;
-			}
+	async tempSave() {
+		let mode = this.mode;
+		let content = this.code;
+
+		if (mode === "BLOCKS") {
+			content = JSON.stringify(
+				serialization.workspaces.save(BlocklyState.workspace),
+			);
+		}
+
+		const existingSave = await projectDB.tempSaves
+			.where("mode")
+			.equals(mode)
+			.and((save) => (mode === "BLOCKS" ? save.robot === this.robot.id : true))
+			.first();
+
+		if (existingSave) {
+			projectDB.tempSaves.update(existingSave.id, {
+				content,
+				fileSave: this.handleSave,
+				date: Date.now(),
+				robot: this.robot.id,
+			});
+		} else {
+			projectDB.tempSaves.add({
+				mode,
+				content,
+				fileSave: this.handleSave,
+				date: Date.now(),
+				robot: this.robot.id,
+			});
 		}
 	}
 

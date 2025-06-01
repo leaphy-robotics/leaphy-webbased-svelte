@@ -170,5 +170,10 @@
 	"AUTOGRADING_PASSED_DESC": "Congrats on completing the assignments sucessfully",
 	"AUTOGRADING_FAILED": "Oh no...",
 	"DONE_ASSIGNMENT": "Done",
-	"NO_INTERNET": "No internet, please check your connection"
+	"CONTINUE_WORKING": "Continue working",
+	"CONTINUE_WORKING_DESC": "Continue where you left off by selecting a recent project",
+	"LOCAL_SAVE": "Local save",
+	"TEMP_SAVE": "Temporary save",
+	"NO_INTERNET": "No internet, please check your connection",
+	"CHANGE_ROBOT": "Switch robot"
 }

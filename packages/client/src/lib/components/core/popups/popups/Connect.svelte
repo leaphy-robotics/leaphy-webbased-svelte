@@ -92,6 +92,7 @@ async function disabledSelect() {
 		BlocklyState.workspace,
 	);
 	WorkspaceState.handle = undefined;
+	WorkspaceState.handleSave = undefined;
 	return true;
 }
 </script>

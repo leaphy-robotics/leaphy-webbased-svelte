@@ -1,6 +1,8 @@
 import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSupported.svelte";
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
+import Restore from "$components/core/popups/popups/Restore.svelte";
+import { projectDB } from "$domain/storage";
 import type { Component } from "svelte";
 
 export enum Anchor {
@@ -97,6 +99,74 @@ class PopupsState {
 			await this.open({
 				component: BrowserNotSupported,
 				data: {},
+				allowInteraction: false,
+			});
+		}
+
+		const fileSaves = await projectDB.saves.toArray();
+		const tempSaves = await projectDB.tempSaves.toArray();
+
+		let saves = [
+			...fileSaves.map((e) => ({
+				...e,
+				saveID: e.id,
+				id: `file-${e.id}`,
+				type: "file" as const,
+			})),
+			...tempSaves.map((e) => ({
+				...e,
+				saveID: e.id,
+				id: `temp-${e.id}`,
+				type: "temp" as const,
+			})),
+		];
+
+		saves = saves.sort((a, b) => {
+			// Check for file-content linking relationship first (overrides date sorting)
+
+			// If 'a' is a temp save linked to 'b' (file save), 'a' should come after 'b'
+			if (
+				a.type === "temp" &&
+				a.fileSave &&
+				b.type === "file" &&
+				b.saveID === a.fileSave
+			) {
+				return 1; // a comes after b
+			}
+
+			// If 'b' is a temp save linked to 'a' (file save), 'b' should come after 'a'
+			if (
+				b.type === "temp" &&
+				b.fileSave &&
+				a.type === "file" &&
+				a.saveID === b.fileSave
+			) {
+				return -1; // b comes after a
+			}
+
+			// For non-linked items, sort by date (newest first)
+			return b.date - a.date;
+		});
+
+		if (saves.length > 5) {
+			const deleteSaves = saves.splice(5);
+
+			await projectDB.saves.bulkDelete(
+				deleteSaves
+					.filter((save) => save.type === "file")
+					.map((save) => save.saveID),
+			);
+			await projectDB.tempSaves.bulkDelete(
+				deleteSaves
+					.filter((save) => save.type === "temp")
+					.map((save) => save.saveID),
+			);
+		}
+
+		if (tempSaves.length > 0) {
+			await this.open({
+				component: Restore,
+				data: { saves },
 				allowInteraction: false,
 			});
 		}

@@ -28,9 +28,9 @@ export async function selectRobot(page: Page, tile: string, robot?: string) {
 	}
 }
 
-export async function newProject(page: Page) {
+export async function switchRobot(page: Page) {
 	await page.getByRole("button", { name: "My projects" }).click();
-	await page.getByRole("cell", { name: "New" }).click();
+	await page.getByRole("cell", { name: "Switch robot" }).click();
 }
 
 export async function setupArduino({ page }: PlaywrightTestArgs) {

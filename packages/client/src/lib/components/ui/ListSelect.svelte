@@ -4,11 +4,13 @@ import type { Snippet } from "svelte";
 interface Props<Type extends { id: string }> {
 	options: [string, Type][];
 	value: Type;
+
 	warning?: undefined | string;
 	checkEnabled?: (value: unknown) => boolean;
 	disabledText?: string;
 	disabled?: Snippet;
 	disabledSelect?: (value: unknown) => Promise<boolean>;
+	render?: Snippet<[string, Type, boolean]>;
 }
 let {
 	options,
@@ -18,6 +20,7 @@ let {
 	disabledText,
 	disabled,
 	disabledSelect,
+	render,
 }: Props<any> = $props();
 
 let reloadEnabled = $state(0);
@@ -43,8 +46,13 @@ async function onselect(option: unknown, enabled: boolean) {
 	{#key reloadEnabled}
 		{#each options as option}
 			{@const enabled = checkEnabled ? checkEnabled(option[1]) : true}
-			<button onclick={() => onselect(option[1], enabled)} class="item" class:selected={value.id === option[1].id}>
-				{option[0]}
+			<button onclick={() => onselect(option[1], enabled)} class="item" class:selected={value?.id === option[1].id}>
+				{#if render}
+					{@render render(option[0], option[1], value?.id === option[1].id)}
+				{:else}
+					{option[0]}
+				{/if}
+
 				{#if !enabled}
 					{#if disabled}
 						{@render disabled()}
