@@ -49,15 +49,13 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	};
 
 	python.forBlock.leaphy_tof_get_distance = (block, generator) => {
-		const active_channel = generator.currentI2cChannel() || "255";
-		const variable_name = generator.getVariableName(
-			`CHANNEL_${active_channel}_TOF`,
-		);
+		const active_channel = generator.currentI2cChannel() || "BC";
+		const variable_name = generator.getVariableName(`TOF_${active_channel}`);
 		generator.addI2cSupport(false);
 		generator.addImport("leaphymicropython.sensors.tof", "TimeOfFlight");
 		generator.addDefinition(
 			`channel${active_channel}obj`,
-			`${variable_name} = TimeOfFlight(${active_channel})\n${variable_name}.initialize_device()`,
+			`${variable_name} = TimeOfFlight(${active_channel === "BC" ? 255 : active_channel})\n${variable_name}.initialize_device()`,
 		);
 
 		generator.i2c_channel_clean_ = true;
