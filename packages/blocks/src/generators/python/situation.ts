@@ -13,23 +13,11 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		//with a warning that some Micropython ports "may not accept [a] floating point argument
 		// [for the sleep function.]"
 
-		const delay = generator.valueToCode(block, "DELAY_TIME_MILI", Order.ATOMIC);
+		const delay = generator.valueToCode(block, "DELAY_TIME_MILI", Order.NONE);
 
-		const delayMilis = Number.parseInt(delay, 10);
-
-		if (Number.isNaN(delayMilis)) {
-			generator.addImport("utime", "sleep_ms");
-			return `sleep(${delay})\n`;
-		}
-		if (delayMilis % 1000 === 0) {
-			//Whole seconds.
-			const delaySeconds = delayMilis / 1000;
-			generator.addImport("utime", "sleep");
-			return `sleep(${delaySeconds})\n`;
-		}
-		//whole mililseconds.
 		generator.addImport("utime", "sleep_ms");
-		return `sleep_ms(${delayMilis})\n`;
+
+		return `sleep(${delay})\n`;
 	};
 
 	//The default python generator does not innately support infinite loops, surprisingly.
