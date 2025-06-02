@@ -92,6 +92,7 @@ async function disabledSelect() {
 		BlocklyState.workspace,
 	);
 	WorkspaceState.handle = undefined;
+	WorkspaceState.handleSave = undefined;
 	return true;
 }
 </script>
@@ -101,7 +102,7 @@ async function disabledSelect() {
 	{#if categories.length > 1}
 		<ChipSelect options={categoriesFilter} bind:value={category} />
 	{/if}
-	<ListSelect {warning} options={values} {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={WorkspaceState.Mode} />
+	<ListSelect {warning} options={values} {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={WorkspaceState.robot} />
 	<Button onclick={start} mode="primary" name={$_("CONTINUE")} center bold />
 </div>
 

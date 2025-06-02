@@ -61,11 +61,6 @@ function getCodeGenerators(arduino: Arduino) {
 			branch =
 				arduino.INFINITE_LOOP_TRAP.replace(/%1/g, `'${block.id}'`) + branch;
 		}
-		let returnValue =
-			arduino.valueToCode(block, "RETURN", arduino.ORDER_NONE) || "";
-		if (returnValue) {
-			returnValue = `  return ${returnValue};\n`;
-		}
 
 		// Get arguments with type
 		const args = [];
@@ -76,8 +71,9 @@ function getCodeGenerators(arduino: Arduino) {
 				Blockly.Names.NameType.VARIABLE,
 			)}`;
 		}
-		let returnType: string;
-		// Get return type
+		let returnType = "void";
+		let returnValue = "";
+		// Get return type and value
 		if (block.type === "procedures_defreturn") {
 			const checks = block
 				.getInput("RETURN")
@@ -85,8 +81,12 @@ function getCodeGenerators(arduino: Arduino) {
 
 			if (checks?.[0]) returnType = arduino.TYPES[checks[0]];
 			else returnType = "double";
-		} else {
-			returnType = "void";
+
+			returnValue =
+				arduino.valueToCode(block, "RETURN", arduino.ORDER_NONE) || "";
+			if (returnValue) {
+				returnValue = `  return ${returnValue};\n`;
+			}
 		}
 
 		// Construct code

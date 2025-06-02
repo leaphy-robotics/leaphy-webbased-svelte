@@ -2,19 +2,19 @@
 import { _, locale } from "svelte-i18n";
 
 import block from "$assets/block.svg";
+import defaultProgram from "$assets/default-program.json?raw";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
-import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle } from "$domain/handles";
-import { robots } from "$domain/robots";
+import { projectDB } from "$domain/storage";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
+import { findAsync } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faCircleCheck,
@@ -31,6 +31,8 @@ import {
 	faPen,
 	faQuestionCircle,
 	faRedo,
+	faRobot,
+	faRotate,
 	faSave,
 	faSquarePollHorizontal,
 	faUndo,
@@ -69,13 +71,27 @@ async function connect() {
 	else SerialState.connect(Prompt.ALWAYS);
 }
 
+async function changeRobot() {
+	PopupState.clear();
+
+	await WorkspaceState.tempSave();
+	WorkspaceState.handle = undefined;
+	WorkspaceState.handleSave = undefined;
+
+	AppState.Screen = Screen.START;
+}
+
 async function newProject() {
 	PopupState.clear();
 
-	BlocklyState.willRestore = false;
-	BlocklyState.workspace?.clear();
+	WorkspaceState.handle = undefined;
+	WorkspaceState.handleSave = undefined;
 
-	AppState.Screen = Screen.START;
+	WorkspaceState.code = "";
+	serialization.workspaces.load(
+		JSON.parse(defaultProgram),
+		BlocklyState.workspace,
+	);
 }
 
 function serialize() {
@@ -121,16 +137,14 @@ async function openProject() {
 	const [file] = await window.showOpenFilePicker();
 	if (!file) return;
 
-	WorkspaceState.handle = new FileHandle(file);
-	const content = await file.getFile();
-
-	WorkspaceState.open(file.name, await content.text());
+	await WorkspaceState.openFileHandle(file);
 }
 
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
 	await WorkspaceState.handle.write(serialize());
+	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }
 
@@ -206,7 +220,7 @@ async function blocks() {
 		if (!ok) return;
 	}
 
-	WorkspaceState.tempSave();
+	await WorkspaceState.tempSave();
 	BlocklyState.restore = JSON.parse(
 		localStorage.getItem(`${WorkspaceState.robot.id}_content`),
 	);
@@ -215,7 +229,7 @@ async function blocks() {
 
 async function cpp() {
 	PopupState.clear();
-	WorkspaceState.tempSave();
+	await WorkspaceState.tempSave();
 	WorkspaceState.Mode = Mode.ADVANCED;
 }
 
@@ -275,6 +289,7 @@ async function submit() {
 						onclick={saveProjectAs}
 						{open}
 					/>
+					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} />
 				{/snippet}
 			</Button>
             <Button name={$_("HELP")} mode={"outlined"}>

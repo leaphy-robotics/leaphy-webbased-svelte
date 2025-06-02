@@ -4,7 +4,6 @@ import {
 	getDownloadContents,
 	goToHomePage,
 	mockShowOpenFilePicker,
-	newProject,
 	selectRobot,
 } from "./utils";
 
