@@ -75,7 +75,7 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 		arduino.addDeclaration(
 			"leaphy_tof_read",
-			`int getTOF() {\n    ${setup}\n    VL53L0X_RangingMeasurementData_t measure;\n    i2c_distance.rangingTest(&measure, false);\n    if (measure.RangeStatus == 4) return -1;\n    return measure.RangeMilliMeter;\n}`,
+			`int getTOF() {\n    ${setup}\n    VL53L0X_RangingMeasurementData_t measure;\n    i2c_distance.rangingTest(&measure, false);\n    if (measure.RangeStatus == 4) return -1;\n    delay(33);\n    return measure.RangeMilliMeter;\n}`,
 		);
 		return ["getTOF()", arduino.ORDER_ATOMIC];
 	};

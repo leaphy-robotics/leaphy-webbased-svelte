@@ -1,5 +1,5 @@
 import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage, newProject, selectRobot } from "./utils";
+import { goToHomePage, selectRobot, switchRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -24,15 +24,15 @@ test("SonarPins", async ({ page }) => {
 	await selectRobot(page, "Arduino Uno");
 	await test_sonar_pins(page, "7", "8");
 
-	await newProject(page);
+	await switchRobot(page);
 	await selectRobot(page, "Arduino Nano", "Arduino Nano ESP32");
 	await test_sonar_pins(page, "17", "16");
 
-	await newProject(page);
+	await switchRobot(page);
 	await selectRobot(page, "Leaphy Original", "Original Nano");
 	await test_sonar_pins(page, "17", "16");
 
-	await newProject(page);
+	await switchRobot(page);
 	await selectRobot(page, "Leaphy Starling", "Starling Nano");
 	await test_sonar_pins(page, "17", "16");
 });
