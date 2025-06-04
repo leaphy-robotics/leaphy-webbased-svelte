@@ -104,7 +104,7 @@ async function connectUSB() {
 </script>
 
     <div class="content" class:error={!!error}>
-        {#if USBRequestState.request}
+        {#if USBRequestState.respond}
             <h2 class="state">{$_("RECONNECT")}</h2>
             <div class="info">{$_("RECONNECT_INFO")}</div>
             <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
