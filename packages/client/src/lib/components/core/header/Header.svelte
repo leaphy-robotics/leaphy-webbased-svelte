@@ -8,6 +8,7 @@ import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { FileHandle } from "$domain/handles";
+import { RobotType } from "$domain/robots.types";
 import { projectDB } from "$domain/storage";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
@@ -430,7 +431,7 @@ async function submit() {
 				/>
 			{/if}
 
-            {#if WorkspaceState.Mode === Mode.PYTHON}
+            {#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON)}
                 {#if WorkspaceState.microPythonIO}
                     <Button
                         name={$_("RUN_CODE")}

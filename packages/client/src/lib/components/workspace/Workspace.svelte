@@ -5,6 +5,8 @@ import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
 import SideButton from "$components/ui/SideButton.svelte";
+import Terminal from "$components/workspace/python/Terminal.svelte";
+import { RobotType } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
@@ -17,8 +19,18 @@ import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
 
 function openSerial() {
+	console.log("serial");
 	PopupState.open({
 		component: SerialMonitor,
+		data: {},
+		allowInteraction: true,
+	});
+}
+
+function openPythonTerminal() {
+	console.log("Py term");
+	PopupState.open({
+		component: Terminal,
 		data: {},
 		allowInteraction: true,
 	});
@@ -49,7 +61,11 @@ function openTutorials() {
 				<SideButton icon={faCode} action="CODE" onclick={openCode} />
 			{/if}
 			{#if WorkspaceState.Mode !== Mode.PYTHON}
-				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
+				{#if WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON}
+					<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openPythonTerminal} />
+				{:else}
+					<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
+				{/if}
 			{/if}
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
