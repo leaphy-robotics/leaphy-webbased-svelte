@@ -59,7 +59,7 @@ function getCodeGenerators(arduino: Arduino) {
 		if (arduino.robotType.includes("nano")) {
 			if (Number.parseInt(speed) > 0) {
 				// Map the speed to a range of 150 - 255 to compensate for low PWM signal voltage
-				speed = `map(${speed}, 0, 255, 150, 255)`;
+				speed = `map(${speed}, 0, 255, 100, 255)`;
 			}
 			arduino.addSetup("set_motor_pins", "setMotorPins(3, 2, 11, 4);", true);
 		}
@@ -85,7 +85,7 @@ function getCodeGenerators(arduino: Arduino) {
 		if (arduino.robotType.includes("nano")) {
 			// Map the speed to a range of 150 - 255 to compensate for low PWM signal voltage
 			if (Number.parseInt(speed) > 0) {
-				speed = `map(${speed}, 0, 255, 150, 255)`;
+				speed = `map(${speed}, 0, 255, 100, 255)`;
 			}
 			const directionMap: Record<MotorDirection, string> = {
 				[MotorDirection.FORWARD]: "2",
