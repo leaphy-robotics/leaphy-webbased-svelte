@@ -262,13 +262,7 @@ export const robotListing: Robot[][] = [
 			defaultProgram: defaultPython,
 			robot: robots.l_nano_rp2040,
 		},
-		{
-			id: "l_nano_rp2040_python",
-			name: "MicroPython Blocks",
-			icon: nanoIcon,
-			mode: Mode.BLOCKS,
-			robot: robots.l_nano_rp2040_python,
-		},
+		robots.l_nano_rp2040_python,
 	],
 ];
 
