@@ -1,11 +1,11 @@
 <script lang="ts">
+import PythonMonitor from "$components/core/popups/popups/PythonMonitor.svelte";
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import Tutorials from "$components/core/popups/popups/Tutorials.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
 import SideButton from "$components/ui/SideButton.svelte";
-import Terminal from "$components/workspace/python/Terminal.svelte";
 import { RobotType } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
@@ -19,7 +19,6 @@ import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
 
 function openSerial() {
-	console.log("serial");
 	PopupState.open({
 		component: SerialMonitor,
 		data: {},
@@ -28,9 +27,8 @@ function openSerial() {
 }
 
 function openPythonTerminal() {
-	console.log("Py term");
 	PopupState.open({
-		component: Terminal,
+		component: PythonMonitor,
 		data: {},
 		allowInteraction: true,
 	});

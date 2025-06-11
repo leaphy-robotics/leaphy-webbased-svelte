@@ -66,11 +66,11 @@ export class MicroPythonGenerator extends PythonGenerator {
 	}
 
 	public addI2cSupport(need_multiplexer = true) {
-		this.addImport("utils.i2c_helper", "select_channel");
+		this.addImport("leaphymicropython.utils.i2c_helper", "select_channel");
 		this.addImport("machine", "I2C");
 		this.addDefinition(
 			"i2c_object",
-			`${this.getVariableName("I2C_CONNECTION")} = I2C()`,
+			`${this.getVariableName("I2C_CONNECTION")} = I2C(0)`,
 		);
 		if (need_multiplexer) {
 			this.addDefinition(

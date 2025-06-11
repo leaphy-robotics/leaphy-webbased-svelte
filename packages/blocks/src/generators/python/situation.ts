@@ -17,7 +17,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		generator.addImport("utime", "sleep_ms");
 
-		return `sleep(${delay})\n`;
+		return `sleep_ms(${delay})\n`;
 	};
 
 	//The default python generator does not innately support infinite loops, surprisingly.
