@@ -17,7 +17,6 @@ export const RobotType = {
 	L_MEGA: 14,
 	L_CPP: 15,
 	L_MICROPYTHON: 16,
-	L_NANO_RP2040_MICROPYTHON: 17,
 };
 
 export interface Programmer {

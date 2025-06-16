@@ -35,7 +35,7 @@ export default [
 		id: "%robot%_sensors",
 		robots: [
 			...robotGroups.ALL,
-			RobotType.L_NANO_RP2040_MICROPYTHON,
+			RobotType.L_MICROPYTHON,
 			-RobotType.L_FLITZ_UNO,
 			-RobotType.L_FLITZ_NANO,
 		],
@@ -45,18 +45,18 @@ export default [
 					type: "i2c_use_channel",
 					robots: [
 						...robotGroups.L_NANO_ALL,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 				},
 			],
 			[
 				{
 					type: "digital_read",
-					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
+					robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 				},
 				{
 					type: "analog_read",
-					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
+					robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 				},
 			],
 			[
@@ -73,7 +73,7 @@ export default [
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
 					robots: [
 						...robotGroups.L_NANO_ALL,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 				},
 			],
@@ -96,7 +96,7 @@ export default [
 				},
 				{
 					type: "leaphy_tof_get_distance",
-					robots: [...robotGroups.ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
+					robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 				},
 				{
 					type: "leaphy_get_air_pressure",
@@ -198,7 +198,7 @@ export default [
 			...robotGroups.ALL,
 			-RobotType.L_FLITZ_UNO,
 			-RobotType.L_FLITZ_NANO,
-			RobotType.L_NANO_RP2040_MICROPYTHON,
+			RobotType.L_MICROPYTHON,
 		],
 		groups: [
 			[
@@ -273,7 +273,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						VALUE: text("text"),
@@ -297,7 +297,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 				},
 				{
@@ -306,7 +306,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						NUM: number(0),
@@ -383,7 +383,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 				},
 				{
@@ -403,7 +403,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						VALUE: text("text"),
@@ -415,7 +415,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						NAME: text("text"),
@@ -428,7 +428,7 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_NANO_RP2040_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 					],
 				},
 			],
@@ -848,7 +848,7 @@ export default [
 		name: "%{BKY_LEAPHY_OPERATORS_CATEGORY}",
 		style: "numbers_category",
 		id: "l_numbers",
-		robots: [...robotGroups.L_ARDUINO_ALL, RobotType.L_NANO_RP2040_MICROPYTHON],
+		robots: [...robotGroups.L_ARDUINO_ALL, RobotType.L_MICROPYTHON],
 		groups: [
 			[
 				{

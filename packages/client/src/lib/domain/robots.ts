@@ -176,10 +176,10 @@ const robotDevices: RobotDevice[] = [
 	},
 	{
 		...baseNanoRP2040,
-		id: "l_nano_rp2040_python",
-		type: RobotType.L_NANO_RP2040_MICROPYTHON,
-		name: "Arduino Nano RP2040 (python)",
-		icon: nanoIcon,
+		id: "l_micropython",
+		type: RobotType.L_MICROPYTHON,
+		name: "Leaphy Micropython",
+		icon: microPythonIcon,
 	},
 	{
 		...baseUno,
@@ -253,7 +253,7 @@ export const robotListing: Robot[][] = [
 			defaultProgram: defaultCPP,
 			mode: Mode.ADVANCED,
 			robot: robots.l_uno,
-		},
+		},/*
 		{
 			id: "l_micropython",
 			name: "MicroPython",
@@ -261,8 +261,8 @@ export const robotListing: Robot[][] = [
 			mode: Mode.PYTHON,
 			defaultProgram: defaultPython,
 			robot: robots.l_nano_rp2040,
-		},
-		robots.l_nano_rp2040_python,
+		},*/
+		robots.l_micropython,
 	],
 ];
 

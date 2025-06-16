@@ -407,7 +407,7 @@ async function submit() {
     <div class="comp">
         {#if AppState.Screen === Screen.WORKSPACE}
             {#if WorkspaceState.Mode === Mode.BLOCKS}
-				{#if WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON}
+				{#if WorkspaceState.robot.type === RobotType.L_MICROPYTHON}
 					<Button
 						mode={"outlined"}
 						icon={faPen}
@@ -422,7 +422,7 @@ async function submit() {
 						onclick={cpp}
 					/>
 				{/if}
-            {:else if WorkspaceState.Mode === Mode.ADVANCED || (WorkspaceState.Mode === Mode.PYTHON && WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON)}
+            {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
                 <Button
                     mode={"outlined"}
                     icon={block}
@@ -446,7 +446,7 @@ async function submit() {
 				/>
 			{/if}
 
-            {#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON)}
+            {#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_MICROPYTHON)}
                 {#if WorkspaceState.microPythonIO}
                     <Button
                         name={$_("RUN_CODE")}

@@ -30,7 +30,7 @@ function updateSizing() {
 }
 
 function getCodeGenerator(): typeof python | typeof arduino {
-	if (WorkspaceState.robot.type === RobotType.L_NANO_RP2040_MICROPYTHON) {
+	if (WorkspaceState.robot.type === RobotType.L_MICROPYTHON) {
 		return python;
 	}
 	return arduino;
