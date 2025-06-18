@@ -1,15 +1,56 @@
 import type { Block } from "blockly";
 import { PythonGenerator, pythonGenerator } from "blockly/python";
 
+export enum PinState {
+	UNASSIGNED = "",
+	IN = "IN",
+	OUT = "OUT",
+	ADC = "ADC",
+	PWM = "PWM",
+}
+
+const pin_aliases: Record<string, string[]> = {
+	D0: ["D0", "TX1"],
+	D1: ["D1", "RX0"],
+	D2: ["D2"],
+	D3: ["D3"],
+	D4: ["D4"],
+	D5: ["D5"],
+	D6: ["D6"],
+	D7: ["D7"],
+	D8: ["D8"],
+	D9: ["D9"],
+	D10: ["D10"],
+	D11: ["D11"],
+	D12: ["D12"],
+	D13: ["D13"],
+	D14: ["D14", "A0"],
+	D15: ["D15", "A1"],
+	D16: ["D16", "A2"],
+	D17: ["D17", "A3"],
+	D18: ["D18", "A4", "SDA"],
+	D19: ["D19", "A5", "SCL"],
+	A0: ["D14", "A0"],
+	A1: ["D15", "A1"],
+	A2: ["D16", "A2"],
+	A3: ["D17", "A3"],
+	A4: ["D18", "A4", "SDA"],
+	A5: ["D19", "A5", "SCL"],
+	A6: ["A6"],
+	A7: ["A7"],
+};
+
+export function pin_name_aliases(pin_name: string): string[] | undefined {
+	if (pin_name.toUpperCase() in pin_aliases) {
+		return pin_aliases[pin_name];
+	}
+	return [`Unknown pin ${pin_name}`];
+}
+
 /**
  * Generator for microPython code from blockly blocks, based
  * on blockly's Python generator.
  */
-
-// Round three: "best" of both worlds. The `definitions_` field is protected,
-// so make a descendant class of the python generator that adds ways to access
-// this field, then "promote" the default Python generator to the new class by
-// moving its contents into an instance of the new class.
 
 export class MicroPythonGenerator extends PythonGenerator {
 	private i2c_stack_: number[] | null = null;
@@ -26,6 +67,8 @@ export class MicroPythonGenerator extends PythonGenerator {
 		false,
 	];
 	i2c_channel_clean_ = true;
+
+	private pin_state_: Record<string, PinState> = {};
 
 	public workspaceToCode(workspace?: Workspace, robotType?: string): string {
 		return super.workspaceToCode(workspace);
@@ -105,6 +148,47 @@ export class MicroPythonGenerator extends PythonGenerator {
 		return this.i2c_stack_[this.i2c_stack_.length - 1];
 	}
 
+	pin_state(pin_name: string): PinState | undefined {
+		if (pin_name in pin_aliases) {
+			let alias_list = pin_aliases[pin_name];
+			let retval = PinState.UNASSIGNED;
+			alias_list.forEach((alias) => {
+				let alias_state = this.pin_state_[alias];
+				if (alias_state !== undefined) {
+					retval = alias_state;
+				}
+			});
+			return retval;
+		}
+		return undefined;
+	}
+
+	public reserveDigitalPin(pin_name: string, pin_input: boolean): boolean {
+		let current_state = this.pin_state(pin_name);
+		let target_state = pin_input ? PinState.IN : PinState.OUT;
+		if (current_state === PinState.UNASSIGNED) {
+			this.pin_state_[pin_name] = target_state;
+			this.addImport("machine", "Pin");
+		}
+		return this.pin_state_[pin_name] === target_state;
+	}
+
+	public reserveAnalogPin(pin_name: string, pin_input: boolean): boolean {
+		let current_state = this.pin_state(pin_name);
+		if (current_state === PinState.UNASSIGNED) {
+			this.pin_state_[pin_name] = pin_input ? PinState.ADC : PinState.PWM;
+			this.addImport("machine", "Pin");
+			if (pin_input) {
+				this.addImport("machine", "ADC");
+			} else {
+				this.addImport("machine", "PWM");
+			}
+		}
+		return (
+			this.pin_state_[pin_name] === (pin_input ? PinState.ADC : PinState.PWM)
+		);
+	}
+
 	public scrub_(block: Block, code: string, thisOnly?: boolean): string {
 		if (this.i2c_channel_clean_) {
 			this.need_i2c_switch_ = false;
@@ -123,7 +207,46 @@ export class MicroPythonGenerator extends PythonGenerator {
 	}
 
 	public finish(code: string): string {
-		return super.finish(code);
+		//Sort pin names into a sensible order, before generating the relevant code.
+		function pin_sort(left: string, right: string): number {
+			let left_i = left.charAt(0);
+			let right_i = right.charAt(0);
+			if (left_i === "A" && right_i === "D") {
+				return -1;
+			}
+			if (left_i === "D" && right_i === "A") {
+				return 1;
+			}
+
+			let left_n = Number.parseInt(left.slice(1));
+			let right_n = Number.parseInt(right.slice(1));
+			return left_n - right_n;
+		}
+		let pins = Object.keys(this.pin_state_).sort(pin_sort);
+		let pin_code = pins
+			.map((pin_name) => {
+				let pin_state = this.pin_state_[pin_name] || PinState.UNASSIGNED;
+				if (pin_state === PinState.UNASSIGNED) {
+					return "";
+				}
+				if (pin_state === PinState.ADC) {
+					return `pin_${pin_name.toLowerCase()} = Pin("${pin_name}", Pin.ANALOG)\nadc_${pin_name.toLowerCase()} = ADC(pin_${pin_name.toLowerCase()})\n`;
+				}
+				if (pin_state === PinState.PWM) {
+					return `pin_${pin_name.toLowerCase()} = Pin("${pin_name}", Pin.OUT)\npwm_${pin_name.toLowerCase()} = PWM(pin_${pin_name.toLowerCase()})\n`;
+				}
+				return `pin_${pin_name.toLowerCase()} = Pin("${pin_name}", Pin.${pin_state})\n`;
+			})
+			.join("");
+		if (pin_code.length > 0) {
+			pin_code = `${pin_code}\n`;
+			this.addDefinition("pins", pin_code);
+		}
+
+		let retval = super.finish(code);
+
+		this.pin_state_ = {};
+		return retval;
 	}
 }
 

@@ -24,6 +24,7 @@ let value = $state<SavedContent | SavedFile>(saves[0]);
 
 const saveOptions = $derived(
 	saves.map((save) => {
+		console.log(`Save-mapping robot ${save.robot}, id ${save.id}`);
 		const robot = robots[save.robot];
 
 		let name = robot.name;

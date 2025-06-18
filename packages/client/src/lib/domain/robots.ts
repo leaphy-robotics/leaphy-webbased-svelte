@@ -253,15 +253,7 @@ export const robotListing: Robot[][] = [
 			defaultProgram: defaultCPP,
 			mode: Mode.ADVANCED,
 			robot: robots.l_uno,
-		},/*
-		{
-			id: "l_micropython",
-			name: "MicroPython",
-			icon: microPythonIcon,
-			mode: Mode.PYTHON,
-			defaultProgram: defaultPython,
-			robot: robots.l_nano_rp2040,
-		},*/
+		},
 		robots.l_micropython,
 	],
 ];

@@ -43,10 +43,7 @@ export default [
 			[
 				{
 					type: "i2c_use_channel",
-					robots: [
-						...robotGroups.L_NANO_ALL,
-						RobotType.L_MICROPYTHON,
-					],
+					robots: [...robotGroups.L_NANO_ALL, RobotType.L_MICROPYTHON],
 				},
 			],
 			[
@@ -71,10 +68,7 @@ export default [
 				{
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-					robots: [
-						...robotGroups.L_NANO_ALL,
-						RobotType.L_MICROPYTHON,
-					],
+					robots: [...robotGroups.L_NANO_ALL, RobotType.L_MICROPYTHON],
 				},
 			],
 			[
