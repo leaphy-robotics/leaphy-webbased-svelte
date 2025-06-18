@@ -175,6 +175,13 @@ const robotDevices: RobotDevice[] = [
 		icon: nanoIcon,
 	},
 	{
+		...baseNanoRP2040,
+		id: "l_micropython",
+		type: RobotType.L_MICROPYTHON,
+		name: "Leaphy Micropython",
+		icon: microPythonIcon,
+	},
+	{
 		...baseUno,
 		id: "l_uno",
 		type: RobotType.L_UNO,
@@ -247,14 +254,7 @@ export const robotListing: Robot[][] = [
 			mode: Mode.ADVANCED,
 			robot: robots.l_uno,
 		},
-		{
-			id: "l_micropython",
-			name: "MicroPython",
-			icon: microPythonIcon,
-			mode: Mode.PYTHON,
-			defaultProgram: defaultPython,
-			robot: robots.l_nano_rp2040,
-		},
+		robots.l_micropython,
 	],
 ];
 
