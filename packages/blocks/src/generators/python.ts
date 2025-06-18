@@ -78,6 +78,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 		super.init(workspace);
 		this.i2c_stack_ = [];
 		this.need_i2c_switch_ = false;
+		this.pin_state_ = {};
 	}
 
 	public addDefinition(definitionName: string, definitionContent: string) {
@@ -242,11 +243,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 			pin_code = `${pin_code}\n`;
 			this.addDefinition("pins", pin_code);
 		}
-
-		let retval = super.finish(code);
-
-		this.pin_state_ = {};
-		return retval;
+		return super.finish(code);
 	}
 }
 
