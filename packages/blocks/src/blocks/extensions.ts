@@ -1,16 +1,9 @@
+import type {Block, BlockSvg, Connection, Menu, MenuItem, Workspace, WorkspaceSvg,} from "blockly/core";
 import * as Blockly from "blockly/core";
-import type {
-	Block,
-	BlockSvg,
-	Connection,
-	Menu,
-	MenuItem,
-	Workspace,
-	WorkspaceSvg,
-} from "blockly/core";
-import { type List, listManager } from "../categories/lists";
-import { procedureManager } from "../generators/arduino/procedures";
-import type { DateItem } from "../generators/arduino/rtc";
+import {type List, listManager} from "../categories/lists";
+import {procedureManager} from "../generators/arduino/procedures";
+import type {DateItem} from "../generators/arduino/rtc";
+import {ml} from "../categories/ml";
 
 const xmlUtils = Blockly.utils.xml;
 
@@ -28,6 +21,20 @@ export default function registerExtensions(blockly: typeof Blockly) {
 			"LIST",
 		);
 	};
+
+	const CLASS_SELECT_EXTENSION = function (this: Block) {
+		const input = this.getInput("CLASS");
+		if (!input) return;
+
+		input.appendField(
+			new blockly.FieldDropdown(() => {
+				return ml.getClasses().map((classData) => {
+					return [classData.name, classData.id]
+				})
+			}),
+			"CLASS",
+		)
+	}
 
 	const APPEND_STATEMENT_INPUT_STACK = function (this: Block) {
 		this.appendStatementInput("STACK");
@@ -464,6 +471,7 @@ export default function registerExtensions(blockly: typeof Blockly) {
 
 	blockly.fieldRegistry.register("field_format", FormatField);
 	blockly.Extensions.register("list_select_extension", LIST_SELECT_EXTENSION);
+	blockly.Extensions.register("class_select_extension", CLASS_SELECT_EXTENSION);
 	blockly.Extensions.register(
 		"appendStatementInputStack",
 		APPEND_STATEMENT_INPUT_STACK,

@@ -336,6 +336,16 @@ export class Arduino extends Blockly.Generator {
 		}
 	}
 
+	public addDefinition(
+		definitionTag: string,
+		code: string,
+		overwrite = false,
+	) {
+		if (this.definitions_[definitionTag] === undefined || overwrite) {
+			this.definitions_[definitionTag] = code;
+		}
+	}
+
 	public addDeclaration(
 		declarationTag: string,
 		code: string,
@@ -365,7 +375,7 @@ export class Arduino extends Blockly.Generator {
 
 		this.addDeclaration(
 			`setup_${sensorName}`,
-			`bool ${sensorName}Setup[8];\nuint8_t setup${sensorName}() {\n    uint8_t channel = i2cGetChannel();\n    if (!${sensorName}Setup[channel]) {\n      ${setupCode}      ${sensorName}Setup[channel] = true;\n    }\n}\n`,
+			`bool ${sensorName}Setup[8];\nvoid setup${sensorName}() {\n    uint8_t channel = i2cGetChannel();\n    if (!${sensorName}Setup[channel]) {\n      ${setupCode}      ${sensorName}Setup[channel] = true;\n    }\n}\n`,
 		);
 		return `setup${sensorName}();\n`;
 	}
@@ -463,6 +473,7 @@ import * as rtc from "./arduino/rtc";
 import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
+import * as ml from "./arduino/ml"
 
 arduino.default(generator);
 leaphy_common.default(generator);
@@ -478,5 +489,6 @@ variables.default(generator);
 lists.default(generator);
 mesh.default(generator);
 rtc.default(generator);
+ml.default(generator);
 
 export default generator;

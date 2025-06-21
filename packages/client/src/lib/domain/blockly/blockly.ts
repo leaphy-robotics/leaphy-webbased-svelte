@@ -48,6 +48,11 @@ Blockly.registry.register(
 );
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
+	"ml",
+	new CATEGORIES.MLSerializer(),
+)
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
 	"procedures",
 	new ProcedureSerializer(),
 );
@@ -207,6 +212,7 @@ export function setupWorkspace(
 
 	const toolbox = workspace.getToolbox();
 	workspace.registerToolboxCategoryCallback("LISTS", CATEGORIES.LISTS);
+	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
 	toolbox.getFlyout().autoClose = false;
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();

@@ -433,6 +433,15 @@ export default [
 		],
 	},
 	{
+		name: "Machine learning",
+		style: "ml_category",
+		id: "l_ml",
+		robots: [
+			RobotType.L_STARLING_NANO_ESP32,
+		],
+		custom: "ML"
+	},
+	{
 		name: "Mesh",
 		style: "mesh_category",
 		id: "l_mesh",

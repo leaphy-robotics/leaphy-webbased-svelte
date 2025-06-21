@@ -44,6 +44,7 @@ export const light = Theme.defineTheme("leaphy-light", {
 		variable_blocks: { colourPrimary: "#DE7C3B" },
 		list_blocks: { colourPrimary: "#a500cf" },
 		procedure_blocks: { colourPrimary: "#4095CE" },
+		ml_blocks: { colourPrimary: "#2e8b57" },
 	},
 
 	categoryStyles: {
@@ -54,6 +55,7 @@ export const light = Theme.defineTheme("leaphy-light", {
 		lists_category: { colour: "#a500cf" },
 		functions_category: { colour: "#4095CE" },
 		mesh_category: { colour: "#009999" },
+		ml_category: { colour: "#2e8b57" },
 	},
 	componentStyles: {
 		toolboxBackgroundColour: "#343444",

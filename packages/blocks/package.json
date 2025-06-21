@@ -6,7 +6,7 @@
 		"watch": "tsup --watch --ignore-watch tmp"
 	},
 	"dependencies": {
-		"blockly": "^11.2.2"
+		"blockly": "^10.4.3"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.26.10",
@@ -26,7 +26,10 @@
 	"bugs": {
 		"url": "https://github.com/leaphy-robotics/leaphy-blocks/issues"
 	},
-	"files": ["dist", "media"],
+	"files": [
+		"dist",
+		"media"
+	],
 	"version": "4.0.0",
 	"description": "Leaphy custom Blockly blocks and arduino code generator",
 	"name": "@leaphy-robotics/leaphy-blocks"

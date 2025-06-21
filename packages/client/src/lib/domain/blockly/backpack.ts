@@ -1,6 +1,6 @@
 import { Backpack as BaseBackpack } from "@blockly/workspace-backpack";
 import { registerContextMenus } from "@blockly/workspace-backpack/src/backpack_helpers";
-import Blockly from "blockly/core";
+import * as Blockly from "blockly/core";
 
 export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
 	constructor(workspace: Blockly.WorkspaceSvg) {

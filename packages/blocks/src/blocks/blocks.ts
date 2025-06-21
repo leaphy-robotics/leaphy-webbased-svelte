@@ -7,6 +7,7 @@ import * as lists from "./lists";
 import * as mesh from "./mesh";
 import * as rtc from "./rtc";
 import * as texts from "./text";
+import * as ml from "./ml"
 
 const blocks = [
 	...lists.blocks,
@@ -18,6 +19,7 @@ const blocks = [
 	...leaphyCommon.blocks,
 	...mesh.blocks,
 	...rtc.blocks,
+	...ml.blocks,
 ];
 
 export { blocks };

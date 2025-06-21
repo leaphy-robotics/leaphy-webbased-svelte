@@ -49,8 +49,19 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+import { CATEGORIES } from "@leaphy-robotics/leaphy-blocks";
 
 async function upload() {
+	if (CATEGORIES.ml.enabled) {
+		if (WorkspaceState.Mode === Mode.BLOCKS) WorkspaceState.Mode = Mode.ML
+		else {
+			BlocklyState.restore = serialization.workspaces.save(BlocklyState.workspace)
+			WorkspaceState.Mode = Mode.BLOCKS;
+		}
+
+		return
+	}
+
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
 	PopupState.open({
 		component: Uploader,
@@ -95,7 +106,7 @@ async function newProject() {
 }
 
 function serialize() {
-	if (WorkspaceState.Mode === Mode.BLOCKS)
+	if (WorkspaceState.Mode === Mode.BLOCKS || WorkspaceState.Mode === Mode.ML)
 		return JSON.stringify(
 			serialization.workspaces.save(BlocklyState.workspace),
 		);
@@ -445,6 +456,7 @@ async function submit() {
                     />
                 {/if}
             {:else}
+<!--				TODO: switch dynamically-->
                 <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
             {/if}
         {/if}
