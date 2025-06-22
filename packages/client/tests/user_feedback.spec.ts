@@ -23,7 +23,7 @@ test("User Feedback", async ({ page }) => {
 			?.split("\n")
 			.map((line) => JSON.parse(line));
 
-		return messages !== undefined && messages[1].type === "user_report";
+		return messages !== undefined && messages[1].type === "feedback";
 	});
 
 	await page.getByRole("button", { name: "Send" }).click();
@@ -36,8 +36,8 @@ test("User Feedback", async ({ page }) => {
 		.split("\n")
 		.map((line) => JSON.parse(line));
 
-	let feedback = messages[2];
+	let feedback = messages[2].contexts.feedback;
 	expect(feedback.name).toBe("test");
-	expect(feedback.email).toBe("test@ing");
-	expect(feedback.comments).toBe("test123");
+	expect(feedback.contact_email).toBe("test@ing");
+	expect(feedback.message).toBe("test123");
 });
