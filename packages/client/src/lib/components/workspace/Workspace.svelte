@@ -59,11 +59,7 @@ function openTutorials() {
 				<SideButton icon={faCode} action="CODE" onclick={openCode} />
 			{/if}
 			{#if WorkspaceState.Mode !== Mode.PYTHON}
-				{#if WorkspaceState.robot.type === RobotType.L_MICROPYTHON}
-					<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openPythonTerminal} />
-				{:else}
-					<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={openSerial} />
-				{/if}
+				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? openPythonTerminal : openSerial} />
 			{/if}
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />

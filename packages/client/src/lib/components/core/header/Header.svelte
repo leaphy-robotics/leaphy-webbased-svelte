@@ -407,21 +407,13 @@ async function submit() {
     <div class="comp">
         {#if AppState.Screen === Screen.WORKSPACE}
             {#if WorkspaceState.Mode === Mode.BLOCKS}
-				{#if WorkspaceState.robot.type === RobotType.L_MICROPYTHON}
+				
 					<Button
 						mode={"outlined"}
 						icon={faPen}
 						name={$_("CODE")}
-						onclick={python}
+						onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp}
 					/>
-				{:else}
-					<Button
-						mode={"outlined"}
-						icon={faPen}
-						name={$_("CODE")}
-						onclick={cpp}
-					/>
-				{/if}
             {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
                 <Button
                     mode={"outlined"}
