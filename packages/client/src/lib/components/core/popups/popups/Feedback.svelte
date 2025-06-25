@@ -8,7 +8,7 @@ import * as Sentry from "@sentry/browser";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 
-let comments = "";
+let message = "";
 let senderName = "";
 let senderEmail = "";
 const popupState = getContext<PopupState>("state");
@@ -23,9 +23,9 @@ async function save() {
 		event_id: eventId,
 		name: senderName,
 		email: senderEmail,
-		comments: comments,
+		message: message,
 	};
-	Sentry.captureUserFeedback(userFeedback);
+	Sentry.captureFeedback(userFeedback);
 
 	await PopupsState.open({
 		component: Warning,
@@ -37,7 +37,7 @@ async function save() {
 		allowInteraction: true,
 	});
 
-	popupState.close(comments);
+	popupState.close(message);
 }
 
 function onsubmit(event: SubmitEvent) {
@@ -71,7 +71,7 @@ function onsubmit(event: SubmitEvent) {
 	</div>
 
 	<TextArea
-		bind:value={comments}
+		bind:value={message}
 		mode={"secondary"}
 		rounded={true}
 		required
