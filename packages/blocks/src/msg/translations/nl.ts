@@ -489,6 +489,13 @@ messages.MATH_TRIG_TOOLTIP_SIN =
 	"Geeft de sinus van een graad (geen radialen).";
 messages.MATH_TRIG_TOOLTIP_TAN =
 	"Geeft de tangens van een graad (geen radialen).";
+
+messages.MIPY_PIN_WARN_DIGITAL_READ =
+	"Kon pin %1 niet configureren als digitale input, omdat het eerder als %2 was gereserveerd.";
+messages.MIPY_PIN_WARN_DIGITAL_WRITE =
+	"Kon pin %1 niet configureren als digitale output, omdat het eerder als %2 was gereserveerd.";
+messages.MIPY_PIN_WARN_PWM =
+	"Kon pin %1 niet configureren als PWM, omdat het eerder als %2 was gereserveerd.";
 messages.NEW_COLOUR_VARIABLE = "Creëer kleurvariabele";
 messages.NEW_NUMBER_VARIABLE = "Creëer numeriek variabele";
 messages.NEW_STRING_VARIABLE = "Creëer tekstvariabele";

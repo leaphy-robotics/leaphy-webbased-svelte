@@ -1,5 +1,6 @@
+import { Msg } from "blockly/core";
 import { Order } from "blockly/python";
-import { type MicroPythonGenerator, pin_name_aliases } from "../python";
+import type { MicroPythonGenerator } from "../python";
 
 /**
  * Block definitions for the BKY_ACTUATOREN_CATEGORY toolbox-category.
@@ -28,23 +29,37 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	};
 
 	python.forBlock.leaphy_io_digitalwrite = (block, generator) => {
-		const pin = `D${block.getFieldValue("PIN") || "0"}`;
+		const pin = block.getFieldValue("PIN") || "D2";
 		const value = generator.valueToCode(block, "STATE", Order.ATOMIC);
 
 		if (generator.reserveDigitalPin(pin, false)) {
+			block.setWarningText(null);
 			return `pin_${pin.toLowerCase()}.value(${value})\n`;
 		}
-		return `# Caution! This pin is not available as digital output! Check if any of the following pins are already referenced: ${pin_name_aliases(pin)?.join("/")}\n`;
+		block.setWarningText(
+			Msg.MIPY_PIN_WARN_DIGITAL_WRITE.replaceAll("%1", pin).replaceAll(
+				"%2",
+				generator.pin_state(pin)?.toString() || "???",
+			),
+		);
+		return null;
 	};
 
 	python.forBlock.leaphy_io_analogwrite = (block, generator) => {
-		const pin = `D${block.getFieldValue("PIN") || "0"}`;
+		const pin = block.getFieldValue("PIN") || "D2";
 		const value = generator.valueToCode(block, "NUM", Order.ATOMIC);
 
 		if (generator.reserveAnalogPin(pin, false)) {
+			block.setWarningText(null);
 			return `pwm_${pin.toLowerCase()}.duty_u16(${value})\n`;
 		}
-		return `# Caution! This pin is not available as analog output! Check if any of the following pins are already referenced: ${pin_name_aliases(pin)?.join("/")}\n`;
+		block.setWarningText(
+			Msg.MIPY_PIN_WARN_PWM.replaceAll("%1", pin).replaceAll(
+				"%2",
+				generator.pin_state(pin)?.toString() || "???",
+			),
+		);
+		return null;
 	};
 
 	python.forBlock.leaphy_display_clear = (block, generator) => {

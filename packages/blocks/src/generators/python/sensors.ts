@@ -1,5 +1,6 @@
+import { Msg } from "blockly/core";
 import { Order } from "blockly/python";
-import { type MicroPythonGenerator, pin_name_aliases } from "../python";
+import type { MicroPythonGenerator } from "../python";
 
 /**
  * Block definitions for the BKY_LEAPHY_SENSORS_CATEGORY toolbox-category.
@@ -38,23 +39,23 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		if (generator.reserveAnalogPin(pin, true)) {
 			return [`adc_${pin.toLowerCase()}.read_u16()`, Order.FUNCTION_CALL];
 		}
-		return [
-			`"""Caution! This pin is not available as analog input. Check if any of the following pins are in use: ${pin_name_aliases(pin)?.join("/")}"""`,
-			Order.NONE,
-		];
+		return null;
 	};
 
 	python.forBlock.digital_read = (block, generator) => {
 		const pin = `D${block.getFieldValue("PIN") || "0"}`;
 
 		if (generator.reserveDigitalPin(pin, true)) {
+			block.setWarningText(null);
 			return [`pin_${pin.toLowerCase()}.value()`, Order.FUNCTION_CALL];
 		}
-
-		return [
-			`"""Caution! This pin is not available as digital input. Check if any of the following pins are in use: ${pin_name_aliases(pin)?.join("/")}"""`,
-			Order.NONE,
-		];
+		block.setWarningText(
+			Msg.MIPY_PIN_WARN_DIGITAL_READ.replaceAll("%1", pin).replaceAll(
+				"%2",
+				generator.pin_state(pin)?.toString() || "???",
+			),
+		);
+		return null;
 	};
 
 	python.forBlock.leaphy_tof_get_distance = (block, generator) => {

@@ -9,43 +9,27 @@ export enum PinState {
 	PWM = "PWM",
 }
 
-const pin_aliases: Record<string, string[]> = {
-	D0: ["D0", "TX1"],
-	D1: ["D1", "RX0"],
-	D2: ["D2"],
-	D3: ["D3"],
-	D4: ["D4"],
-	D5: ["D5"],
-	D6: ["D6"],
-	D7: ["D7"],
-	D8: ["D8"],
-	D9: ["D9"],
-	D10: ["D10"],
-	D11: ["D11"],
-	D12: ["D12"],
-	D13: ["D13"],
-	D14: ["D14", "A0"],
-	D15: ["D15", "A1"],
-	D16: ["D16", "A2"],
-	D17: ["D17", "A3"],
-	D18: ["D18", "A4", "SDA"],
-	D19: ["D19", "A5", "SCL"],
-	A0: ["D14", "A0"],
-	A1: ["D15", "A1"],
-	A2: ["D16", "A2"],
-	A3: ["D17", "A3"],
-	A4: ["D18", "A4", "SDA"],
-	A5: ["D19", "A5", "SCL"],
-	A6: ["A6"],
-	A7: ["A7"],
-};
-
-export function pin_name_aliases(pin_name: string): string[] | undefined {
-	if (pin_name.toUpperCase() in pin_aliases) {
-		return pin_aliases[pin_name];
-	}
-	return [`Unknown pin ${pin_name}`];
-}
+const pin_names = [
+	"D2",
+	"D3",
+	"D4",
+	"D5",
+	"D6",
+	"D7",
+	"D8",
+	"D9",
+	"D10",
+	"D11",
+	"D12",
+	"A0",
+	"A1",
+	"A2",
+	"A3",
+	"A4",
+	"A5",
+	"A6",
+	"A7",
+];
 
 /**
  * Generator for microPython code from blockly blocks, based
@@ -149,16 +133,9 @@ export class MicroPythonGenerator extends PythonGenerator {
 		return this.i2c_stack_[this.i2c_stack_.length - 1];
 	}
 
-	pin_state(pin_name: string): PinState | undefined {
-		if (pin_name in pin_aliases) {
-			let alias_list = pin_aliases[pin_name];
-			let retval = PinState.UNASSIGNED;
-			alias_list.forEach((alias) => {
-				let alias_state = this.pin_state_[alias];
-				if (alias_state !== undefined) {
-					retval = alias_state;
-				}
-			});
+	public pin_state(pin_name: string): PinState | undefined {
+		if (pin_names.includes(pin_name)) {
+			let retval = this.pin_state_[pin_name] || PinState.UNASSIGNED;
 			return retval;
 		}
 		return undefined;
