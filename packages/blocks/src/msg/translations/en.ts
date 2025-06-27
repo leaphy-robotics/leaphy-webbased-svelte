@@ -352,6 +352,12 @@ messages.MATH_TRIG_TOOLTIP_ATAN = "Return the arctangent of a number.";
 messages.MATH_TRIG_TOOLTIP_COS = "Return the cosine of a degree (not radian).";
 messages.MATH_TRIG_TOOLTIP_SIN = "Return the sine of a degree (not radian).";
 messages.MATH_TRIG_TOOLTIP_TAN = "Return the tangent of a degree (not radian).";
+messages.MIPY_PIN_WARN_DIGITAL_READ =
+	"Could not configure pin %1 as digital input, since it was previously reserved as %2.";
+messages.MIPY_PIN_WARN_DIGITAL_WRITE =
+	"Could not configure pin %1 as digital output, since it was previously reserved as %2.";
+messages.MIPY_PIN_WARN_PWM =
+	"Could not configure pin %1 as a PWM output, since it was previously reserved as %2.";
 messages.NEW_COLOUR_VARIABLE = "Create colour variable...";
 messages.NEW_NUMBER_VARIABLE = "Create number variable...";
 messages.NEW_STRING_VARIABLE = "Create string variable...";
