@@ -37,9 +37,9 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 			return `pin_${pin.toLowerCase()}.value(${value})\n`;
 		}
 		block.setWarningText(
-			Msg.MIPY_PIN_WARN_DIGITAL_WRITE.replaceAll("%1", pin).replaceAll(
+			Msg.MIPY_PIN_WARN_DIGITAL_WRITE.replaceAll("%1", pin).replace(
 				"%2",
-				generator.pin_state(pin)?.toString() || "???",
+				generator.pin_state(pin).toString(),
 			),
 		);
 		return null;
@@ -56,7 +56,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		block.setWarningText(
 			Msg.MIPY_PIN_WARN_PWM.replaceAll("%1", pin).replaceAll(
 				"%2",
-				generator.pin_state(pin)?.toString() || "???",
+				generator.pin_state(pin).toString(),
 			),
 		);
 		return null;

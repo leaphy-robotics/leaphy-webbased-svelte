@@ -43,16 +43,16 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	};
 
 	python.forBlock.digital_read = (block, generator) => {
-		const pin = `D${block.getFieldValue("PIN") || "0"}`;
+		const pin = block.getFieldValue("PIN") || "D2";
 
 		if (generator.reserveDigitalPin(pin, true)) {
 			block.setWarningText(null);
 			return [`pin_${pin.toLowerCase()}.value()`, Order.FUNCTION_CALL];
 		}
 		block.setWarningText(
-			Msg.MIPY_PIN_WARN_DIGITAL_READ.replaceAll("%1", pin).replaceAll(
+			Msg.MIPY_PIN_WARN_DIGITAL_READ.replaceAll("%1", pin).replace(
 				"%2",
-				generator.pin_state(pin)?.toString() || "???",
+				generator.pin_state(pin).toString(),
 			),
 		);
 		return null;

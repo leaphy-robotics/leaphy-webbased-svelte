@@ -9,28 +9,6 @@ export enum PinState {
 	PWM = "PWM",
 }
 
-const pin_names = [
-	"D2",
-	"D3",
-	"D4",
-	"D5",
-	"D6",
-	"D7",
-	"D8",
-	"D9",
-	"D10",
-	"D11",
-	"D12",
-	"A0",
-	"A1",
-	"A2",
-	"A3",
-	"A4",
-	"A5",
-	"A6",
-	"A7",
-];
-
 /**
  * Generator for microPython code from blockly blocks, based
  * on blockly's Python generator.
@@ -133,12 +111,9 @@ export class MicroPythonGenerator extends PythonGenerator {
 		return this.i2c_stack_[this.i2c_stack_.length - 1];
 	}
 
-	public pin_state(pin_name: string): PinState | undefined {
-		if (pin_names.includes(pin_name)) {
-			let retval = this.pin_state_[pin_name] || PinState.UNASSIGNED;
-			return retval;
-		}
-		return undefined;
+	public pin_state(pin_name: string): PinState {
+		let retval = this.pin_state_[pin_name] || PinState.UNASSIGNED;
+		return retval;
 	}
 
 	public reserveDigitalPin(pin_name: string, pin_input: boolean): boolean {
