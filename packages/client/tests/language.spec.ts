@@ -4,7 +4,7 @@ import { goToHomePage, openExample, selectRobot } from "./utils";
 test.beforeEach(goToHomePage);
 
 test("Language", async ({ page }) => {
-	await page.getByRole("button", { name: "MicroPython MicroPython" }).click();
+	await page.getByRole("button", { name: "Leaphy MicroPython" }).click();
 	await page.getByRole("button", { name: "More..." }).click();
 	await page.getByRole("cell", { name: "Language" }).click();
 	await page.getByRole("cell", { name: "Nederlands" }).click();
