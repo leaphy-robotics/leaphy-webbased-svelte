@@ -9,9 +9,14 @@ import {
 
 test.beforeEach(goToHomePage);
 
-async function testLibraries(uploadedLibraries: string[], workspace_file: string) {
+async function testLibraries(
+	uploadedLibraries: string[],
+	workspace_file: string,
+) {
 	// Remove version information, "Servo@1.1.1" -> "Servo"
-	const unversionedLibraries = uploadedLibraries.map((lib) => lib.split("@")[0]);
+	const unversionedLibraries = uploadedLibraries.map(
+		(lib) => lib.split("@")[0],
+	);
 
 	const libraryFile = `${workspace_file}_libraries`;
 	// if (!fileExists(LibraryFile)) {
@@ -44,10 +49,7 @@ async function testCode(uploadedCode: string, workspace_file: string) {
 }
 
 async function testDownloadMatchesUpload(page: Page, uploadedCode: string) {
-	await page
-		.locator(".header")
-		.getByRole("button", { name: "Code" })
-		.click();
+	await page.locator(".header").getByRole("button", { name: "Code" }).click();
 	await page.getByRole("button", { name: "My projects" }).click();
 
 	await page.getByRole("cell", { name: "Save As" }).click();
@@ -56,10 +58,7 @@ async function testDownloadMatchesUpload(page: Page, uploadedCode: string) {
 		.getByRole("textbox", { name: "Give your download a name" })
 		.fill("Test");
 	const downloadPromise = page.waitForEvent("download");
-	await page
-		.locator("form")
-		.getByRole("button", { name: "Save" })
-		.click();
+	await page.locator("form").getByRole("button", { name: "Save" }).click();
 	const download = await getDownloadContents(downloadPromise);
 
 	await page.getByRole("button", { name: "Blocks" }).click();
