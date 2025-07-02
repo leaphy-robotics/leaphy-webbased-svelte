@@ -30,7 +30,16 @@ async function testExtension(page: Page, extension: string) {
 	}
 	let files = await getAllFiles(path);
 
+	// Make the serial check fail instantly instead of causing a popup on the browser
+	await page.evaluate("navigator.serial.requestPort = async function() { }");
+
+	// Prevent the compilation requests from actually doing anything, the request needs to be inspected, the output is tested elsewhere for correctness.
+	await page.route("**/compile/cpp*", (route) => {
+		route.abort("failed");
+	});
+
 	let num_tests = 0;
+	let has_tested_download = false;
 
 	for (const workspace_file of files) {
 		if (!workspace_file.endsWith(extension)) {
@@ -38,7 +47,6 @@ async function testExtension(page: Page, extension: string) {
 		}
 
 		console.log(`Running test: ${workspace_file}`);
-		num_tests += 1;
 
 		await page.getByRole("button", { name: "My projects" }).click();
 
@@ -46,30 +54,89 @@ async function testExtension(page: Page, extension: string) {
 
 		await page.getByRole("cell", { name: "Open" }).click();
 
-		let code = (await fs.readFile(`${workspace_file}_code`)).toString();
+		// To figure out what libraries are used, compile the project and capture the request
+		const uploadPromise = page.waitForRequest((request) => {
+			if (!/.*\/compile\/cpp/.test(request.url())) {
+				return false;
+			}
 
-		await page.locator(".header").getByRole("button", { name: "Code" }).click();
-		await page.getByRole("button", { name: "My projects" }).click();
+			return true;
+		});
 
-		await page.getByRole("cell", { name: "Save As" }).click();
+		await page.getByRole("button", { name: "Upload to robot" }).click();
+		await page.getByRole("button", { name: "Go back to editor" }).click();
 
-		await page
-			.getByRole("textbox", { name: "Give your download a name" })
-			.fill("Test");
-		const downloadPromise = page.waitForEvent("download");
-		await page.locator("form").getByRole("button", { name: "Save" }).click();
-		const download = await getDownloadContents(downloadPromise);
+		const uploadInfo = await uploadPromise;
+		const postData = JSON.parse(uploadInfo.postData() as string);
 
-		for (const segment of code.split("\n\n")) {
-			// Create a regex of the segment instead of directly searching for the segment so whitespace becomes optional
-			let escaped = segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-			let whitespace = escaped.replace(/(\s)+/g, "\\s*");
-			let regex = new RegExp(`${whitespace}`);
+		let LibraryFile = `${workspace_file}_libraries`;
+		if (fileExists(LibraryFile)) {
+			num_tests += 1;
 
-			expect(download).toMatch(regex);
+			let uploadedLibraries = postData.libraries as string[];
+			// Remove version information, "Servo@1.1.1" -> "Servo"
+			uploadedLibraries = uploadedLibraries.map((lib) => lib.split("@")[0]);
+
+			// if (!fileExists(LibraryFile)) {
+			// 	await fs.writeFile(LibraryFile, uploadedLibraries.join("\n"));
+			// }
+
+			let expectedLibraries = (await fs.readFile(LibraryFile))
+				.toString()
+				.split("\n")
+				.filter((lib) => lib.trim() !== "");
+
+			for (const library of expectedLibraries) {
+				expect(uploadedLibraries).toContain(library);
+			}
+
+			expect(expectedLibraries.length).toBe(uploadedLibraries.length);
 		}
 
-		await page.getByRole("button", { name: "Blocks" }).click();
+		let codeFile = `${workspace_file}_code`;
+		if (fileExists(codeFile)) {
+			num_tests += 1;
+
+			let uploadedCode = postData.source_code as string;
+
+			let code = (await fs.readFile(codeFile)).toString();
+
+			if (!has_tested_download) {
+				// Only the first time test if downloading gives the same result as it is almost 4x slower than reading the post request
+				has_tested_download = true;
+
+				await page
+					.locator(".header")
+					.getByRole("button", { name: "Code" })
+					.click();
+				await page.getByRole("button", { name: "My projects" }).click();
+
+				await page.getByRole("cell", { name: "Save As" }).click();
+
+				await page
+					.getByRole("textbox", { name: "Give your download a name" })
+					.fill("Test");
+				const downloadPromise = page.waitForEvent("download");
+				await page
+					.locator("form")
+					.getByRole("button", { name: "Save" })
+					.click();
+				const download = await getDownloadContents(downloadPromise);
+
+				await page.getByRole("button", { name: "Blocks" }).click();
+
+				expect(uploadedCode).toBe(download);
+			}
+
+			for (const segment of code.split("\n\n")) {
+				// Create a regex of the segment instead of directly searching for the segment so whitespace becomes optional
+				let escaped = segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+				let whitespace = escaped.replace(/(\s)+/g, "\\s*");
+				let regex = new RegExp(`${whitespace}`);
+
+				expect(uploadedCode).toMatch(regex);
+			}
+		}
 	}
 
 	expect(num_tests).toBeGreaterThan(0);
