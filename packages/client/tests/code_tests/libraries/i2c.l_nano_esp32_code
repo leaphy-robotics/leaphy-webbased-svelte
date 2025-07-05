@@ -1,0 +1,87 @@
+#include <Wire.h>
+
+#include <List.hpp>
+
+List<int> i2cChannelStack;
+
+struct DeviceAddress {
+  uint8_t address;
+  char* device;
+};
+
+DeviceAddress deviceMap[] = {
+    {0x0D, "Compass"},
+    {0x29, "Color Sensor / ToF Sensor"},
+    {0x39, "RGB + Gesture Sensor"},
+    {0x3C, "Screen"},
+    {0x58, "Gas Sensor"},
+    {0x76, "Air Pressure Sensor"}
+};
+
+
+void i2cSelectChannel(uint8_t channel, bool push = true) {
+    if (push) i2cChannelStack.addLast(channel);
+    if (channel <= 7) channel = (1 << channel);
+    Wire.beginTransmission(0x70);
+    Wire.write(channel);
+    Wire.endTransmission();
+}
+
+void i2cRestoreChannel() {
+    i2cChannelStack.removeLast();
+    uint8_t channel = i2cChannelStack.get(i2cChannelStack.getSize() - 1);
+    i2cSelectChannel(channel, false);
+}
+
+uint8_t i2cGetChannel() {
+    uint8_t channel = i2cChannelStack.get(i2cChannelStack.getSize() - 1);
+    if (channel > 7) channel = 0;
+    return channel;
+}
+
+void i2cListDevices() {
+    for (int channel = 0; channel < 8; channel++) {
+        Serial.print("Scanning channel ");
+        Serial.print(channel);
+        Serial.println(":");
+
+        i2cSelectChannel(channel);
+
+        for (DeviceAddress address : deviceMap) {
+            Wire.beginTransmission(address.address);
+            int error = Wire.endTransmission();
+
+            if (error == 0) {
+                Serial.print("Found: ");
+                Serial.print(address.device);
+                Serial.print(" at address 0x");
+
+                if (address.address < 16) {
+                    Serial.print("0");
+                }
+                Serial.println(address.address, HEX);
+            }
+        }
+
+        i2cRestoreChannel();
+    }
+}
+
+void leaphyProgram() {
+  i2cSelectChannel(0);
+    i2cListDevices();
+  i2cRestoreChannel();
+}
+
+void setup() {
+	Serial.begin(115200);
+  Wire.begin();
+  Wire.setTimeout(50);
+  i2cSelectChannel(0xff);
+
+  leaphyProgram();
+}
+
+void loop() {
+
+}

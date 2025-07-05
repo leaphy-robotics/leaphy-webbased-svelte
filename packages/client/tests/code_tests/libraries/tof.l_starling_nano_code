@@ -1,0 +1,32 @@
+#include <Adafruit_VL53L0X.h>
+
+#include <Wire.h>
+
+#include <List.hpp>
+
+Adafruit_VL53L0X i2c_distance;
+
+bool tofSetup[8];
+
+void setuptof() {
+    uint8_t channel = i2cGetChannel();
+    if (!tofSetup[channel]) {
+      i2c_distance.begin();
+      i2c_distance.setMeasurementTimingBudgetMicroSeconds(20000);
+      tofSetup[channel] = true;
+    }
+}
+
+int getTOF() {
+    setuptof();
+
+    VL53L0X_RangingMeasurementData_t measure;
+    i2c_distance.rangingTest(&measure, false);
+    if (measure.RangeStatus == 4) return -1;
+    delay(33);
+    return measure.RangeMilliMeter;
+}
+
+void leaphyProgram() {
+  Serial.println(getTOF());
+}
