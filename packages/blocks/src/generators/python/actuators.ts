@@ -101,6 +101,41 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		return `SMALL_OLED_${i2c_channel}.show()\n`;
 	};
+
+	python.forBlock.leaphy_original_set_motor = (block, generator) => {
+		const dropdown_Type = block.getFieldValue("MOTOR_TYPE");
+		let speed = python.valueToCode(block, "MOTOR_SPEED", Order.NONE) || "100";
+
+		generator.addImport("leaphymicropython.actuators.dcmotor", "DCMotor");
+
+		let right = dropdown_Type === "10";
+
+		let name = "left";
+		let direction_pin = "D4";
+		let pwm_pin = "D11";
+
+		if (right) {
+			name = "right";
+			direction_pin = "D2";
+			pwm_pin = "D3";
+		}
+
+		const MotorVariableName = python.getVariableName(`motor_${name}`);
+
+		const actual_function_name = generator.provideFunction_("set_motor_speed", [
+			`def ${generator.FUNCTION_NAME_PLACEHOLDER_}(motor, speed):`,
+			"  if speed >= 0:",
+			"    motor.forward(speed)",
+			"  else:",
+			"    motor.backward(-speed)",
+		]);
+		generator.addDefinition(
+			MotorVariableName,
+			`${MotorVariableName} = DCMotor(direction_pin=\"${direction_pin}\", pwn_pin=\"${pwm_pin}\")`,
+		);
+
+		return `${actual_function_name}(${MotorVariableName}, ${speed})\n`;
+	};
 }
 
 export default getCodeGenerators;
