@@ -224,6 +224,7 @@ export default [
 					robots: [
 						...robotGroups.ALL,
 						...robotGroups.L_STARLING_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					type: "leaphy_original_move_motors",
 					inputs: {

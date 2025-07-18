@@ -1,5 +1,6 @@
 import { Msg } from "blockly/core";
 import { Order } from "blockly/python";
+import { MotorDirection } from "../../blocks/leaphy_original";
 import type { MicroPythonGenerator } from "../python";
 
 /**
@@ -102,39 +103,79 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		return `SMALL_OLED_${i2c_channel}.show()\n`;
 	};
 
-	python.forBlock.leaphy_original_set_motor = (block, generator) => {
-		const dropdown_Type = block.getFieldValue("MOTOR_TYPE");
-		let speed = python.valueToCode(block, "MOTOR_SPEED", Order.NONE) || "100";
-
-		generator.addImport("leaphymicropython.actuators.dcmotor", "DCMotor");
-
-		let right = dropdown_Type === "10";
-
-		let name = "left";
-		let direction_pin = "D4";
-		let pwm_pin = "D11";
-
-		if (right) {
-			name = "right";
-			direction_pin = "D2";
-			pwm_pin = "D3";
-		}
-
-		const MotorVariableName = python.getVariableName(`motor_${name}`);
-
-		const actual_function_name = generator.provideFunction_("set_motor_speed", [
+	function getSetMotorSpeedName(generator: MicroPythonGenerator): string {
+		const SetMotorSpeedName = generator.provideFunction_("set_motor_speed", [
 			`def ${generator.FUNCTION_NAME_PLACEHOLDER_}(motor, speed):`,
 			"  if speed >= 0:",
 			"    motor.forward(speed)",
 			"  else:",
 			"    motor.backward(-speed)",
 		]);
+
+		return SetMotorSpeedName;
+	}
+
+	function getDCMotorName(
+		generator: MicroPythonGenerator,
+		right: boolean,
+	): string {
+		let name = right ? "right" : "left";
+		let direction_pin = right ? "D2" : "D4";
+		let pwm_pin = right ? "D3" : "D11";
+
+		generator.addImport("leaphymicropython.actuators.dcmotor", "DCMotor");
+
+		const MotorVariableName = python.getVariableName(`motor_${name}`);
+
 		generator.addDefinition(
 			MotorVariableName,
 			`${MotorVariableName} = DCMotor(direction_pin=\"${direction_pin}\", pwn_pin=\"${pwm_pin}\")`,
 		);
 
-		return `${actual_function_name}(${MotorVariableName}, ${speed})\n`;
+		return MotorVariableName;
+	}
+
+	python.forBlock.leaphy_original_set_motor = (block, generator) => {
+		const dropdown_Type = block.getFieldValue("MOTOR_TYPE");
+		let speed = python.valueToCode(block, "MOTOR_SPEED", Order.NONE) || "100";
+
+		let MotorVariableName = getDCMotorName(generator, dropdown_Type === "10");
+
+		return `${getSetMotorSpeedName(generator)}(${MotorVariableName}, ${speed})\n`;
+	};
+
+	python.forBlock.leaphy_original_move_motors = (block, generator) => {
+		let direction = block.getFieldValue("MOTOR_DIRECTION") as MotorDirection;
+		const speedCode =
+			generator.valueToCode(block, "MOTOR_SPEED", Order.UNARY_SIGN) || "100";
+		const speedVar = generator.getVariableName("speed");
+
+		let leftMotorName = getDCMotorName(generator, false);
+		let rightMotorName = getDCMotorName(generator, true);
+
+		let setMotorSpeedName = getSetMotorSpeedName(generator);
+
+		let code = `\n${speedVar} = ${speedCode}\n`; // Extract the speed into a variable so if evaluating it has side effects its only done once.
+		switch (direction) {
+			case MotorDirection.FORWARD:
+				code += `${setMotorSpeedName}(${leftMotorName}, ${speedVar})\n`;
+				code += `${setMotorSpeedName}(${rightMotorName}, ${speedVar})\n`;
+				break;
+			case MotorDirection.BACKWARD:
+				code += `${setMotorSpeedName}(${leftMotorName}, -${speedVar})\n`;
+				code += `${setMotorSpeedName}(${rightMotorName}, -${speedVar})\n`;
+				break;
+			case MotorDirection.LEFT:
+				code += `${setMotorSpeedName}(${leftMotorName}, -${speedVar})\n`;
+				code += `${setMotorSpeedName}(${rightMotorName}, ${speedVar})\n`;
+				break;
+			case MotorDirection.RIGHT:
+				code += `${setMotorSpeedName}(${leftMotorName}, ${speedVar})\n`;
+				code += `${setMotorSpeedName}(${rightMotorName}, -${speedVar})\n`;
+				break;
+		}
+
+		return code;
 	};
 }
 
