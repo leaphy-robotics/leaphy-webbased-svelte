@@ -314,7 +314,6 @@ export default [
 						...robotGroups.ALL,
 						-RobotType.L_FLITZ_UNO,
 						-RobotType.L_FLITZ_NANO,
-						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SERVO_ANGLE: number(90),
