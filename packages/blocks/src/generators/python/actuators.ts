@@ -147,7 +147,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.leaphy_original_move_motors = (block, generator) => {
 		let direction = block.getFieldValue("MOTOR_DIRECTION") as MotorDirection;
 		const speedCode =
-			generator.valueToCode(block, "MOTOR_SPEED", Order.UNARY_SIGN) || "100";
+			generator.valueToCode(block, "MOTOR_SPEED", Order.NONE) || "100";
 		const speedVar = generator.getVariableName("speed");
 
 		let leftMotorName = getDCMotorName(generator, false);
