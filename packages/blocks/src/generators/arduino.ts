@@ -474,6 +474,7 @@ import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
 import * as ml from "./arduino/ml"
+import * as sensors from "./arduino/sensors"
 
 arduino.default(generator);
 leaphy_common.default(generator);
@@ -490,5 +491,6 @@ lists.default(generator);
 mesh.default(generator);
 rtc.default(generator);
 ml.default(generator);
+sensors.default(generator);
 
 export default generator;

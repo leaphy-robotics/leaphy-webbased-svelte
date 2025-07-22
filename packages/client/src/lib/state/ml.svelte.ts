@@ -3,6 +3,13 @@ import Collect from "$components/workspace/ml/flow/Collect.svelte";
 import {type Component} from "svelte";
 import {type Class, type DataFrame, Dataset, ml} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import * as tf from '@tensorflow/tfjs';
+import WorkspaceState from "$state/workspace.svelte";
+import {arduino} from "@leaphy-robotics/leaphy-blocks";
+import BlocklyState from "$state/blockly.svelte";
+import Uploader from "$components/core/popups/popups/Uploader.svelte";
+import PopupState from "./popup.svelte";
+import AppState from "$state/app.svelte";
+import {Sensor} from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
 
 export const Step = {
 	SETUP: Setup as Component,
@@ -10,11 +17,6 @@ export const Step = {
 }
 
 export const steps = [Step.SETUP, Step.COLLECT]
-
-const sensors = [
-	'fae2ac9b-9da5-4cb3-ab1f-66e31e2908f7',
-	'6818778d-e2bb-4828-80f0-8ad9cdbce4ab'
-]
 
 function findMaxIndex(arr: number[]) {
 	if (arr.length === 0) return -1; // Handle empty array
@@ -61,8 +63,9 @@ class MLState {
 	model: tf.Sequential
 
 	datasets = $state<Dataset[]>([])
+	sensors = $state<{ id: string, type: Sensor, settings: unknown }[]>([])
 	data: DataFrame[] = []
-	dataSplit: number[] = $state([100, 50, 50])
+	dataSplit: number[] = $state([100, 50, 50, 50])
 
 	async setClassification(classification: string) {
 		if (this.classification === classification) return
@@ -93,6 +96,8 @@ class MLState {
 			await this.classCharacteristics[this.classification].writeValue(new Uint8Array([0]))
 			this.classification = null
 		})
+
+		ml.addEventListener('updateSensors', () => this.sensors = ml.getSensors())
 	}
 
 	async learn() {
@@ -122,18 +127,18 @@ class MLState {
 
 		this.classes = ml.getClasses()
 		this.datasets = ml.getDatasets()
-		this.frame = new Array(sensors.length).fill(null)
+		this.frame = new Array(this.sensors.length).fill(null)
 		for (const classData of this.classes) {
 			this.classCharacteristics[classData.id] = await service.getCharacteristic(classData.id)
 		}
 
-		for (const i in sensors) {
-			const sensor = sensors[i]
-			const characteristic = await service.getCharacteristic(sensor)
+		for (const i in this.sensors) {
+			const sensor = this.sensors[i]
+			const characteristic = await service.getCharacteristic(sensor.id)
 			await characteristic.startNotifications()
 
 			characteristic.addEventListener('characteristicvaluechanged', async e => {
-				this.frame[i] = (e.target as unknown as { value: DataView }).value.getUint8(0) / 255
+				this.frame[i] = (e.target as unknown as { value: DataView }).value.getFloat32(0, true)
 
 				for (const item of this.frame) {
 					if (item === null) return
@@ -146,13 +151,13 @@ class MLState {
 					})
 				}
 				if (this.model) {
-					const result = this.model.predict(tf.tensor2d(this.frame, [1, 2])) as tf.Tensor
+					const result = this.model.predict(tf.tensor2d(this.frame, [1, this.sensors.length])) as tf.Tensor
 					const predictions = Array.from(result.dataSync())
 
 					await this.setClassification(this.classes[findMaxIndex(predictions)].id)
 				}
 
-				this.frame = new Array(sensors.length).fill(null)
+				this.frame = new Array(this.sensors.length).fill(null)
 			})
 		}
 
@@ -162,7 +167,7 @@ class MLState {
 	async train() {
 		const model = tf.sequential({
 			layers: [
-				tf.layers.dense({ inputShape: [2], units: 8, activation: 'relu' }),
+				tf.layers.dense({ inputShape: [this.sensors.length], units: 9, activation: 'relu' }),
 				tf.layers.dense({ units: 6, activation: 'relu' }),
 				tf.layers.dense({ units: this.classes.length, activation: 'softmax' }),
 			]
@@ -184,6 +189,8 @@ class MLState {
 				output: this.classes.map(classData => classData.id === frame.detected ? 1 : 0)
 			}))
 
+		console.log(ml.getDatasets())
+
 		const data = tf.tensor2d(frames.map(frame => frame.input))
 		const labels = tf.tensor2d(frames.map(frame => frame.output))
 
@@ -191,8 +198,28 @@ class MLState {
 		await model.fit(data, labels, { epochs: 100 })
 		console.log('model trained!')
 
-		this.model = model
-		console.log(this.model)
+		const res = await model.save("http://localhost:8000/ml/convert")
+		ml.modelHeaders = await res.responses[0].json()
+		ml.generateInference = true
+
+		const code = arduino.workspaceToCode(
+			BlocklyState.workspace,
+			WorkspaceState.robot.id,
+		);
+		AppState.libraries.clear();
+		AppState.libraries.install(...arduino.getDependencies());
+
+		console.log(code)
+		await PopupState.open({
+			component: Uploader,
+			data: {
+				source: code
+			},
+			allowInteraction: false,
+		});
+		ml.generateInference = false
+
+		// this.model = model
 	}
 }
 

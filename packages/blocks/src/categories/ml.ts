@@ -1,7 +1,7 @@
 import {ISerializer} from "blockly/core/interfaces/i_serializer";
-import {listManager} from "./lists";
 import {Variables, WorkspaceSvg} from "blockly/core";
 import type {FlyoutDefinition} from "blockly/core/utils/toolbox";
+import {Sensor, sensorByType} from "./ml/sensors";
 
 export class Class {
 	constructor(
@@ -32,10 +32,56 @@ export class Dataset {
 	}
 }
 
-class ML {
+export interface SensorReference {
+	id: string
+	type: string
+	settings: unknown
+}
+
+export interface SensorData {
+	id: string
+	type: Sensor
+	settings: unknown
+}
+
+class ML extends EventTarget {
+	public sensors: Record<string, SensorReference> = {}
 	public classes: Record<string, Class> = {}
 	public datasets: Record<string, Dataset> = {}
 	public enabled: boolean = false;
+
+	public modelHeaders: string|null = null;
+	public generateInference: boolean = false;
+
+	addSensor(sensor: { type: Sensor, settings: unknown }, id: string = crypto.randomUUID()) {
+		this.sensors[id] = {
+			id,
+			type: sensor.type.type,
+			settings: sensor.settings,
+		}
+		this.dispatchEvent(new Event('updateSensors'))
+	}
+
+	deleteSensor(id: string) {
+		delete this.sensors[id];
+		this.dispatchEvent(new Event('updateSensors'))
+	}
+
+	getSensor(id: string) {
+		const sensor = this.sensors[id];
+
+		return {
+			...sensor,
+			type: sensorByType[sensor.type]
+		}
+	}
+
+	getSensors() {
+		return Object.values(this.sensors).map(sensor => ({
+			...sensor,
+			type: sensorByType[sensor.type],
+		}));
+	}
 
 	addClass(name: string, id: string = crypto.randomUUID(), key: string|null = null) {
 		this.classes[id] = new Class(id, name, key)
@@ -67,6 +113,7 @@ class ML {
 	clear() {
 		this.classes = {}
 		this.datasets = {}
+		this.sensors = {}
 	}
 }
 
@@ -88,6 +135,8 @@ interface MLState {
 	enabled: boolean,
 	classes: SerialClass[],
 	datasets: SerialDataset[],
+	sensors: SensorReference[],
+	modelHeaders: string|null
 }
 
 export class MLSerializer implements ISerializer {
@@ -99,12 +148,16 @@ export class MLSerializer implements ISerializer {
 
 	load(state: MLState) {
 		ml.enabled = state.enabled;
+		ml.modelHeaders = state.modelHeaders || null;
 
 		for (const classState of state.classes) {
 			ml.addClass(classState.name, classState.id, classState.key);
 		}
 		for (const dataset of state.datasets) {
 			ml.addDataset(dataset.data, dataset.id, dataset.date)
+		}
+		for (const sensor of state.sensors) {
+			ml.addSensor({ type: sensorByType[sensor.type], settings: sensor.settings }, sensor.id)
 		}
 	}
 
@@ -127,7 +180,14 @@ export class MLSerializer implements ISerializer {
 			})
 		}
 
-		return { classes, datasets, enabled: ml.enabled };
+		const sensors: SensorReference[] = []
+		for (const [id, sensor] of Object.entries(ml.sensors)) {
+			sensors.push({
+				id, type: sensor.type, settings: sensor.settings,
+			})
+		}
+
+		return { classes, datasets, sensors, enabled: ml.enabled, modelHeaders: ml.modelHeaders };
 	}
 }
 
@@ -160,16 +220,6 @@ export default function (workspace: WorkspaceSvg) {
 				{
 					kind: "block",
 					type: "ml_certainty",
-					inputs: {
-						CERTAINTY: {
-							shadow: {
-								type: "math_number",
-								fields: {
-									NUM: 80,
-								},
-							},
-						}
-					}
 				}
 			)
 		}

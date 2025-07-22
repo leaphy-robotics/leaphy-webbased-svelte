@@ -29,6 +29,11 @@ const L_ARDUINO_ALL = [
 	RobotType.L_UNO,
 	RobotType.L_MEGA,
 ];
+const L_ESP32_ALL = [
+	RobotType.L_NANO_ESP32,
+	RobotType.L_ORIGINAL_NANO_ESP32,
+	RobotType.L_STARLING_NANO_ESP32,
+]
 const ALL = [
 	...L_ORIGINAL_ALL,
 	...L_STARLING_ALL,
@@ -44,5 +49,6 @@ export default {
 	L_FLITZ_ALL,
 	L_ARDUINO_ALL,
 	L_STARLING_ALL,
+	L_ESP32_ALL,
 	ALL,
 };

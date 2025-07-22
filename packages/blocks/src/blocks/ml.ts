@@ -5,30 +5,19 @@ const blocks: BlockDefinition = [
 		type: "ml_classify",
 		style: "ml_blocks",
 		message0: "Classify inputs",
-		message1: "%1",
-		args1: [
-			{
-				type: "input_statement",
-				name: "DO",
-			},
-		],
 		previousStatement: null,
 		nextStatement: null,
 	},
 	{
 		type: "ml_certainty",
-		message0: "%1 certainty above %2%",
+		message0: "%1 detected",
 		args0: [
 			{
 				type: "input_dummy",
 				name: "CLASS",
 			},
-			{
-				type: "input_value",
-				name: "CERTAINTY",
-				check: "Number",
-			},
 		],
+		inputsInline: true,
 		extensions: ["class_select_extension"],
 		style: "ml_blocks",
 		output: "Boolean",

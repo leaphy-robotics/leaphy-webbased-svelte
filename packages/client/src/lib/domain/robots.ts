@@ -52,7 +52,8 @@ export type Robot = RobotListing | RobotDevice;
 export enum PinMapping {
 	UNO = 0,
 	NANO = 1,
-	MEGA = 2,
+	NANO_ESP32 = 2,
+	MEGA = 3,
 }
 
 const baseUno = {
@@ -70,7 +71,7 @@ const baseNano = {
 };
 
 const baseNanoESP32 = {
-	mapping: PinMapping.NANO,
+	mapping: PinMapping.NANO_ESP32,
 	fqbn: "arduino:esp32:nano_nora",
 	programmer: new DFU(),
 	board: "l_nano_esp32",

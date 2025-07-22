@@ -14,6 +14,7 @@ setContext("state", state);
     <div class="localRoot">
         <div
             class="popup"
+			class:overflow={state.allowOverflow}
 			style:translate="{state.anchor}"
             style:left={`${state.position.x}px`}
             style:top={`${state.position.y}px`}
@@ -31,6 +32,10 @@ setContext("state", state);
         box-shadow: var(--shadow-el2);
 		overflow: hidden;
     }
+
+	.overflow {
+		overflow: unset;
+	}
 
     .full {
         display: flex;
