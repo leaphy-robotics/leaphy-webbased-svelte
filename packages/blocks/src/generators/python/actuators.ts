@@ -125,7 +125,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		generator.addImport("leaphymicropython.actuators.dcmotor", "DCMotor");
 
-		const MotorVariableName = python.getVariableName(`motor_${name}`);
+		const MotorVariableName = python.getVariableName(`dc_motor_${name}`);
 
 		generator.addDefinition(
 			MotorVariableName,
@@ -133,6 +133,19 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		);
 
 		return MotorVariableName;
+	}
+
+	function getDCMotorsName(generator: MicroPythonGenerator): string {
+		generator.addImport("leaphymicropython.actuators.dcmotor", "DCMotors");
+
+		const MotorsVariableName = python.getVariableName("dc_motors");
+
+		generator.addDefinition(
+			MotorsVariableName,
+			`${MotorsVariableName} = DCMotors()`,
+		);
+
+		return MotorsVariableName;
 	}
 
 	python.forBlock.leaphy_original_set_motor = (block, generator) => {
@@ -148,34 +161,19 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		let direction = block.getFieldValue("MOTOR_DIRECTION") as MotorDirection;
 		const speedCode =
 			generator.valueToCode(block, "MOTOR_SPEED", Order.NONE) || "100";
-		const speedVar = generator.getVariableName("speed");
 
-		let leftMotorName = getDCMotorName(generator, false);
-		let rightMotorName = getDCMotorName(generator, true);
+		let MotorsName = getDCMotorsName(generator);
 
-		let setMotorSpeedName = getSetMotorSpeedName(generator);
-
-		let code = `\n${speedVar} = ${speedCode}\n`; // Extract the speed into a variable so if evaluating it has side effects its only done once.
 		switch (direction) {
 			case MotorDirection.FORWARD:
-				code += `${setMotorSpeedName}(${leftMotorName}, ${speedVar})\n`;
-				code += `${setMotorSpeedName}(${rightMotorName}, ${speedVar})\n`;
-				break;
+				return `${MotorsName}.steer("forward", ${speedCode}, 0)\n`;
 			case MotorDirection.BACKWARD:
-				code += `${setMotorSpeedName}(${leftMotorName}, -${speedVar})\n`;
-				code += `${setMotorSpeedName}(${rightMotorName}, -${speedVar})\n`;
-				break;
+				return `${MotorsName}.steer("backward", ${speedCode}, 0)\n`;
 			case MotorDirection.LEFT:
-				code += `${setMotorSpeedName}(${leftMotorName}, -${speedVar})\n`;
-				code += `${setMotorSpeedName}(${rightMotorName}, ${speedVar})\n`;
-				break;
+				return `${MotorsName}.steer("left", ${speedCode}, 1)\n`;
 			case MotorDirection.RIGHT:
-				code += `${setMotorSpeedName}(${leftMotorName}, ${speedVar})\n`;
-				code += `${setMotorSpeedName}(${rightMotorName}, -${speedVar})\n`;
-				break;
+				return `${MotorsName}.steer("right", ${speedCode}, 1)\n`;
 		}
-
-		return code;
 	};
 }
 
