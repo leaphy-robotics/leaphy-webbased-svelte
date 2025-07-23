@@ -105,16 +105,8 @@ export default class PinSelectorField extends FieldDropdown {
 			}
 
 			case PinMapping.MICROPYTHON: {
-				let range = (start, end) =>
-					[...Array(1 + end - start).keys()].map((i) => i + start);
-				PinSelectorField.digitalPinOptions = range(2, 12).map((v) => [
-					`D${v}`,
-					`D${v}`,
-				]);
-				PinSelectorField.analogPinOptions = range(0, 7).map((v) => [
-					`A${v}`,
-					`A${v}`,
-				]);
+				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(2, 12, "D");
+				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(0, 7, "A");
 				PinSelectorField.pwmPinOptions = [
 					["D3", "D3"],
 					["D5", "D5"],
@@ -123,7 +115,7 @@ export default class PinSelectorField extends FieldDropdown {
 					["D10", "D10"],
 					["D11", "D11"],
 				];
-				return;
+				break;
 			}
 		}
 	}
