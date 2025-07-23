@@ -5,13 +5,14 @@ import { onMount, tick } from "svelte";
 interface Props {
 	placeholder?: string;
 	value: string;
-	mode: "primary" | "secondary";
+	mode: "primary" | "secondary" | "background";
 	rounded: boolean;
 	focus?: boolean;
 	required?: boolean;
 	type?: string;
 	input?: HTMLInputElement;
 	suggestions?: string[];
+	large?: boolean;
 }
 
 let {
@@ -24,6 +25,7 @@ let {
 	type = "text",
 	input = $bindable(),
 	suggestions = [],
+	large = false,
 }: Props = $props();
 
 let selected = $state(false);
@@ -56,8 +58,10 @@ function onclick(event: MouseEvent) {
 		bind:value
 		class:primary={mode === "primary"}
 		class:secondary={mode === "secondary"}
+		class:background={mode === "background"}
 		class:disableBottomRoundings={selected && relevantSuggestions.length > 0}
 		class:rounded
+		class:large
 
 		onfocus={() => selected = true}
 		{required}
@@ -88,6 +92,11 @@ function onclick(event: MouseEvent) {
 		font-size: 1em;
 	}
 
+	.large {
+		font-size: 1.1em;
+		padding: 10px 15px;
+	}
+
 	.primary {
 		background: var(--primary);
 		color: var(--on-primary);
@@ -96,6 +105,11 @@ function onclick(event: MouseEvent) {
 	.secondary {
 		background: var(--secondary);
 		color: var(--on-secondary);
+	}
+
+	.background {
+		background: var(--background);
+		color: var(--on-background);
 	}
 
 	.rounded {

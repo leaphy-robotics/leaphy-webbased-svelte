@@ -1,4 +1,3 @@
-import * as Blockly from "blockly/core";
 import type {
 	Block,
 	BlockSvg,
@@ -8,7 +7,9 @@ import type {
 	Workspace,
 	WorkspaceSvg,
 } from "blockly/core";
+import * as Blockly from "blockly/core";
 import { type List, listManager } from "../categories/lists";
+import { ml } from "../categories/ml";
 import { procedureManager } from "../generators/arduino/procedures";
 import type { DateItem } from "../generators/arduino/rtc";
 
@@ -26,6 +27,20 @@ export default function registerExtensions(blockly: typeof Blockly) {
 				});
 			}) as Blockly.Field,
 			"LIST",
+		);
+	};
+
+	const CLASS_SELECT_EXTENSION = function (this: Block) {
+		const input = this.getInput("CLASS");
+		if (!input) return;
+
+		input.appendField(
+			new blockly.FieldDropdown(() => {
+				return ml.getClasses().map((classData) => {
+					return [classData.name, classData.id];
+				});
+			}),
+			"CLASS",
 		);
 	};
 
@@ -464,6 +479,7 @@ export default function registerExtensions(blockly: typeof Blockly) {
 
 	blockly.fieldRegistry.register("field_format", FormatField);
 	blockly.Extensions.register("list_select_extension", LIST_SELECT_EXTENSION);
+	blockly.Extensions.register("class_select_extension", CLASS_SELECT_EXTENSION);
 	blockly.Extensions.register(
 		"appendStatementInputStack",
 		APPEND_STATEMENT_INPUT_STACK,

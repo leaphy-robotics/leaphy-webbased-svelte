@@ -2,7 +2,7 @@
 interface Props {
 	open: boolean;
 	options: [string, any][];
-	mode: "primary" | "secondary";
+	mode: "primary" | "secondary" | "background";
 	onselect?: (value: string) => void;
 }
 const { open, options, mode, onselect }: Props = $props();

@@ -5,6 +5,7 @@ import "@blockly/field-bitmap";
 import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
+import Warning from "$components/core/popups/popups/Warning.svelte";
 import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
@@ -48,6 +49,11 @@ Blockly.registry.register(
 );
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
+	"ml",
+	new CATEGORIES.MLSerializer(),
+);
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
 	"procedures",
 	new ProcedureSerializer(),
 );
@@ -59,12 +65,24 @@ Blockly.registry.register(
 
 registerExtensions(Blockly);
 
-Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
+Blockly.dialog.setConfirm(async (title, callback) => {
+	const confirmed = await PopupState.open({
+		component: Warning,
+		data: {
+			title,
+			showCancel: true,
+		},
+		allowInteraction: false,
+	});
+	callback(confirmed as boolean);
+});
+
+Blockly.dialog.setPrompt(async (title, defaultValue, callback) => {
 	const name = await PopupState.open({
 		component: Prompt,
 		data: {
-			name: "NAME_VARIABLE_PROMPT_INPUT",
-			placeholder: "NAME_VARIABLE_PROMPT_INPUT",
+			name: title,
+			placeholder: title,
 			value: defaultValue,
 			confirm: "OK_VARIABLE",
 		},
@@ -207,6 +225,7 @@ export function setupWorkspace(
 
 	const toolbox = workspace.getToolbox();
 	workspace.registerToolboxCategoryCallback("LISTS", CATEGORIES.LISTS);
+	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
 	toolbox.getFlyout().autoClose = false;
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();

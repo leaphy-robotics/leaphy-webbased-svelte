@@ -68,7 +68,16 @@ export default [
 				{
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-					robots: [...robotGroups.L_NANO_ALL, RobotType.L_MICROPYTHON],
+					robots: [
+						...robotGroups.L_NANO_ALL,
+						RobotType.L_MICROPYTHON,
+						...robotGroups.L_ESP32_ALL.map((e) => -e),
+					],
+				},
+				{
+					type: "leaphy_sonar_read",
+					fields: { TRIG_PIN: "A3", ECHO_PIN: "A2" },
+					robots: robotGroups.L_ESP32_ALL,
 				},
 			],
 			[
@@ -632,14 +641,17 @@ export default [
 		],
 	},
 	{
+		name: "Machine learning",
+		style: "ml_category",
+		id: "l_ml",
+		robots: robotGroups.L_ESP32_ALL,
+		custom: "ML",
+	},
+	{
 		name: "Mesh",
 		style: "mesh_category",
 		id: "l_mesh",
-		robots: [
-			RobotType.L_NANO_ESP32,
-			RobotType.L_ORIGINAL_NANO_ESP32,
-			RobotType.L_STARLING_NANO_ESP32,
-		],
+		robots: robotGroups.L_ESP32_ALL,
 		groups: [
 			[
 				{

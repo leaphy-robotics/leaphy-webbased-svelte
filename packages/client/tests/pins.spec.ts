@@ -90,7 +90,7 @@ test("Pins - Uno", async ({ page }) => {
 });
 
 test("Pins - Nano", async ({ page }) => {
-	await selectRobot(page, "Arduino Nano", "Arduino Nano ESP32");
+	await selectRobot(page, "Arduino Nano", "Arduino Nano");
 
 	await test_pins(page, nano_pins);
 });

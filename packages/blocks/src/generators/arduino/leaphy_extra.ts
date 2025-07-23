@@ -185,16 +185,6 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 	};
 
-	arduino.forBlock.leaphy_sonar_read = (block) => {
-		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
-		arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
-
-		const trigPin = block.getFieldValue("TRIG_PIN");
-		const echoPin = block.getFieldValue("ECHO_PIN");
-		const code = `getDistanceSonar(${trigPin}, ${echoPin})`;
-		return [code, arduino.ORDER_ATOMIC];
-	};
-
 	const addDisplaySetupCode = (large: boolean) => {
 		const displaySetup = `if (!display.begin(${large ? "0x3C, true" : "SSD1306_SWITCHCAPVCC, 0x3C"})) {\n        Serial.println(F("Contact with the display failed: Check the connections"));\n      }\n\n      display.clearDisplay();\n      display.setTextSize(1);\n      display.setTextColor(${large ? "SH110X_WHITE" : "SSD1306_WHITE"});\n      display.setCursor(0, 0);\n      display.println(F("Leaphy OLED"));\n      display.display();\n`;
 

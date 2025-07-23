@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="72"
+   height="72"
+   viewBox="0 0 72 72"
+   fill="none"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="l_ml.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#000000"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="13.264617"
+     inkscape:cx="24.048942"
+     inkscape:cy="26.385986"
+     inkscape:window-width="1920"
+     inkscape:window-height="1008"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g9" />
+  <rect
+     width="72"
+     height="72"
+     fill="none"
+     id="rect1" />
+  <g
+     id="g9"
+     transform="matrix(1.2358375,0,0,1.2358375,25.21722,13.368)">
+    <!-- Connection lines between input layer and hidden layer -->
+    <!-- From input node 1 to all hidden nodes -->
+    <!-- From input node 2 to all hidden nodes -->
+    <!-- From input node 3 to all hidden nodes -->
+    <!-- Connection lines between hidden layer and output layer -->
+    <!-- From hidden node 1 to all output nodes -->
+    <!-- From hidden node 2 to all output nodes -->
+    <!-- From hidden node 3 to all output nodes -->
+    <!-- From hidden node 4 to all output nodes -->
+    <!-- Node circles (drawn on top of lines) -->
+    <g
+       id="g1"
+       transform="matrix(1.508751,0,0,1.508751,0.82664893,-1.6183357)">
+      <line
+         x1="3.1122046"
+         y1="3.9900789"
+         x2="7.3579531"
+         y2="1.7450788"
+         stroke="#ffffff"
+         stroke-width="0.3"
+         opacity="0.7"
+         id="line1" />
+      <line
+         x1="3.1122046"
+         y1="3.9900789"
+         x2="7.3579531"
+         y2="6.2350788"
+         stroke="#ffffff"
+         stroke-width="0.3"
+         opacity="0.7"
+         id="line2" />
+      <line
+         x1="3.1122046"
+         y1="3.9900789"
+         x2="7.3579531"
+         y2="10.725079"
+         stroke="#ffffff"
+         stroke-width="0.3"
+         opacity="0.7"
+         id="line3" />
+      <line
+         x1="3.1122046"
+         y1="8.4800787"
+         x2="7.3579531"
+         y2="1.7450788"
+         stroke="#ffffff"
+         stroke-width="0.3"
+         opacity="0.7"
+         id="line5" />
+      <line
+         x1="3.1122046"
+         y1="8.4800787"
+         x2="7.3579531"
+         y2="6.2350788"
+         stroke="#ffffff"
+         stroke-width="0.3"
+         opacity="0.7"
+         id="line6" />
+      <line
+         x1="3.1122046"
+         y1="8.4800787"
+         x2="7.3579531"
+         y2="10.725079"
+         stroke="#ffffff"
+         stroke-width="0.3"
+         opacity="0.7"
+         id="line7" />
+      <ellipse
+         style="fill:none;stroke:#ffffff;stroke-width:0.755906;stroke-dasharray:none;stroke-opacity:1"
+         id="path2"
+         cx="1.7450788"
+         cy="3.9900789"
+         rx="1.3671257"
+         ry="1.3671259" />
+      <ellipse
+         style="fill:none;stroke:#ffffff;stroke-width:0.755906;stroke-dasharray:none;stroke-opacity:1"
+         id="path2-2"
+         cx="1.7450788"
+         cy="8.4800787"
+         rx="1.3671257"
+         ry="1.3671259" />
+      <ellipse
+         style="fill:none;stroke:#ffffff;stroke-width:0.755906;stroke-dasharray:none;stroke-opacity:1"
+         id="path2-6"
+         cx="8.7250786"
+         cy="1.7450788"
+         rx="1.3671257"
+         ry="1.3671259" />
+      <ellipse
+         style="fill:none;stroke:#ffffff;stroke-width:0.755906;stroke-dasharray:none;stroke-opacity:1"
+         id="path2-2-0"
+         cx="8.7250786"
+         cy="6.2350788"
+         rx="1.3671257"
+         ry="1.3671259" />
+      <ellipse
+         style="fill:none;stroke:#ffffff;stroke-width:0.755906;stroke-dasharray:none;stroke-opacity:1"
+         id="path2-2-7-6"
+         cx="8.7250786"
+         cy="10.725079"
+         rx="1.3671257"
+         ry="1.3671259" />
+    </g>
+  </g>
+</svg>
