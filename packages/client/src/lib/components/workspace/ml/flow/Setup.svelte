@@ -1,27 +1,35 @@
 <script lang="ts">
-	import {faBluetooth, faUsb} from "@fortawesome/free-brands-svg-icons";
+	import {faUsb} from "@fortawesome/free-brands-svg-icons";
 	import Button from "$components/ui/Button.svelte";
 	import MLState from "$state/ml.svelte"
-	import Uploader from "$components/core/popups/popups/Uploader.svelte";
-	import WorkspaceState from "$state/workspace.svelte";
 	import PopupState from "$state/popup.svelte";
 	import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
 	import Fa from "svelte-fa";
 	import {faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
 	import {ml} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+	import Warning from "$components/core/popups/popups/Warning.svelte";
+	import { _ } from "svelte-i18n"
 
-	function upload() {
-		PopupState.open({
-			component: Uploader,
-			data: {
-				source: WorkspaceState.code,
-			},
-			allowInteraction: false,
-		});
+	async function upload() {
+		await MLState.upload();
+		if (ml.maxStep === 0) ml.maxStep = 1;
 	}
 
-	function addSensor() {
-		PopupState.open({
+	async function addSensor() {
+		if (ml.getDatasets().length > 0) {
+			const confirmed = await PopupState.open({
+				component: Warning,
+				data: {
+					title: "ML_CLEAR_DATASETS"
+				},
+				allowInteraction: false
+			}) as boolean
+			if (!confirmed) return
+
+			ml.clearDatasets()
+		}
+
+		await PopupState.open({
 			component: AddSensor,
 			data: {},
 			allowInteraction: false,
@@ -36,14 +44,14 @@
 
 <div class="content-area">
 	<div class="header">
-		<h1>Prepare your robot</h1>
-		<span>Set up your sensors and upload the training program to the robot, you can then connect to the robot using Bluetooth</span>
+		<h1>{$_("ML_PREPARE_TITLE")}</h1>
+		<span>{$_("ML_PREPARE_DESC")}</span>
 	</div>
 
 	<div class="sensors">
 		{#if MLState.sensors.length === 0}
 			<div class="sensor">
-				<div class="name">No sensors have been added yet</div>
+				<div class="name">{$_("ML_NO_SENSORS")}</div>
 			</div>
 		{/if}
 		{#each MLState.sensors as sensor}
@@ -55,12 +63,9 @@
 			</div>
 		{/each}
 
-		<button class="add" onclick={addSensor}><Fa icon={faPlus} /> Add Sensor</button>
+		<button class="add" onclick={addSensor}><Fa icon={faPlus} /> {$_("ML_ADD_SENSOR")}</button>
 	</div>
-	<div class="btn">
-		<Button onclick={upload} large bold mode="primary" icon={faUsb} name="Upload" />
-		<Button onclick={() => MLState.connect()} large bold mode="secondary" icon={faBluetooth} name="Connect" />
-	</div>
+	<Button onclick={upload} large bold mode="primary" icon={faUsb} name={$_("UPLOAD")} />
 </div>
 
 <style>
@@ -121,11 +126,6 @@
 		padding: 15px;
 		cursor: pointer;
 		font-size: 1em;
-	}
-
-	.btn {
-		display: flex;
-		gap: 10px;
 	}
 
 	.delete {

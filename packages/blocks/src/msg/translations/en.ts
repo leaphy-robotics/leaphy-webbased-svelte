@@ -356,8 +356,11 @@ messages.NEW_COLOUR_VARIABLE = "Create colour variable...";
 messages.NEW_NUMBER_VARIABLE = "Create number variable...";
 messages.NEW_STRING_VARIABLE = "Create string variable...";
 messages.NEW_VARIABLE = "Create variable...";
-messages.NEW_VARIABLE_TITLE = "New variable name:";
+messages.NEW_VARIABLE_TITLE = "Name your variable";
 messages.NEW_VARIABLE_TYPE_TITLE = "New variable type:";
+messages.NEW_LIST = "Name your list"
+messages.NEW_CLASS = "Name your class";
+messages.CONFIRM_CLEAR = "This will clear your recorded datasets, are you sure you want to continue?";
 messages.ORDINAL_NUMBER_SUFFIX = "";
 messages.PROCEDURES_ALLOW_STATEMENTS = "allow statements";
 messages.PROCEDURES_BEFORE_PARAMS = "with:";
@@ -605,5 +608,12 @@ messages.LEAPHY_READ_GYROSCOPE = "Read gyroscope axis %1";
 messages.LEAPHY_GYROSCOPE_AXIS_X = "X";
 messages.LEAPHY_GYROSCOPE_AXIS_Y = "Y";
 messages.LEAPHY_GYROSCOPE_AXIS_Z = "Z";
+messages.ML_CLASSIFY = "Classify inputs";
+messages.ML_CERTAINTY= "%1 detected";
+messages.ML_ENABLE = "Enable machine learning";
+messages.ML_DISABLE = "Disable machine learning";
+messages.ML_ADD_CLASS = "Add class";
+messages.ML_MODEL = "Model";
+messages.ML_LAYER_DENSE_RELU = "Layer (Dense ReLU) with %1 units";
 
 export default messages;

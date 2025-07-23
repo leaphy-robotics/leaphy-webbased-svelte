@@ -8,6 +8,7 @@
 	import type {PopupState} from "$state/popup.svelte";
 	import {ml} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 	import PinSelectorField from "$domain/blockly/fields";
+	import { _ } from "svelte-i18n"
 
 	const popupState = getContext<PopupState>("state");
 	const sensorOptions = sensors.map(sensor => ([sensor.name, sensor]) as [string, Sensor])
@@ -20,7 +21,7 @@
 				return {
 					...setting,
 					type: 'select',
-					options: PinSelectorField.getOptions(setting.pinType)
+					options: PinSelectorField.getOptions(setting.pinType as "digital" | "analog" | "pwm")
 				}
 			}
 
@@ -67,10 +68,10 @@
 </script>
 
 <div class="content">
-	<h1>Add a sensor</h1>
+	<h1>{$_("ML_ADD_SENSOR_TITLE")}</h1>
 
 	<div class="input-group">
-		<div class="label">Sensor type</div>
+		<div class="label">{$_("ML_SENSOR_TYPE")}</div>
 		<Select mode="secondary" full options={sensorOptions} bind:value={sensor} />
 	</div>
 
@@ -90,8 +91,8 @@
 	{/each}
 
 	<div class="buttons">
-		<Button onclick={cancel} mode="secondary" name="Cancel" large center />
-		<Button onclick={addSensor} mode="primary" name="Add sensor" large center bold />
+		<Button onclick={cancel} mode="secondary" name={$_("CANCEL")} large center />
+		<Button onclick={addSensor} mode="primary" name={$_("ML_ADD_SENSOR")} large center bold />
 	</div>
 </div>
 

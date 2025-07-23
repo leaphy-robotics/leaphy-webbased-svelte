@@ -6,8 +6,6 @@
 	}
 	let { classData }: Props = $props();
 
-	console.log(classData)
-
 	let binding = $state(false)
 
 	function assign() {

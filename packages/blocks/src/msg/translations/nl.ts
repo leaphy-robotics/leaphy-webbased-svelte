@@ -492,9 +492,12 @@ messages.MATH_TRIG_TOOLTIP_TAN =
 messages.NEW_COLOUR_VARIABLE = "Creëer kleurvariabele";
 messages.NEW_NUMBER_VARIABLE = "Creëer numeriek variabele";
 messages.NEW_STRING_VARIABLE = "Creëer tekstvariabele";
-messages.NEW_VARIABLE = "Variabele maken...";
+messages.NEW_VARIABLE = "Geef je variabele een naam";
 messages.NEW_VARIABLE_TITLE = "Nieuwe variabelenaam:";
 messages.NEW_VARIABLE_TYPE_TITLE = "Nieuw soort variabele";
+messages.NEW_LIST = "Geef je lijst een naam";
+messages.NEW_CLASS = "Geef je class een naam";
+messages.CONFIRM_CLEAR = "Dit wist je huidige datasets, weet je zeker dat je door wilt gaan?";
 messages.ORDINAL_NUMBER_SUFFIX = ""; // untranslated
 messages.PROCEDURES_ALLOW_STATEMENTS = "statements toestaan";
 messages.PROCEDURES_BEFORE_PARAMS = "met:";
@@ -751,5 +754,12 @@ messages.LEAPHY_READ_GYROSCOPE = "Gyroscoop-as %1";
 messages.LEAPHY_GYROSCOPE_AXIS_X = "X";
 messages.LEAPHY_GYROSCOPE_AXIS_Y = "Y";
 messages.LEAPHY_GYROSCOPE_AXIS_Z = "Z";
+messages.ML_CLASSIFY = "Classificeer input";
+messages.ML_CERTAINTY= "%1 gedetecteerd";
+messages.ML_ENABLE = "Zet machine learning aan";
+messages.ML_DISABLE = "Zet machine learning uit";
+messages.ML_ADD_CLASS = "Voeg class toe";
+messages.ML_MODEL = "Model";
+messages.ML_LAYER_DENSE_RELU = "Layer (Dense ReLU) met %1 units";
 
 export default messages;

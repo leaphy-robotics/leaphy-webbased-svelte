@@ -1,18 +1,23 @@
 <script>
 	import MLState, {steps} from "$state/ml.svelte.js"
 	import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
+	import Button from "$components/ui/Button.svelte";
+	import { _ } from "svelte-i18n"
+	import {faArrowLeft, faArrowRight, faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
+	import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
 </script>
 
 <div class="container">
 	<div class="content">
-		<div class="scrollable">
-			<ComponentRenderer component={MLState.step} />
-		</div>
+		<ComponentRenderer component={MLState.step} />
 
-		<div class="steps">
-			{#each steps as _step, i}
-				<div class="step" class:past={i < MLState.stepIndex} class:active={i === MLState.stepIndex}>{i + 1}</div>
-			{/each}
+		<div class="footer">
+			<div class="spacer"></div>
+			<div class="pager">
+				<Button onclick={() => MLState.previous()} bold disabled={MLState.stepIndex === 0} mode="secondary" name={$_("PREVIOUS")} icon={faArrowLeft} />
+				<span class="page">Step {MLState.stepIndex + 1} of {steps.length}</span>
+				<Button onclick={() => MLState.next()} bold disabled={MLState.stepIndex >= MLState.maxStep} mode="primary" name={$_("NEXT")} icon={faArrowRight} iconAlign="right" />
+			</div>
 		</div>
 	</div>
 </div>
@@ -30,9 +35,12 @@
 		width: 100vw;
 	}
 
-
-
 	.content {
+		display: grid;
+		grid-template-rows: 1fr auto;
+		gap: 40px;
+
+		overflow-y: auto;
 		position: relative;
 		background: var(--background);
 		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -40,47 +48,31 @@
 		border-radius: 40px;
 		width: 1000px;
 		max-height: 600px;
-	}
-
-	.scrollable {
 		padding: 60px 40px;
-		overflow-y: auto;
 	}
 
-	.steps {
+	.spacer {
+		width: 100%;
+		height: 4px;
+		border-radius: 5px;
+		background: var(--secondary);
+	}
+
+	.footer {
 		display: flex;
-		position: absolute;
-		left: 50%;
-		bottom: 0;
-		translate: -50% 50%;
+		flex-direction: column;
 		gap: 20px;
 	}
 
-	.step {
+	.pager {
+		position: relative;
 		display: flex;
-		justify-content: center;
-		align-items: center;
-		background: var(--secondary);
-		font-size: 18px;
-		width: 36px;
-		height: 36px;
-		border-radius: 20px;
-		background-clip: content-box;
-		padding: 2px;
-		border: 3px solid var(--secondary);
+		justify-content: space-between;
 	}
-
-	.step.active {
-		color: var(--on-accent);
-		background: var(--accent);
-		background-clip: content-box;
-		border: 3px solid var(--accent);
-	}
-
-	.step.past {
-		color: var(--on-primary);
-		background: var(--primary-dark-tint);
-		background-clip: content-box;
-		border: 3px solid var(--primary-dark-tint);
+	.page {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>

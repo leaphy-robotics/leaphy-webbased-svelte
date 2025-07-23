@@ -1,9 +1,9 @@
 <script lang="ts">
-import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import type { Snippet } from "svelte";
 import Fa from "svelte-fa";
 import { type Writable, writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";
+import type {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
 	name?: string;
@@ -17,6 +17,7 @@ interface Props {
 	inline?: boolean;
 	center?: boolean;
 	large?: boolean;
+	iconAlign?: "left" | "right"
 }
 
 const {
@@ -31,6 +32,7 @@ const {
 	type = "button",
 	center = false,
 	large = false,
+	iconAlign = "left",
 }: Props = $props();
 
 let btn: HTMLButtonElement = $state();
@@ -43,6 +45,16 @@ function onContext() {
 	open.set(true);
 }
 </script>
+
+{#snippet iconRender()}
+	{#if icon}
+		{#if typeof icon === "string"}
+			<img class="icon" src={icon} alt="Icon"/>
+		{:else}
+			<Fa {icon}/>
+		{/if}
+	{/if}
+{/snippet}
 
 {#if $open}
 	<ContextMenu {open} source={btn} content={context}/>
@@ -64,14 +76,9 @@ function onContext() {
 	class:center
 	class:large
 >
-	{#if icon}
-		{#if typeof icon === "string"}
-			<img class="icon" src={icon} alt="Icon"/>
-		{:else}
-			<Fa {icon}/>
-		{/if}
-	{/if}
+	{#if iconAlign === "left"}{@render iconRender()}{/if}
 	{#if name}{name}{/if}
+	{#if iconAlign === "right"}{@render iconRender()}{/if}
 </button>
 
 <style>

@@ -1,4 +1,4 @@
-import { Variables, type WorkspaceSvg } from "blockly/core";
+import {Msg, Variables, type WorkspaceSvg} from "blockly/core";
 import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
 
@@ -101,7 +101,7 @@ export default function (workspace: WorkspaceSvg) {
 	}
 
 	workspace.registerButtonCallback("create_list", () => {
-		Variables.promptName("create_list", "", (name) => {
+		Variables.promptName(Msg["NEW_LIST"], "", (name) => {
 			if (!name) return;
 
 			listManager.addList(name);

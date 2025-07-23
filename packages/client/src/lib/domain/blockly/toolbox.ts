@@ -444,9 +444,7 @@ export default [
 		name: "Machine learning",
 		style: "ml_category",
 		id: "l_ml",
-		robots: [
-			RobotType.L_STARLING_NANO_ESP32,
-		],
+		robots: robotGroups.L_ESP32_ALL,
 		custom: "ML"
 	},
 	{

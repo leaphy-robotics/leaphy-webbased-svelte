@@ -6,28 +6,33 @@ function getClassName(classData: Class) {
 	return `class_${classData.name.replaceAll(" ", "_")}`
 }
 
-function getSensorName(sensor: SensorData) {
-	return `sensor_${sensor.type.type}_${sensor.id.replaceAll('-', '_')}`
-}
-
 function getCodeGenerators(arduino: Arduino) {
 	function addBluetoothDetails() {
 		arduino.addDependency(Dependencies.ARDUINO_BLE)
 		arduino.addInclude("bluetooth", "#include <ArduinoBLE.h>")
 		arduino.addDefinition(
 			"bluetooth",
-			'BLEService controlService("071bbd8f-5002-440f-b2e5-bee56f630d2b");\n' +
-			ml.getSensors().map(sensor => `BLEFloatCharacteristic ${getSensorName(sensor)}("${sensor.id}", BLERead | BLENotify);\n`).join('') +
-			ml.getClasses().map(classData => `BLEBooleanCharacteristic ${getClassName(classData)}("${classData.id}", BLEWrite);\n`).join('')
+			`BLEService controlService("${ml.trainingID}");\n` +
+			`float inputBuffer[${ml.getSensors().length}];\n` +
+			`BLECharacteristic input("f0e84eb0-f3ed-495c-926c-b2e3815415a7", BLERead | BLENotify, ${ml.getSensors().length * 4});\n` +
+			`bool outputBuffer[${ml.getClasses().length}];\n` +
+			`BLECharacteristic output("6f1c1de7-bc7d-4bcb-a30e-918b82d115e8", BLEWrite, ${ml.getClasses().length});\n`
+		)
+
+		arduino.addDeclaration("bluetooth",
+			"void onOutputWrite(BLEDevice central, BLECharacteristic characteristic) {\n" +
+			`  characteristic.readValue(outputBuffer, ${ml.getClasses().length});\n` +
+			"}\n"
 		)
 
 		arduino.addSetup(
 			"bluetooth",
 			'BLE.begin();\n' +
-			'  BLE.setLocalName("Leaphy Starling AI");\n' +
+			'  BLE.setLocalName("Leaphy ML");\n' +
 			'  BLE.setAdvertisedService(controlService);\n' +
-			ml.getSensors().map(sensor => `  controlService.addCharacteristic(${getSensorName(sensor)});\n`).join('') +
-			ml.getClasses().map(classData => `  controlService.addCharacteristic(${getClassName(classData)});\n`).join('') +
+			'  controlService.addCharacteristic(input);\n' +
+			'  controlService.addCharacteristic(output);\n' +
+			'  output.setEventHandler(BLEWritten, onOutputWrite);\n' +
 			'  BLE.addService(controlService);\n' +
 			'  BLE.advertise();'
 		)
@@ -115,24 +120,25 @@ function getCodeGenerators(arduino: Arduino) {
 		} else {
 			addBluetoothDetails();
 
-			return 'BLE.poll();\n' +
-				'delay(10);\n' +
-				ml.getSensors().map(sensor => (
+			return 	'delay(10);\n' +
+				'BLE.poll();\n' +
+				ml.getSensors().map((sensor, index) => (
 					sensor.type.getValues(
 						arduino,
-						(_node, value) => `${getSensorName(sensor)}.writeValue(${value});\n`,
+						(_node, value) => `inputBuffer[${index}] = ${value};\n`,
 						sensor.settings
 					)
-				)).join('')
+				)).join('') +
+				`input.writeValue(inputBuffer, ${ml.getSensors().length * 4});\n`
 		}
 	}
 
 	arduino.forBlock.ml_certainty = function (block) {
-		const classData = ml.getClass(block.getFieldValue("CLASS"));
+		const classIndex = ml.getClassIndex(block.getFieldValue("CLASS"));
 		if (ml.generateInference) {
-			return [`(predicted_class == ${ml.getClasses().indexOf(classData)})`, arduino.ORDER_ATOMIC]
+			return [`(predicted_class == ${classIndex})`, arduino.ORDER_ATOMIC]
 		} else {
-			return [`${getClassName(classData)}.value()`, arduino.ORDER_ATOMIC];
+			return [`outputBuffer[${classIndex}]`, arduino.ORDER_ATOMIC];
 		}
 	}
 }

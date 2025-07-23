@@ -27,6 +27,7 @@ import { LeaphyCategory } from "./category-ui/category";
 import { LeaphyToolbox } from "./category-ui/toolbox";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
+import Warning from "$components/core/popups/popups/Warning.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -64,12 +65,24 @@ Blockly.registry.register(
 
 registerExtensions(Blockly);
 
-Blockly.dialog.setPrompt(async (_, defaultValue, callback) => {
+Blockly.dialog.setConfirm(async (title, callback) => {
+	const confirmed = await PopupState.open({
+		component: Warning,
+		data: {
+			title,
+			showCancel: true
+		},
+		allowInteraction: false
+	})
+	callback(confirmed as boolean);
+})
+
+Blockly.dialog.setPrompt(async (title, defaultValue, callback) => {
 	const name = await PopupState.open({
 		component: Prompt,
 		data: {
-			name: "NAME_VARIABLE_PROMPT_INPUT",
-			placeholder: "NAME_VARIABLE_PROMPT_INPUT",
+			name: title,
+			placeholder: title,
 			value: defaultValue,
 			confirm: "OK_VARIABLE",
 		},

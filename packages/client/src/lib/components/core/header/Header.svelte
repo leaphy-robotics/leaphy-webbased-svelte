@@ -49,10 +49,10 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-import { CATEGORIES } from "@leaphy-robotics/leaphy-blocks";
+import MLState from "$state/ml.svelte"
 
 async function upload() {
-	if (CATEGORIES.ml.enabled) {
+	if (MLState.enabled) {
 		if (WorkspaceState.Mode === Mode.BLOCKS) WorkspaceState.Mode = Mode.ML
 		else {
 			BlocklyState.restore = serialization.workspaces.save(BlocklyState.workspace)
@@ -455,9 +455,10 @@ async function submit() {
                         onclick={connectPython}
                     />
                 {/if}
+			{:else if WorkspaceState.Mode === Mode.ML}
+				<Button name={$_("ML_CLOSE")} mode={"accent"} onclick={upload} />
             {:else}
-<!--				TODO: switch dynamically-->
-                <Button name={$_("UPLOAD")} mode={"accent"} onclick={upload} />
+                <Button name={MLState.enabled ? $_("ML_OPEN") : $_("UPLOAD")} mode={"accent"} onclick={upload} />
             {/if}
         {/if}
     </div>

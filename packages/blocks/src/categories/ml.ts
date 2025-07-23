@@ -1,7 +1,8 @@
 import {ISerializer} from "blockly/core/interfaces/i_serializer";
-import {Variables, WorkspaceSvg} from "blockly/core";
+import {Msg, WorkspaceSvg} from "blockly/core";
 import type {FlyoutDefinition} from "blockly/core/utils/toolbox";
 import {Sensor, sensorByType} from "./ml/sensors";
+import {dialog} from "blockly";
 
 export class Class {
 	constructor(
@@ -44,14 +45,65 @@ export interface SensorData {
 	settings: unknown
 }
 
+export interface ModelLayer {
+	activation: 'softmax' | 'relu',
+	units: number
+}
+
 class ML extends EventTarget {
+	public freeze: boolean = false;
+
 	public sensors: Record<string, SensorReference> = {}
 	public classes: Record<string, Class> = {}
 	public datasets: Record<string, Dataset> = {}
-	public enabled: boolean = false;
 
+	public trainingID: string = crypto.randomUUID();
 	public modelHeaders: string|null = null;
 	public generateInference: boolean = false;
+
+	private _enabled: boolean = false;
+	private _maxStep = 0;
+	private _confusion: number[][] | null = null;
+	private _structure: ModelLayer[] = [
+		{ activation: 'relu', units: 9 },
+		{ activation: 'relu', units: 6 }
+	]
+
+	get structure() {
+		return this._structure;
+	}
+
+	set structure(value: ModelLayer[]) {
+		this._structure = value
+		this.dispatchEvent(new Event('updateStructure'))
+	}
+
+	get maxStep() {
+		return this._maxStep;
+	}
+
+	set maxStep(maxStep: number) {
+		this._maxStep = maxStep;
+		this.dispatchEvent(new Event('updateMaxStep'))
+	}
+
+	get enabled() {
+		return this._enabled;
+	}
+
+	set enabled(value: boolean) {
+		this._enabled = value;
+		this.dispatchEvent(new Event('updateEnabled'))
+	}
+
+	get confusion() {
+		return this._confusion;
+	}
+
+	set confusion(value: number[][] | null) {
+		this._confusion = value;
+		this.dispatchEvent(new Event('updateConfusion'))
+	}
 
 	addSensor(sensor: { type: Sensor, settings: unknown }, id: string = crypto.randomUUID()) {
 		this.sensors[id] = {
@@ -85,6 +137,7 @@ class ML extends EventTarget {
 
 	addClass(name: string, id: string = crypto.randomUUID(), key: string|null = null) {
 		this.classes[id] = new Class(id, name, key)
+		this.dispatchEvent(new Event('updateClasses'))
 	}
 
 	getClass(id: string): Class {
@@ -95,11 +148,32 @@ class ML extends EventTarget {
 		return Object.values(this.classes)
 	}
 
+	getClassIndex(id: string) {
+		return this.getClasses().indexOf(this.getClass(id))
+	}
+
 	addDataset(data: DataFrame[], id: string = crypto.randomUUID(), date = Date.now()) {
 		const dataset = new Dataset(id, data, date)
 		this.datasets[id] = dataset
+		this.dispatchEvent(new Event('updateDatasets'))
 
 		return dataset
+	}
+
+	deleteDataset(id: string) {
+		delete this.datasets[id]
+		this.dispatchEvent(new Event('updateDatasets'))
+	}
+
+	clearDatasets() {
+		this.datasets = {}
+		this.modelHeaders = null
+		this.confusion = null
+		this.maxStep = 0
+
+		this.dispatchEvent(new Event('updateDatasets'))
+		this.dispatchEvent(new Event('updateConfusion'))
+		this.dispatchEvent(new Event('updateMaxStep'))
 	}
 
 	getDataset(id: string) {
@@ -111,9 +185,22 @@ class ML extends EventTarget {
 	}
 
 	clear() {
+		this.structure = [
+			{ activation: 'relu', units: 9 },
+			{ activation: 'relu', units: 6 },
+		]
+
 		this.classes = {}
+		this.dispatchEvent(new Event('updateClasses'))
+
 		this.datasets = {}
+		this.dispatchEvent(new Event('updateDatasets'))
+
 		this.sensors = {}
+		this.dispatchEvent(new Event('updateSensors'))
+
+		this.maxStep = 0
+		this.enabled = false
 	}
 }
 
@@ -132,6 +219,10 @@ interface SerialDataset {
 }
 
 interface MLState {
+	structure: ModelLayer[]
+	maxStep: number
+	trainingID: string,
+	confusion: number[][]|null,
 	enabled: boolean,
 	classes: SerialClass[],
 	datasets: SerialDataset[],
@@ -143,12 +234,20 @@ export class MLSerializer implements ISerializer {
 	public priority = 90;
 
 	clear() {
+		if (ml.freeze) return
+
 		ml.clear();
 	}
 
 	load(state: MLState) {
+		if (ml.freeze) return
+
+		ml.structure = state.structure || ml.structure
 		ml.enabled = state.enabled;
 		ml.modelHeaders = state.modelHeaders || null;
+		ml.trainingID = state.trainingID || crypto.randomUUID();
+		ml.maxStep = state.maxStep || 0;
+		ml.confusion = state.confusion || null;
 
 		for (const classState of state.classes) {
 			ml.addClass(classState.name, classState.id, classState.key);
@@ -187,7 +286,15 @@ export class MLSerializer implements ISerializer {
 			})
 		}
 
-		return { classes, datasets, sensors, enabled: ml.enabled, modelHeaders: ml.modelHeaders };
+		return {
+			classes, datasets, sensors,
+			enabled: ml.enabled,
+			modelHeaders: ml.modelHeaders,
+			trainingID: ml.trainingID,
+			maxStep: ml.maxStep,
+			confusion: ml.confusion,
+			structure: ml.structure
+		};
 	}
 }
 
@@ -195,7 +302,7 @@ export default function (workspace: WorkspaceSvg) {
 	let blockList: FlyoutDefinition = [
 		{
 			kind: "button",
-			text: ml.enabled ? "Disable machine learning" : "Enable machine learning",
+			text: ml.enabled ? "%{BKY_ML_DISABLE}" : "%{BKY_ML_ENABLE}",
 			callbackkey: "toggle_ml"
 		},
 	];
@@ -205,7 +312,7 @@ export default function (workspace: WorkspaceSvg) {
 			{ kind: "sep", gap: 8 },
 			{
 				kind: "button",
-				text: "Add class",
+				text: "%{BKY_ML_ADD_CLASS}",
 				callbackkey: "add_class",
 			}
 		)
@@ -229,8 +336,15 @@ export default function (workspace: WorkspaceSvg) {
 		ml.enabled = !ml.enabled;
 		workspace.refreshToolboxSelection();
 	});
-	workspace.registerButtonCallback("add_class", () => {
-		Variables.promptName("add_class", "", (name) => {
+	workspace.registerButtonCallback("add_class", async () => {
+		if (ml.getDatasets().length) {
+			const confirmed = await new Promise<boolean>(resolve => dialog.confirm(Msg["CONFIRM_CLEAR"], result => resolve(result)));
+			if (!confirmed) return
+		}
+
+		ml.clearDatasets()
+
+		dialog.prompt(Msg["NEW_CLASS"], "", (name) => {
 			if (!name) return;
 
 			ml.addClass(name);
