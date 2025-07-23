@@ -105,8 +105,16 @@ export default class PinSelectorField extends FieldDropdown {
 			}
 
 			case PinMapping.MICROPYTHON: {
-				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(2, 12, "D");
-				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(0, 7, "A");
+				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(
+					2,
+					12,
+					"D",
+				);
+				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
+					0,
+					7,
+					"A",
+				);
 				PinSelectorField.pwmPinOptions = [
 					["D3", "D3"],
 					["D5", "D5"],

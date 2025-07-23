@@ -70,7 +70,7 @@ export default [
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
 					robots: [
 						...robotGroups.L_NANO_ALL,
-            RobotType.L_MICROPYTHON,
+						RobotType.L_MICROPYTHON,
 						...robotGroups.L_ESP32_ALL.map((e) => -e),
 					],
 				},
