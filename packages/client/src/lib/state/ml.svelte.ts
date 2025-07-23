@@ -343,7 +343,7 @@ class MLState {
 		ml.confusion = (await normalizedConfusion.array()) as number[][];
 
 		yield { title: "ML_CONVERTING", progress: 75 };
-		const res = await model.save("http://localhost:8000/ml/convert");
+		const res = await model.save(`${import.meta.env.VITE_BACKEND_URL}/ml/convert`);
 		ml.modelHeaders = await res.responses[0].json();
 
 		yield { title: "DONE", progress: 100 };
