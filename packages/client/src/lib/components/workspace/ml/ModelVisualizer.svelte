@@ -1,36 +1,40 @@
 <script lang="ts">
-	interface Props {
-		layers: number[]
+interface Props {
+	layers: number[];
+}
+let { layers = [] }: Props = $props();
+
+const nodeRadius = 15;
+const layerSpacing = 150;
+const nodeSpacing = 40;
+const inputColor = "#4CAF50";
+const outputColor = "#F44336";
+const hiddenColor = "#2196F3";
+const lineColor = "#9E9E9E";
+const strokeWidth = 1.5;
+
+let maxNodesInLayer = $derived(Math.max(...layers, 0));
+let svgWidth = $derived(
+	(layers.length - 1) * layerSpacing + 2 * nodeRadius + 50,
+);
+let svgHeight = $derived(maxNodesInLayer * nodeSpacing + 2 * nodeRadius + 50);
+
+function getNodeY(numNodes: number, nodeIndex: number) {
+	const startY = (svgHeight - numNodes * nodeSpacing) / 2;
+	return startY + nodeIndex * nodeSpacing;
+}
+
+function getNodeColor(layerIndex: number) {
+	if (layerIndex === 0) {
+		return inputColor;
 	}
-	let { layers = [] }: Props = $props();
 
-	const nodeRadius = 15;
-	const layerSpacing = 150;
-	const nodeSpacing = 40;
-	const inputColor = '#4CAF50';
-	const outputColor = '#F44336';
-	const hiddenColor = '#2196F3';
-	const lineColor = '#9E9E9E';
-	const strokeWidth = 1.5;
-
-	let maxNodesInLayer = $derived(Math.max(...layers, 0));
-	let svgWidth = $derived((layers.length - 1) * layerSpacing + 2 * nodeRadius + 50);
-	let svgHeight = $derived(maxNodesInLayer * nodeSpacing + 2 * nodeRadius + 50);
-
-	function getNodeY(numNodes: number, nodeIndex: number) {
-		const startY = (svgHeight - (numNodes * nodeSpacing)) / 2;
-		return startY + nodeIndex * nodeSpacing;
+	if (layerIndex === layers.length - 1) {
+		return outputColor;
 	}
 
-	function getNodeColor(layerIndex: number) {
-		if (layerIndex === 0) {
-			return inputColor;
-		} else if (layerIndex === layers.length - 1) {
-			return outputColor;
-		} else {
-			return hiddenColor;
-		}
-	}
+	return hiddenColor;
+}
 </script>
 
 <div class="ml-model-container">

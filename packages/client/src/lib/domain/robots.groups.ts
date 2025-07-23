@@ -33,7 +33,7 @@ const L_ESP32_ALL = [
 	RobotType.L_NANO_ESP32,
 	RobotType.L_ORIGINAL_NANO_ESP32,
 	RobotType.L_STARLING_NANO_ESP32,
-]
+];
 const ALL = [
 	...L_ORIGINAL_ALL,
 	...L_STARLING_ALL,

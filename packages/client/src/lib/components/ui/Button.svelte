@@ -1,9 +1,9 @@
 <script lang="ts">
+import type { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import type { Snippet } from "svelte";
 import Fa from "svelte-fa";
 import { type Writable, writable } from "svelte/store";
 import ContextMenu from "./ContextMenu.svelte";
-import type {IconDefinition} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
 	name?: string;
@@ -17,7 +17,7 @@ interface Props {
 	inline?: boolean;
 	center?: boolean;
 	large?: boolean;
-	iconAlign?: "left" | "right"
+	iconAlign?: "left" | "right";
 }
 
 const {

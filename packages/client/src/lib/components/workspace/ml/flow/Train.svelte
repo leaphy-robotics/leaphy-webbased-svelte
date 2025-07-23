@@ -1,30 +1,30 @@
 <script lang="ts">
-	import Button from "$components/ui/Button.svelte";
-	import MLState from "$state/ml.svelte"
-	import TextInput from "$components/ui/TextInput.svelte";
-	import DistributionGraph from "$components/workspace/ml/DistributionGraph.svelte";
-	import PopupState from "$state/popup.svelte"
-	import Progress from "$components/core/popups/popups/Progress.svelte";
-	import { _ } from "svelte-i18n"
-	import ModelStructure from "$components/core/popups/popups/ModelStructure.svelte";
+import ModelStructure from "$components/core/popups/popups/ModelStructure.svelte";
+import Progress from "$components/core/popups/popups/Progress.svelte";
+import Button from "$components/ui/Button.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
+import DistributionGraph from "$components/workspace/ml/DistributionGraph.svelte";
+import MLState from "$state/ml.svelte";
+import PopupState from "$state/popup.svelte";
+import { _ } from "svelte-i18n";
 
-	function train() {
-		PopupState.open({
-			component: Progress,
-			data: {
-				generator: MLState.train()
-			},
-			allowInteraction: false
-		})
-	}
+function train() {
+	PopupState.open({
+		component: Progress,
+		data: {
+			generator: MLState.train(),
+		},
+		allowInteraction: false,
+	});
+}
 
-	function editModel() {
-		PopupState.open({
-			component: ModelStructure,
-			data: {},
-			allowInteraction: false
-		})
-	}
+function editModel() {
+	PopupState.open({
+		component: ModelStructure,
+		data: {},
+		allowInteraction: false,
+	});
+}
 </script>
 
 <div class="content-area">

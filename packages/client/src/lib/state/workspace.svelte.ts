@@ -1,8 +1,8 @@
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
-import Python from "$components/workspace/python/Python.svelte";
 import ML from "$components/workspace/ml/ML.svelte";
+import Python from "$components/workspace/python/Python.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle, type Handle } from "$domain/handles";
 import { type RobotDevice, robots } from "$domain/robots";

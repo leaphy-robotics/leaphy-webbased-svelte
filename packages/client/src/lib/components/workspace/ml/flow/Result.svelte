@@ -1,15 +1,15 @@
 <script lang="ts">
-	import {faUsb} from "@fortawesome/free-brands-svg-icons";
-	import Button from "$components/ui/Button.svelte";
-	import MLState from "$state/ml.svelte"
-	import {ml} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-	import { _ } from "svelte-i18n"
+import Button from "$components/ui/Button.svelte";
+import MLState from "$state/ml.svelte";
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import { _ } from "svelte-i18n";
 
-	async function upload() {
-		ml.generateInference = true;
-		await MLState.upload();
-		ml.generateInference = false;
-	}
+async function upload() {
+	ml.generateInference = true;
+	await MLState.upload();
+	ml.generateInference = false;
+}
 </script>
 
 <div class="content-area">

@@ -1,70 +1,77 @@
 <script lang="ts">
-	import {Sensor, sensors} from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
-	import Select from "$components/ui/Select.svelte";
-	import TextInput from "$components/ui/TextInput.svelte";
-	import Button from "$components/ui/Button.svelte";
-	import MLState from "$state/ml.svelte"
-	import {getContext} from "svelte";
-	import type {PopupState} from "$state/popup.svelte";
-	import {ml} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-	import PinSelectorField from "$domain/blockly/fields";
-	import { _ } from "svelte-i18n"
+import Button from "$components/ui/Button.svelte";
+import Select from "$components/ui/Select.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
+import PinSelectorField from "$domain/blockly/fields";
+import MLState from "$state/ml.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import {
+	type Sensor,
+	sensors,
+} from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 
-	const popupState = getContext<PopupState>("state");
-	const sensorOptions = sensors.map(sensor => ([sensor.name, sensor]) as [string, Sensor])
+const popupState = getContext<PopupState>("state");
+const sensorOptions = sensors.map(
+	(sensor) => [sensor.name, sensor] as [string, Sensor],
+);
 
-	let sensor = $state<Sensor>(sensorOptions[0][1])
-	const parsedSensor = $derived.by(() => {
-		const parsed = structuredClone(sensor)
-		parsed.settings = parsed.settings.map(setting => {
-			if (setting.type === 'pin') {
-				return {
-					...setting,
-					type: 'select',
-					options: PinSelectorField.getOptions(setting.pinType as "digital" | "analog" | "pwm")
-				}
+let sensor = $state<Sensor>(sensorOptions[0][1]);
+const parsedSensor = $derived.by(() => {
+	const parsed = structuredClone(sensor);
+	parsed.settings = parsed.settings.map((setting) => {
+		if (setting.type === "pin") {
+			return {
+				...setting,
+				type: "select",
+				options: PinSelectorField.getOptions(
+					setting.pinType as "digital" | "analog" | "pwm",
+				),
+			};
+		}
+
+		return setting;
+	});
+
+	return parsed;
+});
+
+function createSettings(sensor: Sensor) {
+	const settings: Record<string, unknown> = {};
+	sensor.settings.forEach((setting) => {
+		switch (setting.type) {
+			case "select": {
+				settings[setting.id] = setting.default || setting.options[0][1];
+				break;
 			}
-
-			return setting
-		})
-
-		return parsed;
-	})
-
-	function createSettings(sensor: Sensor) {
-		const settings: Record<string, unknown> = {}
-		sensor.settings.forEach(setting => {
-			switch (setting.type) {
-				case 'select': {
-					settings[setting.id] = setting.default || setting.options[0][1]
-					break
-				}
-				case 'text': {
-					settings[setting.id] = ''
-					break
-				}
+			case "text": {
+				settings[setting.id] = "";
+				break;
 			}
-		})
+		}
+	});
 
-		return settings
-	}
+	return settings;
+}
 
-	let settings = $state({})
-	$effect(() => {
-		settings = createSettings(parsedSensor)
-	})
+let settings = $state({});
+$effect(() => {
+	settings = createSettings(parsedSensor);
+});
 
-	function cancel() {
-		popupState.close()
-	}
+function cancel() {
+	popupState.close();
+}
 
-	function addSensor() {
-		ml.addSensor({
-			type: sensor,
-			settings
-		})
-		popupState.close()
-	}
+function addSensor() {
+	ml.addSensor({
+		type: sensor,
+		settings,
+	});
+	popupState.close();
+}
 </script>
 
 <div class="content">

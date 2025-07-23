@@ -11,6 +11,7 @@ import { FileHandle } from "$domain/handles";
 import { projectDB } from "$domain/storage";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
@@ -49,17 +50,18 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-import MLState from "$state/ml.svelte"
 
 async function upload() {
 	if (MLState.enabled) {
-		if (WorkspaceState.Mode === Mode.BLOCKS) WorkspaceState.Mode = Mode.ML
+		if (WorkspaceState.Mode === Mode.BLOCKS) WorkspaceState.Mode = Mode.ML;
 		else {
-			BlocklyState.restore = serialization.workspaces.save(BlocklyState.workspace)
+			BlocklyState.restore = serialization.workspaces.save(
+				BlocklyState.workspace,
+			);
 			WorkspaceState.Mode = Mode.BLOCKS;
 		}
 
-		return
+		return;
 	}
 
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);

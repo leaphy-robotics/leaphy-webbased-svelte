@@ -1,45 +1,45 @@
 <script lang="ts">
-	import {faUsb} from "@fortawesome/free-brands-svg-icons";
-	import Button from "$components/ui/Button.svelte";
-	import MLState from "$state/ml.svelte"
-	import PopupState from "$state/popup.svelte";
-	import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
-	import Fa from "svelte-fa";
-	import {faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
-	import {ml} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-	import Warning from "$components/core/popups/popups/Warning.svelte";
-	import { _ } from "svelte-i18n"
+import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
+import Warning from "$components/core/popups/popups/Warning.svelte";
+import Button from "$components/ui/Button.svelte";
+import MLState from "$state/ml.svelte";
+import PopupState from "$state/popup.svelte";
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 
-	async function upload() {
-		await MLState.upload();
-		if (ml.maxStep === 0) ml.maxStep = 1;
-	}
+async function upload() {
+	await MLState.upload();
+	if (ml.maxStep === 0) ml.maxStep = 1;
+}
 
-	async function addSensor() {
-		if (ml.getDatasets().length > 0) {
-			const confirmed = await PopupState.open({
-				component: Warning,
-				data: {
-					title: "ML_CLEAR_DATASETS"
-				},
-				allowInteraction: false
-			}) as boolean
-			if (!confirmed) return
-
-			ml.clearDatasets()
-		}
-
-		await PopupState.open({
-			component: AddSensor,
-			data: {},
+async function addSensor() {
+	if (ml.getDatasets().length > 0) {
+		const confirmed = (await PopupState.open({
+			component: Warning,
+			data: {
+				title: "ML_CLEAR_DATASETS",
+			},
 			allowInteraction: false,
-			allowOverflow: true,
-		})
+		})) as boolean;
+		if (!confirmed) return;
+
+		ml.clearDatasets();
 	}
 
-	function deleteSensor(id: string) {
-		ml.deleteSensor(id)
-	}
+	await PopupState.open({
+		component: AddSensor,
+		data: {},
+		allowInteraction: false,
+		allowOverflow: true,
+	});
+}
+
+function deleteSensor(id: string) {
+	ml.deleteSensor(id);
+}
 </script>
 
 <div class="content-area">

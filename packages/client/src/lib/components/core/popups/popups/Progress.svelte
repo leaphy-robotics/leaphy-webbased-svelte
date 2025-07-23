@@ -1,31 +1,31 @@
 <script lang="ts">
-	import {getContext, onMount} from "svelte";
-	import Button from "$components/ui/Button.svelte";
-	import ProgressBar from "$components/ui/ProgressBar.svelte";
-	import { _ } from "svelte-i18n";
-	import type {PopupState} from "$state/popup.svelte";
+import Button from "$components/ui/Button.svelte";
+import ProgressBar from "$components/ui/ProgressBar.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import { getContext, onMount } from "svelte";
+import { _ } from "svelte-i18n";
 
-	interface Item {
-		title: string;
-		progress: number;
+interface Item {
+	title: string;
+	progress: number;
+}
+
+interface Props {
+	generator: AsyncGenerator<Item, void, unknown>;
+}
+let { generator }: Props = $props();
+
+const popupState = getContext<PopupState>("state");
+
+let item = $state<Item>(null);
+let done = $state(false);
+
+onMount(async () => {
+	for await (const newItem of generator) {
+		item = newItem;
 	}
-
-	interface Props {
-		generator: AsyncGenerator<Item, void, unknown>;
-	}
-	let { generator }: Props = $props()
-
-	const popupState = getContext<PopupState>("state");
-
-	let item = $state<Item>(null)
-	let done = $state(false)
-
-	onMount(async () => {
-		for await (const newItem of generator) {
-			item = newItem
-		}
-		done = true
-	})
+	done = true;
+});
 </script>
 
 <div class="content">

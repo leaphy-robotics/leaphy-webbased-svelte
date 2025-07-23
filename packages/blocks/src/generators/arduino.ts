@@ -336,11 +336,7 @@ export class Arduino extends Blockly.Generator {
 		}
 	}
 
-	public addDefinition(
-		definitionTag: string,
-		code: string,
-		overwrite = false,
-	) {
+	public addDefinition(definitionTag: string, code: string, overwrite = false) {
 		if (this.definitions_[definitionTag] === undefined || overwrite) {
 			this.definitions_[definitionTag] = code;
 		}
@@ -468,13 +464,13 @@ import * as logic from "./arduino/logic";
 import * as loops from "./arduino/loops";
 import * as math from "./arduino/math";
 import * as mesh from "./arduino/mesh";
+import * as ml from "./arduino/ml";
 import * as procedures from "./arduino/procedures";
 import * as rtc from "./arduino/rtc";
+import * as sensors from "./arduino/sensors";
 import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
-import * as ml from "./arduino/ml"
-import * as sensors from "./arduino/sensors"
 
 arduino.default(generator);
 leaphy_common.default(generator);

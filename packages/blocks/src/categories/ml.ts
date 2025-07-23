@@ -1,81 +1,81 @@
-import {ISerializer} from "blockly/core/interfaces/i_serializer";
-import {Msg, WorkspaceSvg} from "blockly/core";
-import type {FlyoutDefinition} from "blockly/core/utils/toolbox";
-import {Sensor, sensorByType} from "./ml/sensors";
-import {dialog} from "blockly";
+import { dialog } from "blockly";
+import { Msg, type WorkspaceSvg } from "blockly/core";
+import type { ISerializer } from "blockly/core/interfaces/i_serializer";
+import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
+import { type Sensor, sensorByType } from "./ml/sensors";
 
 export class Class {
 	constructor(
 		public id: string,
 		public name: string,
-		public key: string|null = null
+		public key: string | null = null,
 	) {}
 }
 
 export interface DataFrame {
-	input: number[],
-	detected: string
+	input: number[];
+	detected: string;
 }
 
 export class Dataset {
-	public date: Date
+	public date: Date;
 
 	constructor(
 		public id: string,
 		public data: DataFrame[],
 		date = Date.now(),
 	) {
-		this.date = new Date(date)
+		this.date = new Date(date);
 	}
 
 	getDataForClass(id: string) {
-		return this.data.filter(data => data.detected === id)
+		return this.data.filter((data) => data.detected === id);
 	}
 }
 
 export interface SensorReference {
-	id: string
-	type: string
-	settings: unknown
+	id: string;
+	type: string;
+	settings: unknown;
 }
 
 export interface SensorData {
-	id: string
-	type: Sensor
-	settings: unknown
+	id: string;
+	type: Sensor;
+	settings: unknown;
 }
 
 export interface ModelLayer {
-	activation: 'softmax' | 'relu',
-	units: number
+	activation: "softmax" | "relu";
+	units: number;
 }
 
 class ML extends EventTarget {
-	public freeze: boolean = false;
+	public freeze = false;
 
-	public sensors: Record<string, SensorReference> = {}
-	public classes: Record<string, Class> = {}
-	public datasets: Record<string, Dataset> = {}
+	public sensors: Record<string, SensorReference> = {};
+	public classes: Record<string, Class> = {};
+	public datasets: Record<string, Dataset> = {};
 
 	public trainingID: string = crypto.randomUUID();
-	public modelHeaders: string|null = null;
-	public generateInference: boolean = false;
+	public modelHeaders: string | null = null;
+	public generateInference = false;
 
-	private _enabled: boolean = false;
+	private _enabled = false;
 	private _maxStep = 0;
 	private _confusion: number[][] | null = null;
 	private _structure: ModelLayer[] = [
-		{ activation: 'relu', units: 9 },
-		{ activation: 'relu', units: 6 }
-	]
+		{ activation: "relu", units: 9 },
+		{ activation: "relu", units: 6 },
+	];
 
 	get structure() {
 		return this._structure;
 	}
 
 	set structure(value: ModelLayer[]) {
-		this._structure = value
-		this.dispatchEvent(new Event('updateStructure'))
+		this._structure = value;
+		this.dispatchEvent(new Event("updateStructure"));
 	}
 
 	get maxStep() {
@@ -84,7 +84,7 @@ class ML extends EventTarget {
 
 	set maxStep(maxStep: number) {
 		this._maxStep = maxStep;
-		this.dispatchEvent(new Event('updateMaxStep'))
+		this.dispatchEvent(new Event("updateMaxStep"));
 	}
 
 	get enabled() {
@@ -93,7 +93,7 @@ class ML extends EventTarget {
 
 	set enabled(value: boolean) {
 		this._enabled = value;
-		this.dispatchEvent(new Event('updateEnabled'))
+		this.dispatchEvent(new Event("updateEnabled"));
 	}
 
 	get confusion() {
@@ -102,21 +102,24 @@ class ML extends EventTarget {
 
 	set confusion(value: number[][] | null) {
 		this._confusion = value;
-		this.dispatchEvent(new Event('updateConfusion'))
+		this.dispatchEvent(new Event("updateConfusion"));
 	}
 
-	addSensor(sensor: { type: Sensor, settings: unknown }, id: string = crypto.randomUUID()) {
+	addSensor(
+		sensor: { type: Sensor; settings: unknown },
+		id: string = crypto.randomUUID(),
+	) {
 		this.sensors[id] = {
 			id,
 			type: sensor.type.type,
 			settings: sensor.settings,
-		}
-		this.dispatchEvent(new Event('updateSensors'))
+		};
+		this.dispatchEvent(new Event("updateSensors"));
 	}
 
 	deleteSensor(id: string) {
 		delete this.sensors[id];
-		this.dispatchEvent(new Event('updateSensors'))
+		this.dispatchEvent(new Event("updateSensors"));
 	}
 
 	getSensor(id: string) {
@@ -124,125 +127,133 @@ class ML extends EventTarget {
 
 		return {
 			...sensor,
-			type: sensorByType[sensor.type]
-		}
+			type: sensorByType[sensor.type],
+		};
 	}
 
 	getSensors() {
-		return Object.values(this.sensors).map(sensor => ({
+		return Object.values(this.sensors).map((sensor) => ({
 			...sensor,
 			type: sensorByType[sensor.type],
 		}));
 	}
 
-	addClass(name: string, id: string = crypto.randomUUID(), key: string|null = null) {
-		this.classes[id] = new Class(id, name, key)
-		this.dispatchEvent(new Event('updateClasses'))
+	addClass(
+		name: string,
+		id: string = crypto.randomUUID(),
+		key: string | null = null,
+	) {
+		this.classes[id] = new Class(id, name, key);
+		this.dispatchEvent(new Event("updateClasses"));
 	}
 
 	getClass(id: string): Class {
-		return this.classes[id]
+		return this.classes[id];
 	}
 
 	getClasses() {
-		return Object.values(this.classes)
+		return Object.values(this.classes);
 	}
 
 	getClassIndex(id: string) {
-		return this.getClasses().indexOf(this.getClass(id))
+		return this.getClasses().indexOf(this.getClass(id));
 	}
 
-	addDataset(data: DataFrame[], id: string = crypto.randomUUID(), date = Date.now()) {
-		const dataset = new Dataset(id, data, date)
-		this.datasets[id] = dataset
-		this.dispatchEvent(new Event('updateDatasets'))
+	addDataset(
+		data: DataFrame[],
+		id: string = crypto.randomUUID(),
+		date = Date.now(),
+	) {
+		const dataset = new Dataset(id, data, date);
+		this.datasets[id] = dataset;
+		this.dispatchEvent(new Event("updateDatasets"));
 
-		return dataset
+		return dataset;
 	}
 
 	deleteDataset(id: string) {
-		delete this.datasets[id]
-		this.dispatchEvent(new Event('updateDatasets'))
+		delete this.datasets[id];
+		this.dispatchEvent(new Event("updateDatasets"));
 	}
 
 	clearDatasets() {
-		this.datasets = {}
-		this.modelHeaders = null
-		this.confusion = null
-		this.maxStep = 0
+		this.datasets = {};
+		this.modelHeaders = null;
+		this.confusion = null;
+		this.maxStep = 0;
 
-		this.dispatchEvent(new Event('updateDatasets'))
-		this.dispatchEvent(new Event('updateConfusion'))
-		this.dispatchEvent(new Event('updateMaxStep'))
+		this.dispatchEvent(new Event("updateDatasets"));
+		this.dispatchEvent(new Event("updateConfusion"));
+		this.dispatchEvent(new Event("updateMaxStep"));
 	}
 
 	getDataset(id: string) {
-		return this.datasets[id]
+		return this.datasets[id];
 	}
 
 	getDatasets() {
-		return Object.values(this.datasets)
+		return Object.values(this.datasets);
 	}
 
 	clear() {
 		this.structure = [
-			{ activation: 'relu', units: 9 },
-			{ activation: 'relu', units: 6 },
-		]
+			{ activation: "relu", units: 9 },
+			{ activation: "relu", units: 6 },
+		];
 
-		this.classes = {}
-		this.dispatchEvent(new Event('updateClasses'))
+		this.classes = {};
+		this.dispatchEvent(new Event("updateClasses"));
 
-		this.datasets = {}
-		this.dispatchEvent(new Event('updateDatasets'))
+		this.datasets = {};
+		this.dispatchEvent(new Event("updateDatasets"));
 
-		this.sensors = {}
-		this.dispatchEvent(new Event('updateSensors'))
+		this.sensors = {};
+		this.dispatchEvent(new Event("updateSensors"));
 
-		this.maxStep = 0
-		this.enabled = false
+		this.maxStep = 0;
+		this.enabled = false;
 	}
 }
 
-export const ml = new ML()
+export const ml = new ML();
 
 interface SerialClass {
-	id: string
-	name: string
-	key: string|null
+	id: string;
+	name: string;
+	key: string | null;
 }
 
 interface SerialDataset {
-	id: string
-	date: number
-	data: DataFrame[]
+	id: string;
+	date: number;
+	data: DataFrame[];
 }
 
 interface MLState {
-	structure: ModelLayer[]
-	maxStep: number
-	trainingID: string,
-	confusion: number[][]|null,
-	enabled: boolean,
-	classes: SerialClass[],
-	datasets: SerialDataset[],
-	sensors: SensorReference[],
-	modelHeaders: string|null
+	structure: ModelLayer[];
+	maxStep: number;
+	trainingID: string;
+	confusion: number[][] | null;
+	enabled: boolean;
+	classes: SerialClass[];
+	datasets: SerialDataset[];
+	sensors: SensorReference[];
+	modelHeaders: string | null;
 }
 
 export class MLSerializer implements ISerializer {
 	public priority = 90;
 
 	clear() {
-		if (ml.freeze) return
+		if (ml.freeze) return;
 
 		ml.clear();
 	}
 
 	load(state: MLState) {
-		if (ml.freeze) return
+		if (ml.freeze) return;
 
-		ml.structure = state.structure || ml.structure
+		ml.structure = state.structure || ml.structure;
 		ml.enabled = state.enabled;
 		ml.modelHeaders = state.modelHeaders || null;
 		ml.trainingID = state.trainingID || crypto.randomUUID();
@@ -253,10 +264,13 @@ export class MLSerializer implements ISerializer {
 			ml.addClass(classState.name, classState.id, classState.key);
 		}
 		for (const dataset of state.datasets) {
-			ml.addDataset(dataset.data, dataset.id, dataset.date)
+			ml.addDataset(dataset.data, dataset.id, dataset.date);
 		}
 		for (const sensor of state.sensors) {
-			ml.addSensor({ type: sensorByType[sensor.type], settings: sensor.settings }, sensor.id)
+			ml.addSensor(
+				{ type: sensorByType[sensor.type], settings: sensor.settings },
+				sensor.id,
+			);
 		}
 	}
 
@@ -270,30 +284,34 @@ export class MLSerializer implements ISerializer {
 			});
 		}
 
-		const datasets: SerialDataset[] = []
+		const datasets: SerialDataset[] = [];
 		for (const dataset of ml.getDatasets()) {
 			datasets.push({
 				id: dataset.id,
 				data: dataset.data,
-				date: dataset.date.getTime()
-			})
+				date: dataset.date.getTime(),
+			});
 		}
 
-		const sensors: SensorReference[] = []
+		const sensors: SensorReference[] = [];
 		for (const [id, sensor] of Object.entries(ml.sensors)) {
 			sensors.push({
-				id, type: sensor.type, settings: sensor.settings,
-			})
+				id,
+				type: sensor.type,
+				settings: sensor.settings,
+			});
 		}
 
 		return {
-			classes, datasets, sensors,
+			classes,
+			datasets,
+			sensors,
 			enabled: ml.enabled,
 			modelHeaders: ml.modelHeaders,
 			trainingID: ml.trainingID,
 			maxStep: ml.maxStep,
 			confusion: ml.confusion,
-			structure: ml.structure
+			structure: ml.structure,
 		};
 	}
 }
@@ -303,7 +321,7 @@ export default function (workspace: WorkspaceSvg) {
 		{
 			kind: "button",
 			text: ml.enabled ? "%{BKY_ML_DISABLE}" : "%{BKY_ML_ENABLE}",
-			callbackkey: "toggle_ml"
+			callbackkey: "toggle_ml",
 		},
 	];
 
@@ -314,21 +332,21 @@ export default function (workspace: WorkspaceSvg) {
 				kind: "button",
 				text: "%{BKY_ML_ADD_CLASS}",
 				callbackkey: "add_class",
-			}
-		)
+			},
+		);
 
 		if (ml.getClasses().length > 0) {
 			blockList.push(
 				{
 					kind: "block",
-					type: "ml_classify"
+					type: "ml_classify",
 				},
 				{ kind: "sep", gap: 8 },
 				{
 					kind: "block",
 					type: "ml_certainty",
-				}
-			)
+				},
+			);
 		}
 	}
 
@@ -338,13 +356,15 @@ export default function (workspace: WorkspaceSvg) {
 	});
 	workspace.registerButtonCallback("add_class", async () => {
 		if (ml.getDatasets().length) {
-			const confirmed = await new Promise<boolean>(resolve => dialog.confirm(Msg["CONFIRM_CLEAR"], result => resolve(result)));
-			if (!confirmed) return
+			const confirmed = await new Promise<boolean>((resolve) =>
+				dialog.confirm(Msg.CONFIRM_CLEAR, (result) => resolve(result)),
+			);
+			if (!confirmed) return;
 		}
 
-		ml.clearDatasets()
+		ml.clearDatasets();
 
-		dialog.prompt(Msg["NEW_CLASS"], "", (name) => {
+		dialog.prompt(Msg.NEW_CLASS, "", (name) => {
 			if (!name) return;
 
 			ml.addClass(name);

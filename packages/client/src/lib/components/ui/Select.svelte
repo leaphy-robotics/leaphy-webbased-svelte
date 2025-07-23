@@ -19,7 +19,7 @@ let {
 let open = $state(false);
 
 function getName(value: any) {
-	return options.find(([_, data]) => data === value)?.[0] || '';
+	return options.find(([_, data]) => data === value)?.[0] || "";
 }
 
 async function onclick() {

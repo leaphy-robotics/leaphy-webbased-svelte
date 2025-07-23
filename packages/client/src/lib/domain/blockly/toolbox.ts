@@ -74,7 +74,7 @@ export default [
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "A3", ECHO_PIN: "A2" },
 					robots: robotGroups.L_ESP32_ALL,
-				}
+				},
 			],
 			[
 				{
@@ -445,7 +445,7 @@ export default [
 		style: "ml_category",
 		id: "l_ml",
 		robots: robotGroups.L_ESP32_ALL,
-		custom: "ML"
+		custom: "ML",
 	},
 	{
 		name: "Mesh",

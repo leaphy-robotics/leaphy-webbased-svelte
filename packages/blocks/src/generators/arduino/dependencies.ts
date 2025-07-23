@@ -18,5 +18,5 @@ export enum Dependencies {
 	PAINLESS_MESH = "painlessMesh@1.5.4",
 	ASYNC_TCP = "AsyncTCP@3.3.2",
 
-	TENSORFLOW_ESP32 = "TensorFlowLite_ESP32@1.0.0"
+	TENSORFLOW_ESP32 = "TensorFlowLite_ESP32@1.0.0",
 }

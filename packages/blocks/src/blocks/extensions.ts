@@ -1,9 +1,17 @@
-import type {Block, BlockSvg, Connection, Menu, MenuItem, Workspace, WorkspaceSvg,} from "blockly/core";
+import type {
+	Block,
+	BlockSvg,
+	Connection,
+	Menu,
+	MenuItem,
+	Workspace,
+	WorkspaceSvg,
+} from "blockly/core";
 import * as Blockly from "blockly/core";
-import {type List, listManager} from "../categories/lists";
-import {procedureManager} from "../generators/arduino/procedures";
-import type {DateItem} from "../generators/arduino/rtc";
-import {ml} from "../categories/ml";
+import { type List, listManager } from "../categories/lists";
+import { ml } from "../categories/ml";
+import { procedureManager } from "../generators/arduino/procedures";
+import type { DateItem } from "../generators/arduino/rtc";
 
 const xmlUtils = Blockly.utils.xml;
 
@@ -29,12 +37,12 @@ export default function registerExtensions(blockly: typeof Blockly) {
 		input.appendField(
 			new blockly.FieldDropdown(() => {
 				return ml.getClasses().map((classData) => {
-					return [classData.name, classData.id]
-				})
+					return [classData.name, classData.id];
+				});
 			}),
 			"CLASS",
-		)
-	}
+		);
+	};
 
 	const APPEND_STATEMENT_INPUT_STACK = function (this: Block) {
 		this.appendStatementInput("STACK");

@@ -1,29 +1,29 @@
 <script lang="ts">
-	import {Class} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import type { Class } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 
-	interface Props {
-		classData: Class;
-	}
-	let { classData }: Props = $props();
+interface Props {
+	classData: Class;
+}
+let { classData }: Props = $props();
 
-	let binding = $state(false)
+let binding = $state(false);
 
-	function assign() {
-		binding = true;
-	}
+function assign() {
+	binding = true;
+}
 
-	function onKey(e: KeyboardEvent) {
-		if (!binding) return;
+function onKey(e: KeyboardEvent) {
+	if (!binding) return;
 
-		classData.key = e.code
-		binding = false
-	}
+	classData.key = e.code;
+	binding = false;
+}
 
-	function abort() {
-		if (!binding) return;
+function abort() {
+	if (!binding) return;
 
-		binding = false
-	}
+	binding = false;
+}
 </script>
 
 <svelte:document onkeypress={onKey} onmousedown={abort} />

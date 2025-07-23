@@ -1,13 +1,13 @@
 <script lang="ts">
-	interface Props {
-		name: string;
-		checked: boolean;
-	}
-	let { name, checked = $bindable() }: Props = $props();
+interface Props {
+	name: string;
+	checked: boolean;
+}
+let { name, checked = $bindable() }: Props = $props();
 
-	function toggle() {
-		checked = !checked;
-	}
+function toggle() {
+	checked = !checked;
+}
 </script>
 
 <div class="line">

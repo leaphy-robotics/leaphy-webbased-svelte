@@ -5,6 +5,7 @@ import "@blockly/field-bitmap";
 import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
+import Warning from "$components/core/popups/popups/Warning.svelte";
 import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
@@ -27,7 +28,6 @@ import { LeaphyCategory } from "./category-ui/category";
 import { LeaphyToolbox } from "./category-ui/toolbox";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
-import Warning from "$components/core/popups/popups/Warning.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -51,7 +51,7 @@ Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"ml",
 	new CATEGORIES.MLSerializer(),
-)
+);
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"procedures",
@@ -70,12 +70,12 @@ Blockly.dialog.setConfirm(async (title, callback) => {
 		component: Warning,
 		data: {
 			title,
-			showCancel: true
+			showCancel: true,
 		},
-		allowInteraction: false
-	})
+		allowInteraction: false,
+	});
 	callback(confirmed as boolean);
-})
+});
 
 Blockly.dialog.setPrompt(async (title, defaultValue, callback) => {
 	const name = await PopupState.open({

@@ -1,10 +1,15 @@
 <script>
-	import MLState, {steps} from "$state/ml.svelte.js"
-	import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
-	import Button from "$components/ui/Button.svelte";
-	import { _ } from "svelte-i18n"
-	import {faArrowLeft, faArrowRight, faChevronLeft, faChevronRight} from "@fortawesome/free-solid-svg-icons";
-	import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
+import Button from "$components/ui/Button.svelte";
+import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
+import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
+import MLState, { steps } from "$state/ml.svelte.js";
+import {
+	faArrowLeft,
+	faArrowRight,
+	faChevronLeft,
+	faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { _ } from "svelte-i18n";
 </script>
 
 <div class="container">

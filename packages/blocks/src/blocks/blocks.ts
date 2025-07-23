@@ -5,9 +5,9 @@ import * as leaphyFlitz from "./leaphy_flitz";
 import * as leaphyOriginal from "./leaphy_original";
 import * as lists from "./lists";
 import * as mesh from "./mesh";
+import * as ml from "./ml";
 import * as rtc from "./rtc";
 import * as texts from "./text";
-import * as ml from "./ml"
 
 const blocks = [
 	...lists.blocks,

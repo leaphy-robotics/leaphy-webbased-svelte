@@ -39,13 +39,13 @@ const blocks: BlockDefinition = [
 			{
 				type: "field_number",
 				name: "UNITS",
-				value: 9
-			}
+				value: 9,
+			},
 		],
 		style: "ml_blocks",
 		previousStatement: null,
 		nextStatement: null,
-	}
+	},
 ];
 
 export { blocks };
