@@ -7,7 +7,10 @@ import leaphyLogo from "$assets/leaphy-logo.svg";
 import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
+import Workspace from "$components/workspace/Workspace.svelte";
 import { FileHandle } from "$domain/handles";
+import { robots } from "$domain/robots";
+import { RobotType } from "$domain/robots.types";
 import { projectDB } from "$domain/storage";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
@@ -234,9 +237,7 @@ async function blocks() {
 	}
 
 	await WorkspaceState.tempSave();
-	BlocklyState.restore = JSON.parse(
-		localStorage.getItem(`${WorkspaceState.robot.id}_content`),
-	);
+	BlocklyState.restore = JSON.parse(await WorkspaceState.loadBlocks());
 	WorkspaceState.Mode = Mode.BLOCKS;
 }
 
@@ -244,6 +245,12 @@ async function cpp() {
 	PopupState.clear();
 	await WorkspaceState.tempSave();
 	WorkspaceState.Mode = Mode.ADVANCED;
+}
+
+async function python() {
+	PopupState.clear();
+	await WorkspaceState.tempSave();
+	WorkspaceState.Mode = Mode.PYTHON;
 }
 
 async function connectPython() {
@@ -413,13 +420,14 @@ async function submit() {
     <div class="comp">
         {#if AppState.Screen === Screen.WORKSPACE}
             {#if WorkspaceState.Mode === Mode.BLOCKS}
-                <Button
-                    mode={"outlined"}
-                    icon={faPen}
-                    name={$_("CODE")}
-                    onclick={cpp}
-                />
-            {:else if WorkspaceState.Mode === Mode.ADVANCED}
+				
+					<Button
+						mode={"outlined"}
+						icon={faPen}
+						name={$_("CODE")}
+						onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp}
+					/>
+            {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
                 <Button
                     mode={"outlined"}
                     icon={block}
@@ -443,7 +451,7 @@ async function submit() {
 				/>
 			{/if}
 
-            {#if WorkspaceState.Mode === Mode.PYTHON}
+            {#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_MICROPYTHON)}
                 {#if WorkspaceState.microPythonIO}
                     <Button
                         name={$_("RUN_CODE")}

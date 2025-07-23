@@ -1,5 +1,4 @@
 import defaultCPP from "$assets/default-program.ino?raw";
-import defaultPython from "$assets/default-program.py?raw";
 import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
 import flitzUnoBackground from "$assets/robots/backgrounds/flitz_uno.svg";
 import originalNanoBackground from "$assets/robots/backgrounds/orig_nano.svg";
@@ -54,6 +53,7 @@ export enum PinMapping {
 	NANO = 1,
 	NANO_ESP32 = 2,
 	MEGA = 3,
+	MICROPYTHON = 4,
 }
 
 const baseUno = {
@@ -176,6 +176,16 @@ const robotDevices: RobotDevice[] = [
 		icon: nanoIcon,
 	},
 	{
+		id: "l_micropython",
+		type: RobotType.L_MICROPYTHON,
+		name: "Leaphy Micropython",
+		icon: microPythonIcon,
+		programmer: null,
+		fqbn: "n/a",
+		board: "micropython",
+		mapping: PinMapping.MICROPYTHON,
+	},
+	{
 		...baseUno,
 		id: "l_uno",
 		type: RobotType.L_UNO,
@@ -248,14 +258,7 @@ export const robotListing: Robot[][] = [
 			mode: Mode.ADVANCED,
 			robot: robots.l_uno,
 		},
-		{
-			id: "l_micropython",
-			name: "MicroPython",
-			icon: microPythonIcon,
-			mode: Mode.PYTHON,
-			defaultProgram: defaultPython,
-			robot: robots.l_nano_rp2040,
-		},
+		robots.l_micropython,
 	],
 ];
 

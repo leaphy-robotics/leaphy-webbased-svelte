@@ -149,6 +149,18 @@ class WorkspaceState {
 		}
 	}
 
+	async loadBlocks() {
+		const robot = this.robot;
+
+		const fetchedSave = await projectDB.tempSaves
+			.where("mode")
+			.equals("BLOCKS")
+			.and((save) => save.robot === robot.id)
+			.first();
+
+		return fetchedSave.content || null;
+	}
+
 	open(name: string, content: string) {
 		if (name.endsWith(".ino")) {
 			this.Mode = Mode.ADVANCED;

@@ -1,0 +1,32 @@
+#include <Wire.h>
+
+#include <List.hpp>
+
+List<int> i2cChannelStack;
+
+#include <Adafruit_SSD1306.h>
+
+Adafruit_SSD1306 display(128, 32, &Wire, -1);
+
+bool oledSetup[8];
+void setupoled() {
+    uint8_t channel = i2cGetChannel();
+    if (!oledSetup[channel]) {
+      if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+        Serial.println(F("Contact with the display failed: Check the connections"));
+      }
+
+      display.clearDisplay();
+      display.setTextSize(1);
+      display.setTextColor(SSD1306_WHITE);
+      display.setCursor(0, 0);
+      display.println(F("Leaphy OLED"));
+      display.display();
+      oledSetup[channel] = true;
+    }
+}
+
+void leaphyProgram() {
+  setupoled();
+  display.display();
+}
