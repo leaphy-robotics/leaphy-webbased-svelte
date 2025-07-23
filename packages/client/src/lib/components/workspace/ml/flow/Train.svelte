@@ -51,7 +51,7 @@ function editModel() {
 
 		<div class="content">
 			<div class="left">
-				<DistributionGraph data={MLState.classes.map((classData, index) => ({ name: classData.name, value: parseInt(MLState.distribution[index]) }))} />
+				<DistributionGraph data={MLState.classes.map((classData, index) => ({ name: classData.name, value: Number.parseInt(MLState.distribution[index]) }))} />
 			</div>
 			<div class="right">
 				{#each MLState.classes as classData, index}
