@@ -15,7 +15,7 @@
 			<div class="spacer"></div>
 			<div class="pager">
 				<Button onclick={() => MLState.previous()} bold disabled={MLState.stepIndex === 0} mode="secondary" name={$_("PREVIOUS")} icon={faArrowLeft} />
-				<span class="page">Step {MLState.stepIndex + 1} of {steps.length}</span>
+				<span class="page">{$_("ML_STEP", { values: { step: MLState.stepIndex + 1, total: steps.length }})}</span>
 				<Button onclick={() => MLState.next()} bold disabled={MLState.stepIndex >= MLState.maxStep} mode="primary" name={$_("NEXT")} icon={faArrowRight} iconAlign="right" />
 			</div>
 		</div>

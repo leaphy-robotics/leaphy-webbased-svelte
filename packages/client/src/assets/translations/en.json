@@ -206,6 +206,8 @@
 	"ML_CONVERTING": "Converting",
 	"ML_ADD_SENSOR_TITLE": "Add a sensor",
 	"ML_SENSOR_TYPE": "Sensor type",
+	"ML_STEP": "Step {step} of {total}",
+	"ML_ADVANCED_EDIT_MODEL": "Advanced: edit model",
 	"PREVIOUS": "Previous",
 	"NEXT": "Next"
 }

@@ -73,7 +73,7 @@
 	</div>
 
 	<div class="buttons">
-		<Button onclick={editModel} mode="secondary" name="Advanced: edit model" />
+		<Button onclick={editModel} mode="secondary" name={$_("ML_ADVANCED_EDIT_MODEL")} />
 		<Button onclick={train} large bold mode="primary" name={$_("ML_TRAIN")} />
 	</div>
 </div>

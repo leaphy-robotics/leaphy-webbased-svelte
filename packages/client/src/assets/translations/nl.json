@@ -206,6 +206,8 @@
 	"ML_CONVERTING": "Converteren",
 	"ML_ADD_SENSOR_TITLE": "Voeg een sensor toe",
 	"ML_SENSOR_TYPE": "Type sensor",
+	"ML_STEP": "Stap {step} van {total}",
+	"ML_ADVANCED_EDIT_MODEL": "Geavanceerd: bewerk model",
 	"PREVIOUS": "Vorige",
 	"NEXT": "Volgende"
 }
