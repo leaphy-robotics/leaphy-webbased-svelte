@@ -758,5 +758,8 @@ messages.LEAPHY_READ_GYROSCOPE = "Gyroscoop-as %1";
 messages.LEAPHY_GYROSCOPE_AXIS_X = "X";
 messages.LEAPHY_GYROSCOPE_AXIS_Y = "Y";
 messages.LEAPHY_GYROSCOPE_AXIS_Z = "Z";
+messages.LEAPHY_SDCARD_WRITE = "Schrijf naar SD kaart";
+messages.LEAPHY_SDCARD_WRITE_TO_FILE = "in bestand";
+messages.LEAPHY_SDCARD_WRITE_VALUE = "waarde";
 
 export default messages;
