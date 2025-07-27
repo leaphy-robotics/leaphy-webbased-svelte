@@ -218,7 +218,7 @@ const blocks: BlockDefinition = [
 		message1: "%%{BKY_LEAPHY_SDCARD_WRITE_TO_FILE} %1",
 		message2: "%%{BKY_LEAPHY_SDCARD_WRITE_VALUE} %1",
 		args1: [{ type: "input_value", name: "FILENAME", check: "String" }],
-		args2: [{ type: "input_value", name: "VALUE"}],
+		args2: [{ type: "input_value", name: "VALUE" }],
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
