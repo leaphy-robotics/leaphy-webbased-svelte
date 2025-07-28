@@ -197,8 +197,7 @@ function getCodeGenerators(arduino: Arduino) {
 
 	arduino.forBlock.leaphy_sdcard_write = (block) => {
 		const filename =
-			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) ||
-			'"test.txt"';
+			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) || '""';
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || '""';
 		arduino.addDependency(Dependencies.SD);
@@ -207,6 +206,16 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.addSetup("sdcard", "SD.begin(10);");
 
 		return `if (File sdFile = SD.open(${filename}, FILE_WRITE)) {\n  sdFile.println(${value});\n  sdFile.close();\n} else {\n  Serial.println("Failed to open SD card!");\n}\n`;
+	};
+
+	arduino.forBlock.leaphy_sdcard_remove = (block) => {
+		const filename =
+			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) || '""';
+		arduino.addDependency(Dependencies.SD);
+		arduino.addInclude("sdcard", "#include <SD.h>");
+		arduino.addSetup("sdcard", "SD.begin(10);");
+
+		return `SD.remove(${filename});\n`;
 	};
 
 	const addDisplaySetupCode = (large: boolean) => {

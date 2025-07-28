@@ -761,5 +761,6 @@ messages.LEAPHY_GYROSCOPE_AXIS_Z = "Z";
 messages.LEAPHY_SDCARD_WRITE = "Schrijf naar SD kaart";
 messages.LEAPHY_SDCARD_WRITE_TO_FILE = "in bestand";
 messages.LEAPHY_SDCARD_WRITE_VALUE = "waarde";
+messages.LEAPHY_SDCARD_REMOVE = "Verwijder bestand %1 van SD kaart";
 
 export default messages;

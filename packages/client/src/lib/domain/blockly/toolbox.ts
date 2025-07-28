@@ -630,8 +630,14 @@ export default [
 						VALUE: text(format(new Date(), "yyMMddiHHmmss")),
 					},
 				},
+			],
+			[
 				{
 					type: "leaphy_sdcard_write",
+					robots: [...robotGroups.L_NANO_ALL],
+				},
+				{
+					type: "leaphy_sdcard_remove",
 					robots: [...robotGroups.L_NANO_ALL],
 				},
 			],

@@ -223,6 +223,14 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 	},
+	{
+		type: "leaphy_sdcard_remove",
+		message0: "%{BKY_LEAPHY_SDCARD_REMOVE}",
+		args0: [{ type: "input_value", name: "FILENAME", check: "String" }],
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+	},
 ];
 
 export { blocks };
