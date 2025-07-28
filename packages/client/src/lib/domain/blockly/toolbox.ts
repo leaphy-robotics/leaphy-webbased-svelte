@@ -236,6 +236,7 @@ export default [
 					robots: [
 						...robotGroups.L_NANO_ALL,
 						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SPEED: number(100),
@@ -246,6 +247,7 @@ export default [
 					robots: [
 						...robotGroups.L_NANO_ALL,
 						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SPEED: number(100),
