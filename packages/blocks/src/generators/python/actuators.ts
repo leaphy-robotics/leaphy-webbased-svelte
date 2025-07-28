@@ -129,7 +129,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		generator.addDefinition(
 			MotorVariableName,
-			`${MotorVariableName} = DCMotor(direction_pin=\"${direction_pin}\", pwn_pin=\"${pwm_pin}\")`,
+			`${MotorVariableName} = DCMotor(direction_pin=\"${direction_pin}\", pwm_pin=\"${pwm_pin}\")`,
 		);
 
 		return MotorVariableName;
