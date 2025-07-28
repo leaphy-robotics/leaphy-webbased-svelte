@@ -2,6 +2,7 @@ import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSuppor
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import Restore from "$components/core/popups/popups/Restore.svelte";
+import { robots } from "$domain/robots";
 import { projectDB } from "$domain/storage";
 import type { Component } from "svelte";
 
@@ -101,6 +102,14 @@ class PopupsState {
 				data: {},
 				allowInteraction: false,
 			});
+		}
+
+		// Issue #250: remove all temp saves that reference a non-existant robot.
+		let to_remove = (await projectDB.tempSaves.toArray())
+			.filter((save) => robots[save.robot] === undefined)
+			.map((save) => save.id);
+		if (to_remove.length) {
+			await projectDB.tempSaves.bulkDelete(to_remove);
 		}
 
 		const fileSaves = await projectDB.saves.toArray();

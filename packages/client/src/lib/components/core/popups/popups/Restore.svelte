@@ -23,27 +23,22 @@ const popupState = getContext<PopupState>("state");
 let value = $state<SavedContent | SavedFile>(saves[0]);
 
 const saveOptions = $derived(
-	saves
-		.filter((save) => {
-			const robot = robots[save.robot];
-			return robot !== undefined;
-		})
-		.map((save) => {
-			const robot = robots[save.robot];
+	saves.map((save) => {
+		const robot = robots[save.robot];
 
-			let name = robot.name;
-			if (save.mode === "ADVANCED") {
-				name = `C++ - ${robot.name}`;
-			} else if (save.mode === "PYTHON") {
-				name = `MicroPython - ${robot.name}`;
-			}
+		let name = robot.name;
+		if (save.mode === "ADVANCED") {
+			name = `C++ - ${robot.name}`;
+		} else if (save.mode === "PYTHON") {
+			name = `MicroPython - ${robot.name}`;
+		}
 
-			if ("fileHandle" in save) {
-				name = `${save.fileHandle.name} (${name})`;
-			}
+		if ("fileHandle" in save) {
+			name = `${save.fileHandle.name} (${name})`;
+		}
 
-			return [name, save];
-		}) as [string, SavedContent | SavedFile][],
+		return [name, save];
+	}) as [string, SavedContent | SavedFile][],
 );
 
 function cancel() {
