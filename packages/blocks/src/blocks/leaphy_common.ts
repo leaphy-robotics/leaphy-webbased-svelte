@@ -212,6 +212,34 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 	},
+	{
+		type: "leaphy_sdcard_write",
+		message0: "%%{BKY_LEAPHY_SDCARD_WRITE}",
+		message1: "%%{BKY_LEAPHY_SDCARD_WRITE_TO_FILE} %1",
+		message2: "%%{BKY_LEAPHY_SDCARD_WRITE_VALUE} %1",
+		args1: [{ type: "input_value", name: "FILENAME", check: "String" }],
+		args2: [{ type: "input_value", name: "VALUE" }],
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		tooltip: "CS=10",
+	},
+	{
+		type: "leaphy_sdcard_remove",
+		message0: "%{BKY_LEAPHY_SDCARD_REMOVE}",
+		args0: [{ type: "input_value", name: "FILENAME", check: "String" }],
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+	},
+	{
+		type: "leaphy_sdcard_mkdir",
+		message0: "%{BKY_LEAPHY_SDCARD_MKDIR}",
+		args0: [{ type: "input_value", name: "FILENAME", check: "String" }],
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+	},
 ];
 
 export { blocks };

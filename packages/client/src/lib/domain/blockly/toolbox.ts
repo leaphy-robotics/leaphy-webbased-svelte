@@ -633,6 +633,30 @@ export default [
 					},
 				},
 			],
+			[
+				{
+					type: "leaphy_sdcard_write",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/file.txt"),
+						VALUE: text("text"),
+					},
+				},
+				{
+					type: "leaphy_sdcard_remove",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/file.txt"),
+					},
+				},
+				{
+					type: "leaphy_sdcard_mkdir",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/dir"),
+					},
+				},
+			],
 		],
 	},
 	{
