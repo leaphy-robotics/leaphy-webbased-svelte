@@ -1,0 +1,19 @@
+from leaphymicropython.actuators.servo import set_servo_angle
+
+servo_speed = 100
+set_servo_angle(12, 90 + 90*servo_speed/100*1)
+set_servo_angle(13, 90 + 90*servo_speed/100*-1)
+
+servo_speed = 21
+set_servo_angle(12, 90 + 90*servo_speed/100*-1)
+set_servo_angle(13, 90 + 90*servo_speed/100*1)
+
+servo_speed = 55
+set_servo_angle(12, 90 + 90*servo_speed/100*-1)
+set_servo_angle(13, 90 + 90*servo_speed/100*-1)
+
+servo_speed = 42
+set_servo_angle(12, 90 + 90*servo_speed/100*1)
+set_servo_angle(13, 90 + 90*servo_speed/100*1)
+
+
