@@ -9,6 +9,31 @@ import {
 
 test.beforeEach(goToHomePage);
 
+async function getAllFiles(dir: string): Promise<string[]> {
+	let entries = await fs.readdir(dir, { withFileTypes: true });
+	let files = entries
+		.filter((file) => !file.isDirectory())
+		.map((file) => `${dir}/${file.name}`);
+	let folders = entries.filter((folder) => folder.isDirectory());
+
+	for (const folder of folders) {
+		files = files.concat(await getAllFiles(`${dir}/${folder.name}`));
+	}
+
+	return files;
+}
+
+async function GetAllWorkspaceFiles(extension: string): Promise<string[]> {
+	let code_tests_path = "./tests/code_tests";
+	if (!fileExists("./tests/code_tests")) {
+		code_tests_path = "./packages/client/tests/code_tests";
+	}
+
+	let allFiles = await getAllFiles(code_tests_path);
+
+	return allFiles.filter((str) => str.endsWith(extension));
+}
+
 async function testLibraries(
 	uploadedLibraries: string[],
 	workspace_file: string,
@@ -35,7 +60,7 @@ async function testLibraries(
 	expect(expectedLibraries.length).toBe(unversionedLibraries.length);
 }
 
-async function testCode(uploadedCode: string, workspace_file: string) {
+async function testCode(generatedCode: string, workspace_file: string) {
 	let code = (await fs.readFile(`${workspace_file}_code`)).toString();
 
 	for (const segment of code.split("\n\n")) {
@@ -44,11 +69,11 @@ async function testCode(uploadedCode: string, workspace_file: string) {
 		let whitespace = escaped.replace(/(\s)+/g, "\\s*");
 		let regex = new RegExp(`${whitespace}`);
 
-		expect(uploadedCode).toMatch(regex);
+		expect(generatedCode).toMatch(regex);
 	}
 }
 
-async function testDownloadMatchesUpload(page: Page, uploadedCode: string) {
+async function downloadCode(page: Page): Promise<string> {
 	await page.locator(".header").getByRole("button", { name: "Code" }).click();
 	await page.getByRole("button", { name: "My projects" }).click();
 
@@ -63,30 +88,10 @@ async function testDownloadMatchesUpload(page: Page, uploadedCode: string) {
 
 	await page.getByRole("button", { name: "Blocks" }).click();
 
-	expect(uploadedCode).toBe(download);
+	return download;
 }
 
-async function testExtension(page: Page, extension: string) {
-	async function getAllFiles(dir: string): Promise<string[]> {
-		let entries = await fs.readdir(dir, { withFileTypes: true });
-		let files = entries
-			.filter((file) => !file.isDirectory())
-			.map((file) => `${dir}/${file.name}`);
-		let folders = entries.filter((folder) => folder.isDirectory());
-
-		for (const folder of folders) {
-			files = files.concat(await getAllFiles(`${dir}/${folder.name}`));
-		}
-
-		return files;
-	}
-
-	let path = "./tests/code_tests";
-	if (!fileExists("./tests/code_tests")) {
-		path = "./packages/client/tests/code_tests";
-	}
-	let files = await getAllFiles(path);
-
+async function testCppExtension(page: Page, extension: string) {
 	// Make the serial check fail instantly instead of causing a popup on the browser
 	await page.evaluate("navigator.serial.requestPort = async function() { }");
 
@@ -98,11 +103,7 @@ async function testExtension(page: Page, extension: string) {
 	let num_tests = 0;
 	let has_tested_download = false;
 
-	for (const workspace_file of files) {
-		if (!workspace_file.endsWith(extension)) {
-			continue;
-		}
-
+	for (const workspace_file of await GetAllWorkspaceFiles(extension)) {
 		console.log(`Running test: ${workspace_file}`);
 		num_tests += 1;
 
@@ -133,15 +134,14 @@ async function testExtension(page: Page, extension: string) {
 		// Only the first time test if downloading gives the same result as it is almost 4x slower than reading the post request
 		if (!has_tested_download) {
 			has_tested_download = true;
-			await testDownloadMatchesUpload(page, postData.source_code as string);
+			expect(postData.source_code as string).toBe(await downloadCode(page));
 		}
 	}
 
 	expect(num_tests).toBeGreaterThan(0);
 }
 
-// TODO: Import all robot types from robots.ts and figure out how to make it work with the enums
-const robotTypes = [
+const CppRobotTypes = [
 	{
 		robot: "Leaphy Flitz",
 		model: "Flitz Uno",
@@ -184,9 +184,33 @@ const robotTypes = [
 	},
 ];
 
-for (const { robot, model, extension } of robotTypes) {
+for (const { robot, model, extension } of CppRobotTypes) {
 	test(`Code blocks - ${model ? model : robot}`, async ({ page }) => {
 		await selectRobot(page, robot, model);
-		await testExtension(page, extension);
+		await testCppExtension(page, extension);
 	});
 }
+
+// Micropython works in a very different way than Cpp, so it has to get its own test
+test("Code blocks - Micropython", async ({ page }) => {
+	await selectRobot(page, "Leaphy Micropython");
+
+	let num_tests = 0;
+
+	for (const workspace_file of await GetAllWorkspaceFiles(".l_micropython")) {
+		console.log(`Running test: ${workspace_file}`);
+		num_tests += 1;
+
+		await page.getByRole("button", { name: "My projects" }).click();
+
+		await mockShowOpenFilePicker(page, workspace_file);
+
+		await page.getByRole("cell", { name: "Open" }).click();
+
+		let downloadedCode = await downloadCode(page);
+
+		await testCode(downloadedCode, workspace_file);
+	}
+
+	expect(num_tests).toBeGreaterThan(0);
+});
