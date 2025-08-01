@@ -1,0 +1,12 @@
+test_var = None
+my_42 = None
+
+def leaphy_program():
+  global test_var, my_42
+  test_var = test_var
+  test_var = (test_var if isinstance(test_var,int) or isinstance(test_var,float) else 0) + 25
+  my_42 = my_42
+  my_42 = (my_42 if isinstance(my_42,int) or isinstance(my_42,float) else 0) + 42
+
+
+leaphy_program()
