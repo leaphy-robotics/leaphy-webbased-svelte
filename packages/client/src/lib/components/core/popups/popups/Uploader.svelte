@@ -204,6 +204,7 @@ async function connectUSB() {
         background: var(--secondary);
         border-radius: 5px;
         padding: 10px;
+        overflow: auto;
         color: red;
     }
 </style>
