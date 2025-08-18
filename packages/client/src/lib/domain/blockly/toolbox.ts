@@ -68,7 +68,12 @@ export default [
 				{
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-					robots: [...robotGroups.L_NANO_ALL, RobotType.L_MICROPYTHON],
+					robots: [...robotGroups.L_NANO_ALL],
+				},
+				{
+					type: "leaphy_sonar_read",
+					fields: { TRIG_PIN: "A3", ECHO_PIN: "A2" },
+					robots: [RobotType.L_MICROPYTHON],
 				},
 			],
 			[
