@@ -141,6 +141,7 @@ messages.LEAPHY_FUNCTIONS_CATEGORY = "Custom Blocks";
 messages.LEAPHY_GET_DISTANCE = "Get distance";
 messages.LEAPHY_TOF_GET_DISTANCE = "Get ToF";
 messages.LEAPHY_GET_AIR_PRESSURE = "Get air pressure";
+messages.LEAPHY_TMP102_READ_TEMPERATURE = "Get TMP102 temperature";
 messages.LEAPHY_GET_GESTURE = "Get gesture";
 messages.LEAPHY_LED = "Led";
 messages.LEAPHY_LED_BASIC_BLUE = "B";

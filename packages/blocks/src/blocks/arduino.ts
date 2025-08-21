@@ -426,6 +426,13 @@ const blocks: BlockDefinition = [
 		helpUrl: "",
 	},
 	{
+		type: "leaphy_tmp102_read_temperature",
+		message0: "%%{BKY_LEAPHY_TMP102_READ_TEMPERATURE}",
+		style: "leaphy_blocks",
+		output: "Number",
+		helpUrl: "",
+	},
+	{
 		type: "leaphy_segment_set",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=%C2%A0Single%20leds-,Segment%20display%C2%A0,-Oled%20display",
