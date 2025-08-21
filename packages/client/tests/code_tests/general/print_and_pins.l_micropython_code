@@ -1,0 +1,19 @@
+from machine import Pin, ADC, PWM
+
+def leaphy_program():
+  print('Simple print')
+  pin_d5.value((pin_d2.value() != 0))
+  pwm_d6.duty_u16((adc_a3.read_u16()))
+
+pin_a3 = Pin("A3", Pin.ANALOG)
+adc_a3 = ADC(pin_a3)
+
+pin_d2 = Pin("D2", Pin.IN)
+
+pin_d5 = Pin("D5", Pin.OUT)
+
+pin_d6 = Pin("D6", Pin.OUT)
+
+pwm_d6 = PWM(pin_d6)
+
+leaphy_program()

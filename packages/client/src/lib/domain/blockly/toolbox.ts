@@ -213,6 +213,7 @@ export default [
 					robots: [
 						...robotGroups.ALL,
 						...robotGroups.L_STARLING_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					type: "leaphy_original_set_motor",
 					inputs: {
@@ -223,6 +224,7 @@ export default [
 					robots: [
 						...robotGroups.ALL,
 						...robotGroups.L_STARLING_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					type: "leaphy_original_move_motors",
 					inputs: {
@@ -234,6 +236,7 @@ export default [
 					robots: [
 						...robotGroups.L_NANO_ALL,
 						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SPEED: number(100),
@@ -244,6 +247,7 @@ export default [
 					robots: [
 						...robotGroups.L_NANO_ALL,
 						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SPEED: number(100),
@@ -626,6 +630,30 @@ export default [
 					],
 					inputs: {
 						VALUE: text(format(new Date(), "yyMMddiHHmmss")),
+					},
+				},
+			],
+			[
+				{
+					type: "leaphy_sdcard_write",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/file.txt"),
+						VALUE: text("text"),
+					},
+				},
+				{
+					type: "leaphy_sdcard_remove",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/file.txt"),
+					},
+				},
+				{
+					type: "leaphy_sdcard_mkdir",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/dir"),
 					},
 				},
 			],

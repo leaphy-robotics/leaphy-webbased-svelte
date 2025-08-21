@@ -611,5 +611,10 @@ messages.LEAPHY_READ_GYROSCOPE = "Read gyroscope axis %1";
 messages.LEAPHY_GYROSCOPE_AXIS_X = "X";
 messages.LEAPHY_GYROSCOPE_AXIS_Y = "Y";
 messages.LEAPHY_GYROSCOPE_AXIS_Z = "Z";
+messages.LEAPHY_SDCARD_WRITE = "Write to SD card";
+messages.LEAPHY_SDCARD_WRITE_TO_FILE = "to file";
+messages.LEAPHY_SDCARD_WRITE_VALUE = "value";
+messages.LEAPHY_SDCARD_REMOVE = "Delete file %1 from SD card";
+messages.LEAPHY_SDCARD_MKDIR = "Make directory %1 on SD card";
 
 export default messages;
