@@ -97,6 +97,10 @@ export default [
 					robots: [...robotGroups.ALL],
 				},
 				{
+					type: "leaphy_tmp102_read_temperature",
+					robots: [...robotGroups.ALL],
+				},
+				{
 					type: "leaphy_i2c_gesture",
 					robots: [...robotGroups.ALL],
 				},
