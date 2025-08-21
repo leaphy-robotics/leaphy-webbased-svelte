@@ -99,17 +99,24 @@ export default class MicroPythonIO {
 		this.writer = this.port.writable.getWriter();
 
 		await new Promise((resolve) => setTimeout(resolve, 500));
-		await this.writer.write(new Uint8Array([1]));
+		// cancel running program (if any), soft reboot, enter raw REPL.
+		await this.writer.write(new Uint8Array([3, 4, 1]));
 
 		const microPythonInstalled = await Promise.race([
 			new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 2000)),
-			(async (resolve) => {
-				const { value, done } = await this.reader.read();
+			(async () => {
+				while (true) {
+					const { value, done } = await this.reader.read();
 
-				if (done) return false;
-				if (value.at(-1) !== 62) return false;
+					if (done) {
+						return false;
+					}
+					if (value.at(-1) !== 62) {
+						continue;
+					}
 
-				return true;
+					return true;
+				}
 			})(),
 		]);
 
@@ -118,7 +125,7 @@ export default class MicroPythonIO {
 			this.writer.releaseLock();
 
 			SerialState.release();
-			return false;
+			throw new Error("Connection with Micropython failed.");
 		}
 
 		await this.commands.loadCommands();
