@@ -11,11 +11,14 @@ We welcome PRs from anyone that wants to contribute!
 
 ### Adding New Blocks and Devices
 
-If you want to add new blocks or devices to Leaphy Easybloqs, see our comprehensive guides:
+If you want to add new blocks or devices to Leaphy Easybloqs, check out our comprehensive documentation:
 
-- **[Contributing Guide](docs/CONTRIBUTING.md)** - Complete guide for adding blocks and devices
-- **[Block Patterns](docs/BLOCK_PATTERNS.md)** - Detailed patterns and examples for different block types
-- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Quick reference for common tasks and patterns
+📚 **[See Documentation Index](docs/README.md)** for complete guides, patterns, and examples
+
+Quick links:
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - Complete step-by-step guide
+- **[Temperature Sensor Example](docs/EXAMPLE_TEMPERATURE_SENSOR.md)** - Practical walkthrough
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Quick reference for common tasks
 
 ### Prerequisites
 
