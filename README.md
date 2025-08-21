@@ -9,6 +9,14 @@ It also supports programming RP2040 controllers that are able to run MicroPython
 
 We welcome PRs from anyone that wants to contribute!
 
+### Adding New Blocks and Devices
+
+If you want to add new blocks or devices to Leaphy Easybloqs, see our comprehensive guides:
+
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - Complete guide for adding blocks and devices
+- **[Block Patterns](docs/BLOCK_PATTERNS.md)** - Detailed patterns and examples for different block types
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Quick reference for common tasks and patterns
+
 ### Prerequisites
 
 The following should be installed:
