@@ -69,7 +69,7 @@ If you know what you want to build but need the right pattern:
 |------|-------|
 | Add my first block | [Contributing Guide](CONTRIBUTING.md) → [Example](EXAMPLE_TEMPERATURE_SENSOR.md) |
 | Add a simple sensor | [Block Patterns](BLOCK_PATTERNS.md#sensor-reading-pattern) |
-| Add a complex device | [Contributing Guide](CONTRIBUTING.md#adding-a-new-device) |
+| Add a complex device | [Block Patterns](BLOCK_PATTERNS.md#i2c-device-pattern) |
 | Find specific syntax | [Quick Reference](QUICK_REFERENCE.md) |
 | Debug my block | [Quick Reference](QUICK_REFERENCE.md#common-issues--solutions) |
 | Add I2C device | [Block Patterns](BLOCK_PATTERNS.md#i2c-device-pattern) |

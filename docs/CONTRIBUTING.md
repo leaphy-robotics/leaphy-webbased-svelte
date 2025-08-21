@@ -7,10 +7,9 @@ This guide helps new contributors add blocks and devices to Leaphy Webbased Svel
 1. [Quick Start](#quick-start)
 2. [Understanding the Architecture](#understanding-the-architecture)
 3. [Adding a New Block](#adding-a-new-block)
-4. [Adding a New Device](#adding-a-new-device)
-5. [Translation Requirements](#translation-requirements)
-6. [Testing and Validation](#testing-and-validation)
-7. [Examples](#examples)
+4. [Translation Requirements](#translation-requirements)
+5. [Testing and Validation](#testing-and-validation)
+6. [Examples](#examples)
 
 ## Quick Start
 
@@ -116,157 +115,41 @@ messages.LEAPHY_MY_SENSOR_READ = "Lees mijn sensor pin";
 
 The block should be automatically registered if you added it to an existing file that's already imported in `packages/blocks/src/blocks/blocks.ts`.
 
-## Adding a New Device
+### Step 5: Add Block to Toolbox
 
-Adding a complete new device involves creating multiple related blocks. Follow this example:
+To make your block visible in the Blockly toolbox, add it to the appropriate category in `packages/client/src/lib/domain/blockly/toolbox.ts`.
 
-### Step 1: Create Block Definition File
-
-Create `packages/blocks/src/blocks/my_device.ts`:
+Find the relevant category (e.g., sensors, actuators) and add your block type:
 
 ```typescript
-import type { BlockDefinition } from "blockly/core/blocks";
-
-const blocks: BlockDefinition = [
-    {
-        type: "my_device_init",
-        message0: "%{BKY_MY_DEVICE_INIT} %1 %2",
-        args0: [
-            {
-                type: "field_pin_selector", 
-                name: "DATA_PIN",
-                mode: "digital",
-            },
-            {
-                type: "field_pin_selector",
-                name: "CLOCK_PIN", 
-                mode: "digital",
-            },
-        ],
-        previousStatement: null,
-        nextStatement: null,
-        style: "leaphy_blocks",
-        helpUrl: "https://example.com/my-device",
-    },
-    {
-        type: "my_device_read",
-        message0: "%{BKY_MY_DEVICE_READ}",
-        output: "Number",
-        style: "leaphy_blocks",
-        helpUrl: "https://example.com/my-device",
-    },
-    {
-        type: "my_device_write",
-        message0: "%{BKY_MY_DEVICE_WRITE} %1",
-        args0: [
-            {
-                type: "input_value",
-                name: "VALUE",
-                check: "Number",
-            },
-        ],
-        previousStatement: null,
-        nextStatement: null,
-        style: "leaphy_blocks",
-        helpUrl: "https://example.com/my-device",
-    },
-];
-
-export { blocks };
-```
-
-### Step 2: Create Code Generator File
-
-Create `packages/blocks/src/generators/arduino/my_device.ts`:
-
-```typescript
-import type { Arduino } from "../arduino";
-import { Dependencies } from "./dependencies";
-
-function getCodeGenerators(arduino: Arduino) {
-    arduino.forBlock.my_device_init = (block) => {
-        const dataPin = block.getFieldValue("DATA_PIN");
-        const clockPin = block.getFieldValue("CLOCK_PIN");
-        
-        // Add required dependencies
-        arduino.addDependency(Dependencies.MY_DEVICE_LIB);
-        
-        // Add includes
-        arduino.addInclude("my_device", "#include <MyDevice.h>");
-        
-        // Add declarations
-        arduino.addDeclaration(
-            "my_device",
-            `MyDevice myDevice(${dataPin}, ${clockPin});`
-        );
-        
-        // Add setup code
-        arduino.addSetup("my_device", "myDevice.begin();");
-        
-        return "";
-    };
-
-    arduino.forBlock.my_device_read = () => {
-        const code = "myDevice.readValue()";
-        return [code, arduino.ORDER_ATOMIC];
-    };
-
-    arduino.forBlock.my_device_write = (block) => {
-        const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
-        return `myDevice.writeValue(${value});\n`;
-    };
-}
-
-export default getCodeGenerators;
-```
-
-### Step 3: Add Dependencies
-
-If your device requires external libraries, add them to `packages/blocks/src/generators/arduino/dependencies.ts`:
-
-```typescript
-export enum Dependencies {
-    // ... existing dependencies
-    MY_DEVICE_LIB = "MyDeviceLibrary@1.0.0",
+{
+    type: "leaphy_my_sensor_read",
+    robots: [...robotGroups.ALL], // Specify which robots support this block
 }
 ```
 
-### Step 4: Register New Files
+The toolbox structure defines:
+- **Categories**: Sensors, Actuators, etc.
+- **Robot compatibility**: Which Leaphy devices support each block
+- **Default values**: Pre-filled inputs and shadows
+- **Grouping**: Related blocks are grouped together
 
-Add your new files to the imports:
-
-In `packages/blocks/src/blocks/blocks.ts`:
+Example for a sensor block:
 ```typescript
-import * as myDevice from "./my_device";
-
-const blocks = [
-    // ... existing blocks
-    ...myDevice.blocks,
-];
-```
-
-In `packages/blocks/src/generators/arduino.ts`:
-```typescript
-import * as myDevice from "./arduino/my_device";
-
-// ... in the bottom section
-myDevice.default(generator);
-```
-
-### Step 5: Add All Translations
-
-Add comprehensive translations for all your blocks:
-
-```typescript
-// en.ts
-messages.MY_DEVICE_INIT = "Initialize my device data pin %1 clock pin %2";
-messages.MY_DEVICE_READ = "Read my device value";
-messages.MY_DEVICE_WRITE = "Write to my device %1";
-
-// nl.ts
-messages.MY_DEVICE_INIT = "Initialiseer mijn apparaat data pin %1 klok pin %2";
-messages.MY_DEVICE_READ = "Lees mijn apparaat waarde";
-messages.MY_DEVICE_WRITE = "Schrijf naar mijn apparaat %1";
+{
+    name: "%{BKY_SENSOREN_CATEGORY}",
+    style: "leaphy_category", 
+    id: "%robot%_sensors",
+    robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
+    groups: [
+        [
+            {
+                type: "leaphy_my_sensor_read",
+                robots: [...robotGroups.ALL],
+            },
+        ],
+    ],
+}
 ```
 
 ## Translation Requirements
@@ -300,6 +183,42 @@ messages.MY_DEVICE_WRITE = "Schrijf naar mijn apparaat %1";
 3. **Verify translations**: Check both English and Dutch work correctly
 4. **Test generated code**: Ensure the Arduino code compiles
 5. **Check dependencies**: Verify required libraries are correctly specified
+6. **Add code tests**: Create automated tests for your blocks (see below)
+
+### Adding Code Tests
+
+Code tests ensure your blocks generate correct Arduino code. Add tests in `packages/client/tests/code_tests/`:
+
+1. **Choose test category**: Add to existing folders (`big`, `general`, `libraries`, `servo`) or create a new one for device-specific tests
+
+2. **Create test files** for each robot type:
+   - `.l_nano_esp32` - Blockly workspace XML with your blocks
+   - `.l_nano_esp32_code` - Expected Arduino C++ output
+   - `.l_nano_esp32_libraries` - Expected library dependencies
+
+3. **Test file example**:
+   ```
+   packages/client/tests/code_tests/general/
+   ├── my_sensor.l_nano_esp32          # Blockly XML
+   ├── my_sensor.l_nano_esp32_code     # Expected Arduino code
+   └── my_sensor.l_nano_esp32_libraries # Expected dependencies
+   ```
+
+4. **Blockly XML format**: Create a simple program using your block in the Leaphy editor, then export/copy the workspace XML
+
+5. **Arduino code format**: The exact C++ code that should be generated, including:
+   - Includes
+   - Global variables  
+   - Setup function code
+   - Loop function code
+
+6. **Libraries format**: List of required Arduino libraries, one per line:
+   ```
+   Servo@1.1.8
+   Adafruit_NeoPixel@1.10.7
+   ```
+
+Tests run automatically during CI and help prevent regressions in code generation.
 
 ### Common Issues
 

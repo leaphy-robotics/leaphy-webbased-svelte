@@ -41,4 +41,4 @@ Once merged, it will show up on https://testleaphyeasybloqs.com for integration 
 ## Issues
 
 All issues that involve webbased should be reported on the [Leaphy Easybloqs Webbased GitHub](https://github.com/leaphy-robotics/leaphy-webbased/issues) page.
-Issues that involve the blocks should be reported on the [Leaphy Blocks GitHub](https://github.com/leaphy-robotics/leaphy-blocks/issues) page.
+
