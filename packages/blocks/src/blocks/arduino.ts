@@ -645,7 +645,7 @@ const blocks: BlockDefinition = [
 		],
 		inputsInline: true,
 		output: "Number",
-		style: "numbers_category",
+		style: "math_blocks",
 		tooltip: "%{BKY_MATH_MAP_TOOLTIP}",
 		helpUrl: "https://www.arduino.cc/reference/en/language/functions/math/map/",
 	},
