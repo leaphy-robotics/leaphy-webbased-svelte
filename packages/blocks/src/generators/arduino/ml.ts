@@ -1,17 +1,3 @@
-/**
- * Arduino code generators for Machine Learning blocks.
- *
- * This module generates Arduino C++ code for ML functionality including:
- * - Data collection via Bluetooth LE communication
- * - Model inference using TensorFlow Lite for ESP32
- * - Sensor value reading and normalization
- * - Classification result handling
- *
- * The code generator supports two modes:
- * 1. Data collection mode: Streams sensor data via BLE for training
- * 2. Inference mode: Runs trained model locally and outputs classifications
- */
-
 import {
 	type Class,
 	SensorData,
@@ -21,26 +7,12 @@ import {
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 
-/**
- * Generates a valid C++ class name from a classification class.
- * Replaces spaces with underscores and adds "class_" prefix.
- * @param classData The classification class to generate a name for
- * @returns Valid C++ identifier for the class
- */
 function getClassName(classData: Class) {
 	return `class_${classData.name.replaceAll(" ", "_")}`;
 }
 
-/**
- * Main code generator registration function.
- * Sets up block generators for ML classification and certainty blocks.
- * @param arduino The Arduino code generator instance to register with
- */
 function getCodeGenerators(arduino: Arduino) {
-	/**
-	 * Adds Bluetooth LE communication setup for data collection.
-	 * Creates BLE service with input/output characteristics for sensor data streaming.
-	 */
+	// Dual-mode operation: configures BLE communication for data collection phase
 	function addBluetoothDetails() {
 		arduino.addDependency(Dependencies.ARDUINO_BLE);
 		arduino.addInclude("bluetooth", "#include <ArduinoBLE.h>");
@@ -71,10 +43,7 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 	}
 
-	/**
-	 * Adds TensorFlow Lite setup for local model inference.
-	 * Includes model loading, tensor allocation, and inference setup.
-	 */
+	// TensorFlow Lite integration for on-device inference mode
 	function addTensorFlowDetails() {
 		arduino.addDependency(Dependencies.TENSORFLOW_ESP32);
 		arduino.addInclude(
@@ -99,6 +68,7 @@ function getCodeGenerators(arduino: Arduino) {
 				"uint8_t tensor_arena[kTensorArenaSize];",
 		);
 
+		// TensorFlow Lite micro setup with memory allocation and model loading
 		arduino.addDeclaration(
 			"tensorflow",
 			"bool setupTensorFlow() {\n" +
@@ -141,14 +111,9 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.addSetup("tensorflow", "setupTensorFlow();\n");
 	}
 
-	/**
-	 * Code generator for the ml_classify block.
-	 * Generates code to either collect sensor data (data collection mode)
-	 * or run inference (inference mode) based on the generateInference flag.
-	 */
+	// Dual-mode code generation: data collection vs inference
 	arduino.forBlock.ml_classify = (block) => {
 		if (ml.generateInference) {
-			// Inference mode: Run TensorFlow model locally
 			addTensorFlowDetails();
 
 			return `${ml
@@ -175,7 +140,6 @@ function getCodeGenerators(arduino: Arduino) {
 				.join("")}`;
 		}
 
-		// Data collection mode: Stream sensor data via Bluetooth
 		addBluetoothDetails();
 
 		return `delay(10);\nBLE.poll();\n${ml
@@ -192,12 +156,6 @@ function getCodeGenerators(arduino: Arduino) {
 			)}\ninput.writeValue(inputBuffer, ${ml.getSensors().length * 4});\n`;
 	};
 
-	/**
-	 * Code generator for the ml_certainty block.
-	 * Returns a boolean expression indicating whether a specific class was detected.
-	 * In inference mode, compares against predicted_class variable.
-	 * In data collection mode, reads from outputBuffer array.
-	 */
 	arduino.forBlock.ml_certainty = (block) => {
 		const classIndex = ml.getClassIndex(block.getFieldValue("CLASS"));
 		if (ml.generateInference) {
