@@ -73,6 +73,18 @@ export default [
 			],
 			[
 				{
+					type: "leaphy_dht22_read_temperature",
+					fields: { PIN: "D2" },
+					robots: [ RobotType.L_MICROPYTHON],
+				},
+				{
+					type: "leaphy_dht22_read_humidity",
+					fields: { PIN: "D2" },
+					robots: [ RobotType.L_MICROPYTHON],
+				},
+			],
+			[
+				{
 					type: "leaphy_rgb_color",
 					robots: [...robotGroups.ALL],
 				},
