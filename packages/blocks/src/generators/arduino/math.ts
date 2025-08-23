@@ -264,6 +264,22 @@ function getCodeGenerators(arduino: Arduino) {
 		"(rand() / RAND_MAX)",
 		arduino.ORDER_UNARY_POSTFIX,
 	];
+
+	arduino.forBlock.math_map = (block) => {
+		const value =
+			arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE) || "0";
+		const fromLow =
+			arduino.valueToCode(block, "FROM_LOW", arduino.ORDER_NONE) || "0";
+		const fromHigh =
+			arduino.valueToCode(block, "FROM_HIGH", arduino.ORDER_NONE) || "0";
+		const toLow =
+			arduino.valueToCode(block, "TO_LOW", arduino.ORDER_NONE) || "0";
+		const toHigh =
+			arduino.valueToCode(block, "TO_HIGH", arduino.ORDER_NONE) || "0";
+
+		const code = `map(${value}, ${fromLow}, ${fromHigh}, ${toLow}, ${toHigh})`;
+		return [code, arduino.ORDER_UNARY_POSTFIX];
+	};
 }
 
 export default getCodeGenerators;

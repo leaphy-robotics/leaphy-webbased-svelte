@@ -102,6 +102,10 @@ export default [
 					robots: [...robotGroups.ALL],
 				},
 				{
+					type: "leaphy_tmp102_read_temperature",
+					robots: [...robotGroups.ALL],
+				},
+				{
 					type: "leaphy_i2c_gesture",
 					robots: [...robotGroups.ALL],
 				},
@@ -868,6 +872,16 @@ export default [
 				{
 					type: "math_single",
 				},
+				{
+					type: "math_map",
+					inputs: {
+						VALUE: number(0),
+						FROM_LOW: number(0),
+						FROM_HIGH: number(1023),
+						TO_LOW: number(0),
+						TO_HIGH: number(255),
+					},
+				},
 			],
 		],
 	},
@@ -935,6 +949,16 @@ export default [
 				},
 				{
 					type: "math_single",
+				},
+				{
+					type: "math_map",
+					inputs: {
+						VALUE: number(0),
+						FROM_LOW: number(0),
+						FROM_HIGH: number(1023),
+						TO_LOW: number(0),
+						TO_HIGH: number(255),
+					},
 				},
 			],
 			[

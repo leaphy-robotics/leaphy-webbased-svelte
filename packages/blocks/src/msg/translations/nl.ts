@@ -146,6 +146,7 @@ messages.LEAPHY_FUNCTIONS_CATEGORY = "Eigen blokken";
 messages.LEAPHY_GET_DISTANCE = "Lees afstand";
 messages.LEAPHY_TOF_GET_DISTANCE = "Lees ToF";
 messages.LEAPHY_GET_AIR_PRESSURE = "Lees luchtdruk";
+messages.LEAPHY_TMP102_READ_TEMPERATURE = "Lees temperatuur";
 messages.LEAPHY_GET_GESTURE = "Lees gebaar";
 messages.LEAPHY_LED = "Led";
 messages.LEAPHY_LED_BASIC_BLUE = "B";
@@ -763,5 +764,12 @@ messages.LEAPHY_SDCARD_WRITE_TO_FILE = "in bestand";
 messages.LEAPHY_SDCARD_WRITE_VALUE = "waarde";
 messages.LEAPHY_SDCARD_REMOVE = "Verwijder bestand %1 van SD kaart";
 messages.LEAPHY_SDCARD_MKDIR = "Maak directory %1 op SD kaart";
+messages.MATH_MAP_TITLE = "map";
+messages.MATH_MAP_FROM = "van laag";
+messages.MATH_MAP_TO = "hoog";
+messages.MATH_MAP_TARGET_FROM = "naar laag";
+messages.MATH_MAP_TARGET_TO = "hoog";
+messages.MATH_MAP_TOOLTIP =
+	"Mapt een getal van het ene bereik naar het andere. Deze functie beperkt waarden niet tot binnen het bereik, omdat waarden buiten het bereik soms bedoeld en nuttig zijn.";
 
 export default messages;
