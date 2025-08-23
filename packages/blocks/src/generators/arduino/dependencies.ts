@@ -11,7 +11,7 @@ export enum Dependencies {
 	ADAFRUIT_LSM6DS_ACCELEROMETER = "Adafruit LSM6DS@4.7.4",
 	ADAFRUIT_BMP280_BAR = "Adafruit BMP280 Library@2.6.8",
 	ADAFRUIT_SGP30_GAS = "Adafruit SGP30 Sensor@2.0.3",
-	SPARKFUN_TMP102 = "SparkFun TMP102 Arduino Library@1.1.1",
+	SPARKFUN_TMP102 = "SparkFun TMP102 Breakout@1.1.2",
 
 	APDS9960_RGB = "Arduino_APDS9960@1.0.4",
 	DS3231_RTC = "DS3231@1.1.2",
