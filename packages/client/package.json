@@ -59,7 +59,7 @@
 		"svelte-i18n": "^4.0.1",
 		"svelte-loading-spinners": "^0.3.6",
 		"svelte-markdown": "^0.4.1",
-		"vite-plugin-static-copy": "^2.3.1",
+		"vite-plugin-static-copy": "^2.3.2",
 		"web-serial-polyfill": "^1.0.15"
 	}
 }
