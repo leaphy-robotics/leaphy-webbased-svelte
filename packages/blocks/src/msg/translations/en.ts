@@ -617,5 +617,12 @@ messages.LEAPHY_SDCARD_WRITE_TO_FILE = "to file";
 messages.LEAPHY_SDCARD_WRITE_VALUE = "value";
 messages.LEAPHY_SDCARD_REMOVE = "Delete file %1 from SD card";
 messages.LEAPHY_SDCARD_MKDIR = "Make directory %1 on SD card";
+messages.MATH_MAP_TITLE = "map";
+messages.MATH_MAP_FROM = "from low";
+messages.MATH_MAP_TO = "high";
+messages.MATH_MAP_TARGET_FROM = "to low";
+messages.MATH_MAP_TARGET_TO = "high";
+messages.MATH_MAP_TOOLTIP =
+	"Re-maps a number from one range to another. This function does not constrain values to within the range, because out-of-range values are sometimes intended and useful.";
 
 export default messages;
