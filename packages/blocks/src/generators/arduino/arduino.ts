@@ -100,6 +100,23 @@ function getCodeGenerators(arduino: Arduino) {
 		return ["getAirPressure()", arduino.ORDER_ATOMIC];
 	};
 
+	arduino.forBlock.leaphy_tmp102_read_temperature = () => {
+		arduino.addDependency(Dependencies.SPARKFUN_TMP102);
+		arduino.addInclude("tmp102", "#include <SparkFunTMP102.h>");
+		arduino.addDeclaration("tmp102", "TMP102 tmp102;");
+		const setup = arduino.addI2CSetup(
+			"tmp102",
+			"if (!tmp102.begin()) {\n" +
+				'        Serial.println(F("TMP102 not found"));\n' +
+				"      }\n",
+		);
+		arduino.addDeclaration(
+			"tmp102_read_temperature",
+			`float getTMP102Temperature() {\n    ${setup}\n    tmp102.wakeup();\n    return tmp102.readTempC();\n}`,
+		);
+		return ["getTMP102Temperature()", arduino.ORDER_ATOMIC];
+	};
+
 	arduino.forBlock.leaphy_gas_sensor = (block) => {
 		arduino.addDependency(Dependencies.ADAFRUIT_SGP30_GAS);
 		arduino.addInclude("leaphy_gas_sensor", "#include <Adafruit_SGP30.h>");
@@ -212,6 +229,7 @@ function getCodeGenerators(arduino: Arduino) {
 			'    {0x29, "Color Sensor / ToF Sensor"},\n' +
 			'    {0x39, "RGB + Gesture Sensor"},\n' +
 			'    {0x3C, "Screen"},\n' +
+			'    {0x48, "TMP102 Temperature Sensor"},\n' +
 			'    {0x58, "Gas Sensor"},\n' +
 			'    {0x76, "Air Pressure Sensor"}\n' +
 			"};\n";
