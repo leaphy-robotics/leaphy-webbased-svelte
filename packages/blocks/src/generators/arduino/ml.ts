@@ -112,7 +112,7 @@ function getCodeGenerators(arduino: Arduino) {
 	}
 
 	// Dual-mode code generation: data collection vs inference
-	arduino.forBlock.ml_classify = (block) => {
+	arduino.forBlock.ml_classify = () => {
 		if (ml.generateInference) {
 			addTensorFlowDetails();
 

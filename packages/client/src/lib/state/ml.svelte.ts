@@ -62,6 +62,8 @@ function readFloat32Array(view: DataView) {
 
 // Reactive state management for complete ML workflow using Svelte 5 runes
 class MLState {
+	// Important: persistent state should not be directly updated on this class in order to ensure consistent project serialization, use utilities and setters from the ML class contained in the Blockly category instead
+
 	enabled = $state(false);
 	stepIndex = $state(0);
 	maxStep = $state(0);

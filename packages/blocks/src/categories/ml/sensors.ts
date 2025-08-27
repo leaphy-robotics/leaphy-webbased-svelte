@@ -28,7 +28,6 @@ export abstract class Sensor {
 	): string;
 }
 
-// Supports I2C multiplexing for multiple ToF sensors, values normalized to 0-1 range (0-256mm)
 class ToFSensor extends Sensor {
 	type = "ToF";
 	values = 1;
@@ -43,7 +42,7 @@ class ToFSensor extends Sensor {
 
 	settings = [i2cSetting("channel")];
 
-	// I2C multiplexer integration for multi-sensor setups, with value normalization  
+	// I2C multiplexer integration for multi-sensor setups, with value normalization
 	getValues(
 		arduino: Arduino,
 		setNode: SetNode,
@@ -103,7 +102,7 @@ class AnalogSensor extends Sensor {
 	}
 }
 
-// Normalizes ultrasonic distance values (0-256cm) to 0-1 range  
+// Normalizes ultrasonic distance values (0-256cm) to 0-1 range
 class UltrasonicSensor extends Sensor {
 	type = "ultrasonic";
 	values = 1;
@@ -138,7 +137,6 @@ export const sensors: Sensor[] = [
 	new UltrasonicSensor(),
 ];
 
-// Enables type-safe sensor resolution during deserialization
 export const sensorByType = sensors.reduce(
 	(prev, curr) => {
 		prev[curr.type] = curr;
