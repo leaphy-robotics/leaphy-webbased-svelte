@@ -49,7 +49,7 @@
 		"chartjs-adapter-date-fns": "^3.0.0",
 		"date-fns": "^4.1.0",
 		"dexie": "^4.0.11",
-		"esbuild": "^0.25.3",
+		"esbuild": "^0.25.9",
 		"intel-hex": "^0.2.0",
 		"jszip": "^3.10.1",
 		"monaco-editor": "^0.52.0",
@@ -59,7 +59,7 @@
 		"svelte-i18n": "^4.0.1",
 		"svelte-loading-spinners": "^0.3.6",
 		"svelte-markdown": "^0.4.1",
-		"vite-plugin-static-copy": "^2.3.1",
+		"vite-plugin-static-copy": "^2.3.2",
 		"web-serial-polyfill": "^1.0.15"
 	}
 }

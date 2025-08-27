@@ -14,6 +14,7 @@ DeviceAddress deviceMap[] = {
     {0x29, "Color Sensor / ToF Sensor"},
     {0x39, "RGB + Gesture Sensor"},
     {0x3C, "Screen"},
+    {0x48, "TMP102 Temperature Sensor"},
     {0x58, "Gas Sensor"},
     {0x76, "Air Pressure Sensor"}
 };

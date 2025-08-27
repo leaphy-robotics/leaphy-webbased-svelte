@@ -9,6 +9,17 @@ It also supports programming RP2040 controllers that are able to run MicroPython
 
 We welcome PRs from anyone that wants to contribute!
 
+### Adding New Blocks and Devices
+
+If you want to add new blocks or devices to Leaphy Easybloqs, check out our comprehensive documentation:
+
+📚 **[See Documentation Index](docs/README.md)** for complete guides, patterns, and examples
+
+Quick links:
+- **[Contributing Guide](docs/CONTRIBUTING.md)** - Complete step-by-step guide
+- **[Temperature Sensor Example](docs/EXAMPLE_TEMPERATURE_SENSOR.md)** - Practical walkthrough
+- **[Quick Reference](docs/QUICK_REFERENCE.md)** - Quick reference for common tasks
+
 ### Prerequisites
 
 The following should be installed:
@@ -30,4 +41,4 @@ Once merged, it will show up on https://testleaphyeasybloqs.com for integration 
 ## Issues
 
 All issues that involve webbased should be reported on the [Leaphy Easybloqs Webbased GitHub](https://github.com/leaphy-robotics/leaphy-webbased/issues) page.
-Issues that involve the blocks should be reported on the [Leaphy Blocks GitHub](https://github.com/leaphy-robotics/leaphy-blocks/issues) page.
+
