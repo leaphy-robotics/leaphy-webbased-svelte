@@ -1,0 +1,24 @@
+#include <Adafruit_SGP30.h>
+
+#include <Wire.h>
+
+#include <List.hpp>
+
+bool gasSetup[8];
+void setupgas() {
+    uint8_t channel = i2cGetChannel();
+    if (!gasSetup[channel]) {
+      if (! sgp.begin()) return -1;
+      gasSetup[channel] = true;
+    }
+}
+
+int getGasValueHTWO() {
+    setupgas();
+    sgp.IAQmeasureRaw();
+    return sgp.rawH2;
+}
+
+void leaphyProgram() {
+  Serial.println(getGasValueHTWO());
+}

@@ -66,10 +66,22 @@ export default class PinSelectorField extends FieldDropdown {
 			case PinMapping.MICROPYTHON: {
 				let range = (start, end) =>
 					[...Array(1 + end - start).keys()].map((i) => i + start);
-				PinSelectorField.digitalPinOptions = range(2, 12).map((v) => [
+
+				let digitalPins: MenuOption[] = range(2, 12).map((v) => [
 					`D${v}`,
 					`D${v}`,
 				]);
+				// These analog pins can be used as digital pins, A6 and A7 are not included as on some boards they cannot be used as digital pins
+				let analogPinsAsDigitalPins: MenuOption[] = range(0, 5).map((v) => [
+					`A${v}`, // Also known as: `D${14+v}`
+					`A${v}`,
+				]);
+
+				PinSelectorField.digitalPinOptions = [
+					...digitalPins,
+					...analogPinsAsDigitalPins,
+				];
+
 				PinSelectorField.analogPinOptions = range(0, 7).map((v) => [
 					`A${v}`,
 					`A${v}`,

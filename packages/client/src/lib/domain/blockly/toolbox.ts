@@ -68,7 +68,12 @@ export default [
 				{
 					type: "leaphy_sonar_read",
 					fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-					robots: [...robotGroups.L_NANO_ALL, RobotType.L_MICROPYTHON],
+					robots: [...robotGroups.L_NANO_ALL],
+				},
+				{
+					type: "leaphy_sonar_read",
+					fields: { TRIG_PIN: "A3", ECHO_PIN: "A2" },
+					robots: [RobotType.L_MICROPYTHON],
 				},
 			],
 			[
@@ -94,6 +99,10 @@ export default [
 				},
 				{
 					type: "leaphy_get_air_pressure",
+					robots: [...robotGroups.ALL],
+				},
+				{
+					type: "leaphy_tmp102_read_temperature",
 					robots: [...robotGroups.ALL],
 				},
 				{
@@ -213,6 +222,7 @@ export default [
 					robots: [
 						...robotGroups.ALL,
 						...robotGroups.L_STARLING_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					type: "leaphy_original_set_motor",
 					inputs: {
@@ -223,6 +233,7 @@ export default [
 					robots: [
 						...robotGroups.ALL,
 						...robotGroups.L_STARLING_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					type: "leaphy_original_move_motors",
 					inputs: {
@@ -234,6 +245,7 @@ export default [
 					robots: [
 						...robotGroups.L_NANO_ALL,
 						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SPEED: number(100),
@@ -244,6 +256,7 @@ export default [
 					robots: [
 						...robotGroups.L_NANO_ALL,
 						...robotGroups.L_ORIGINAL_NANO_ALL.map((e) => -e),
+						RobotType.L_MICROPYTHON,
 					],
 					inputs: {
 						SPEED: number(100),
@@ -629,6 +642,30 @@ export default [
 					},
 				},
 			],
+			[
+				{
+					type: "leaphy_sdcard_write",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/file.txt"),
+						VALUE: text("text"),
+					},
+				},
+				{
+					type: "leaphy_sdcard_remove",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/file.txt"),
+					},
+				},
+				{
+					type: "leaphy_sdcard_mkdir",
+					robots: robotGroups.L_NANO_ALL,
+					inputs: {
+						FILENAME: text("/dir"),
+					},
+				},
+			],
 		],
 	},
 	{
@@ -835,6 +872,16 @@ export default [
 				{
 					type: "math_single",
 				},
+				{
+					type: "math_map",
+					inputs: {
+						VALUE: number(0),
+						FROM_LOW: number(0),
+						FROM_HIGH: number(1023),
+						TO_LOW: number(0),
+						TO_HIGH: number(255),
+					},
+				},
 			],
 		],
 	},
@@ -902,6 +949,16 @@ export default [
 				},
 				{
 					type: "math_single",
+				},
+				{
+					type: "math_map",
+					inputs: {
+						VALUE: number(0),
+						FROM_LOW: number(0),
+						FROM_HIGH: number(1023),
+						TO_LOW: number(0),
+						TO_HIGH: number(255),
+					},
 				},
 			],
 			[

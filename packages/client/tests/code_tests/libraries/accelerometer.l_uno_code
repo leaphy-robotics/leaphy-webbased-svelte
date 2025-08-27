@@ -1,0 +1,40 @@
+#include <Adafruit_LSM6DS3TRC.h>
+
+#include <Wire.h>
+
+#include <List.hpp>
+
+Adafruit_LSM6DS3TRC lsm6ds3trc;
+float buffer_x = 0.0, buffer_y = 0.0, buffer_z = 0.0;
+
+double readAccelerometer(int channel) {
+  setupGyroAccel();
+  lsm6ds3trc.readAcceleration(buffer_x, buffer_y, buffer_z);
+
+  switch(channel) {
+    case 0:
+      return (double) buffer_x;
+    case 1:
+      return (double) buffer_y;
+    case 2:
+      return (double) buffer_z;
+  }
+}
+
+bool GyroAccelSetup[8];
+void setupGyroAccel() {
+    uint8_t channel = i2cGetChannel();
+    if (!GyroAccelSetup[channel]) {
+      if (!lsm6ds3trc.begin_I2C()) {
+        return -1;
+      }
+
+      lsm6ds3trc.configInt1(false, false, true);
+      lsm6ds3trc.configInt2(false, true, false);
+      GyroAccelSetup[channel] = true;
+    }
+}
+
+void leaphyProgram() {
+  Serial.println(readAccelerometer(0));
+}

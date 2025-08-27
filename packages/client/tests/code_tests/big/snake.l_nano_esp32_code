@@ -1,0 +1,182 @@
+#include <List.hpp>
+
+#include <LedControl.h>
+
+#include <SegmentDisplay.h>
+
+double x = 0;
+
+double y = 0;
+
+double apple_x = 0;
+
+double direction_x = 0;
+
+String cmd = "";
+
+double apple_y = 0;
+
+boolean grow = false;
+
+double direction_y = 0;
+
+double iteration = 0;
+
+double score = 0;
+
+boolean dead = false;
+
+List<double> snake_x;
+
+List<double> snake_y;
+
+LedControl matrix = LedControl(3, 4, 5, 1);
+
+TM1637Display segment_display(10, 11);
+
+void leaphyProgram() {
+  while (true) {
+    int repeat_end = snake_x.getSize();
+    for (int count = 0; count < repeat_end; count++) {
+      snake_x.remove(0);
+      snake_y.remove(0);
+    }
+    grow = false;
+    score = 0;
+    dead = false;
+    snake_x.add(1);
+    snake_y.add(0);
+    snake_x.add(0);
+    snake_y.add(0);
+    set_direction(1, 0);
+    spawn_apple();
+    game_loop();
+    matrix.setRow(0, 0, B00011000);
+    matrix.setRow(0, 1, B00011000);
+    matrix.setRow(0, 2, B01111110);
+    matrix.setRow(0, 3, B01111110);
+    matrix.setRow(0, 4, B00011000);
+    matrix.setRow(0, 5, B00011000);
+    matrix.setRow(0, 6, B00011000);
+    matrix.setRow(0, 7, B00011000);
+    Serial.println("You died, press any key to continue");
+    while (Serial.available() == 0) {
+    }
+    cmd = Serial.readStringUntil('\n');
+  }
+}
+
+void handle_input() {
+  if (Serial.available() != 0) {
+    cmd = Serial.readStringUntil('\n');
+    if (cmd == "w") {
+      set_direction(0, -1);
+    }
+    if (cmd == "a") {
+      set_direction(-1, 0);
+    }
+    if (cmd == "s") {
+      set_direction(0, 1);
+    }
+    if (cmd == "d") {
+      set_direction(1, 0);
+    }
+  }
+}
+
+void move_snake() {
+  snake_x.addAtIndex(0, (snake_x.get(0) + direction_x));
+  snake_y.addAtIndex(0, (snake_y.get(0) + direction_y));
+  if (!grow) {
+    snake_x.remove((snake_x.getSize() - 1));
+    snake_y.remove((snake_y.getSize() - 1));
+  }
+  grow = false;
+}
+
+int mathRandomInt(int min, int max) {
+  if (min > max) {
+    // Swap min and max to ensure min is smaller.
+    int temp = min;
+    min = max;
+    max = temp;
+  }
+  return min + (rand() % (max - min + 1));
+}
+
+void spawn_apple() {
+  apple_x = mathRandomInt(0, 7);
+  apple_y = mathRandomInt(0, 7);
+}
+
+void check_bite() {
+  if (apple_x == snake_x.get(0) && apple_y == snake_y.get(0)) {
+    grow = true;
+    score += 1;
+    spawn_apple();
+  }
+}
+
+void set_direction(double x, double y) {
+  direction_x = x;
+  direction_y = y;
+}
+
+boolean check_death() {
+  if (snake_x.get(0) < 0 || snake_x.get(0) >= 8) {
+    return true;
+  }
+  if (snake_y.get(0) < 0 || snake_y.get(0) >= 8) {
+    return true;
+  }
+  iteration = 1;
+  int repeat_end2 = (snake_x.getSize() - 1);
+  for (int count2 = 0; count2 < repeat_end2; count2++) {
+    if (snake_x.get(0) == snake_x.get(iteration) && snake_y.get(0) == snake_y.get(iteration)) {
+      return true;
+    }
+    iteration += 1;
+  }
+  return false;
+}
+
+void render_snake() {
+  matrix.clearDisplay(0);
+  iteration = 0;
+  int repeat_end3 = snake_x.getSize();
+  for (int count3 = 0; count3 < repeat_end3; count3++) {
+    matrix.setLed(0, snake_y.get(iteration), snake_x.get(iteration), true);
+    iteration += 1;
+  }
+}
+
+void game_loop() {
+  while (true) {
+    handle_input();
+    check_bite();
+    move_snake();
+    render_snake();
+    if (check_death()) {
+      return;
+    }
+    matrix.setLed(0, apple_y, apple_x, true);
+    segment_display.showNumberDec(score);
+    delay(500);
+  }
+}
+
+void setup() {
+	matrix.shutdown(0, false);
+  matrix.setIntensity(0, 8);
+  matrix.clearDisplay(0);
+  segment_display.setBrightness(255);
+
+  Serial.begin(115200);
+
+  randomSeed(analogRead(0));
+  leaphyProgram();
+}
+
+void loop() {
+
+}

@@ -1,0 +1,25 @@
+#include <Adafruit_BMP280.h>
+
+#include <Wire.h>
+
+#include <List.hpp>
+
+List<int> i2cChannelStack;
+
+bool bmp280Setup[8];
+void setupbmp280() {
+    uint8_t channel = i2cGetChannel();
+    if (!bmp280Setup[channel]) {
+      bmp280.begin(BMP280_ADDRESS_ALT);
+      bmp280.setSampling(Adafruit_BMP280::MODE_NORMAL,
+                      Adafruit_BMP280::SAMPLING_X2,
+                      Adafruit_BMP280::SAMPLING_X16,
+                      Adafruit_BMP280::FILTER_X16,
+                      Adafruit_BMP280::STANDBY_MS_500);
+      bmp280Setup[channel] = true;
+    }
+}
+
+void leaphyProgram() {
+  Serial.println(getAirPressure());
+}

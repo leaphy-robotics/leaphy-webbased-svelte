@@ -1,0 +1,30 @@
+#include <Wire.h>
+
+#include <List.hpp>
+
+List<int> i2cChannelStack;
+
+#include <Arduino_APDS9960.h>
+
+bool apds9960Setup[8];
+void setupapds9960() {
+    uint8_t channel = i2cGetChannel();
+    if (!apds9960Setup[channel]) {
+      APDS.begin();
+      apds9960Setup[channel] = true;
+    }
+}
+
+int gesture[8];
+int getAPDS9960Gesture() {
+    setupapds9960();
+    uint8_t channel = i2cGetChannel();
+    if (APDS.gestureAvailable()) {
+        gesture[channel] = APDS.readGesture();
+    }
+    return gesture[channel];
+}
+
+void leaphyProgram() {
+  Serial.println(getAPDS9960Gesture());
+}
