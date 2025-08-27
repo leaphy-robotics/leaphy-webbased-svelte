@@ -112,6 +112,13 @@ class PopupsState {
 			await projectDB.tempSaves.bulkDelete(to_remove);
 		}
 
+		to_remove = (await projectDB.saves.toArray())
+			.filter((save) => robots[save.robot] === undefined)
+			.map((save) => save.id);
+		if (to_remove.length) {
+			await projectDB.saves.bulkDelete(to_remove);
+		}
+
 		const fileSaves = await projectDB.saves.toArray();
 		const tempSaves = await projectDB.tempSaves.toArray();
 
