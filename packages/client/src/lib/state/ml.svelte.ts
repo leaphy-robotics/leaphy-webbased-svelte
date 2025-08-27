@@ -50,6 +50,7 @@ function getRandomItems<T>(array: T[], count: number): T[] {
 	return result;
 }
 
+// Parses binary Float32 sensor data from Bluetooth communication
 function readFloat32Array(view: DataView) {
 	const result: number[] = [];
 	for (let offset = 0; offset < view.byteLength; offset += 4) {
@@ -59,10 +60,14 @@ function readFloat32Array(view: DataView) {
 	return result;
 }
 
+// Reactive state management for complete ML workflow using Svelte 5 runes
 class MLState {
+	// Important: persistent state should not be directly updated on this class in order to ensure consistent project serialization, use utilities and setters from the ML class contained in the Blockly category instead
+
 	enabled = $state(false);
 	stepIndex = $state(0);
 	maxStep = $state(0);
+	// Derived reactive value that updates when stepIndex changes
 	step = $derived(steps[this.stepIndex]);
 	classes = $state<Class[]>([]);
 	connected = $state(false);
@@ -74,6 +79,7 @@ class MLState {
 	classification: string = $state(null);
 	manual = $state(false);
 
+	// Bluetooth LE communication handles for real-time data streaming
 	inputCharacteristic: BluetoothRemoteGATTCharacteristic;
 	outputWriter: WritableStreamDefaultWriter<Uint8Array>;
 
@@ -109,6 +115,7 @@ class MLState {
 	}
 
 	constructor() {
+		// Keyboard-driven data labeling during collection
 		document.body.addEventListener("keydown", async (e) => {
 			if (!this.learning) return;
 
@@ -131,6 +138,7 @@ class MLState {
 			await this.setClassification(null);
 		});
 
+		// Event-driven synchronization with core ML system
 		ml.addEventListener("updateDatasets", () => {
 			this.datasets = ml.getDatasets();
 			this.computeDistribution();
@@ -186,6 +194,7 @@ class MLState {
 		this.learning = true;
 	}
 
+	// Web Bluetooth API integration for real-time sensor data streaming
 	async connect() {
 		this.connected = false;
 		const device = await navigator.bluetooth.requestDevice({
@@ -252,8 +261,10 @@ class MLState {
 		});
 	}
 
+	// Complete TensorFlow.js training pipeline with async generator pattern for progress tracking
 	async *train() {
 		yield { title: "ML_TRAINING", progress: 0 };
+
 		const model = tf.sequential({
 			layers: [
 				...ml.structure.map((layer, index) => {
@@ -274,6 +285,7 @@ class MLState {
 			metrics: ["accuracy"],
 		});
 
+		// Balanced dataset creation with random sampling
 		const frames = this.classes
 			.flatMap((classData, i) => {
 				const frames = ml
@@ -303,6 +315,7 @@ class MLState {
 			data.shape[0] - trainSize,
 		]);
 
+		// Async generator pattern for streaming training progress
 		const queue: { title: string; progress: number }[] = [];
 		let trainingDone = false;
 		let resolveNext: () => void;
@@ -332,6 +345,7 @@ class MLState {
 			}
 		}
 
+		// Confusion matrix generation for model evaluation
 		const predictions = model.predict(testData) as Tensor;
 		const confusion = tf.math.confusionMatrix(
 			testLabels.argMax(1).as1D(),
@@ -342,6 +356,7 @@ class MLState {
 		const normalizedConfusion = confusion.toFloat().div(rowSums);
 		ml.confusion = (await normalizedConfusion.array()) as number[][];
 
+		// TensorFlow Lite conversion for Arduino deployment
 		yield { title: "ML_CONVERTING", progress: 75 };
 		const res = await model.save(
 			`${import.meta.env.VITE_BACKEND_URL}/ml/convert`,

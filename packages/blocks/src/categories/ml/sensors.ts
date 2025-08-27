@@ -33,6 +33,7 @@ class ToFSensor extends Sensor {
 	values = 1;
 
 	name = "Time of Flight sensor";
+
 	renderName(settings: SettingsToObject<typeof this.settings>) {
 		if (settings.channel === -1) return this.name;
 
@@ -41,6 +42,7 @@ class ToFSensor extends Sensor {
 
 	settings = [i2cSetting("channel")];
 
+	// I2C multiplexer integration for multi-sensor setups, with value normalization
 	getValues(
 		arduino: Arduino,
 		setNode: SetNode,
@@ -57,6 +59,7 @@ class DigitalSensor extends Sensor {
 	values = 1;
 
 	name = "Digital Pin";
+
 	renderName(settings: SettingsToObject<typeof this.settings>) {
 		return `Digital Pin ${settings.pin}`;
 	}
@@ -77,11 +80,13 @@ class DigitalSensor extends Sensor {
 	}
 }
 
+// Normalizes 12-bit ADC values (0-4095) to 0-1 range for consistent ML input
 class AnalogSensor extends Sensor {
 	type = "analog";
 	values = 1;
 
 	name = "Analog Pin";
+
 	renderName(settings: SettingsToObject<typeof this.settings>) {
 		return `Analog Pin ${settings.pin}`;
 	}
@@ -97,11 +102,13 @@ class AnalogSensor extends Sensor {
 	}
 }
 
+// Normalizes ultrasonic distance values (0-256cm) to 0-1 range
 class UltrasonicSensor extends Sensor {
 	type = "ultrasonic";
 	values = 1;
 
 	name = "Ultrasonic";
+
 	renderName(settings: SettingsToObject<typeof this.settings>) {
 		return `Ultrasonic sensor (trig: ${settings.trig}, echo: ${settings.echo})`;
 	}

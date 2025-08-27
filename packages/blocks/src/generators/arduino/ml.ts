@@ -12,6 +12,7 @@ function getClassName(classData: Class) {
 }
 
 function getCodeGenerators(arduino: Arduino) {
+	// Dual-mode operation: configures BLE communication for data collection phase
 	function addBluetoothDetails() {
 		arduino.addDependency(Dependencies.ARDUINO_BLE);
 		arduino.addInclude("bluetooth", "#include <ArduinoBLE.h>");
@@ -42,6 +43,7 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 	}
 
+	// TensorFlow Lite integration for on-device inference mode
 	function addTensorFlowDetails() {
 		arduino.addDependency(Dependencies.TENSORFLOW_ESP32);
 		arduino.addInclude(
@@ -66,6 +68,7 @@ function getCodeGenerators(arduino: Arduino) {
 				"uint8_t tensor_arena[kTensorArenaSize];",
 		);
 
+		// TensorFlow Lite micro setup with memory allocation and model loading
 		arduino.addDeclaration(
 			"tensorflow",
 			"bool setupTensorFlow() {\n" +
@@ -108,7 +111,8 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.addSetup("tensorflow", "setupTensorFlow();\n");
 	}
 
-	arduino.forBlock.ml_classify = (block) => {
+	// Dual-mode code generation: data collection vs inference
+	arduino.forBlock.ml_classify = () => {
 		if (ml.generateInference) {
 			addTensorFlowDetails();
 

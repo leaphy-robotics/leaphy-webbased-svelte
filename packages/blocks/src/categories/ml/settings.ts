@@ -1,8 +1,11 @@
+// Type-safe settings framework using advanced TypeScript features
+// Maps setting definitions to their runtime values through the type system
 export interface Setting<ReturnType> {
 	id: string;
 	type: string;
 	name: string;
 	description: string;
+	// Phantom type for TypeScript inference - not used at runtime
 	_returnType: ReturnType;
 
 	options?: [string, any][];
@@ -78,6 +81,8 @@ export function pinSetting<Id extends string>(
 	};
 }
 
+// Advanced TypeScript utility: converts settings array to typed object for compile-time safety
+// Maps each setting's ID to its return type via mapped types and template literal types
 export type SettingsToObject<T extends readonly Setting<any>[]> = {
 	[K in T[number] as K["id"]]: K["_returnType"];
 };
