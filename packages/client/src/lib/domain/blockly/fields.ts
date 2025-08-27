@@ -72,12 +72,25 @@ export default class PinSelectorField extends FieldDropdown {
 				break;
 			}
 
-			case PinMapping.MICROPYTHON:
 			case PinMapping.NANO_ESP32: {
 				PinSelectorField.digitalPinOptions = [
 					...PinSelectorField.generatePinRange(2, 13),
 					...PinSelectorField.generatePinRange(0, 5, "A", 14, ""),
 					...PinSelectorField.generatePinRange(6, 7, "A"),
+				];
+				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
+					0,
+					7,
+					"A",
+				);
+				PinSelectorField.pwmPinOptions = PinSelectorField.digitalPinOptions;
+				break;
+			}
+
+			case PinMapping.MICROPYTHON: {
+				PinSelectorField.digitalPinOptions = [
+					...PinSelectorField.generatePinRange(2, 13, "D"),
+					...PinSelectorField.generatePinRange(0, 5, "A"),
 				];
 				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
 					0,
