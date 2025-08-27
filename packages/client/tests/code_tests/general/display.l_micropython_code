@@ -1,0 +1,23 @@
+from leaphymicropython.utils.i2c_helper import select_channel
+from machine import I2C
+from leaphymicropython.actuators import ssd1306
+
+I2C_CONNECTION = I2C(0)
+
+MULTIPLEXER_ADDRESS = 0x70
+
+SMALL_OLED_WIDTH = 128
+SMALL_OLED_HEIGHT = 64
+
+select_channel(I2C_CONNECTION, MULTIPLEXER_ADDRESS, 255)
+SMALL_OLED_BC = ssd1306.SSD1306I2C(SMALL_OLED_WIDTH, SMALL_OLED_HEIGHT, I2C_CONNECTION)
+SMALL_OLED_BC.initialize_device()
+
+def leaphy_program():
+  SMALL_OLED_BC.text(str('Value') + ' = ' + str(42), 0, 0)
+  SMALL_OLED_BC.text(str('Hello world!'), 0, 8)
+  SMALL_OLED_BC.show()
+  SMALL_OLED_BC.fill(0)
+
+
+leaphy_program()

@@ -426,6 +426,13 @@ const blocks: BlockDefinition = [
 		helpUrl: "",
 	},
 	{
+		type: "leaphy_tmp102_read_temperature",
+		message0: "%%{BKY_LEAPHY_TMP102_READ_TEMPERATURE}",
+		style: "leaphy_blocks",
+		output: "Number",
+		helpUrl: "",
+	},
+	{
 		type: "leaphy_segment_set",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=%C2%A0Single%20leds-,Segment%20display%C2%A0,-Oled%20display",
@@ -611,6 +618,43 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+	},
+	{
+		type: "math_map",
+		message0:
+			"%{BKY_MATH_MAP_TITLE} %1 %{BKY_MATH_MAP_FROM} %2 %{BKY_MATH_MAP_TO} %3 %{BKY_MATH_MAP_TARGET_FROM} %4 %{BKY_MATH_MAP_TARGET_TO} %5",
+		args0: [
+			{
+				type: "input_value",
+				name: "VALUE",
+				check: "Number",
+			},
+			{
+				type: "input_value",
+				name: "FROM_LOW",
+				check: "Number",
+			},
+			{
+				type: "input_value",
+				name: "FROM_HIGH",
+				check: "Number",
+			},
+			{
+				type: "input_value",
+				name: "TO_LOW",
+				check: "Number",
+			},
+			{
+				type: "input_value",
+				name: "TO_HIGH",
+				check: "Number",
+			},
+		],
+		inputsInline: true,
+		output: "Number",
+		style: "math_blocks",
+		tooltip: "%{BKY_MATH_MAP_TOOLTIP}",
+		helpUrl: "https://www.arduino.cc/reference/en/language/functions/math/map/",
 	},
 ];
 

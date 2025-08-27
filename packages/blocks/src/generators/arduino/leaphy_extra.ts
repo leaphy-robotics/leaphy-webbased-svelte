@@ -185,6 +185,39 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 	};
 
+	arduino.forBlock.leaphy_sdcard_write = (block) => {
+		const filename =
+			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) || '""';
+		const value =
+			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || '""';
+		arduino.addDependency(Dependencies.SD);
+		arduino.addInclude("sdcard", "#include <SD.h>");
+		arduino.addSetup("serial", "Serial.begin(115200);", false);
+		arduino.addSetup("sdcard", "SD.begin(10);");
+
+		return `if (File sdFile = SD.open(${filename}, FILE_WRITE)) {\n  sdFile.println(${value});\n  sdFile.close();\n} else {\n  Serial.println("Failed to open SD card!");\n}\n`;
+	};
+
+	arduino.forBlock.leaphy_sdcard_remove = (block) => {
+		const filename =
+			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) || '""';
+		arduino.addDependency(Dependencies.SD);
+		arduino.addInclude("sdcard", "#include <SD.h>");
+		arduino.addSetup("sdcard", "SD.begin(10);");
+
+		return `SD.remove(${filename});\n`;
+	};
+
+	arduino.forBlock.leaphy_sdcard_mkdir = (block) => {
+		const filename =
+			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) || '""';
+		arduino.addDependency(Dependencies.SD);
+		arduino.addInclude("sdcard", "#include <SD.h>");
+		arduino.addSetup("sdcard", "SD.begin(10);");
+
+		return `SD.mkdir(${filename});\n`;
+	};
+
 	const addDisplaySetupCode = (large: boolean) => {
 		const displaySetup = `if (!display.begin(${large ? "0x3C, true" : "SSD1306_SWITCHCAPVCC, 0x3C"})) {\n        Serial.println(F("Contact with the display failed: Check the connections"));\n      }\n\n      display.clearDisplay();\n      display.setTextSize(1);\n      display.setTextColor(${large ? "SH110X_WHITE" : "SSD1306_WHITE"});\n      display.setCursor(0, 0);\n      display.println(F("Leaphy OLED"));\n      display.display();\n`;
 

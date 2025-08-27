@@ -9,7 +9,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		// Currently *all* variables are included, even when they are not used.
 		const workspace = block.workspace;
 		const variableNames = Variables.allUsedVarModels(workspace).map(
-			(variableModel) => variableModel.name,
+			(variableModel) => generator.getVariableName(variableModel.name),
 		);
 		const variableLines =
 			variableNames.length > 0
