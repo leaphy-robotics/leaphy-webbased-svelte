@@ -208,6 +208,8 @@
 	"ML_SENSOR_TYPE": "Type sensor",
 	"ML_STEP": "Stap {step} van {total}",
 	"ML_ADVANCED_EDIT_MODEL": "Geavanceerd: bewerk model",
+	"ML_PLAYGROUND": "Machine learning playground",
+	"ML_OPEN_PLAYGROUND": "Open playground",
 	"PREVIOUS": "Vorige",
 	"NEXT": "Volgende"
 }

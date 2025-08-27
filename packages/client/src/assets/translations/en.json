@@ -208,6 +208,8 @@
 	"ML_SENSOR_TYPE": "Sensor type",
 	"ML_STEP": "Step {step} of {total}",
 	"ML_ADVANCED_EDIT_MODEL": "Advanced: edit model",
+	"ML_PLAYGROUND": "Machine learning playground",
+	"ML_OPEN_PLAYGROUND": "Open playground",
 	"PREVIOUS": "Previous",
 	"NEXT": "Next"
 }

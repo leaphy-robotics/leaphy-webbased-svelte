@@ -1,7 +1,10 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
+import ModelVisualizer from "$components/workspace/ml/visualizer/ModelVisualizer.svelte";
 import MLState from "$state/ml.svelte";
+import PopupState from "$state/popup.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import { _ } from "svelte-i18n";
 
@@ -9,6 +12,14 @@ async function upload() {
 	ml.generateInference = true;
 	await MLState.upload();
 	ml.generateInference = false;
+}
+
+async function playground() {
+	await PopupState.open({
+		component: ModelVisualizer,
+		data: {},
+		allowInteraction: true,
+	});
 }
 </script>
 
@@ -48,7 +59,10 @@ async function upload() {
 		</tbody>
 	</table>
 
-	<Button onclick={upload} large bold mode="primary" icon={faUsb} name={$_("UPLOAD")} />
+	<div class="buttons">
+		<Button onclick={playground} disabled={!MLState.model} mode="secondary" icon={faPlay} name={$_("ML_OPEN_PLAYGROUND")} />
+		<Button onclick={upload} large bold mode="primary" icon={faUsb} name={$_("UPLOAD")} />
+	</div>
 </div>
 
 <style>
@@ -112,5 +126,10 @@ async function upload() {
 
 		background-color: var(--bg-color);
 		opacity: var(--bg-opacity);
+	}
+
+	.buttons {
+		display: flex;
+		gap: 20px;
 	}
 </style>

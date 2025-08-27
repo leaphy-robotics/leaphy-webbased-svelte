@@ -15,7 +15,7 @@ import {
 } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import type { Sensor } from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
 import * as tf from "@tensorflow/tfjs";
-import type { Tensor } from "@tensorflow/tfjs";
+import type { LayersModel, Tensor } from "@tensorflow/tfjs";
 import type { Component } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
@@ -75,6 +75,8 @@ class MLState {
 		{ units: 9, activation: "relu" },
 		{ units: 6, activation: "relu" },
 	]);
+
+	model = $state<LayersModel>(null);
 
 	classification: string = $state(null);
 	manual = $state(false);
@@ -265,7 +267,7 @@ class MLState {
 	async *train() {
 		yield { title: "ML_TRAINING", progress: 0 };
 
-		const model = tf.sequential({
+		this.model = tf.sequential({
 			layers: [
 				...ml.structure.map((layer, index) => {
 					if (index === 0)
@@ -279,7 +281,7 @@ class MLState {
 				tf.layers.dense({ units: this.classes.length, activation: "softmax" }),
 			],
 		});
-		model.compile({
+		this.model.compile({
 			optimizer: "adam",
 			loss: "categoricalCrossentropy",
 			metrics: ["accuracy"],
@@ -319,7 +321,7 @@ class MLState {
 		const queue: { title: string; progress: number }[] = [];
 		let trainingDone = false;
 		let resolveNext: () => void;
-		model
+		this.model
 			.fit(trainingData, trainingLabels, {
 				epochs: Number.parseInt(this.epochs),
 				callbacks: {
@@ -346,7 +348,7 @@ class MLState {
 		}
 
 		// Confusion matrix generation for model evaluation
-		const predictions = model.predict(testData) as Tensor;
+		const predictions = this.model.predict(testData) as Tensor;
 		const confusion = tf.math.confusionMatrix(
 			testLabels.argMax(1).as1D(),
 			predictions.argMax(1).as1D(),
@@ -358,7 +360,7 @@ class MLState {
 
 		// TensorFlow Lite conversion for Arduino deployment
 		yield { title: "ML_CONVERTING", progress: 75 };
-		const res = await model.save(
+		const res = await this.model.save(
 			`${import.meta.env.VITE_BACKEND_URL}/ml/convert`,
 		);
 		ml.modelHeaders = await res.responses[0].json();
