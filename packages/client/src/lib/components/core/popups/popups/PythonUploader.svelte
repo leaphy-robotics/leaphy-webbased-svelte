@@ -45,42 +45,25 @@ async function upload(res: Record<string, string>) {
 
 onMount(async () => {
 	try {
+		const progress_step = 100 / 2;
 		const installed = await io.enterREPLMode();
-		progress += 100 / 6;
+		progress += progress_step;
 
-		currentState = "CHOOSING_ROBOT"; /*
 		if (!installed) {
-			WorkspaceState.robot = await new Promise<RobotDevice>(
-				(resolve) => (robotRequest = resolve),
-			);
-		}*/
-		robotRequest = undefined;
-		progress += 100 / 6;
+			throw { name: "NOT_CONNECTED", description: "No REPL initiated." };
+		}
 
-		currentState = "DOWNLOADING_FIRMWARE";
-		let firmware: Record<string, string>;
-		//if (!installed) firmware = await io.getFirmware(WorkspaceState.robot);
-		progress += 100 / 6;
-
-		currentState = "UPLOADING_FIRMWARE";
-		//if (!installed) await upload(firmware);
-		progress += 100 / 6;
-
-		currentState = "CONNECTING";
-		if (!installed) await io.enterREPLMode();
-		progress += 100 / 6;
-
-		currentState = "INSTALLING_LIBRARIES"; /*
+		currentState = "INSTALLING_LIBRARIES";
 		await io.packageManager.flashLibrary(
 			"github:leaphy-robotics/leaphy-micropython/package.json",
-		);*/
-		progress += 100 / 6;
+		);
+		progress += progress_step;
 
 		popupState.close();
 	} catch (e) {
-		done = true;
+		//done = true;
 		currentState = e?.name || "UPDATE_FAILED";
-		error = e.description;
+		error = e.message;
 		throw e;
 	}
 });
