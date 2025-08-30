@@ -184,9 +184,9 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		generator.addImport("leaphymicropython.actuators.servo", "set_servo_angle");
 
-		const pin = motor === "left" ? "12" : "13";
+		const pin = motor === "left" ? "D12" : "D13";
 
-		return `set_servo_angle(${pin}, 90 + 90*${speed}/100*${direction})\n`;
+		return `set_servo_angle("${pin}", 90 + 90*${speed}/100*${direction})\n`;
 	};
 
 	python.forBlock.leaphy_original_servo_move = (block, generator) => {
@@ -206,8 +206,8 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const servoSpeedVar = generator.getVariableName("servo_speed");
 		return (
 			`${servoSpeedVar} = ${speed}\n` +
-			`set_servo_angle(12, 90 + 90*${servoSpeedVar}/100*${motor_left})\n` +
-			`set_servo_angle(13, 90 + 90*${servoSpeedVar}/100*${motor_right})\n`
+			`set_servo_angle("D12", 90 + 90*${servoSpeedVar}/100*${motor_left})\n` +
+			`set_servo_angle("D13", 90 + 90*${servoSpeedVar}/100*${motor_right})\n`
 		);
 	};
 }
