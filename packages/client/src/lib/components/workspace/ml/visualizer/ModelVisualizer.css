@@ -1,0 +1,14 @@
+.slider-group {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.slider-group label {
+	min-width: 80px;
+}
+
+.slider-group output {
+	font-family: monospace;
+	min-width: 40px;
+}

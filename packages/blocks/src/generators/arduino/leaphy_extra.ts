@@ -185,16 +185,6 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 	};
 
-	arduino.forBlock.leaphy_sonar_read = (block) => {
-		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
-		arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
-
-		const trigPin = block.getFieldValue("TRIG_PIN");
-		const echoPin = block.getFieldValue("ECHO_PIN");
-		const code = `getDistanceSonar(${trigPin}, ${echoPin})`;
-		return [code, arduino.ORDER_ATOMIC];
-	};
-
 	arduino.forBlock.leaphy_sdcard_write = (block) => {
 		const filename =
 			arduino.valueToCode(block, "FILENAME", arduino.ORDER_ATOMIC) || '""';

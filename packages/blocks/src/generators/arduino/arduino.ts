@@ -64,22 +64,6 @@ function getCodeGenerators(arduino: Arduino) {
 		return null;
 	};
 
-	arduino.forBlock.leaphy_tof_get_distance = () => {
-		arduino.addDependency(Dependencies.ADAFRUIT_VL53L0X_TOF);
-		arduino.addInclude("leaphy_tof", "#include <Adafruit_VL53L0X.h>");
-		arduino.addDeclaration("leaphy_tof", "Adafruit_VL53L0X i2c_distance;");
-		const setup = arduino.addI2CSetup(
-			"tof",
-			"i2c_distance.begin();\n" +
-				"      i2c_distance.setMeasurementTimingBudgetMicroSeconds(20000);\n",
-		);
-		arduino.addDeclaration(
-			"leaphy_tof_read",
-			`int getTOF() {\n    ${setup}\n    VL53L0X_RangingMeasurementData_t measure;\n    i2c_distance.rangingTest(&measure, false);\n    if (measure.RangeStatus == 4) return -1;\n    delay(33);\n    return measure.RangeMilliMeter;\n}`,
-		);
-		return ["getTOF()", arduino.ORDER_ATOMIC];
-	};
-
 	arduino.forBlock.leaphy_get_air_pressure = () => {
 		arduino.addDependency(Dependencies.ADAFRUIT_BMP280_BAR);
 		arduino.addInclude("bmp280", "#include <Adafruit_BMP280.h>");

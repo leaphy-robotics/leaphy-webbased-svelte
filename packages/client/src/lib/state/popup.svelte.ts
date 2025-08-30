@@ -15,6 +15,7 @@ interface Popup {
 	component: Component;
 	data: Record<string, any>;
 	allowInteraction: boolean;
+	allowOverflow?: boolean;
 
 	position?: { x: number; y: number };
 	anchor?: Anchor;
@@ -26,6 +27,7 @@ export class PopupState {
 	component = $state<Component>();
 	data = $state<Record<string, any>>();
 	allowInteraction = $state<boolean>();
+	allowOverflow = $state<boolean>();
 
 	position = $state({ x: 0, y: 0 });
 	onclose: () => void = undefined;
@@ -41,6 +43,7 @@ export class PopupState {
 		this.component = props.component;
 		this.data = props.data;
 		this.allowInteraction = props.allowInteraction;
+		this.allowOverflow = props.allowOverflow || false;
 
 		if (props.position) this.position = props.position;
 		if (props.anchor) this.anchor = props.anchor;

@@ -1,6 +1,7 @@
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
+import ML from "$components/workspace/ml/ML.svelte";
 import Python from "$components/workspace/python/Python.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle, type Handle } from "$domain/handles";
@@ -18,10 +19,12 @@ export const Mode = {
 	BLOCKS: Blocks as Component,
 	ADVANCED: Advanced as Component,
 	PYTHON: Python as Component,
+	ML: ML as Component,
 };
 
 export function getModeID(mode: Component) {
 	switch (mode) {
+		case Mode.ML:
 		case Mode.BLOCKS: {
 			return "BLOCKS";
 		}
