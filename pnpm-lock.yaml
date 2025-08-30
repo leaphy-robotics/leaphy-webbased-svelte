@@ -74,8 +74,8 @@ importers:
         specifier: ^6.7.2
         version: 6.7.2
       '@leaphy-robotics/dfu-util-wasm':
-        specifier: ^1.0.2
-        version: 1.0.2
+        specifier: ^1.1.0
+        version: 1.1.0
       '@leaphy-robotics/leaphy-blocks':
         specifier: workspace:*
         version: link:../blocks
@@ -1408,8 +1408,8 @@ packages:
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
-  '@leaphy-robotics/dfu-util-wasm@1.0.2':
-    resolution: {integrity: sha512-lvS+tJFO049b4ERYKX0HcoUtnQv76A1z9sZrAvbs7s3bvdMW0BObKmktZeJ7emcp3lU/+OJWsD2h0EY5rnkiNg==}
+  '@leaphy-robotics/dfu-util-wasm@1.1.0':
+    resolution: {integrity: sha512-82l9+n5yCUVOHFPw5DxPyAaLHXF/jGW8W0fdnpFW3WNSPuIbbVR1Mncj5sTmwR+RX2AZaW7x6hOdLZzFuq2f4A==}
 
   '@leaphy-robotics/picotool-wasm@1.0.3':
     resolution: {integrity: sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==}
@@ -4076,10 +4076,6 @@ packages:
     resolution: {integrity: sha512-d+BFHzbiCx6zGfz0HyQ6Rg69w9k19nviJspaj4yNscGjrHu94sVP+aRm75yEbCh+r2/yR+7q6hux9LVtbuTGBw==}
     engines: {node: '>=14'}
 
-  w3c-xmlserializer@5.0.0:
-    resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
-    engines: {node: '>=18'}
-
   watchpack@2.4.4:
     resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==}
     engines: {node: '>=10.13.0'}
@@ -5380,7 +5376,7 @@ snapshots:
 
   '@kurkle/color@0.3.4': {}
 
-  '@leaphy-robotics/dfu-util-wasm@1.0.2': {}
+  '@leaphy-robotics/dfu-util-wasm@1.1.0': {}
 
   '@leaphy-robotics/picotool-wasm@1.0.3': {}
 
@@ -8146,10 +8142,6 @@ snapshots:
   w3c-xmlserializer@4.0.0:
     dependencies:
       xml-name-validator: 4.0.0
-
-  w3c-xmlserializer@5.0.0:
-    dependencies:
-      xml-name-validator: 5.0.0
 
   watchpack@2.4.4:
     dependencies:
