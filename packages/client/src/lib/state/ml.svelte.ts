@@ -360,6 +360,12 @@ class MLState {
 
 		// TensorFlow Lite conversion for Arduino deployment
 		yield { title: "ML_CONVERTING", progress: 75 };
+
+		const SAVE_URL = `${import.meta.env.VITE_BACKEND_URL}/ml/convert`;
+		if (tf.io.getSaveHandlers(SAVE_URL).length === 0) {
+			tf.io.registerSaveRouter(tf.io.browserHTTPRequest);
+		}
+
 		const res = await this.model.save(
 			`${import.meta.env.VITE_BACKEND_URL}/ml/convert`,
 		);
