@@ -1,3 +1,4 @@
+import { Gas, ToF } from "@leaphy-robotics/schemas";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 import { addI2CDeclarations } from "./i2c";
@@ -102,6 +103,8 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_gas_sensor = (block) => {
+		arduino.addI2CDevice("gas", block, Gas);
+
 		arduino.addDependency(Dependencies.ADAFRUIT_SGP30_GAS);
 		arduino.addInclude("leaphy_gas_sensor", "#include <Adafruit_SGP30.h>");
 		arduino.addDeclaration("leaphy_gas_sensor", "Adafruit_SGP30 sgp;");

@@ -1,3 +1,5 @@
+import { WireColor } from "@leaphy-robotics/schemas";
+import Servo from "@leaphy-robotics/schemas/src/components/servo";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 
@@ -105,6 +107,23 @@ function getCodeGenerators(arduino: Arduino) {
 		const servoAngle =
 			arduino.valueToCode(block, "SERVO_ANGLE", arduino.ORDER_ATOMIC) || "90";
 		const servoName = `myServo${pinKey}`;
+
+		const servo = arduino.builder.add(`servo-${pinKey}`, Servo);
+		arduino.builder.connect(
+			arduino.murphy.port(pinKey),
+			servo.port("pulse"),
+			WireColor.DATA_1,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${pinKey}.3V3`),
+			servo.port("vcc"),
+			WireColor.VCC,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${pinKey}.GND`),
+			servo.port("gnd"),
+			WireColor.GND,
+		);
 
 		arduino.reservePin(block, pinKey, arduino.PinTypes.SERVO, "Servo Write");
 

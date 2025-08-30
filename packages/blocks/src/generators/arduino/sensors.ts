@@ -1,3 +1,4 @@
+import { ToF, Ultrasonic, WireColor } from "@leaphy-robotics/schemas/src";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 
@@ -19,6 +20,51 @@ export function getTOF(arduino: Arduino) {
 }
 
 export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
+	const sensor = arduino.builder.add(`ultrasonic-${trig}-${echo}`, Ultrasonic);
+	if ((trig === "17" && echo === "16") || (trig === "A3" && echo === "A2")) {
+		arduino.builder.connect(
+			arduino.i2c.port("VCC"),
+			sensor.port("VCC"),
+			WireColor.VCC,
+		);
+		arduino.builder.connect(
+			arduino.i2c.port("TRIG"),
+			sensor.port("TRIG"),
+			WireColor.TX,
+		);
+		arduino.builder.connect(
+			arduino.i2c.port("ECHO"),
+			sensor.port("ECHO"),
+			WireColor.RX,
+		);
+		arduino.builder.connect(
+			arduino.i2c.port("GND"),
+			sensor.port("GND"),
+			WireColor.GND,
+		);
+	} else {
+		arduino.builder.connect(
+			arduino.murphy.port(`${trig}.3V3`),
+			sensor.port("VCC"),
+			WireColor.VCC,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${trig}`),
+			sensor.port("TRIG"),
+			WireColor.TX,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${echo}`),
+			sensor.port("ECHO"),
+			WireColor.RX,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${trig}.GND`),
+			sensor.port("GND"),
+			WireColor.GND,
+		);
+	}
+
 	arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 	arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
 
@@ -26,7 +72,9 @@ export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
 }
 
 export default function getCodeGenerators(arduino: Arduino) {
-	arduino.forBlock.leaphy_tof_get_distance = () => {
+	arduino.forBlock.leaphy_tof_get_distance = (block) => {
+		arduino.addI2CDevice("tof", block, ToF);
+
 		return [getTOF(arduino), arduino.ORDER_ATOMIC];
 	};
 

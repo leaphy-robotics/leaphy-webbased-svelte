@@ -83,6 +83,7 @@ export async function explain(block: Blockly.BlockSvg) {
 	await PopupState.open({
 		component: Explanation,
 		data: {
+			block: block,
 			explanation: fetch(`${import.meta.env.VITE_BACKEND_URL}/ai/generate`, {
 				method: "post",
 				headers: {

@@ -4,6 +4,7 @@ import { _, locale } from "svelte-i18n";
 import block from "$assets/block.svg";
 import defaultProgram from "$assets/default-program.json?raw";
 import leaphyLogo from "$assets/leaphy-logo.svg";
+import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import Connect from "$components/core/popups/popups/Connect.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
@@ -33,6 +34,7 @@ import {
 	faLightbulb,
 	faMoon,
 	faPen,
+	faProjectDiagram,
 	faQuestionCircle,
 	faRedo,
 	faRobot,
@@ -283,6 +285,14 @@ async function submit() {
 
 	await RecordingsState.submit();
 }
+
+async function circuit() {
+	await PopupState.open({
+		component: Circuit,
+		data: {},
+		allowInteraction: true,
+	});
+}
 </script>
 
 <div class="header">
@@ -319,6 +329,13 @@ async function submit() {
 							icon={faGraduationCap}
 							name={$_("EXAMPLES")}
 							onclick={examples}
+							{open}
+						/>
+
+						<ContextItem
+							icon={faProjectDiagram}
+							name={$_("CIRCUIT")}
+							onclick={circuit}
 							{open}
 						/>
 					{/if}
@@ -420,7 +437,7 @@ async function submit() {
     <div class="comp">
         {#if AppState.Screen === Screen.WORKSPACE}
             {#if WorkspaceState.Mode === Mode.BLOCKS}
-				
+
 					<Button
 						mode={"outlined"}
 						icon={faPen}
