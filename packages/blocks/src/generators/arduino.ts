@@ -409,7 +409,11 @@ export class Arduino extends Blockly.Generator {
 	}
 
 	// Utility to add an I2C peripheral to the circuit schematic
-	public addI2CDeviceToSchema(prefix: string, block: Block, component: Component) {
+	public addI2CDeviceToSchema(
+		prefix: string,
+		block: Block,
+		component: Component,
+	) {
 		const channel = this.getI2CChannel(block);
 		const sensor = this.builder.add(`${prefix}-${channel}`, component);
 		if (channel === null) {
