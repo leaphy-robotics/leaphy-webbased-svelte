@@ -1,14 +1,19 @@
 <script lang="ts">
+import BlocklyState from "$state/blockly.svelte";
 import type { PopupState } from "$state/popup.svelte";
-import { getContext } from "svelte";
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import { layoutComponents } from "@leaphy-robotics/schemas";
+import { type Block, Events } from "blockly";
+import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import SvelteMarkdown from "svelte-markdown";
 
 interface Props {
 	explanation: Promise<string>;
+	block: Block;
 }
 
-let { explanation }: Props = $props();
+let { explanation, block }: Props = $props();
 
 const popupState = getContext<PopupState>("state");
 
@@ -18,11 +23,28 @@ function click(event: MouseEvent) {
 
 	popupState.close();
 }
+
+let circuitCanvas = $state<HTMLCanvasElement>();
+let showCircuit = $state(false);
+
+onMount(() => {
+	arduino.clearBuilder();
+	arduino.forBlock[block.type](block, arduino);
+	if (arduino.builder.components.length > 1) {
+		layoutComponents(circuitCanvas, arduino.builder);
+		showCircuit = true;
+	}
+
+	BlocklyState.workspace.fireChangeListener(new Events.UiBase());
+});
 </script>
 
 <svelte:body onclick={click} />
 <div class="content" bind:this={element}>
 	<h2>{$_("EXPLANATION")}</h2>
+
+	<canvas bind:this={circuitCanvas} style:display={showCircuit ? 'block' : 'none'} class="circuit"></canvas>
+
 	{#await explanation}
 		<div class="container">
 			<div class="loading"></div>
@@ -44,6 +66,10 @@ function click(event: MouseEvent) {
 	.content {
 		width: 400px;
 		padding: 20px;
+	}
+
+	.circuit {
+		width: 100%;
 	}
 
 	.footer {

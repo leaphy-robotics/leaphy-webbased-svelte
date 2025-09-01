@@ -36,6 +36,7 @@
 		"@fortawesome/free-solid-svg-icons": "^6.7.2",
 		"@leaphy-robotics/dfu-util-wasm": "^1.1.0",
 		"@leaphy-robotics/leaphy-blocks": "workspace:*",
+		"@leaphy-robotics/schemas": "workspace:*",
 		"@leaphy-robotics/picotool-wasm": "1.0.3",
 		"@leaphy-robotics/webusb-ftdi": "1.0.3",
 		"@sentry/browser": "^9.27.0",

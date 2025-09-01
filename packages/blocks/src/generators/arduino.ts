@@ -1,3 +1,10 @@
+import {
+	type Component,
+	ComponentBuilder,
+	Murphy,
+	MurphyI2C,
+	ToF,
+} from "@leaphy-robotics/schemas";
 import * as Blockly from "blockly/core";
 import {
 	type Block,
@@ -62,6 +69,10 @@ export class Arduino extends Blockly.Generator {
 	public declarations_: Record<string, { priority: number; code: string }> = {};
 	public dependencies = new Set<string>();
 
+	public builder = new ComponentBuilder();
+	public murphy = this.builder.add("murphy", Murphy);
+	public i2c = this.builder.add("murphy-i2c", MurphyI2C);
+
 	public robotType = "l_uno";
 
 	constructor() {
@@ -80,10 +91,18 @@ export class Arduino extends Blockly.Generator {
 		);
 	}
 
+	public clearBuilder() {
+		this.builder = new ComponentBuilder();
+		this.murphy = this.builder.add("murphy", Murphy);
+		this.i2c = this.builder.add("murphy-i2c", MurphyI2C);
+		this.builder.join(this.murphy, this.i2c);
+	}
+
 	public init(workspace: WorkspaceSvg) {
 		this.pins_ = Object.create(null);
 		this.functionNames_ = Object.create(null);
 		this.declarations_ = Object.create(null);
+		this.clearBuilder();
 
 		super.init(workspace);
 
@@ -374,6 +393,34 @@ export class Arduino extends Blockly.Generator {
 			`bool ${sensorName}Setup[8];\nvoid setup${sensorName}() {\n    uint8_t channel = i2cGetChannel();\n    if (!${sensorName}Setup[channel]) {\n      ${setupCode}      ${sensorName}Setup[channel] = true;\n    }\n}\n`,
 		);
 		return `setup${sensorName}();\n`;
+	}
+
+	// Utility to find the I2C channel associated with a given block
+	public getI2CChannel(block: Block) {
+		let current = block.getSurroundParent();
+		while (current) {
+			if (current.type === "i2c_use_channel") {
+				return Number.parseInt(current.getFieldValue("CHANNEL"));
+			}
+			current = current.getSurroundParent();
+		}
+
+		return null;
+	}
+
+	// Utility to add an I2C peripheral to the circuit schematic
+	public addI2CDeviceToSchema(
+		prefix: string,
+		block: Block,
+		component: Component,
+	) {
+		const channel = this.getI2CChannel(block);
+		const sensor = this.builder.add(`${prefix}-${channel}`, component);
+		if (channel === null) {
+			this.builder.connectI2C(this.murphy, sensor);
+		} else {
+			this.builder.connectI2C(this.i2c, sensor, channel);
+		}
 	}
 
 	public reservePin(
