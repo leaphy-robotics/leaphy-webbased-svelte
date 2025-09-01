@@ -21,6 +21,8 @@ export function getTOF(arduino: Arduino) {
 
 export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
 	const sensor = arduino.builder.add(`ultrasonic-${trig}-${echo}`, Ultrasonic);
+
+	// if the sensor is connected via the I2C addon board
 	if ((trig === "17" && echo === "16") || (trig === "A3" && echo === "A2")) {
 		arduino.builder.connect(
 			arduino.i2c.port("VCC"),
@@ -73,7 +75,7 @@ export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
 
 export default function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.leaphy_tof_get_distance = (block) => {
-		arduino.addI2CDevice("tof", block, ToF);
+		arduino.addI2CDeviceToSchema("tof", block, ToF);
 
 		return [getTOF(arduino), arduino.ORDER_ATOMIC];
 	};

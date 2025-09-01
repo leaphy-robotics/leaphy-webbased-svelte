@@ -286,7 +286,7 @@ async function submit() {
 	await RecordingsState.submit();
 }
 
-async function circuit() {
+async function openCircuitPopup() {
 	await PopupState.open({
 		component: Circuit,
 		data: {},
@@ -335,7 +335,7 @@ async function circuit() {
 						<ContextItem
 							icon={faProjectDiagram}
 							name={$_("CIRCUIT")}
-							onclick={circuit}
+							onclick={openCircuitPopup}
 							{open}
 						/>
 					{/if}

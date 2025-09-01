@@ -103,7 +103,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_gas_sensor = (block) => {
-		arduino.addI2CDevice("gas", block, Gas);
+		arduino.addI2CDeviceToSchema("gas", block, Gas);
 
 		arduino.addDependency(Dependencies.ADAFRUIT_SGP30_GAS);
 		arduino.addInclude("leaphy_gas_sensor", "#include <Adafruit_SGP30.h>");
