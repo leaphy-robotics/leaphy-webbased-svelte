@@ -1,4 +1,6 @@
 <script lang="ts">
+import Explanation from "$components/core/popups/popups/Explanation.svelte";
+import AIState from "$state/ai.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import { onMount } from "svelte";
@@ -14,6 +16,10 @@ onMount(async () => {
     {#each PopupState.popups as state (state.id)}
         <Popup {state} />
     {/each}
+
+	{#if AIState.visible}
+		<Explanation />
+	{/if}
 </div>
 
 <style>
