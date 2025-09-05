@@ -48,8 +48,7 @@ class AIState {
 								content:
 									"please only return the explanation for the given set of code in simple terms, like you're explaining it to someone who has never touched code before, do not explain the code around the given set of code unless directly related, do not talk about or reference the pseudo code directly, you are talking about the selected code almost exclusively, so you do not have to include the **begin_select** and **end_select** tokens in your response, only include your explanation in the response",
 							},
-						],
-						model: "Llama3-70b-8192",
+						]
 					}),
 				},
 			);
