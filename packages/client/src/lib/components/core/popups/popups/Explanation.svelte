@@ -23,7 +23,6 @@ let circuitCanvas = $state<HTMLCanvasElement>();
 let showCircuit = $state(false);
 
 async function calculatePosition() {
-	console.log(AIState.block);
 	position = await computePosition(
 		AIState.block.getSvgRoot().querySelector(".blocklyPath"),
 		element,
@@ -43,8 +42,6 @@ async function calculatePosition() {
 			],
 		},
 	);
-
-	console.log(position);
 }
 
 $effect(() => {
