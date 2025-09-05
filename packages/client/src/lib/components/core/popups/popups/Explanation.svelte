@@ -1,6 +1,9 @@
 <script lang="ts">
+import AIState from "$state/ai.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import type { PopupState } from "$state/popup.svelte";
+import { track } from "$state/utils";
+import { autoPlacement, computePosition, size } from "@floating-ui/dom";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { layoutComponents } from "@leaphy-robotics/schemas";
 import { type Block, Events } from "blockly";
@@ -8,72 +11,103 @@ import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import SvelteMarkdown from "svelte-markdown";
 
-interface Props {
-	explanation: Promise<string>;
-	block: Block;
-}
-
-let { explanation, block }: Props = $props();
-
-const popupState = getContext<PopupState>("state");
-
+let position = $state<{ x: number; y: number }>();
 let element: HTMLDivElement;
 function click(event: MouseEvent) {
 	if (element.contains(event.target as HTMLElement)) return;
 
-	popupState.close();
+	AIState.visible = false;
 }
 
 let circuitCanvas = $state<HTMLCanvasElement>();
 let showCircuit = $state(false);
 
-onMount(() => {
+async function calculatePosition() {
+	position = await computePosition(
+		AIState.block.getSvgRoot().querySelector(".blocklyPath"),
+		element,
+		{
+			placement: "right-start",
+			strategy: "fixed",
+			middleware: [
+				autoPlacement(),
+				size({
+					apply({ availableWidth, availableHeight, elements }) {
+						Object.assign(elements.floating.style, {
+							maxWidth: `${Math.max(0, availableWidth)}px`,
+							maxHeight: `${Math.max(0, availableHeight)}px`,
+						});
+					},
+				}),
+			],
+		},
+	);
+}
+
+$effect(() => {
+	track(AIState.loading);
+	track(AIState.content);
+
+	calculatePosition();
+});
+
+onMount(async () => {
+	// Render block to svg
 	arduino.clearBuilder();
-	arduino.forBlock[block.type](block, arduino);
+	arduino.forBlock[AIState.block.type](AIState.block, arduino);
 	if (arduino.builder.components.length > 1) {
-		layoutComponents(circuitCanvas, arduino.builder);
+		await layoutComponents(circuitCanvas, arduino.builder);
 		showCircuit = true;
 	}
 
 	BlocklyState.workspace.fireChangeListener(new Events.UiBase());
+
+	// Calculate position
+	await calculatePosition();
 });
 </script>
 
 <svelte:body onclick={click} />
-<div class="content" bind:this={element}>
+<div class="content" bind:this={element} style:top={`${position?.y}px`} style:left={`${position?.x}px`}>
 	<h2>{$_("EXPLANATION")}</h2>
 
 	<canvas bind:this={circuitCanvas} style:display={showCircuit ? 'block' : 'none'} class="circuit"></canvas>
 
-	{#await explanation}
+	{#if AIState.loading}
 		<div class="container">
 			<div class="loading"></div>
 			<div class="loading"></div>
 			<div class="loading"></div>
 			<div class="loading"></div>
 		</div>
-	{:then explanation}
-		<SvelteMarkdown source={explanation} />
-	{:catch error }
+	{:else if AIState.content}
+		<SvelteMarkdown source={AIState.content} />
+	{:else}
 		<div class="container">
 			{$_("AI_RATE_LIMITED")}
 		</div>
-	{/await}
-	<div class="footer">{$_("META_ATTRIBUTION")}</div>
+	{/if}
 </div>
 
 <style>
 	.content {
+		position: fixed;
+		top: 0;
+		left: 0;
+
+		overflow-y: auto;
+		box-shadow: var(--shadow-el2);
+
 		width: 400px;
 		padding: 20px;
+		border-radius: 20px;
+
+		background: var(--background);
+		color: var(--on-background);
 	}
 
 	.circuit {
 		width: 100%;
-	}
-
-	.footer {
-		color: var(--on-secondary-muted);
 	}
 
 	.container {

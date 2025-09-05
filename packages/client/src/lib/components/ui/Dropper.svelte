@@ -1,5 +1,5 @@
 <script lang="ts">
-import { explain } from "$domain/blockly/pseudo";
+import AIState from "$state/ai.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 import type * as Blockly from "blockly";
@@ -43,7 +43,7 @@ async function select(event: PointerEvent) {
 	const block = getBlockForPosition(event);
 	if (!block) return;
 
-	await explain(block);
+	await AIState.explain(block);
 }
 
 function onclick() {
