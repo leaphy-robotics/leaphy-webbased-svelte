@@ -77,8 +77,8 @@ importers:
         specifier: ^6.7.2
         version: 6.7.2
       '@leaphy-robotics/dfu-util-wasm':
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.1.2
+        version: 1.1.2
       '@leaphy-robotics/leaphy-blocks':
         specifier: workspace:*
         version: link:../blocks
@@ -1436,8 +1436,8 @@ packages:
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
-  '@leaphy-robotics/dfu-util-wasm@1.1.1':
-    resolution: {integrity: sha512-PxBbASO1J+WiVM/qxl2IxKIUPbjoAtJ1UpsGb0CVYxJKSuSpFrOG9wJhWgHgYnbi1hIqjnTGk/+56YNm131BOQ==}
+  '@leaphy-robotics/dfu-util-wasm@1.1.2':
+    resolution: {integrity: sha512-jJOiWzIWMa/PJEVb4diaaofWldm3/5Pe6znTD3AnN57F0z6YNIRMk1nUs6Rba6kEMGAcuatvSIugDW+q08Yq+g==}
 
   '@leaphy-robotics/picotool-wasm@1.0.3':
     resolution: {integrity: sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==}
@@ -5429,7 +5429,7 @@ snapshots:
 
   '@kurkle/color@0.3.4': {}
 
-  '@leaphy-robotics/dfu-util-wasm@1.1.1': {}
+  '@leaphy-robotics/dfu-util-wasm@1.1.2': {}
 
   '@leaphy-robotics/picotool-wasm@1.0.3': {}
 
