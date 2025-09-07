@@ -1,6 +1,8 @@
 import { Msg, Variables, type WorkspaceSvg } from "blockly/core";
 import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
+import {DynamicListManager} from "../blocks/extensions";
+import {string} from "blockly/core/utils";
 
 export class List {
 	public type = "Number";
@@ -11,18 +13,27 @@ export class List {
 	) {}
 }
 
-class ListManager {
+class ListManager implements DynamicListManager {
 	public lists: Record<string, List> = {};
 
-	addList(name: string, id: string = crypto.randomUUID()) {
+	createItem(name: string, id: string = crypto.randomUUID()) {
 		this.lists[id] = new List(id, name);
 	}
 
-	getList(id: string): List | undefined {
+	renameItem(id: string, name: string) {
+		this.lists[id].name = name;
+	}
+
+	deleteItem(id: string) {
+		delete this.lists[id];
+		return true;
+	}
+
+	getItem(id: string): List | undefined {
 		return this.lists[id];
 	}
 
-	getLists() {
+	getItems() {
 		return Object.values(this.lists);
 	}
 
@@ -46,13 +57,13 @@ export class ListSerializer implements ISerializer {
 
 	load(state: SerialList[]) {
 		for (const listState of state) {
-			listManager.addList(listState.name, listState.id);
+			listManager.createItem(listState.name, listState.id);
 		}
 	}
 
 	save(): SerialList[] | null {
 		const listStates = [];
-		for (const list of listManager.getLists()) {
+		for (const list of listManager.getItems()) {
 			listStates.push({
 				id: list.id,
 				name: list.name,
@@ -83,7 +94,7 @@ export default function (workspace: WorkspaceSvg) {
 		},
 	];
 
-	const lists = listManager.getLists();
+	const lists = listManager.getItems();
 	if (lists.length > 0) {
 		const dynamicBlocks = [
 			{ kind: "block", type: "lists_add" },
@@ -104,7 +115,7 @@ export default function (workspace: WorkspaceSvg) {
 		Variables.promptName(Msg.NEW_LIST, "", (name) => {
 			if (!name) return;
 
-			listManager.addList(name);
+			listManager.createItem(name);
 			workspace.refreshToolboxSelection();
 		});
 	});

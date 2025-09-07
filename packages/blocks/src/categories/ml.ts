@@ -3,41 +3,9 @@ import { Msg, type WorkspaceSvg } from "blockly/core";
 import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
 import { type Sensor, sensorByType } from "./ml/sensors";
-
-export class Class {
-	constructor(
-		public id: string,
-		public name: string,
-		public key: string | null = null,
-	) {}
-}
-
-export interface DataFrame {
-	input: number[];
-	detected: string;
-}
-
-export class Dataset {
-	public date: Date;
-
-	constructor(
-		public id: string,
-		public data: DataFrame[],
-		date = Date.now(),
-	) {
-		this.date = new Date(date);
-	}
-
-	getDataForClass(id: string) {
-		return this.data.filter((data) => data.detected === id);
-	}
-}
-
-export interface SensorReference {
-	id: string;
-	type: string;
-	settings: unknown;
-}
+import {ClassManager} from "./ml/classManager";
+import {DataFrame, DatasetManager} from "./ml/datasetManager";
+import {SensorManager, SensorReference} from "./ml/sensorManager";
 
 export interface SensorData {
 	id: string;
@@ -52,13 +20,13 @@ export interface ModelLayer {
 
 // Event-driven ML system that coordinates the complete machine learning workflow
 // Extends EventTarget to provide real-time state updates to the reactive UI layer
-class ML extends EventTarget {
+export class ML extends EventTarget {
 	// Prevents modifications during serialization loading to make additional workspaces not clear ML State for the main workspace, primarily used for the additional workspace for customizing model architecture
 	public freeze = false;
 
-	public sensors: Record<string, SensorReference> = {};
-	public classes: Record<string, Class> = {};
-	public datasets: Record<string, Dataset> = {};
+	public classes = new ClassManager(this);
+	public sensors = new SensorManager(this);
+	public datasets = new DatasetManager(this);
 
 	public trainingID: string = crypto.randomUUID();
 
@@ -112,111 +80,15 @@ class ML extends EventTarget {
 		this.dispatchEvent(new Event("updateConfusion"));
 	}
 
-	addSensor(
-		sensor: { type: Sensor; settings: unknown },
-		id: string = crypto.randomUUID(),
-	) {
-		this.sensors[id] = {
-			id,
-			type: sensor.type.type,
-			settings: sensor.settings,
-		};
-		this.dispatchEvent(new Event("updateSensors"));
-	}
-
-	deleteSensor(id: string) {
-		delete this.sensors[id];
-		this.dispatchEvent(new Event("updateSensors"));
-	}
-
-	getSensor(id: string) {
-		const sensor = this.sensors[id];
-
-		return {
-			...sensor,
-			type: sensorByType[sensor.type],
-		};
-	}
-
-	getSensors() {
-		return Object.values(this.sensors).map((sensor) => ({
-			...sensor,
-			type: sensorByType[sensor.type],
-		}));
-	}
-
-	addClass(
-		name: string,
-		id: string = crypto.randomUUID(),
-		key: string | null = null,
-	) {
-		this.classes[id] = new Class(id, name, key);
-		this.dispatchEvent(new Event("updateClasses"));
-	}
-
-	getClass(id: string): Class {
-		return this.classes[id];
-	}
-
-	getClasses() {
-		return Object.values(this.classes);
-	}
-
-	getClassIndex(id: string) {
-		return this.getClasses().indexOf(this.getClass(id));
-	}
-
-	addDataset(
-		data: DataFrame[],
-		id: string = crypto.randomUUID(),
-		date = Date.now(),
-	) {
-		const dataset = new Dataset(id, data, date);
-		this.datasets[id] = dataset;
-		this.dispatchEvent(new Event("updateDatasets"));
-
-		return dataset;
-	}
-
-	deleteDataset(id: string) {
-		delete this.datasets[id];
-		this.dispatchEvent(new Event("updateDatasets"));
-	}
-
-	// Cascading clear that resets training state and notifies all affected listeners
-	clearDatasets() {
-		this.datasets = {};
-		this.modelHeaders = null;
-		this.confusion = null;
-		this.maxStep = 0;
-
-		this.dispatchEvent(new Event("updateDatasets"));
-		this.dispatchEvent(new Event("updateConfusion"));
-		this.dispatchEvent(new Event("updateMaxStep"));
-	}
-
-	getDataset(id: string) {
-		return this.datasets[id];
-	}
-
-	getDatasets() {
-		return Object.values(this.datasets);
-	}
-
 	clear() {
 		this.structure = [
 			{ activation: "relu", units: 9 },
 			{ activation: "relu", units: 6 },
 		];
 
-		this.classes = {};
-		this.dispatchEvent(new Event("updateClasses"));
-
-		this.datasets = {};
-		this.dispatchEvent(new Event("updateDatasets"));
-
-		this.sensors = {};
-		this.dispatchEvent(new Event("updateSensors"));
+		this.classes.clear();
+		this.sensors.clear();
+		this.datasets.clear();
 
 		this.maxStep = 0;
 		this.enabled = false;
@@ -270,13 +142,13 @@ export class MLSerializer implements ISerializer {
 		ml.confusion = state.confusion || null;
 
 		for (const classState of state.classes) {
-			ml.addClass(classState.name, classState.id, classState.key);
+			ml.classes.createItem(classState.name, classState.id, classState.key);
 		}
 		for (const dataset of state.datasets) {
-			ml.addDataset(dataset.data, dataset.id, dataset.date);
+			ml.datasets.createItem(dataset.data, dataset.id, dataset.date);
 		}
 		for (const sensor of state.sensors) {
-			ml.addSensor(
+			ml.sensors.createItem(
 				{ type: sensorByType[sensor.type], settings: sensor.settings },
 				sensor.id,
 			);
@@ -285,7 +157,7 @@ export class MLSerializer implements ISerializer {
 
 	save(): MLState | null {
 		const classes: SerialClass[] = [];
-		for (const classState of ml.getClasses()) {
+		for (const classState of ml.classes.getItems()) {
 			classes.push({
 				id: classState.id,
 				name: classState.name,
@@ -294,7 +166,7 @@ export class MLSerializer implements ISerializer {
 		}
 
 		const datasets: SerialDataset[] = [];
-		for (const dataset of ml.getDatasets()) {
+		for (const dataset of ml.datasets.getItems()) {
 			datasets.push({
 				id: dataset.id,
 				data: dataset.data,
@@ -303,10 +175,10 @@ export class MLSerializer implements ISerializer {
 		}
 
 		const sensors: SensorReference[] = [];
-		for (const [id, sensor] of Object.entries(ml.sensors)) {
+		for (const sensor of ml.sensors.getItems()) {
 			sensors.push({
-				id,
-				type: sensor.type,
+				id: sensor.id,
+				type: sensor.type.type,
 				settings: sensor.settings,
 			});
 		}
@@ -345,7 +217,7 @@ export default function (workspace: WorkspaceSvg) {
 			},
 		);
 
-		if (ml.getClasses().length > 0) {
+		if (ml.classes.getItems().length > 0) {
 			blockList.push(
 				{
 					kind: "block",
@@ -367,22 +239,26 @@ export default function (workspace: WorkspaceSvg) {
 
 	// Adding a class clears existing datasets to prevent training data inconsistency
 	workspace.registerButtonCallback("add_class", async () => {
-		if (ml.getDatasets().length) {
+		if (ml.datasets.getItems().length) {
 			const confirmed = await new Promise<boolean>((resolve) =>
 				dialog.confirm(Msg.CONFIRM_CLEAR, (result) => resolve(result)),
 			);
 			if (!confirmed) return;
 		}
 
-		ml.clearDatasets();
+		ml.datasets.clear();
 
 		dialog.prompt(Msg.NEW_CLASS, "", (name) => {
 			if (!name) return;
 
-			ml.addClass(name);
+			ml.classes.createItem(name);
 			workspace.refreshToolboxSelection();
 		});
 	});
 
 	return blockList;
 }
+
+export * from "./ml/classManager"
+export * from "./ml/datasetManager"
+export * from "./ml/sensorManager"

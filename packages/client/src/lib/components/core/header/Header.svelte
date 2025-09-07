@@ -55,9 +55,32 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+import Error from "$components/core/popups/popups/Error.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
+		if (BlocklyState.workspace.getBlocksByType("ml_classify").length === 0) {
+			return PopupState.open({
+				component: Error,
+				data: {
+					title: "ML_MISSING_CLASSIFY_TITLE",
+					message: "ML_MISSING_CLASSIFY_DESCRIPTION"
+				},
+				allowInteraction: false,
+			})
+		}
+
+		if (MLState.classes.length < 2) {
+			return PopupState.open({
+				component: Error,
+				data: {
+					title: "ML_NO_CLASSES_TITLE",
+					message: "ML_NO_CLASSES_DESCRIPTION"
+				},
+				allowInteraction: false,
+			})
+		}
+
 		if (WorkspaceState.Mode === Mode.BLOCKS) WorkspaceState.Mode = Mode.ML;
 		else {
 			BlocklyState.restore = serialization.workspaces.save(

@@ -3,7 +3,7 @@ import type { Arduino } from "../arduino";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.lists_add = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
 
@@ -12,7 +12,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_delete = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const index =
 			arduino.valueToCode(block, "INDEX", arduino.ORDER_ATOMIC) || "0";
 
@@ -21,14 +21,14 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_clear = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 
 		const name = list.name.replaceAll(" ", "_");
 		return `${name}.clear();\n`;
 	};
 
 	arduino.forBlock.lists_insert = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
 		const index =
@@ -39,7 +39,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_get = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const index =
 			arduino.valueToCode(block, "INDEX", arduino.ORDER_ATOMIC) || "0";
 
@@ -48,7 +48,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_replace = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
 		const index =
@@ -59,7 +59,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_length = (block) => {
-		const list = listManager.getList(block.getFieldValue("LIST")) as List;
+		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 
 		const name = list.name.replaceAll(" ", "_");
 		return [`${name}.getSize()`, arduino.ORDER_ATOMIC];

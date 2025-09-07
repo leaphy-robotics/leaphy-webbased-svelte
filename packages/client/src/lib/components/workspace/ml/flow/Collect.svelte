@@ -43,7 +43,7 @@ import { _ } from "svelte-i18n";
 				<div class="list">
 					<div class="item">
 						<div class="left">
-							<div class="name">{MLState.learning ? MLState.classification ? $_("ML_RECORDING_FOR", { values: { target: ml.getClass(MLState.classification).name } }) : $_("ML_RECORDING") : $_("ML_RECORD")}</div>
+							<div class="name">{MLState.learning ? MLState.classification ? $_("ML_RECORDING_FOR", { values: { target: ml.classes.getItem(MLState.classification).name } }) : $_("ML_RECORDING") : $_("ML_RECORD")}</div>
 							<Switch name={$_("ML_MANUAL")} bind:checked={MLState.manual} />
 						</div>
 						<button onclick={() => MLState.learn()} class="record" class:recording={MLState.learning} aria-label="record"></button>
@@ -52,7 +52,7 @@ import { _ } from "svelte-i18n";
 					{#each MLState.datasets.toReversed() as dataset (dataset.id)}
 						<div class="item">
 							<div class="dataset">Dataset {dataset.date.toLocaleString()}</div>
-							<button onclick={() => ml.deleteDataset(dataset.id)} class="delete"><Fa icon={faTrash} /></button>
+							<button onclick={() => ml.datasets.deleteItem(dataset.id)} class="delete"><Fa icon={faTrash} /></button>
 						</div>
 					{/each}
 				</div>

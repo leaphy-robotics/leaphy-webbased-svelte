@@ -209,6 +209,12 @@
 	"ML_ADVANCED_EDIT_MODEL": "Geavanceerd: bewerk model",
 	"ML_PLAYGROUND": "Machine learning playground",
 	"ML_OPEN_PLAYGROUND": "Open playground",
+	"ML_MISSING_CLASSIFY_TITLE": "Classify input ontbreekt",
+	"ML_MISSING_CLASSIFY_DESCRIPTION": "Het blok classify input mist in je project, zorg ervoor dat dit blok bestaat en in een herhaal voor altijd staat",
+	"ML_NO_CLASSES_TITLE": "Niet genoeg classes gemaakt",
+	"ML_NO_CLASSES_DESCRIPTION": "Je hebt nog niet genoeg classes gemaakt, maak ten minste 2 classes om door te gaan",
+	"ML_NO_SENSORS_TITLE": "Geen sensoren toegevoegd",
+	"ML_NO_SENSORS_DESCRIPTION": "Je hebt nog geen sensoren toegevoegd, voeg ten minste 1 sensor toe om door te gaan",
 	"PREVIOUS": "Vorige",
 	"NEXT": "Volgende",
 	"CIRCUIT": "Circuit"

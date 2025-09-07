@@ -122,7 +122,7 @@ class MLState {
 			if (!this.learning) return;
 
 			const triggered = ml
-				.getClasses()
+				.classes.getItems()
 				.find((classData) => classData.key === e.code);
 			if (!triggered) return;
 
@@ -133,7 +133,7 @@ class MLState {
 			if (!this.learning) return;
 
 			const triggered = ml
-				.getClasses()
+				.classes.getItems()
 				.find((classData) => classData.key === e.code);
 			if (!triggered || triggered.id !== this.classification) return;
 
@@ -142,19 +142,19 @@ class MLState {
 
 		// Event-driven synchronization with core ML system
 		ml.addEventListener("updateDatasets", () => {
-			this.datasets = ml.getDatasets();
+			this.datasets = ml.datasets.getItems();
 			this.computeDistribution();
 
 			if (this.datasets.length > 0 && this.maxStep <= 1) ml.maxStep++;
 			if (this.datasets.length === 0 && this.maxStep >= 1) ml.maxStep = 1;
 		});
 		ml.addEventListener("updateClasses", () => {
-			this.classes = ml.getClasses();
+			this.classes = ml.classes.getItems();
 			this.computeDistribution();
 		});
 		ml.addEventListener(
 			"updateSensors",
-			() => (this.sensors = ml.getSensors()),
+			() => (this.sensors = ml.sensors.getItems()),
 		);
 		ml.addEventListener("updateEnabled", () => (this.enabled = ml.enabled));
 		ml.addEventListener("updateMaxStep", () => {
@@ -188,7 +188,7 @@ class MLState {
 		await this.setClassification(null);
 
 		if (this.learning) {
-			this.datasets.push(ml.addDataset(this.data));
+			this.datasets.push(ml.datasets.createItem(this.data));
 			this.learning = false;
 			return;
 		}
@@ -291,7 +291,7 @@ class MLState {
 		const frames = this.classes
 			.flatMap((classData, i) => {
 				const frames = ml
-					.getDatasets()
+					.datasets.getItems()
 					.flatMap((dataset) => dataset.getDataForClass(classData.id));
 
 				return getRandomItems(frames, Number.parseInt(this.distribution[i]));
