@@ -6,20 +6,16 @@ import defaultProgram from "$assets/default-program.json?raw";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import Connect from "$components/core/popups/popups/Connect.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
-import Workspace from "$components/workspace/Workspace.svelte";
-import { FileHandle } from "$domain/handles";
-import { robots } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
-import { projectDB } from "$domain/storage";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
-import { findAsync } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faCircleCheck,
@@ -38,7 +34,6 @@ import {
 	faQuestionCircle,
 	faRedo,
 	faRobot,
-	faRotate,
 	faSave,
 	faSquarePollHorizontal,
 	faUndo,
@@ -55,30 +50,29 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
 		if (BlocklyState.workspace.getBlocksByType("ml_classify").length === 0) {
 			return PopupState.open({
-				component: Error,
+				component: ErrorPopup,
 				data: {
 					title: "ML_MISSING_CLASSIFY_TITLE",
-					message: "ML_MISSING_CLASSIFY_DESCRIPTION"
+					message: "ML_MISSING_CLASSIFY_DESCRIPTION",
 				},
 				allowInteraction: false,
-			})
+			});
 		}
 
 		if (MLState.classes.length < 2) {
 			return PopupState.open({
-				component: Error,
+				component: ErrorPopup,
 				data: {
 					title: "ML_NO_CLASSES_TITLE",
-					message: "ML_NO_CLASSES_DESCRIPTION"
+					message: "ML_NO_CLASSES_DESCRIPTION",
 				},
 				allowInteraction: false,
-			})
+			});
 		}
 
 		if (WorkspaceState.Mode === Mode.BLOCKS) WorkspaceState.Mode = Mode.ML;

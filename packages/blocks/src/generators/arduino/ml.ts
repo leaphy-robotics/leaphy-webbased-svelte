@@ -116,8 +116,8 @@ function getCodeGenerators(arduino: Arduino) {
 		if (ml.generateInference) {
 			addTensorFlowDetails();
 
-			return `${ml
-				.sensors.getItems()
+			return `${ml.sensors
+				.getItems()
 				.map((sensor, index) =>
 					sensor.type.getValues(
 						arduino,
@@ -125,14 +125,16 @@ function getCodeGenerators(arduino: Arduino) {
 						sensor.settings,
 					),
 				)
-				.join("")}interpreter->Invoke();\n\n${ml
-				.classes.getItems()
+				.join("")}interpreter->Invoke();\n\n${ml.classes
+				.getItems()
 				.map(
 					(classData, index) =>
 						`float ${getClassName(classData)}_prob = output->data.f[${index}];\n`,
 				)
-				.join("")}\nint predicted_class = 0;\nfloat max_prob = 0;\n\n${ml
-				.classes.getItems()
+				.join(
+					"",
+				)}\nint predicted_class = 0;\nfloat max_prob = 0;\n\n${ml.classes
+				.getItems()
 				.map(
 					(classData, index) =>
 						`if (${getClassName(classData)}_prob > max_prob) {\n  predicted_class = ${index};\n  max_prob = ${getClassName(classData)}_prob;\n}\n`,
@@ -142,8 +144,8 @@ function getCodeGenerators(arduino: Arduino) {
 
 		addBluetoothDetails();
 
-		return `delay(10);\nBLE.poll();\n${ml
-			.sensors.getItems()
+		return `delay(10);\nBLE.poll();\n${ml.sensors
+			.getItems()
 			.map((sensor, index) =>
 				sensor.type.getValues(
 					arduino,

@@ -121,8 +121,8 @@ class MLState {
 		document.body.addEventListener("keydown", async (e) => {
 			if (!this.learning) return;
 
-			const triggered = ml
-				.classes.getItems()
+			const triggered = ml.classes
+				.getItems()
 				.find((classData) => classData.key === e.code);
 			if (!triggered) return;
 
@@ -132,8 +132,8 @@ class MLState {
 		document.body.addEventListener("keyup", async (e) => {
 			if (!this.learning) return;
 
-			const triggered = ml
-				.classes.getItems()
+			const triggered = ml.classes
+				.getItems()
 				.find((classData) => classData.key === e.code);
 			if (!triggered || triggered.id !== this.classification) return;
 
@@ -290,8 +290,8 @@ class MLState {
 		// Balanced dataset creation with random sampling
 		const frames = this.classes
 			.flatMap((classData, i) => {
-				const frames = ml
-					.datasets.getItems()
+				const frames = ml.datasets
+					.getItems()
 					.flatMap((dataset) => dataset.getDataForClass(classData.id));
 
 				return getRandomItems(frames, Number.parseInt(this.distribution[i]));

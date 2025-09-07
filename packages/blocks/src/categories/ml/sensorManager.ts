@@ -1,5 +1,5 @@
-import {type Sensor, sensorByType} from "./sensors";
-import type {ML} from "../ml";
+import type { ML } from "../ml";
+import { type Sensor, sensorByType } from "./sensors";
 
 export interface SensorReference {
 	id: string;

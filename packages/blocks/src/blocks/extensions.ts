@@ -1,26 +1,25 @@
-import {
-	Block,
-	BlockSvg,
-	Connection, FieldDropdown, Input,
-	Menu,
-	MenuItem, Msg,
-	Workspace,
-	WorkspaceSvg,
-} from "blockly/core";
+import { dialog } from "blockly";
 import * as Blockly from "blockly/core";
-import { type List, listManager } from "../categories/lists";
+import {
+	type Block,
+	type BlockSvg,
+	type Connection,
+	type FieldDropdown,
+	type Menu,
+	type MenuItem,
+	Msg,
+	type Workspace,
+	type WorkspaceSvg,
+} from "blockly/core";
+import { listManager } from "../categories/lists";
 import { ml } from "../categories/ml";
 import { procedureManager } from "../generators/arduino/procedures";
 import type { DateItem } from "../generators/arduino/rtc";
-import {dialog} from "blockly";
 
 const xmlUtils = Blockly.utils.xml;
 
-function after<Type>(promise: Type) {
-	return new Promise<Awaited<Type>>(async resolve => {
-		const value = await promise
-		resolve(value)
-	})
+async function after<Type>(promise: Type) {
+	return promise;
 }
 
 interface Item {
@@ -36,7 +35,10 @@ export interface DynamicListManager {
 }
 
 export default function registerExtensions(blockly: typeof Blockly) {
-	function createItemSelectExtension(type: string, manager: DynamicListManager) {
+	function createItemSelectExtension(
+		type: string,
+		manager: DynamicListManager,
+	) {
 		function extension(this: Block) {
 			const input = this.getInput(type);
 			if (!input) return;
@@ -44,10 +46,12 @@ export default function registerExtensions(blockly: typeof Blockly) {
 			const field = new blockly.FieldDropdown(
 				function (this: FieldDropdown) {
 					const options = manager.getItems();
-					const current = options.find(option => option.id === this.getValue())
+					const current = options.find(
+						(option) => option.id === this.getValue(),
+					);
 
 					return [
-						...manager.getItems().map(item => ([item.name, item.id])),
+						...manager.getItems().map((item) => [item.name, item.id]),
 						[`${Msg[`RENAME_${type}`]} "${current?.name}"`, "RENAME_CURRENT"],
 						[`${Msg[`DELETE_${type}`]} "${current?.name}"`, "DELETE_CURRENT"],
 					] as [string, string][];
@@ -55,54 +59,68 @@ export default function registerExtensions(blockly: typeof Blockly) {
 				function (this: FieldDropdown, newValue) {
 					if (newValue === "RENAME_CURRENT") {
 						const item = this.getValue();
-						if (!item) return
+						if (!item) return;
 
-						dialog.prompt(`${Msg[`RENAME_${type}`]} "${manager.getItem(item)?.name}"`, "", (name) => {
-							if (!name) return;
+						dialog.prompt(
+							`${Msg[`RENAME_${type}`]} "${manager.getItem(item)?.name}"`,
+							"",
+							(name) => {
+								if (!name) return;
 
-							manager.renameItem(item, name);
+								manager.renameItem(item, name);
 
-							// Loops over every block and forces them to refresh the displayed name on the dynamic field
-							blockly.getMainWorkspace().getAllBlocks().forEach((block) => {
-								const field = block.getField(type) as FieldDropdown;
-								if (!field || field.getValue() !== item) return;
+								// Loops over every block and forces them to refresh the displayed name on the dynamic field
+								blockly
+									.getMainWorkspace()
+									.getAllBlocks()
+									.forEach((block) => {
+										const field = block.getField(type) as FieldDropdown;
+										if (!field || field.getValue() !== item) return;
 
-								field.getOptions(false)
-								field.setValue(item);
-								field.forceRerender();
-							});
-							(blockly.getMainWorkspace() as WorkspaceSvg).refreshToolboxSelection();
-						});
+										field.getOptions(false);
+										field.setValue(item);
+										field.forceRerender();
+									});
+								(
+									blockly.getMainWorkspace() as WorkspaceSvg
+								).refreshToolboxSelection();
+							},
+						);
 
 						return item;
 					}
 					if (newValue === "DELETE_CURRENT") {
 						const item = this.getValue();
-						if (!item) return
+						if (!item) return;
 
 						// After deleting the item, dispose all blocks referencing the deleted item
 						after(manager.deleteItem(item)).then((deleted) => {
 							if (!deleted) return;
 
-							blockly.getMainWorkspace().getAllBlocks().forEach((block) => {
-								if (block.getFieldValue(type) === item) {
-									block.dispose(true)
-								}
-							});
-							(blockly.getMainWorkspace() as WorkspaceSvg).refreshToolboxSelection();
-						})
+							blockly
+								.getMainWorkspace()
+								.getAllBlocks()
+								.forEach((block) => {
+									if (block.getFieldValue(type) === item) {
+										block.dispose(true);
+									}
+								});
+							(
+								blockly.getMainWorkspace() as WorkspaceSvg
+							).refreshToolboxSelection();
+						});
 
 						return item;
 					}
 
 					return newValue;
-				}
-			) as Blockly.Field
+				},
+			) as Blockly.Field;
 
-			input.appendField(field, type)
+			input.appendField(field, type);
 		}
 
-		return extension
+		return extension;
 	}
 
 	const LIST_SELECT_EXTENSION = createItemSelectExtension("LIST", listManager);

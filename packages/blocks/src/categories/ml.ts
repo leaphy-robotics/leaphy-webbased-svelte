@@ -2,10 +2,10 @@ import { dialog } from "blockly";
 import { Msg, type WorkspaceSvg } from "blockly/core";
 import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
+import { ClassManager } from "./ml/classManager";
+import { type DataFrame, DatasetManager } from "./ml/datasetManager";
+import { SensorManager, type SensorReference } from "./ml/sensorManager";
 import { type Sensor, sensorByType } from "./ml/sensors";
-import {ClassManager} from "./ml/classManager";
-import {DataFrame, DatasetManager} from "./ml/datasetManager";
-import {SensorManager, SensorReference} from "./ml/sensorManager";
 
 export interface SensorData {
 	id: string;
@@ -259,6 +259,6 @@ export default function (workspace: WorkspaceSvg) {
 	return blockList;
 }
 
-export * from "./ml/classManager"
-export * from "./ml/datasetManager"
-export * from "./ml/sensorManager"
+export * from "./ml/classManager";
+export * from "./ml/datasetManager";
+export * from "./ml/sensorManager";

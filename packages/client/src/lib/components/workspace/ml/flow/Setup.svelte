@@ -1,5 +1,6 @@
 <script lang="ts">
 import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import MLState from "$state/ml.svelte";
@@ -9,18 +10,17 @@ import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
-import Error from "$components/core/popups/popups/Error.svelte";
 
 async function upload() {
 	if (MLState.sensors.length === 0) {
 		return PopupState.open({
-			component: Error,
+			component: ErrorPopup,
 			data: {
 				title: "ML_NO_SENSORS_TITLE",
-				message: "ML_NO_SENSORS_DESCRIPTION"
+				message: "ML_NO_SENSORS_DESCRIPTION",
 			},
 			allowInteraction: false,
-		})
+		});
 	}
 
 	await MLState.upload();

@@ -1,4 +1,4 @@
-import type {ML} from "../ml";
+import type { ML } from "../ml";
 
 export interface DataFrame {
 	input: number[];

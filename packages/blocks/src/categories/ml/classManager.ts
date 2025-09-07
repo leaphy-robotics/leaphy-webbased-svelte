@@ -1,7 +1,7 @@
-import {DynamicListManager} from "../../blocks/extensions";
-import {dialog} from "blockly";
-import {Msg} from "blockly/core";
-import type {ML} from "../ml";
+import { dialog } from "blockly";
+import { Msg } from "blockly/core";
+import type { DynamicListManager } from "../../blocks/extensions";
+import type { ML } from "../ml";
 
 export class Class {
 	constructor(
