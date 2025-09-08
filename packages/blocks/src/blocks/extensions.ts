@@ -15,21 +15,18 @@ import { listManager } from "../categories/lists";
 import { ml } from "../categories/ml";
 import { procedureManager } from "../generators/arduino/procedures";
 import type { DateItem } from "../generators/arduino/rtc";
+import { after } from "../utils";
 
 const xmlUtils = Blockly.utils.xml;
 
-async function after<Type>(promise: Type) {
-	return promise;
-}
-
-interface Item {
+interface DynamicListItem {
 	id: string;
 	name: string;
 }
 
 export interface DynamicListManager {
-	getItems(): Item[];
-	getItem(id: string): Item | undefined;
+	getItems(): DynamicListItem[];
+	getItem(id: string): DynamicListItem | undefined;
 	deleteItem(id: string): Promise<boolean> | boolean;
 	renameItem(id: string, name: string): void;
 }
