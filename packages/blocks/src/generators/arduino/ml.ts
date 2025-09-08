@@ -19,15 +19,15 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.addDefinition(
 			"bluetooth",
 			`BLEService controlService("${ml.trainingID}");\n` +
-				`float inputBuffer[${ml.getSensors().length}];\n` +
-				`BLECharacteristic input("f0e84eb0-f3ed-495c-926c-b2e3815415a7", BLERead | BLENotify, ${ml.getSensors().length * 4});\n` +
-				`bool outputBuffer[${ml.getClasses().length}];\n` +
-				`BLECharacteristic output("6f1c1de7-bc7d-4bcb-a30e-918b82d115e8", BLEWrite, ${ml.getClasses().length});\n`,
+				`float inputBuffer[${ml.sensors.getItems().length}];\n` +
+				`BLECharacteristic input("f0e84eb0-f3ed-495c-926c-b2e3815415a7", BLERead | BLENotify, ${ml.sensors.getItems().length * 4});\n` +
+				`bool outputBuffer[${ml.classes.getItems().length}];\n` +
+				`BLECharacteristic output("6f1c1de7-bc7d-4bcb-a30e-918b82d115e8", BLEWrite, ${ml.classes.getItems().length});\n`,
 		);
 
 		arduino.addDeclaration(
 			"bluetooth",
-			`void onOutputWrite(BLEDevice central, BLECharacteristic characteristic) {\n  characteristic.readValue(outputBuffer, ${ml.getClasses().length});\n}\n`,
+			`void onOutputWrite(BLEDevice central, BLECharacteristic characteristic) {\n  characteristic.readValue(outputBuffer, ${ml.classes.getItems().length});\n}\n`,
 		);
 
 		arduino.addSetup(
@@ -116,8 +116,8 @@ function getCodeGenerators(arduino: Arduino) {
 		if (ml.generateInference) {
 			addTensorFlowDetails();
 
-			return `${ml
-				.getSensors()
+			return `${ml.sensors
+				.getItems()
 				.map((sensor, index) =>
 					sensor.type.getValues(
 						arduino,
@@ -125,14 +125,16 @@ function getCodeGenerators(arduino: Arduino) {
 						sensor.settings,
 					),
 				)
-				.join("")}interpreter->Invoke();\n\n${ml
-				.getClasses()
+				.join("")}interpreter->Invoke();\n\n${ml.classes
+				.getItems()
 				.map(
 					(classData, index) =>
 						`float ${getClassName(classData)}_prob = output->data.f[${index}];\n`,
 				)
-				.join("")}\nint predicted_class = 0;\nfloat max_prob = 0;\n\n${ml
-				.getClasses()
+				.join(
+					"",
+				)}\nint predicted_class = 0;\nfloat max_prob = 0;\n\n${ml.classes
+				.getItems()
 				.map(
 					(classData, index) =>
 						`if (${getClassName(classData)}_prob > max_prob) {\n  predicted_class = ${index};\n  max_prob = ${getClassName(classData)}_prob;\n}\n`,
@@ -142,8 +144,8 @@ function getCodeGenerators(arduino: Arduino) {
 
 		addBluetoothDetails();
 
-		return `delay(10);\nBLE.poll();\n${ml
-			.getSensors()
+		return `delay(10);\nBLE.poll();\n${ml.sensors
+			.getItems()
 			.map((sensor, index) =>
 				sensor.type.getValues(
 					arduino,
@@ -153,11 +155,11 @@ function getCodeGenerators(arduino: Arduino) {
 			)
 			.join(
 				"",
-			)}\ninput.writeValue(inputBuffer, ${ml.getSensors().length * 4});\n`;
+			)}\ninput.writeValue(inputBuffer, ${ml.sensors.getItems().length * 4});\n`;
 	};
 
 	arduino.forBlock.ml_certainty = (block) => {
-		const classIndex = ml.getClassIndex(block.getFieldValue("CLASS"));
+		const classIndex = ml.classes.getItemIndex(block.getFieldValue("CLASS"));
 		if (ml.generateInference) {
 			return [`(predicted_class == ${classIndex})`, arduino.ORDER_ATOMIC];
 		}

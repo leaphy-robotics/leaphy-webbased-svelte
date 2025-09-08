@@ -209,6 +209,12 @@
 	"ML_ADVANCED_EDIT_MODEL": "Advanced: edit model",
 	"ML_PLAYGROUND": "Machine learning playground",
 	"ML_OPEN_PLAYGROUND": "Open playground",
+	"ML_MISSING_CLASSIFY_TITLE": "Missing classify inputs",
+	"ML_MISSING_CLASSIFY_DESCRIPTION": "Your project lacks the classify input block, please ensure that it exists and is inside a while true block",
+	"ML_NO_CLASSES_TITLE": "Not enough classes created",
+	"ML_NO_CLASSES_DESCRIPTION": "You haven't created enough classes yet, please create at least two classes before continuing",
+	"ML_NO_SENSORS_TITLE": "No sensors added",
+	"ML_NO_SENSORS_DESCRIPTION": "You haven't added any sensors, please add at least one sensor before uploading to your robot",
 	"PREVIOUS": "Previous",
 	"NEXT": "Next",
 	"CIRCUIT": "Circuit"

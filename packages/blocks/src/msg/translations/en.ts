@@ -635,5 +635,9 @@ messages.MATH_MAP_TARGET_FROM = "to low";
 messages.MATH_MAP_TARGET_TO = "high";
 messages.MATH_MAP_TOOLTIP =
 	"Re-maps a number from one range to another. This function does not constrain values to within the range, because out-of-range values are sometimes intended and useful.";
+messages.RENAME_CLASS = "Rename the class";
+messages.DELETE_CLASS = "Delete the class";
+messages.RENAME_LIST = "Rename the list";
+messages.DELETE_LIST = "Delete the list";
 
 export default messages;

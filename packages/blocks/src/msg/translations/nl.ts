@@ -782,5 +782,9 @@ messages.MATH_MAP_TARGET_FROM = "naar laag";
 messages.MATH_MAP_TARGET_TO = "hoog";
 messages.MATH_MAP_TOOLTIP =
 	"Mapt een getal van het ene bereik naar het andere. Deze functie beperkt waarden niet tot binnen het bereik, omdat waarden buiten het bereik soms bedoeld en nuttig zijn.";
+messages.RENAME_CLASS = "Hernoem de class";
+messages.DELETE_CLASS = "Verwijder de class";
+messages.RENAME_LIST = "Hernoem de lijst";
+messages.DELETE_LIST = "Verwijder de lijst";
 
 export default messages;

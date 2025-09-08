@@ -1,48 +1,127 @@
-import type {
-	Block,
-	BlockSvg,
-	Connection,
-	Menu,
-	MenuItem,
-	Workspace,
-	WorkspaceSvg,
-} from "blockly/core";
+import { dialog } from "blockly";
 import * as Blockly from "blockly/core";
-import { type List, listManager } from "../categories/lists";
+import {
+	type Block,
+	type BlockSvg,
+	type Connection,
+	type FieldDropdown,
+	type Menu,
+	type MenuItem,
+	Msg,
+	type Workspace,
+	type WorkspaceSvg,
+} from "blockly/core";
+import { listManager } from "../categories/lists";
 import { ml } from "../categories/ml";
 import { procedureManager } from "../generators/arduino/procedures";
 import type { DateItem } from "../generators/arduino/rtc";
+import { after } from "../utils";
 
 const xmlUtils = Blockly.utils.xml;
 
+interface DynamicListItem {
+	id: string;
+	name: string;
+}
+
+export interface DynamicListManager {
+	getItems(): DynamicListItem[];
+	getItem(id: string): DynamicListItem | undefined;
+	deleteItem(id: string): Promise<boolean> | boolean;
+	renameItem(id: string, name: string): void;
+}
+
 export default function registerExtensions(blockly: typeof Blockly) {
-	const LIST_SELECT_EXTENSION = function (this: Block) {
-		const input = this.getInput("LIST");
-		if (!input) return;
+	function createItemSelectExtension(
+		type: string,
+		manager: DynamicListManager,
+	) {
+		function extension(this: Block) {
+			const input = this.getInput(type);
+			if (!input) return;
 
-		input.appendField(
-			new blockly.FieldDropdown(() => {
-				return listManager.getLists().map((list: List) => {
-					return [list.name, list.id];
-				});
-			}) as Blockly.Field,
-			"LIST",
-		);
-	};
+			const field = new blockly.FieldDropdown(
+				function (this: FieldDropdown) {
+					const options = manager.getItems();
+					const current = options.find(
+						(option) => option.id === this.getValue(),
+					);
 
-	const CLASS_SELECT_EXTENSION = function (this: Block) {
-		const input = this.getInput("CLASS");
-		if (!input) return;
+					return [
+						...manager.getItems().map((item) => [item.name, item.id]),
+						[`${Msg[`RENAME_${type}`]} "${current?.name}"`, "RENAME_CURRENT"],
+						[`${Msg[`DELETE_${type}`]} "${current?.name}"`, "DELETE_CURRENT"],
+					] as [string, string][];
+				},
+				function (this: FieldDropdown, newValue) {
+					if (newValue === "RENAME_CURRENT") {
+						const item = this.getValue();
+						if (!item) return;
 
-		input.appendField(
-			new blockly.FieldDropdown(() => {
-				return ml.getClasses().map((classData) => {
-					return [classData.name, classData.id];
-				});
-			}),
-			"CLASS",
-		);
-	};
+						dialog.prompt(
+							`${Msg[`RENAME_${type}`]} "${manager.getItem(item)?.name}"`,
+							"",
+							(name) => {
+								if (!name) return;
+
+								manager.renameItem(item, name);
+
+								// Loops over every block and forces them to refresh the displayed name on the dynamic field
+								blockly
+									.getMainWorkspace()
+									.getAllBlocks()
+									.forEach((block) => {
+										const field = block.getField(type) as FieldDropdown;
+										if (!field || field.getValue() !== item) return;
+
+										field.getOptions(false);
+										field.setValue(item);
+										field.forceRerender();
+									});
+								(
+									blockly.getMainWorkspace() as WorkspaceSvg
+								).refreshToolboxSelection();
+							},
+						);
+
+						return item;
+					}
+					if (newValue === "DELETE_CURRENT") {
+						const item = this.getValue();
+						if (!item) return;
+
+						// After deleting the item, dispose all blocks referencing the deleted item
+						after(manager.deleteItem(item)).then((deleted) => {
+							if (!deleted) return;
+
+							blockly
+								.getMainWorkspace()
+								.getAllBlocks()
+								.forEach((block) => {
+									if (block.getFieldValue(type) === item) {
+										block.dispose(true);
+									}
+								});
+							(
+								blockly.getMainWorkspace() as WorkspaceSvg
+							).refreshToolboxSelection();
+						});
+
+						return item;
+					}
+
+					return newValue;
+				},
+			) as Blockly.Field;
+
+			input.appendField(field, type);
+		}
+
+		return extension;
+	}
+
+	const LIST_SELECT_EXTENSION = createItemSelectExtension("LIST", listManager);
+	const CLASS_SELECT_EXTENSION = createItemSelectExtension("CLASS", ml.classes);
 
 	const APPEND_STATEMENT_INPUT_STACK = function (this: Block) {
 		this.appendStatementInput("STACK");

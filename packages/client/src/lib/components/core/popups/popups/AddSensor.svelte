@@ -66,7 +66,7 @@ function cancel() {
 }
 
 function addSensor() {
-	ml.addSensor({
+	ml.sensors.createItem({
 		type: sensor,
 		settings,
 	});

@@ -1,5 +1,6 @@
 <script lang="ts">
 import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import MLState from "$state/ml.svelte";
@@ -11,12 +12,23 @@ import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 
 async function upload() {
+	if (MLState.sensors.length === 0) {
+		return PopupState.open({
+			component: ErrorPopup,
+			data: {
+				title: "ML_NO_SENSORS_TITLE",
+				message: "ML_NO_SENSORS_DESCRIPTION",
+			},
+			allowInteraction: false,
+		});
+	}
+
 	await MLState.upload();
 	if (ml.maxStep === 0) ml.maxStep = 1;
 }
 
 async function addSensor() {
-	if (ml.getDatasets().length > 0) {
+	if (ml.datasets.getItems().length > 0) {
 		const confirmed = (await PopupState.open({
 			component: Warning,
 			data: {
@@ -26,7 +38,7 @@ async function addSensor() {
 		})) as boolean;
 		if (!confirmed) return;
 
-		ml.clearDatasets();
+		ml.datasets.clear();
 	}
 
 	await PopupState.open({
@@ -38,7 +50,7 @@ async function addSensor() {
 }
 
 function deleteSensor(id: string) {
-	ml.deleteSensor(id);
+	ml.sensors.deleteItem(id);
 }
 </script>
 

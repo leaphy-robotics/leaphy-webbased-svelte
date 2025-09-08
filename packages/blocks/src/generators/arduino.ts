@@ -244,7 +244,7 @@ export class Arduino extends Blockly.Generator {
 		this.pins_ = Object.create(null);
 
 		// Define all user lists
-		const lists = listManager.getLists();
+		const lists = listManager.getItems();
 		const types = Object.fromEntries(
 			lists.map((list) => [list.id, [] as string[]]),
 		);
@@ -268,7 +268,7 @@ export class Arduino extends Blockly.Generator {
 			})
 			.filter((e) => e) as [Blockly.Block, string, string][];
 		typedSetters.forEach(([block, list, type]) => {
-			if (type === types[list][0] || !type) {
+			if (type === types[list]?.[0] || !type) {
 				block.setWarningText(null);
 			} else {
 				block.setWarningText("List has conflicting types");
