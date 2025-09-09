@@ -1,38 +1,28 @@
 #include <painlessMesh.h>
 
 painlessMesh mesh;
-
 uint32_t node_sender;
-
-String parseArg(String &msg) {
-   int index = msg.indexOf('\n');
-   String result = msg.substring(0, index);
-   msg = msg.substring(index + 1);
-
-   return result;
-}
-
 void receivedCallback(uint32_t from, String &msg) {
-   node_sender = from;
-   String channel = parseArg(msg);
-
-   if (channel == "test") {
-      test();
-   }
-}
-
-void onConnection(uint32_t node_sender) {
-  mesh.sendSingle(node_sender, "test\n");
+  node_sender = from;
+  if (msg == "test") {
+    mesh.sendSingle(node_sender, "test");
+  }
 }
 
 void leaphyProgram() {
   mesh.init("Leaphy Mesh", "Leaphy123");
   mesh.onReceive(&receivedCallback);
-  mesh.onNewConnection(&onConnection);
-  mesh.sendBroadcast("test\n");
-  mesh.update();
+  while (true) {
+    mesh.update();
+    mesh.sendBroadcast("test");
+  }
 }
 
-void test() {
-  mesh.sendSingle(node_sender, "test\n");
+void setup() {
+
+  leaphyProgram();
+}
+
+void loop() {
+
 }
