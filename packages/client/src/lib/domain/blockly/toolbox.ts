@@ -683,43 +683,7 @@ export default [
 		style: "mesh_category",
 		id: "l_mesh",
 		robots: robotGroups.L_ESP32_ALL,
-		groups: [
-			[
-				{
-					type: "mesh_setup",
-					inputs: {
-						NAME: text("Leaphy Mesh"),
-					},
-				},
-				{
-					type: "mesh_update",
-				},
-			],
-			[
-				{
-					type: "mesh_on_connection",
-				},
-			],
-			[
-				{
-					type: "mesh_add_procedure",
-				},
-				{
-					type: "mesh_call_procedure",
-					inputs: {
-						TO: { shadow: { type: "mesh_client" } },
-					},
-				},
-				{
-					type: "mesh_call_procedure_all",
-				},
-			],
-			[
-				{
-					type: "mesh_client",
-				},
-			],
-		],
+		custom: "MESH",
 	},
 	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",

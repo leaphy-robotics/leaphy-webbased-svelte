@@ -3,7 +3,6 @@ import {
 	ComponentBuilder,
 	Murphy,
 	MurphyI2C,
-	ToF,
 } from "@leaphy-robotics/schemas";
 import * as Blockly from "blockly/core";
 import {
@@ -15,7 +14,6 @@ import {
 } from "blockly/core";
 import { Dependencies } from "./arduino/dependencies";
 import { addI2CDeclarations } from "./arduino/i2c";
-import { procedureManager } from "./arduino/procedures";
 
 export class Arduino extends Blockly.Generator {
 	public ORDER_ATOMIC = 0; // 0 "" ...
@@ -205,35 +203,6 @@ export class Arduino extends Blockly.Generator {
 				block.getInput("VALUE")?.setCheck(type);
 			});
 		});
-
-		// Remote procedure manager
-		const procedures = [
-			...workspace.getBlocksByType("procedures_defreturn"),
-			...workspace.getBlocksByType("procedures_defnoreturn"),
-		];
-		const remotes = workspace
-			.getBlocksByType("mesh_add_procedure")
-			.map((block) => block.getFieldValue("METHOD"));
-
-		procedureManager.setProcedures(
-			procedures.map((procedure) => {
-				const name = procedure.getFieldValue("NAME");
-				const funcName = generator.nameDB_?.getName(
-					name,
-					Blockly.Names.NameType.PROCEDURE,
-				) as string;
-
-				return {
-					name,
-					funcName,
-					arguments: procedure.getVarModels().map((e) => ({
-						id: e.getId(),
-						name: e.name,
-					})),
-					remote: remotes.includes(funcName),
-				};
-			}),
-		);
 
 		// Create a dictionary of definitions to be printed at the top of the sketch
 		this.includes_ = Object.create(null);

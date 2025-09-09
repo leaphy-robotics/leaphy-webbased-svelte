@@ -22,73 +22,61 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 	},
+
 	{
-		type: "mesh_add_procedure",
+		type: "mesh_sender",
 		style: "mesh_blocks",
-		message0: "%{BKY_LEAPHY_MESH_ADD_PROCEDURE}",
+		message0: "%{BKY_LEAPHY_MESH_SENDER}",
+		output: "Number",
+	},
+
+	{
+		type: "mesh_on_signal",
+		message0: "%{BKY_LEAPHY_MESH_ON_SIGNAL}",
 		args0: [
 			{
 				type: "input_dummy",
-				name: "METHOD",
+				name: "SIGNAL",
 			},
 		],
-		extensions: ["procedure_select_extension"],
 		inputsInline: true,
+		extensions: ["mesh_signal_select_extension", "appendStatementInputStack"],
+		style: "mesh_blocks",
+	},
+	{
+		type: "mesh_broadcast_signal",
+		message0: "%{BKY_LEAPHY_MESH_BROADCAST_SIGNAL}",
+		args0: [
+			{
+				type: "input_dummy",
+				name: "SIGNAL",
+			},
+		],
+		inputsInline: true,
+		extensions: ["mesh_signal_select_extension"],
+		style: "mesh_blocks",
 		previousStatement: null,
 		nextStatement: null,
 	},
 	{
-		type: "mesh_call_procedure",
-		style: "mesh_blocks",
-		message0: "%{BKY_LEAPHY_MESH_CALL_PROCEDURE}",
+		type: "mesh_call_signal",
+		message0: "%{BKY_LEAPHY_MESH_CALL_SIGNAL}",
 		args0: [
 			{
 				type: "input_dummy",
-				name: "METHOD",
+				name: "SIGNAL",
 			},
 			{
 				type: "input_value",
-				name: "TO",
+				name: "RECIPIENT",
 				check: ["Number"],
-			},
+			}
 		],
-		extensions: ["procedure_select_extension"],
-		mutator: "procedure_arguments_extension",
 		inputsInline: true,
+		extensions: ["mesh_signal_select_extension"],
+		style: "mesh_blocks",
 		previousStatement: null,
 		nextStatement: null,
-	},
-	{
-		type: "mesh_call_procedure_all",
-		style: "mesh_blocks",
-		message0: "%{BKY_LEAPHY_MESH_CALL_PROCEDURE_ALL}",
-		args0: [
-			{
-				type: "input_dummy",
-				name: "METHOD",
-			},
-			{
-				type: "input_dummy",
-				name: "ARGUMENTS",
-			},
-		],
-		extensions: ["procedure_select_extension"],
-		mutator: "procedure_arguments_extension",
-		inputsInline: true,
-		previousStatement: null,
-		nextStatement: null,
-	},
-	{
-		type: "mesh_on_connection",
-		style: "mesh_blocks",
-		message0: "%{BKY_LEAPHY_MESH_ON_CONNECTION}",
-		extensions: ["appendStatementInputStack"],
-	},
-	{
-		type: "mesh_client",
-		style: "mesh_blocks",
-		message0: "%{BKY_LEAPHY_MESH_CLIENT}",
-		output: "Number",
 	},
 ];
 
