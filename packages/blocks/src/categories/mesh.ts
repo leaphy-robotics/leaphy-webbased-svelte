@@ -1,9 +1,9 @@
 import { Workspace } from "blockly";
-import {DynamicListManager} from "../blocks/extensions";
-import {ISerializer} from "blockly/core/interfaces/i_serializer";
-import {Msg, Variables, WorkspaceSvg} from "blockly/core";
-import type {FlyoutDefinition} from "blockly/core/utils/toolbox";
-import {listManager} from "./lists";
+import { Msg, Variables, type WorkspaceSvg } from "blockly/core";
+import type { ISerializer } from "blockly/core/interfaces/i_serializer";
+import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
+import type { DynamicListManager } from "../blocks/extensions";
+import { listManager } from "./lists";
 
 interface Signal {
 	id: string;
@@ -18,42 +18,46 @@ class MeshSignalManager implements DynamicListManager {
 	}
 
 	getItem(id: string) {
-		return this.signals.find(s => s.id === id);
+		return this.signals.find((s) => s.id === id);
 	}
 
 	deleteItem(id: string) {
-		this.signals.splice(this.signals.findIndex(s => s.id === id), 1);
+		this.signals.splice(
+			this.signals.findIndex((s) => s.id === id),
+			1,
+		);
 
 		return true;
 	}
 
 	createItem(name: string, id = crypto.randomUUID()) {
 		this.signals.push({
-			id, name
+			id,
+			name,
 		});
 	}
 
 	renameItem(id: string, name: string): void {
-		this.signals[this.signals.findIndex(s => s.id === id)].name = name;
+		this.signals[this.signals.findIndex((s) => s.id === id)].name = name;
 	}
 }
 
 export const meshSignals = new MeshSignalManager();
 
 export class MeshSignalSerializer implements ISerializer {
-    public priority = 90;
+	public priority = 90;
 
-    save() {
-		return meshSignals.signals
-    }
+	save() {
+		return meshSignals.signals;
+	}
 
-    load(state: Object): void {
-        meshSignals.signals = state as Signal[];
-    }
+	load(state: Signal[]): void {
+		meshSignals.signals = state;
+	}
 
-    clear(): void {
-        meshSignals.signals = [];
-    }
+	clear(): void {
+		meshSignals.signals = [];
+	}
 }
 
 export default function (workspace: WorkspaceSvg) {
@@ -67,40 +71,42 @@ export default function (workspace: WorkspaceSvg) {
 
 	const signals = meshSignals.getItems();
 	if (signals.length > 0) {
-		blockList.push(...[
-			{
-				kind: "block",
-				type: "mesh_setup",
-				inputs: {
-					NAME: {
-						shadow: {
-							type: "text",
-							fields: { TEXT: 'Leaphy Mesh' },
+		blockList.push(
+			...[
+				{
+					kind: "block",
+					type: "mesh_setup",
+					inputs: {
+						NAME: {
+							shadow: {
+								type: "text",
+								fields: { TEXT: "Leaphy Mesh" },
+							},
 						},
 					},
-				}
-			},
-			{ kind: "sep", gap: 8 },
-			{ kind: "block", type: "mesh_update" },
+				},
+				{ kind: "sep", gap: 8 },
+				{ kind: "block", type: "mesh_update" },
 
-			{ kind: "block", type: "mesh_on_signal" },
-			{ kind: "sep", gap: 8 },
-			{ kind: "block", type: "mesh_sender" },
+				{ kind: "block", type: "mesh_on_signal" },
+				{ kind: "sep", gap: 8 },
+				{ kind: "block", type: "mesh_sender" },
 
-			{ kind: "block", type: "mesh_broadcast_signal" },
-			{ kind: "sep", gap: 8 },
-			{
-				kind: "block",
-				type: "mesh_call_signal",
-				inputs: {
-					RECIPIENT: {
-						shadow: {
-							type: "mesh_sender",
-						}
-					}
-				}
-			},
-		]);
+				{ kind: "block", type: "mesh_broadcast_signal" },
+				{ kind: "sep", gap: 8 },
+				{
+					kind: "block",
+					type: "mesh_call_signal",
+					inputs: {
+						RECIPIENT: {
+							shadow: {
+								type: "mesh_sender",
+							},
+						},
+					},
+				},
+			],
+		);
 	}
 
 	workspace.registerButtonCallback("create_signal", () => {

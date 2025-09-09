@@ -70,7 +70,7 @@ const blocks: BlockDefinition = [
 				type: "input_value",
 				name: "RECIPIENT",
 				check: ["Number"],
-			}
+			},
 		],
 		inputsInline: true,
 		extensions: ["mesh_signal_select_extension"],

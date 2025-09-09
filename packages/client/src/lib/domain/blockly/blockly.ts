@@ -50,7 +50,7 @@ Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"mesh",
 	new CATEGORIES.MeshSignalSerializer(),
-)
+);
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"ml",

@@ -11,11 +11,11 @@ import {
 	type Workspace,
 	type WorkspaceSvg,
 } from "blockly/core";
+import { meshSignals } from "../categories/all";
 import { listManager } from "../categories/lists";
 import { ml } from "../categories/ml";
 import type { DateItem } from "../generators/arduino/rtc";
 import { after } from "../utils";
-import {meshSignals} from "../categories/all";
 
 const xmlUtils = Blockly.utils.xml;
 
@@ -126,8 +126,14 @@ export default function registerExtensions(blockly: typeof Blockly) {
 	const CLASS_SELECT_EXTENSION = createItemSelectExtension("CLASS", ml.classes);
 	blockly.Extensions.register("class_select_extension", CLASS_SELECT_EXTENSION);
 
-	const MESH_SIGNAL_SELECT_EXTENSION = createItemSelectExtension("SIGNAL", meshSignals);
-	blockly.Extensions.register("mesh_signal_select_extension", MESH_SIGNAL_SELECT_EXTENSION);
+	const MESH_SIGNAL_SELECT_EXTENSION = createItemSelectExtension(
+		"SIGNAL",
+		meshSignals,
+	);
+	blockly.Extensions.register(
+		"mesh_signal_select_extension",
+		MESH_SIGNAL_SELECT_EXTENSION,
+	);
 
 	const APPEND_STATEMENT_INPUT_STACK = function (this: Block) {
 		this.appendStatementInput("STACK");
