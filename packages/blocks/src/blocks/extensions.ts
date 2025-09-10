@@ -11,9 +11,9 @@ import {
 	type Workspace,
 	type WorkspaceSvg,
 } from "blockly/core";
+import { meshSignals } from "../categories/all";
 import { listManager } from "../categories/lists";
 import { ml } from "../categories/ml";
-import { procedureManager } from "../generators/arduino/procedures";
 import type { DateItem } from "../generators/arduino/rtc";
 import { after } from "../utils";
 
@@ -121,7 +121,19 @@ export default function registerExtensions(blockly: typeof Blockly) {
 	}
 
 	const LIST_SELECT_EXTENSION = createItemSelectExtension("LIST", listManager);
+	blockly.Extensions.register("list_select_extension", LIST_SELECT_EXTENSION);
+
 	const CLASS_SELECT_EXTENSION = createItemSelectExtension("CLASS", ml.classes);
+	blockly.Extensions.register("class_select_extension", CLASS_SELECT_EXTENSION);
+
+	const MESH_SIGNAL_SELECT_EXTENSION = createItemSelectExtension(
+		"SIGNAL",
+		meshSignals,
+	);
+	blockly.Extensions.register(
+		"mesh_signal_select_extension",
+		MESH_SIGNAL_SELECT_EXTENSION,
+	);
 
 	const APPEND_STATEMENT_INPUT_STACK = function (this: Block) {
 		this.appendStatementInput("STACK");
@@ -353,94 +365,6 @@ export default function registerExtensions(blockly: typeof Blockly) {
 	interface IfMixin extends IfMixinType {}
 	type IfMixinType = typeof CONTROLS_IF_MUTATOR_MIXIN;
 
-	const PROCEDURE_SELECT_EXTENSION = function (this: Block) {
-		const input = this.getInput("METHOD");
-		if (!input) return;
-
-		input.appendField(
-			new blockly.FieldDropdown(() => {
-				let procedures = procedureManager.procedures;
-				if (this.type !== "mesh_add_procedure")
-					procedures = procedures.filter((e) => e.remote);
-
-				const names = procedures.map((procedure) => [
-					procedure.name,
-					procedure.funcName,
-				]);
-
-				return (
-					names.length > 0 ? names : [["name", "name"]]
-				) as Blockly.MenuOption[];
-			}) as Blockly.Field,
-			"METHOD",
-		);
-	};
-
-	const PROCEDURE_ARGUMENTS_EXTENSION = {
-		state: [] as { id: string; name: string }[],
-		inputs: [] as string[],
-
-		construct(this: Block & { updateShape: () => void }) {
-			this.setOnChange(this.updateShape.bind(this));
-		},
-
-		updateShape(this: Block & { inputs: string[] }) {
-			if (this.isInFlyout) return;
-
-			const procedure = procedureManager.getProcedure(
-				this.getFieldValue("METHOD"),
-			);
-			if (!procedure) return;
-
-			if (this.inputs.length === 0 && procedure.arguments.length !== 0) {
-				this.appendDummyInput("WITH").appendField(
-					"%{BKY_PROCEDURES_BEFORE_PARAMS}",
-				);
-				this.appendEndRowInput("WITH_BRK");
-			}
-			if (this.inputs.length !== 0 && procedure.arguments.length === 0) {
-				this.removeInput("WITH");
-				this.removeInput("WITH_BRK");
-			}
-
-			this.inputs.forEach((id) => {
-				if (procedureManager.hasArgument(procedure, id)) return;
-
-				this.removeInput(`${id}_label`);
-				this.removeInput(id);
-				this.removeInput(`${id}_end`);
-			});
-			procedure.arguments.forEach(({ id, name }) => {
-				if (this.inputs.includes(id)) return;
-
-				this.appendDummyInput(`${id}_label`).appendField(
-					new blockly.FieldLabel(`${name}: `),
-				);
-				this.appendValueInput(id);
-				this.appendEndRowInput(`${id}_end`);
-			});
-
-			if (procedure.arguments.length !== 0) {
-				procedure.arguments.reduceRight((prev, curr) => {
-					this.moveInputBefore(`${curr.id}_end`, `${prev.id}_label`);
-					this.moveInputBefore(curr.id, `${curr.id}_end`);
-					this.moveInputBefore(`${curr.id}_label`, curr.id);
-
-					return curr;
-				});
-			}
-
-			this.inputs = procedure.arguments.map(({ id }) => id);
-		},
-
-		saveExtraState() {
-			return {};
-		},
-		loadExtraState(this: Block & { updateShape: () => void }) {
-			this.updateShape();
-		},
-	};
-
 	function loadFormat(topBlock: BlockSvg, format: DateItem[]) {
 		let connection = topBlock.getInput("STACK")?.connection;
 		connection?.targetBlock()?.dispose?.(false);
@@ -557,8 +481,6 @@ export default function registerExtensions(blockly: typeof Blockly) {
 	}
 
 	blockly.fieldRegistry.register("field_format", FormatField);
-	blockly.Extensions.register("list_select_extension", LIST_SELECT_EXTENSION);
-	blockly.Extensions.register("class_select_extension", CLASS_SELECT_EXTENSION);
 	blockly.Extensions.register(
 		"appendStatementInputStack",
 		APPEND_STATEMENT_INPUT_STACK,
@@ -583,14 +505,5 @@ export default function registerExtensions(blockly: typeof Blockly) {
 			"fmt_month",
 			"fmt_year",
 		],
-	);
-	blockly.Extensions.register(
-		"procedure_select_extension",
-		PROCEDURE_SELECT_EXTENSION,
-	);
-	blockly.Extensions.registerMutator(
-		"procedure_arguments_extension",
-		PROCEDURE_ARGUMENTS_EXTENSION,
-		PROCEDURE_ARGUMENTS_EXTENSION.construct,
 	);
 }

@@ -172,10 +172,10 @@ function getCodeGenerators(arduino: Arduino) {
 		}
 		switch (dropdown_property) {
 			case "EVEN":
-				code = `${number_to_check} % 2 == 0`;
+				code = `(int)${number_to_check} % 2 == 0`;
 				break;
 			case "ODD":
-				code = `${number_to_check} % 2 == 1`;
+				code = `(int)${number_to_check} % 2 == 1`;
 				break;
 			case "WHOLE":
 				arduino.addInclude("math", "#include <math.h>");
@@ -191,7 +191,7 @@ function getCodeGenerators(arduino: Arduino) {
 				const divisor =
 					arduino.valueToCode(block, "DIVISOR", arduino.ORDER_MULTIPLICATIVE) ||
 					"0";
-				code = `${number_to_check} % ${divisor} == 0`;
+				code = `(int)${number_to_check} % ${divisor} == 0`;
 				break;
 			}
 		}
