@@ -1,4 +1,9 @@
-import {LightSensor, LineSensor, RGBFlitz, WireColor} from "@leaphy-robotics/schemas/src";
+import {
+	LightSensor,
+	LineSensor,
+	RGBFlitz,
+	WireColor,
+} from "@leaphy-robotics/schemas/src";
 import Servo from "@leaphy-robotics/schemas/src/components/servo";
 import type { Block } from "blockly/core";
 import { MotorDirection } from "../../blocks/leaphy_original";
@@ -199,10 +204,25 @@ function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.analog_read = (block) => {
 		const dropdown_pin = block.getFieldValue("PIN");
 
-		const lightSensor = arduino.builder.add(`analog-${dropdown_pin}`, LightSensor)
-		arduino.builder.connect(arduino.murphy.port(dropdown_pin), lightSensor.port('Out'), WireColor.DATA_1);
-		arduino.builder.connect(arduino.murphy.port(`${dropdown_pin}.3V3`), lightSensor.port('VCC'), WireColor.VCC);
-		arduino.builder.connect(arduino.murphy.port(`${dropdown_pin}.GND`), lightSensor.port('GND'), WireColor.GND);
+		const lightSensor = arduino.builder.add(
+			`analog-${dropdown_pin}`,
+			LightSensor,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(dropdown_pin),
+			lightSensor.port("Out"),
+			WireColor.DATA_1,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${dropdown_pin}.3V3`),
+			lightSensor.port("VCC"),
+			WireColor.VCC,
+		);
+		arduino.builder.connect(
+			arduino.murphy.port(`${dropdown_pin}.GND`),
+			lightSensor.port("GND"),
+			WireColor.GND,
+		);
 
 		const code = `analogRead(${dropdown_pin})`;
 		return [code, arduino.ORDER_ATOMIC];
