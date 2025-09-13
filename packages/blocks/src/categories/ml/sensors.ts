@@ -48,7 +48,7 @@ class ToFSensor extends Sensor {
 		setNode: SetNode,
 		settings: SettingsToObject<typeof this.settings>,
 	) {
-		const value = `max(0.0f, min(1.0f, ${getTOF(arduino)} / 256.0f))`
+		const value = `max(0.0f, min(1.0f, ${getTOF(arduino)} / 256.0f))`;
 		if (settings.channel === -1) return setNode(0, value);
 
 		return `i2cSelectChannel(${settings.channel});\n${setNode(0, value)}i2cRestoreChannel();\n`;
