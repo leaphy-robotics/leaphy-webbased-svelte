@@ -11,3 +11,4 @@ export { default as Ultrasonic } from "./ultrasonic";
 export { default as servo } from "./servo";
 export { default as Gas } from "./gas";
 export { default as ToF } from "./ToF";
+export { default as LightSensor } from "./light-sensor";
