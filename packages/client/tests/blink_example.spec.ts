@@ -17,9 +17,9 @@ test("Load Blink example and check code", async ({ page }) => {
 
 	// Modify delay to 500
 	await page.getByLabel("Blockly Workspace").getByText("1000").first().click();
-	await page.locator("input").fill("500");
+	await page.locator(".blocklyHtmlInput").fill("500");
 	await page.getByLabel("Blockly Workspace").getByText("1000").last().click(); // Use last as in headless mode it still finds the first one for some reason
-	await page.locator("input").fill("500");
+	await page.locator(".blocklyHtmlInput").fill("500");
 
 	// Check that the delays have been updated accordingly
 	await expect(page.locator(".view-lines")).toContainText(

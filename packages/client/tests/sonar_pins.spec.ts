@@ -14,7 +14,7 @@ async function test_sonar_pins(
 			has: page.getByText("Get distance Trig"),
 		})
 		.first()
-		.locator(".blocklyEditableText");
+		.locator(".blocklyEditableField");
 
 	expect(values.nth(0)).toHaveText(first_pin);
 	expect(values.nth(1)).toHaveText(second_pin);
