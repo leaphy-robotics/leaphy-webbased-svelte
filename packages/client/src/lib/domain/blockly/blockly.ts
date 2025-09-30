@@ -1,4 +1,4 @@
-import type { Workspace } from "blockly";
+import type { Workspace, utils } from "blockly";
 import * as Blockly from "blockly";
 import { ContextMenuRegistry, type WorkspaceSvg, serialization } from "blockly";
 import "@blockly/field-bitmap";
@@ -18,15 +18,11 @@ import {
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
-import type {
-	CategoryInfo,
-	ToolboxDefinition,
-} from "blockly/core/utils/toolbox";
 import { Backpack } from "./backpack";
 import { LeaphyCategory } from "./category-ui/category";
-import { LeaphyToolbox } from "./category-ui/toolbox";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
+import "@blockly/toolbox-search";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -35,11 +31,6 @@ Blockly.registry.register(
 	Blockly.ToolboxCategory.registrationName,
 	LeaphyCategory,
 	true,
-);
-Blockly.registry.register(
-	Blockly.registry.Type.TOOLBOX,
-	Blockly.CollapsibleToolboxCategory.registrationName,
-	LeaphyToolbox,
 );
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
@@ -97,34 +88,38 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 	play.call(this, name, opt_volume);
 };
 
-export function loadToolbox(robot: RobotDevice): ToolboxDefinition {
+export function loadToolbox(
+	robot: RobotDevice,
+): utils.toolbox.ToolboxDefinition {
+	const contents = toolbox
+		.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
+		.map((category) => {
+			const result: Record<string, any> = {
+				kind: "category",
+				toolboxitemid: category.id.replace("%robot%", robot.id),
+				name: category.name,
+				categorystyle: category.style,
+			};
+
+			if (category.custom) result.custom = category.custom;
+			if (!category.groups) return result as utils.toolbox.CategoryInfo;
+
+			result.contents = category.groups.flatMap((group) => {
+				return group
+					.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
+					.flatMap((block) => [
+						{ kind: "sep", gap: "8" },
+						{ kind: "block", ...block },
+					])
+					.slice(1);
+			});
+
+			return result as utils.toolbox.CategoryInfo;
+		});
+
 	return {
 		kind: "categoryToolbox",
-		contents: toolbox
-			.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
-			.map((category) => {
-				const result: Record<string, any> = {
-					kind: "category",
-					toolboxitemid: category.id.replace("%robot%", robot.id),
-					name: category.name,
-					categorystyle: category.style,
-				};
-
-				if (category.custom) result.custom = category.custom;
-				if (!category.groups) return result as CategoryInfo;
-
-				result.contents = category.groups.flatMap((group) => {
-					return group
-						.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
-						.flatMap((block) => [
-							{ kind: "sep", gap: "8" },
-							{ kind: "block", ...block },
-						])
-						.slice(1);
-				});
-
-				return result as CategoryInfo;
-			}),
+		contents,
 	};
 }
 
@@ -216,7 +211,6 @@ export function setupWorkspace(
 			startScale: 0.8,
 		},
 	});
-
 	Blockly.serialization.workspaces.load(
 		content || JSON.parse(defaultProgram),
 		workspace,
@@ -226,6 +220,7 @@ export function setupWorkspace(
 	workspace.registerToolboxCategoryCallback("LISTS", CATEGORIES.LISTS);
 	workspace.registerToolboxCategoryCallback("MESH", CATEGORIES.MESH);
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
+	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
 	toolbox.getFlyout().autoClose = false;
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();
