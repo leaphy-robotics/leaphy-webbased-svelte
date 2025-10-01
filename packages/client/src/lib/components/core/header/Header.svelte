@@ -40,6 +40,7 @@ import {
 	faVolumeHigh,
 	faVolumeXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { serialization } from "blockly";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
@@ -87,10 +88,37 @@ async function upload() {
 	}
 
 	window._paq.push(["trackEvent", "Main", "UploadClicked"]);
+
+	let code = WorkspaceState.code;
+	if (
+		WorkspaceState.Mode === Mode.BLOCKS &&
+		WorkspaceState.robot.type !== RobotType.L_MICROPYTHON
+	) {
+		const cs = new CompressionStream("gzip");
+
+		// Convert string to stream
+		const stream = new Blob([
+			JSON.stringify(serialization.workspaces.save(BlocklyState.workspace)),
+		])
+			.stream()
+			.pipeThrough(cs);
+
+		// Read the compressed data
+		const compressedBlob = await new Response(stream).blob();
+		const arrayBuffer = await compressedBlob.arrayBuffer();
+
+		arduino.program = new Uint8Array(arrayBuffer);
+		code = arduino.workspaceToCode(
+			BlocklyState.workspace,
+			WorkspaceState.robot.id,
+		);
+		arduino.program = null;
+	}
+
 	PopupState.open({
 		component: Uploader,
 		data: {
-			source: WorkspaceState.code,
+			source: code,
 		},
 		allowInteraction: false,
 	});

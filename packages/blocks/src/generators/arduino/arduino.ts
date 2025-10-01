@@ -13,26 +13,22 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_serial_available = () => {
-		arduino.addSetup("serial", "Serial.begin(115200);", false);
 		const code = "Serial.available()";
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
 	arduino.forBlock.leaphy_serial_read_line = () => {
-		arduino.addSetup("serial", "Serial.begin(115200);", false);
 		const code = "Serial.readStringUntil('\\n')";
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
 	arduino.forBlock.leaphy_serial_print_line = (block) => {
-		arduino.addSetup("serial", "Serial.begin(115200);", false);
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
 		return `Serial.println(${value});\n`;
 	};
 
 	arduino.forBlock.leaphy_serial_print_value = (block) => {
-		arduino.addSetup("serial", "Serial.begin(115200);", false);
 		const name =
 			arduino.valueToCode(block, "NAME", arduino.ORDER_ATOMIC) || "0";
 		const value =
@@ -221,7 +217,6 @@ function getCodeGenerators(arduino: Arduino) {
 			'    {0x76, "Air Pressure Sensor"}\n' +
 			"};\n";
 
-		arduino.addSetup("serial", "Serial.begin(115200);", false);
 		addI2CDeclarations();
 		arduino.addInclude("i2c_device_map", DEVICE_CHANNEL_MAP);
 		arduino.addDeclaration("i2c_list_devices", LIST_DEVICES);

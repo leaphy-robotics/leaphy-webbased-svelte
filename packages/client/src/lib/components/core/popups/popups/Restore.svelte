@@ -1,26 +1,31 @@
 <script lang="ts">
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
+import RobotRestore from "$components/ui/RobotRestore.svelte";
 import { robots } from "$domain/robots";
 import { type SavedContent, type SavedFile, projectDB } from "$domain/storage";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
-import type { PopupState } from "$state/popup.svelte";
-import RecordingState from "$state/recordings.svelte";
+import PopupState, {
+	type PopupState as PopupStateType,
+} from "$state/popup.svelte";
+import RobotRestoreState from "$state/robotRestore.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import { track } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { faCircleCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { getContext } from "svelte";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { getContext, onMount } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
-import { Circle, DoubleBounce, RingLoader } from "svelte-loading-spinners";
 
 interface Props {
 	saves: ((SavedContent | SavedFile) & { type: string; saveID: number })[];
 }
 let { saves = $bindable() }: Props = $props();
 
-const popupState = getContext<PopupState>("state");
-let value = $state<SavedContent | SavedFile>(saves[0]);
+const popupState = getContext<PopupStateType>("state");
+let value = $state<SavedContent | SavedFile | "robot">("robot");
 
 const saveOptions = $derived(
 	saves.map((save) => {
@@ -47,6 +52,29 @@ function cancel() {
 
 async function open() {
 	if (!value) return;
+	if (value === "robot") {
+		const program = await RobotRestoreState.getProgram(Prompt.MAYBE);
+		if (!program) {
+			return PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "NO_PROGRAM",
+					message: "NO_PROGRAM_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+		}
+
+		WorkspaceState.robot = program.robot;
+		WorkspaceState.Mode = Mode.BLOCKS;
+		BlocklyState.restore = program.program;
+		WorkspaceState.saveState = true;
+
+		AppState.Screen = Screen.WORKSPACE;
+		popupState.close();
+
+		return;
+	}
 
 	WorkspaceState.robot = robots[value.robot];
 	WorkspaceState.Mode = Mode[value.mode];
@@ -80,9 +108,23 @@ async function deleteSave(
 	} else {
 		await projectDB.saves.delete(save.saveID);
 	}
-
-	if (saves.length === 0) popupState.close();
 }
+
+async function updatePopup() {
+	const program = RobotRestoreState.program;
+	if (program === null) return;
+	if (await program) return;
+	if (saves.length === 0) popupState.close();
+
+	value = saves[0];
+}
+
+$effect(() => {
+	track(saves);
+	track(RobotRestoreState.program);
+
+	updatePopup().then();
+});
 </script>
 
 <div class="content">
@@ -90,6 +132,8 @@ async function deleteSave(
 		<h1>{$_("CONTINUE_WORKING")}</h1>
 		<span>{$_("CONTINUE_WORKING_DESC")}</span>
 	</div>
+
+	<RobotRestore selected={value === 'robot'} onselect={() => value = 'robot'} />
 
 	<div class="test">
 		<ListSelect options={saveOptions} bind:value>
