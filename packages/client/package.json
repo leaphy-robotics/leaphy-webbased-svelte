@@ -30,6 +30,7 @@
 	},
 	"dependencies": {
 		"@blockly/field-bitmap": "^4.1.1",
+		"@blockly/toolbox-search": "^3.1.0",
 		"@blockly/workspace-backpack": "^5.3.9",
 		"@floating-ui/dom": "^1.6.13",
 		"@fortawesome/free-brands-svg-icons": "^6.7.2",
@@ -46,7 +47,7 @@
 		"@xterm/addon-fit": "^0.10.0",
 		"@xterm/xterm": "^5.5.0",
 		"base64-js": "^1.5.1",
-		"blockly": "^10.4.3",
+		"blockly": "^12.3.1",
 		"buffer": "^6.0.3",
 		"chart.js": "^4.4.9",
 		"chartjs-adapter-date-fns": "^3.0.0",

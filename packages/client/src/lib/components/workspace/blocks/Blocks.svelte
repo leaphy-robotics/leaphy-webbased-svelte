@@ -76,7 +76,7 @@ onMount(() => {
 
 	$effect(() => {
 		BlocklyState.workspace.updateToolbox(loadToolbox(WorkspaceState.robot));
-		BlocklyState.workspace.getToolbox().selectItemByPosition(0);
+		BlocklyState.workspace.getToolbox().selectItemByPosition(1);
 		BlocklyState.workspace.getToolbox().refreshTheme();
 	});
 });

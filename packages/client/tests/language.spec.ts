@@ -15,7 +15,7 @@ test("Language", async ({ page }) => {
 	await expect(page.getByText("Lees anapin")).toBeVisible();
 	await expect(page.getByText("Lees gas")).toBeVisible();
 	await expect(page.getByText("Lees luchtdruk")).toBeVisible();
-	await page.locator("#l_numbers").click();
+	await page.locator("#l_numbers.blocklyToolboxCategory").click();
 	await expect(page.getByText("willekeurig getal van")).toBeVisible();
 	await expect(page.getByText("niet")).toBeVisible();
 	await page.getByText("even", { exact: true }).click();
