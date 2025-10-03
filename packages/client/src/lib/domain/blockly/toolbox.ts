@@ -30,6 +30,12 @@ function boolean() {
 
 export default [
 	{
+		name: "%{BKY_SEARCH_CATEGORY}",
+		style: "leaphy_category",
+		id: "l_search",
+		custom: "SEARCH",
+	},
+	{
 		name: "%{BKY_SENSOREN_CATEGORY}",
 		style: "leaphy_category",
 		id: "%robot%_sensors",

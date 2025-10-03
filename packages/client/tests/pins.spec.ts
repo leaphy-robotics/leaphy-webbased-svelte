@@ -41,7 +41,7 @@ async function open_dropdown(page: Page, text: string) {
 			has: page.getByText(text),
 		})
 		.first()
-		.locator(".blocklyEditableText")
+		.locator(".blocklyEditableField")
 		.filter({
 			has: page.locator(".blocklyDropdownText"),
 		})

@@ -1,10 +1,10 @@
 import AIState from "$state/ai.svelte";
 import { type Block, ContextMenuRegistry, type Workspace } from "blockly";
-import type { ISerializer } from "blockly/core/interfaces/i_serializer";
+import type { serialization } from "blockly";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 
-function serializeBlock(
+export function serializeBlock(
 	block: Block,
 	selected?: Block,
 	indent = 0,
@@ -80,7 +80,7 @@ export const explainBlockOption: ContextMenuRegistry.RegistryItem = {
 	},
 };
 
-export class PseudoSerializer implements ISerializer {
+export class PseudoSerializer implements serialization.ISerializer {
 	priority = 0;
 
 	clear() {}
@@ -88,6 +88,8 @@ export class PseudoSerializer implements ISerializer {
 
 	save(workspace: Workspace) {
 		const blocks = workspace.getTopBlocks();
-		return blocks.map((block) => serializeBlock(block)).join("\n\n");
+		return {
+			text: blocks.map((block) => serializeBlock(block)).join("\n\n"),
+		};
 	}
 }
