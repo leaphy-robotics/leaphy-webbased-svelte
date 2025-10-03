@@ -30,7 +30,7 @@ function boolean() {
 
 export default [
 	{
-		name: "Search",
+		name: "%{BKY_SEARCH_CATEGORY}",
 		style: "leaphy_category",
 		id: "l_search",
 		custom: "SEARCH",

@@ -790,5 +790,6 @@ messages.DELETE_LIST = "Verwijder de lijst";
 messages.RENAME_SIGNAL = "Hernoem het signaal";
 messages.DELETE_SIGNAL = "Verwijder het signaal";
 messages.SEARCH = "🔎 Zoeken...";
+messages.SEARCH_CATEGORY = "Zoeken";
 
 export default messages;

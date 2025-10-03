@@ -643,5 +643,6 @@ messages.DELETE_LIST = "Delete the list";
 messages.RENAME_SIGNAL = "Rename the signal";
 messages.DELETE_SIGNAL = "Delete the signal";
 messages.SEARCH = "🔎 Search...";
+messages.SEARCH_CATEGORY = "Search";
 
 export default messages;
