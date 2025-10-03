@@ -61,6 +61,7 @@ test("Saving - Blockly - Continue working", async ({ page }) => {
 
 	await page.reload();
 
+	await page.getByText("Original Uno").click();
 	await page.getByText("Continue").and(page.getByRole("button")).click();
 	await expect(page.getByText("repeat forever")).toBeVisible();
 });
@@ -91,6 +92,7 @@ test("Saving - C++ - Continue working", async ({ page }) => {
 
 	await page.reload();
 
+	await page.getByText("C++ - Arduino Uno").click();
 	await page.getByText("Continue").and(page.getByRole("button")).click();
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();

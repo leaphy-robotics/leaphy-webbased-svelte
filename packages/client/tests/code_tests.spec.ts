@@ -101,7 +101,6 @@ async function testCppExtension(page: Page, extension: string) {
 	});
 
 	let num_tests = 0;
-	let has_tested_download = false;
 
 	for (const workspace_file of await GetAllWorkspaceFiles(extension)) {
 		console.log(`Running test: ${workspace_file}`);
@@ -129,13 +128,7 @@ async function testCppExtension(page: Page, extension: string) {
 		const postData = JSON.parse(uploadInfo.postData() as string);
 
 		await testLibraries(postData.libraries as string[], workspace_file);
-		await testCode(postData.source_code as string, workspace_file);
-
-		// Only the first time test if downloading gives the same result as it is almost 4x slower than reading the post request
-		if (!has_tested_download) {
-			has_tested_download = true;
-			expect(postData.source_code as string).toBe(await downloadCode(page));
-		}
+		await testCode(await downloadCode(page), workspace_file);
 	}
 
 	expect(num_tests).toBeGreaterThan(0);

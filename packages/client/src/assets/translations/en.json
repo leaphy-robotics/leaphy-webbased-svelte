@@ -217,5 +217,11 @@
 	"ML_NO_SENSORS_DESCRIPTION": "You haven't added any sensors, please add at least one sensor before uploading to your robot",
 	"PREVIOUS": "Previous",
 	"NEXT": "Next",
-	"CIRCUIT": "Circuit"
+	"CIRCUIT": "Circuit",
+	"NO_PROGRAM": "No program",
+	"NO_PROGRAM_MESSAGE": "We couldn't find any code on your robot",
+	"LOADING_ROBOT": "Loading robot...",
+	"PROGRAM_STORED": "Program stored on robot {robot}",
+	"PROGRAM_STORED_DESCRIPTION": "This program was stored when you previously used this robot",
+	"CONNECT_TO_RESTORE": "Connect to restore from robot"
 }

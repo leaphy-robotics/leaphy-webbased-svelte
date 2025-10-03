@@ -211,7 +211,6 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || '""';
 		arduino.addDependency(Dependencies.SD);
 		arduino.addInclude("sdcard", "#include <SD.h>");
-		arduino.addSetup("serial", "Serial.begin(115200);", false);
 		arduino.addSetup("sdcard", "SD.begin(10);");
 
 		return `if (File sdFile = SD.open(${filename}, FILE_WRITE)) {\n  sdFile.println(${value});\n  sdFile.close();\n} else {\n  Serial.println("Failed to open SD card!");\n}\n`;
@@ -258,7 +257,6 @@ function getCodeGenerators(arduino: Arduino) {
 				? "Adafruit_SH1106G display(128, 64, &Wire, -1);"
 				: "Adafruit_SSD1306 display(128, 32, &Wire, -1);",
 		);
-		arduino.addSetup("serial", "Serial.begin(115200);");
 		return setup;
 	};
 

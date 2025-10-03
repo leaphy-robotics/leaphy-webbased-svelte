@@ -217,5 +217,11 @@
 	"ML_NO_SENSORS_DESCRIPTION": "Je hebt nog geen sensoren toegevoegd, voeg ten minste 1 sensor toe om door te gaan",
 	"PREVIOUS": "Vorige",
 	"NEXT": "Volgende",
-	"CIRCUIT": "Circuit"
+	"CIRCUIT": "Circuit",
+	"NO_PROGRAM": "Geen programma",
+	"NO_PROGRAM_MESSAGE": "We konden geen programma vinden op je robot",
+	"LOADING_ROBOT": "Robot laden...",
+	"PROGRAM_STORED": "Programma opgeslagen op {robot}",
+	"PROGRAM_STORED_DESCRIPTION": "Dit programma is opgeslagen toen je je de robot de vorige keer gebruikte",
+	"CONNECT_TO_RESTORE": "Verbind om van robot terug te zetten"
 }

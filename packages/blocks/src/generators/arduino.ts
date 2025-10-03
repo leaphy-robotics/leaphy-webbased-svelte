@@ -72,6 +72,7 @@ export class Arduino extends Blockly.Generator {
 	public i2c = this.builder.add("murphy-i2c", MurphyI2C);
 
 	public robotType = "l_uno";
+	public program: Uint8Array | null = null;
 
 	constructor() {
 		super("Arduino");
@@ -94,6 +95,63 @@ export class Arduino extends Blockly.Generator {
 		this.murphy = this.builder.add("murphy", Murphy);
 		this.i2c = this.builder.add("murphy-i2c", MurphyI2C);
 		this.builder.join(this.murphy, this.i2c);
+	}
+
+	public addSerial() {
+		if (!this.program) {
+			return this.addSetup("serial", "Serial.begin(115200);");
+		}
+
+		const programCode = Array.from(this.program)
+			.map((b) => `0x${b.toString(16).padStart(2, "0")}`)
+			.join(", ");
+		this.addDeclaration(
+			"program",
+			`const unsigned char program[] PROGMEM = { ${programCode} };`,
+		);
+
+		this.addDeclaration(
+			"serial-check",
+			`bool checkSerial() {\n  if (Serial.available() == 0) return true;\n  if (Serial.peek() != 0xff) return false;\n\n  Serial.print(F("leaphy_program [${this.robotType}] (")); // F() macro also saves RAM\n  Serial.print(sizeof(program));\n  Serial.println(F(")"));\n  while (Serial.available() > 0) {\n    Serial.read();\n  }\n  delay(10);\n  \n  // Read from flash and send in chunks to avoid buffer overflow\n  const size_t CHUNK_SIZE = 64;\n  size_t programSize = sizeof(program);\n  \n  for (size_t i = 0; i < programSize; i += CHUNK_SIZE) {\n    size_t chunkSize = min(CHUNK_SIZE, programSize - i);\n    for (size_t j = 0; j < chunkSize; j++) {\n      Serial.write(pgm_read_byte(&program[i + j]));\n    }\n  }\n  return false;\n}`,
+		);
+
+		if (this.robotType.includes("esp32")) {
+			// ESP32 doesn't reset when a serial connection happens, furthermore the nano esp32 doesn't provide reset signals so we can't manually reset it either
+			// Here's some magic to make the ESP32 listen to when a request happens using interrupts
+
+			// We need to break out of the interrupt context in order to be able to send back serial data
+			this.addDeclaration(
+				"serial-task",
+				"TaskHandle_t serialTaskHandle = NULL;\n" +
+					"void updateSerial(void* parameter) {\n" +
+					"  while (true) {\n" +
+					"    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // Wait\n" +
+					"    checkSerial();  // Runs in normal mode!\n" +
+					"  }\n" +
+					"}",
+			);
+
+			this.addDeclaration(
+				"serial-event",
+				"void onSerialEvent(void* event_handler_arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {\n" +
+					"  if (event_id != ARDUINO_USB_CDC_RX_EVENT) return;\n\n" +
+					"  xTaskNotifyFromISR(serialTaskHandle, 0, eNoAction, NULL);\n" +
+					"}",
+			);
+
+			this.addSetup(
+				"serial",
+				"Serial.begin(115200);\n" +
+					'  xTaskCreate(updateSerial, "Task", 2048, NULL, 1, &serialTaskHandle);\n' +
+					"  Serial.onEvent(onSerialEvent);\n",
+			);
+		} else {
+			this.addSetup(
+				"serial",
+				"Serial.begin(115200);\n" +
+					"  while (millis() < 100 && checkSerial()) {};\n",
+			);
+		}
 	}
 
 	public init(workspace: WorkspaceSvg) {
@@ -211,6 +269,8 @@ export class Arduino extends Blockly.Generator {
 		this.setups_ = Object.create(null);
 		// Create a dictionary of pins to check if their use conflicts
 		this.pins_ = Object.create(null);
+
+		this.addSerial();
 
 		// Define all user lists
 		const lists = listManager.getItems();

@@ -182,13 +182,11 @@ class PopupsState {
 			);
 		}
 
-		if (tempSaves.length > 0) {
-			await this.open({
-				component: Restore,
-				data: { saves },
-				allowInteraction: false,
-			});
-		}
+		await this.open({
+			component: Restore,
+			data: { saves },
+			allowInteraction: false,
+		});
 	}
 
 	clear() {

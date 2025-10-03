@@ -44,6 +44,7 @@ export async function goToHomePage({ page }: PlaywrightTestArgs) {
 	await page.goto("/", { waitUntil: "commit" });
 	await page.getByRole("button", { name: "English" }).click();
 	await page.getByRole("button", { name: "Let's get started!" }).click();
+	await page.getByRole("button", { name: "Cancel" }).click();
 }
 
 export async function openExample(page: Page, example: string | RegExp) {
