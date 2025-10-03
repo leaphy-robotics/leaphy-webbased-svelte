@@ -66,6 +66,7 @@ void leaphyProgram() {
   }
 }
 
+// Describe this function...
 void handle_input() {
   if (Serial.available() != 0) {
     cmd = Serial.readStringUntil('\n');
@@ -84,6 +85,7 @@ void handle_input() {
   }
 }
 
+// Describe this function...
 void move_snake() {
   snake_x.addAtIndex(0, (snake_x.get(0) + direction_x));
   snake_y.addAtIndex(0, (snake_y.get(0) + direction_y));
@@ -104,11 +106,13 @@ int mathRandomInt(int min, int max) {
   return min + (rand() % (max - min + 1));
 }
 
+// Describe this function...
 void spawn_apple() {
   apple_x = mathRandomInt(0, 7);
   apple_y = mathRandomInt(0, 7);
 }
 
+// Describe this function...
 void check_bite() {
   if (apple_x == snake_x.get(0) && apple_y == snake_y.get(0)) {
     grow = true;
@@ -117,11 +121,13 @@ void check_bite() {
   }
 }
 
+// Describe this function...
 void set_direction(double x, double y) {
   direction_x = x;
   direction_y = y;
 }
 
+// Describe this function...
 boolean check_death() {
   if (snake_x.get(0) < 0 || snake_x.get(0) >= 8) {
     return true;
@@ -140,6 +146,7 @@ boolean check_death() {
   return false;
 }
 
+// Describe this function...
 void render_snake() {
   matrix.clearDisplay(0);
   iteration = 0;
@@ -150,6 +157,7 @@ void render_snake() {
   }
 }
 
+// Describe this function...
 void game_loop() {
   while (true) {
     handle_input();
@@ -166,12 +174,12 @@ void game_loop() {
 }
 
 void setup() {
-	matrix.shutdown(0, false);
+	Serial.begin(115200);
+  matrix.shutdown(0, false);
   matrix.setIntensity(0, 8);
   matrix.clearDisplay(0);
   segment_display.setBrightness(255);
 
-  Serial.begin(115200);
 
   randomSeed(analogRead(0));
   leaphyProgram();
