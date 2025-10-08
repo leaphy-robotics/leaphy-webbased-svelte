@@ -45,7 +45,10 @@ test("Undo redo - Variable change", async ({ page }) => {
 
 	// Change a boolean
 	await page.getByText("true").click();
-	await page.locator("#blockly-1").getByText("false").click();
+	await page
+		.locator('.blocklyMenuItem[aria-selected="false"]')
+		.getByText("false")
+		.click();
 	await expect(page.getByText("false")).toHaveCount(2);
 	await undo(page);
 	await expect(page.getByText("false")).toHaveCount(1);
