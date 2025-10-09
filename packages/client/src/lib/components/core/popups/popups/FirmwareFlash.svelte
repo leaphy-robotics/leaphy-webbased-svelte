@@ -1,122 +1,125 @@
 <script lang="ts">
-import {_} from "svelte-i18n";
-import {getContext} from "svelte";
-import Windowed from "../Windowed.svelte";
 import SerialState, { type LeaphyPort } from "$state/serial.svelte";
-import DFU from "../../../../programmers/DFU";
 import base64 from "base64-js";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
+import DFU from "../../../../programmers/DFU";
+import Windowed from "../Windowed.svelte";
 
 enum FlashingState {
-    SELECT_BOARD,
-    VERIFY_OK,
-    DOWNLOAD_FW,
-    FLASH_FW,
-    DONE,
-    ERROR
+	SELECT_BOARD = 0,
+	VERIFY_OK = 1,
+	DOWNLOAD_FW = 2,
+	FLASH_FW = 3,
+	DONE = 4,
+	ERROR = 5,
 }
 
 class FirmwareOption {
-    name:string;
-    icon_url:string;
-    is_connected:(manufacturer:number,device:number) => boolean;
-    firmware_url:string;
+	name: string;
+	icon_url: string;
+	is_connected: (manufacturer: number, device: number) => boolean;
+	firmware_url: string;
 }
 
-const knownFirmware:FirmwareOption[] = [
-    {
-        name:"Raspberry RP2040",
-        icon_url:"",
-        firmware_url:"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
-        is_connected:(manufacturer:number, device:number) => {
-            return manufacturer == 0x2341 && device == 0x025e;
-        }
-    },
-    {
-        name:"ESP32",
-        icon_url:"",
-        firmware_url:"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/esp32.bin",
-        is_connected:(manufacturer:number, device:number) => {
-            return manufacturer == 0x2341 && device == 0x0070;
-        }
-    }
-]
+const knownFirmware: FirmwareOption[] = [
+	{
+		name: "Raspberry RP2040",
+		icon_url: "",
+		firmware_url:
+			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
+		is_connected: (manufacturer: number, device: number) => {
+			return manufacturer === 0x2341 && device === 0x025e;
+		},
+	},
+	{
+		name: "ESP32",
+		icon_url: "",
+		firmware_url:
+			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/esp32.bin",
+		is_connected: (manufacturer: number, device: number) => {
+			return manufacturer === 0x2341 && device === 0x0070;
+		},
+	},
+];
 
 let show_all = $state(false);
-let progress:FlashingState = $state(FlashingState.SELECT_BOARD);
+let progress: FlashingState = $state(FlashingState.SELECT_BOARD);
 
 let onAccept: () => void;
 let onReject: () => void;
-let accepted_button:Promise<void> = $state(
-    new Promise<void>((resolve,reject) => {
-        onAccept = resolve;
-        onReject = reject;
-    }),
+let accepted_button: Promise<void> = $state(
+	new Promise<void>((resolve, reject) => {
+		onAccept = resolve;
+		onReject = reject;
+	}),
 );
 
-let latest_error:string = $state("FIRMWARE_ERROR_DEFAULT");
+let latest_error: string = $state("FIRMWARE_ERROR_DEFAULT");
 
-async function flashFirmware(selected:FirmwareOption) {
-    //todo: download and flash the firmware.
-    console.log(`Flashing firmware for ${selected.name}`);
-    if (SerialState.usb_ids === null) {
-        progress = FlashingState.ERROR;
-        latest_error = "FIRMWARE_NO_CONNECTION";
-        return;
-    }
-    progress = FlashingState.VERIFY_OK;
-    try {
-        await accepted_button;
-    } catch {
-        latest_error = "FIRMWARE_CANCEL_BUTTON";
-        progress = FlashingState.ERROR;
-        return;
-    }
+async function flashFirmware(selected: FirmwareOption) {
+	//todo: download and flash the firmware.
+	console.log(`Flashing firmware for ${selected.name}`);
+	if (SerialState.usb_ids === null) {
+		progress = FlashingState.ERROR;
+		latest_error = "FIRMWARE_NO_CONNECTION";
+		return;
+	}
+	progress = FlashingState.VERIFY_OK;
+	try {
+		await accepted_button;
+	} catch {
+		latest_error = "FIRMWARE_CANCEL_BUTTON";
+		progress = FlashingState.ERROR;
+		return;
+	}
 
-    progress = FlashingState.DOWNLOAD_FW;
-    let image_data:string = null;
-    try {
-        let response = await fetch(selected.firmware_url);
-        if (response.status !== 200) {
-            latest_error = "FIRMWARE_DOWNLOAD_FAILED_RESPONSE";
-            progress = FlashingState.ERROR;
-            return;
-        }
-        //Conversion needed since existing DFU utility expects a string.
-        image_data = base64.fromByteArray(await response.bytes());
-    } catch {
-        latest_error = "FIRMWARE_DOWNLOAD_FAILED_OTHER";
-        progress = FlashingState.ERROR;
-        return;
-    }
+	progress = FlashingState.DOWNLOAD_FW;
+	let image_data: string = null;
+	try {
+		let response = await fetch(selected.firmware_url);
+		if (response.status !== 200) {
+			latest_error = "FIRMWARE_DOWNLOAD_FAILED_RESPONSE";
+			progress = FlashingState.ERROR;
+			return;
+		}
+		//Conversion needed since existing DFU utility expects a string.
+		image_data = base64.fromByteArray(await response.bytes());
+	} catch {
+		latest_error = "FIRMWARE_DOWNLOAD_FAILED_OTHER";
+		progress = FlashingState.ERROR;
+		return;
+	}
 
-    progress = FlashingState.FLASH_FW;
-    //The DFU utility expects that specifically a USB device is connected.
-    //SerialState only uses USB as a fallback if no serial devices are found.
-    //Will be an unexpected interaction for the user, but should work.
-    if ((await navigator.usb.getDevices()).length === 0){
-        try {
-            const filters = [{vendorId:SerialState.usb_ids[0],productId:SerialState[1]}];
-            await navigator.usb.requestDevice({filters});
-        } catch {
-            latest_error = "FIRMWARE_NO_USB_CONNECTION";
-            progress = FlashingState.ERROR;
-            return;
-        }
-    }
+	progress = FlashingState.FLASH_FW;
+	//The DFU utility expects that specifically a USB device is connected.
+	//SerialState only uses USB as a fallback if no serial devices are found.
+	//Will be an unexpected interaction for the user, but should work.
+	if ((await navigator.usb.getDevices()).length === 0) {
+		try {
+			const filters = [
+				{ vendorId: SerialState.usb_ids[0], productId: SerialState[1] },
+			];
+			await navigator.usb.requestDevice({ filters });
+		} catch {
+			latest_error = "FIRMWARE_NO_USB_CONNECTION";
+			progress = FlashingState.ERROR;
+			return;
+		}
+	}
 
-    const dfu = new DFU();
-    try {
-        await dfu.upload(SerialState.port,{"sketch":image_data});
-    } catch (err) {
-        latest_error = "FIRMWARE_FLASHING_FAILED";
-        progress = FlashingState.ERROR;
-        console.error(err);
-        return;
-    }
+	const dfu = new DFU();
+	try {
+		await dfu.upload(SerialState.port, { sketch: image_data });
+	} catch (err) {
+		latest_error = "FIRMWARE_FLASHING_FAILED";
+		progress = FlashingState.ERROR;
+		console.error(err);
+		return;
+	}
 
-    progress = FlashingState.DONE;
+	progress = FlashingState.DONE;
 }
-
 </script>
 
 <Windowed title={$_("FIRMWARE_WINDOW_TITLE")}>

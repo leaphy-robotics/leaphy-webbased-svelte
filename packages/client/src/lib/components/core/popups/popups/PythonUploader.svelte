@@ -63,7 +63,7 @@ onMount(async () => {
 				console.log(reason);
 				return "0";
 			});
-        const version_info = JSON.parse(raw_ver_info); //TODO: do something with this info.
+		const version_info = JSON.parse(raw_ver_info); //TODO: do something with this info.
 		currentState = "INSTALLING_LIBRARIES";
 		await io.packageManager.flashLibrary(
 			"github:leaphy-robotics/leaphy-micropython/package.json",

@@ -46,11 +46,11 @@ import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
+import FirmwareFlash from "../popups/popups/FirmwareFlash.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-	import FirmwareFlash from "../popups/popups/FirmwareFlash.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
@@ -295,7 +295,7 @@ function flashFirmware() {
 		component: FirmwareFlash,
 		data: {},
 		allowInteraction: false,
-	})
+	});
 }
 
 async function submit() {
