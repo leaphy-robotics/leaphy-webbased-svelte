@@ -2,7 +2,9 @@
 import {_} from "svelte-i18n";
 import {getContext} from "svelte";
 import Windowed from "../Windowed.svelte";
-import SerialState from "$state/serial.svelte";
+import SerialState, { type LeaphyPort } from "$state/serial.svelte";
+import DFU from "../../../../programmers/DFU";
+import base64 from "base64-js";
 
 enum FlashingState {
     SELECT_BOARD,
@@ -41,28 +43,83 @@ const knownFirmware:FirmwareOption[] = [
 
 let show_all = $state(false);
 let progress:FlashingState = $state(FlashingState.SELECT_BOARD);
-let confirmed:Promise<boolean> = $state();
+
+let onAccept: () => void;
+let onReject: () => void;
+let accepted_button:Promise<void> = $state(
+    new Promise<void>((resolve,reject) => {
+        onAccept = resolve;
+        onReject = reject;
+    }),
+);
+
+let latest_error:string = $state("FIRMWARE_ERROR_DEFAULT");
 
 async function flashFirmware(selected:FirmwareOption) {
     //todo: download and flash the firmware.
     console.log(`Flashing firmware for ${selected.name}`);
-    if (SerialState.port === null) {
+    if (SerialState.usb_ids === null) {
+        progress = FlashingState.ERROR;
+        latest_error = "FIRMWARE_NO_CONNECTION";
+        return;
+    }
+    progress = FlashingState.VERIFY_OK;
+    try {
+        await accepted_button;
+    } catch {
+        latest_error = "FIRMWARE_CANCEL_BUTTON";
         progress = FlashingState.ERROR;
         return;
     }
+
     progress = FlashingState.DOWNLOAD_FW;
-    await new Promise((resolve) => {setTimeout(resolve,1000)});
+    let image_data:string = null;
+    try {
+        let response = await fetch(selected.firmware_url);
+        if (response.status !== 200) {
+            latest_error = "FIRMWARE_DOWNLOAD_FAILED_RESPONSE";
+            progress = FlashingState.ERROR;
+            return;
+        }
+        //Conversion needed since existing DFU utility expects a string.
+        image_data = base64.fromByteArray(await response.bytes());
+    } catch {
+        latest_error = "FIRMWARE_DOWNLOAD_FAILED_OTHER";
+        progress = FlashingState.ERROR;
+        return;
+    }
+
     progress = FlashingState.FLASH_FW;
-    await new Promise((resolve) => {setTimeout(resolve,1000)});
-    if (Math.random() > 0.5)
-        {progress = FlashingState.DONE;}
-    else
-        {progress = FlashingState.ERROR;}
+    //The DFU utility expects that specifically a USB device is connected.
+    //SerialState only uses USB as a fallback if no serial devices are found.
+    //Will be an unexpected interaction for the user, but should work.
+    if ((await navigator.usb.getDevices()).length === 0){
+        try {
+            const filters = [{vendorId:SerialState.usb_ids[0],productId:SerialState[1]}];
+            await navigator.usb.requestDevice({filters});
+        } catch {
+            latest_error = "FIRMWARE_NO_USB_CONNECTION";
+            progress = FlashingState.ERROR;
+            return;
+        }
+    }
+
+    const dfu = new DFU();
+    try {
+        await dfu.upload(SerialState.port,{"sketch":image_data});
+    } catch (err) {
+        latest_error = "FIRMWARE_FLASHING_FAILED";
+        progress = FlashingState.ERROR;
+        console.error(err);
+        return;
+    }
+
+    progress = FlashingState.DONE;
 }
 
 </script>
 
-<Windowed title={$_("FLASH_FIRMWARE_TITLE")}>
+<Windowed title={$_("FIRMWARE_WINDOW_TITLE")}>
     <div class="content">
         {#if progress === FlashingState.SELECT_BOARD}
             <div class="buttonrow">
@@ -77,20 +134,21 @@ async function flashFirmware(selected:FirmwareOption) {
             </div><br/>
             <label>
                 <input type="checkbox" bind:checked={show_all}/>
-                Laat alle firmware-opties zien
+                {$_("FIRMWARE_SHOW_ALL_OPTIONS")}
             </label>
         {:else if progress === FlashingState.VERIFY_OK}
-            Je staat op het punt de firmware op je bord te installeren.<br/>
-            Weet je zeker dat je het juiste bord en de juiste firmware hebt gekozen?<br/>
-            ja/nee
+            {$_("FIRMWARE_FINAL_WARNING")}
+            <button onclick={onAccept}>{$_("FIRMWARE_BUTTON_CONFIRM")}</button>
+            <button onclick={onReject}>{$_("FIRMWARE_BUTTON_CANCEL")}</button>
         {:else if progress === FlashingState.DOWNLOAD_FW}
-            downloaden...
+            {$_("FIRMWARE_STATE_DOWNLOADING")}
         {:else if progress === FlashingState.FLASH_FW}
-            flashen...
+            {$_("FIRMWARE_STATE_FLASHING")}
         {:else if progress === FlashingState.DONE}
-            Klaar!
+            {$_("FIRMWARE_STATE_DONE")}
         {:else if progress === FlashingState.ERROR}
-            Er is iets fout gegaan.
+            {$_("FIRMWARE_STATE_ERROR")}<br/><br/>
+            {$_(latest_error)}
         {/if}
     </div>
 </Windowed>
