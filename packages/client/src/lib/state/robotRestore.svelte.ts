@@ -90,10 +90,14 @@ class RobotRestoreState {
 		const reader = port.readable.getReader();
 		const writer = port.writable.getWriter();
 
+		await port.setSignals({ dataTerminalReady: false });
+		await new Promise(resolve => setTimeout(resolve, 250));
+		await port.setSignals({ dataTerminalReady: true });
+
 		const requestAbortController = this.sendProgramRequest(writer);
 		const program = await Promise.race([
 			this.receiveProgram(reader, requestAbortController),
-			new Promise<void>((resolve) => setTimeout(resolve, 6000)),
+			new Promise<undefined>((resolve) => setTimeout(resolve, 6000)),
 		]);
 		requestAbortController.abort();
 
