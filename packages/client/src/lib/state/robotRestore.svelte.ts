@@ -32,7 +32,7 @@ class RobotRestoreState {
 	private sendProgramRequest(writer: WritableStreamDefaultWriter<Uint8Array>) {
 		const abortController = new AbortController();
 
-		if (SerialState.board.id.includes("esp32")) {
+		if (SerialState.board?.id?.includes("esp32")) {
 			// ESP32 runs on an event, so it doesn't rely on sending the message quickly after a reset
 			writer.write(new Uint8Array([0xff])).then();
 		} else {
