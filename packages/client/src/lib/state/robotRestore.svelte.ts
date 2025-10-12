@@ -91,7 +91,7 @@ class RobotRestoreState {
 		const writer = port.writable.getWriter();
 
 		await port.setSignals({ dataTerminalReady: false });
-		await new Promise(resolve => setTimeout(resolve, 250));
+		await new Promise((resolve) => setTimeout(resolve, 250));
 		await port.setSignals({ dataTerminalReady: true });
 
 		const requestAbortController = this.sendProgramRequest(writer);
