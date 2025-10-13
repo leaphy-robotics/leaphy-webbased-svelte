@@ -10,7 +10,7 @@ export default function bluetooth(workspace: WorkspaceSvg) {
 	const blockList: FlyoutDefinition = [
 		{
 			kind: "button",
-			text: BluetoothState.connected ? "%{BKY_LEAPHY_ML_CONNECTED}" : "%{BKY_LEAPHY_ML_CONNECT}",
+			text: BluetoothState.connected ? "%{BKY_LEAPHY_BLE_CONNECTED}" : "%{BKY_LEAPHY_BLE_CONNECT}",
 			callbackkey: "ble_connect",
 		},
 		{

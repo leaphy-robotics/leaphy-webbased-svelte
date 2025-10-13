@@ -794,5 +794,12 @@ messages.SEARCH_CATEGORY = "Zoeken";
 messages.LEAPHY_BLE_SETUP = "Stel Bluetooth in met naam %1";
 messages.LEAPHY_BLE_UPDATE = "Update Bluetooth";
 messages.LEAPHY_BLE_IS_PRESSED = "Toets %1 is ingedrukt";
+messages.LEAPHY_BLE_CONNECT = "Verbind met robot";
+messages.LEAPHY_BLE_CONNECTED = "Open afstandsbesturing";
+messages.LEAPHY_KEY_SPACE = "spatiebalk";
+messages.LEAPHY_KEY_ARROW_UP = "pijtlje omhoog";
+messages.LEAPHY_KEY_ARROW_DOWN = "pijtlje omlaag";
+messages.LEAPHY_KEY_ARROW_RIGHT = "pijtlje rechts";
+messages.LEAPHY_KEY_ARROW_LEFT = "pijtlje links";
 
 export default messages;

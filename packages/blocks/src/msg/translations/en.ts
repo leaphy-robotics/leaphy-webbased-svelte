@@ -647,5 +647,12 @@ messages.SEARCH_CATEGORY = "Search";
 messages.LEAPHY_BLE_SETUP = "Setup Bluetooth with name %1";
 messages.LEAPHY_BLE_UPDATE = "Update Bluetooth";
 messages.LEAPHY_BLE_IS_PRESSED = "Key %1 is pressed";
+messages.LEAPHY_BLE_CONNECT = "Connect to robot";
+messages.LEAPHY_BLE_CONNECTED = "Open remote control";
+messages.LEAPHY_KEY_SPACE = "space";
+messages.LEAPHY_KEY_ARROW_UP = "up arrow";
+messages.LEAPHY_KEY_ARROW_DOWN = "down arrow";
+messages.LEAPHY_KEY_ARROW_RIGHT = "right arrow";
+messages.LEAPHY_KEY_ARROW_LEFT = "left arrow";
 
 export default messages;
