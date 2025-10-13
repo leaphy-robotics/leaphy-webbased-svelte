@@ -223,5 +223,7 @@
 	"LOADING_ROBOT": "Robot laden...",
 	"PROGRAM_STORED": "Programma opgeslagen op {robot}",
 	"PROGRAM_STORED_DESCRIPTION": "Dit programma is opgeslagen toen je je de robot de vorige keer gebruikte",
-	"CONNECT_TO_RESTORE": "Verbind om van robot terug te zetten"
+	"CONNECT_TO_RESTORE": "Verbind om van robot terug te zetten",
+	"BLUETOOTH_CONTROL": "Afstandsbesturing",
+	"BLUETOOTH_CONTROL_DESCRIPTION": "Gebruik je toetsenbord om je robot op afstand aan te sturen"
 }

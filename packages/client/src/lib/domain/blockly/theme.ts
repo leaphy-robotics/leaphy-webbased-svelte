@@ -12,6 +12,7 @@ export const dark = Theme.defineTheme("leaphy-dark", {
 		variable_blocks: { colourPrimary: "#87451a" },
 		list_blocks: { colourPrimary: "#3f144a" },
 		procedure_blocks: { colourPrimary: "#06416c" },
+		ble_blocks: { colourPrimary: "#0082fc" },
 	},
 
 	categoryStyles: {
@@ -22,6 +23,7 @@ export const dark = Theme.defineTheme("leaphy-dark", {
 		variables_category: { colour: "#87451a" },
 		lists_category: { colour: "#3f144a" },
 		functions_category: { colour: "#06416c" },
+		ble_category: { colour: "#0082fc" },
 	},
 	componentStyles: {
 		toolboxBackgroundColour: "#343444",
@@ -45,6 +47,7 @@ export const light = Theme.defineTheme("leaphy-light", {
 		list_blocks: { colourPrimary: "#a500cf" },
 		procedure_blocks: { colourPrimary: "#4095CE" },
 		ml_blocks: { colourPrimary: "#2e8b57" },
+		ble_blocks: { colourPrimary: "#0082fc" },
 	},
 
 	categoryStyles: {
@@ -56,6 +59,7 @@ export const light = Theme.defineTheme("leaphy-light", {
 		functions_category: { colour: "#4095CE" },
 		mesh_category: { colour: "#009999" },
 		ml_category: { colour: "#2e8b57" },
+		ble_category: { colour: "#0082fc" },
 	},
 	componentStyles: {
 		toolboxBackgroundColour: "#343444",

@@ -23,6 +23,7 @@ import { LeaphyCategory } from "./category-ui/category";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
+import bluetooth from "$domain/blockly/bluetooth";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -221,6 +222,7 @@ export function setupWorkspace(
 	workspace.registerToolboxCategoryCallback("MESH", CATEGORIES.MESH);
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
 	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
+	workspace.registerToolboxCategoryCallback("BLE", bluetooth);
 	toolbox.getFlyout().autoClose = false;
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();
