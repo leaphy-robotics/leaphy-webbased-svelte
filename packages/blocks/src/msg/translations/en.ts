@@ -644,5 +644,8 @@ messages.RENAME_SIGNAL = "Rename the signal";
 messages.DELETE_SIGNAL = "Delete the signal";
 messages.SEARCH = "🔎 Search...";
 messages.SEARCH_CATEGORY = "Search";
+messages.LEAPHY_BLE_SETUP = "Setup Bluetooth with name %1";
+messages.LEAPHY_BLE_UPDATE = "Update Bluetooth";
+messages.LEAPHY_BLE_IS_PRESSED = "Key %1 is pressed";
 
 export default messages;

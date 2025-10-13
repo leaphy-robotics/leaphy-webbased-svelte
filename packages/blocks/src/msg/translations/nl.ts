@@ -791,5 +791,8 @@ messages.RENAME_SIGNAL = "Hernoem het signaal";
 messages.DELETE_SIGNAL = "Verwijder het signaal";
 messages.SEARCH = "🔎 Zoeken...";
 messages.SEARCH_CATEGORY = "Zoeken";
+messages.LEAPHY_BLE_SETUP = "Stel Bluetooth in met naam %1";
+messages.LEAPHY_BLE_UPDATE = "Update Bluetooth";
+messages.LEAPHY_BLE_IS_PRESSED = "Toets %1 is ingedrukt";
 
 export default messages;

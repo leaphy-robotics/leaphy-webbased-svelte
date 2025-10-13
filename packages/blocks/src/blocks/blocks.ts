@@ -8,6 +8,7 @@ import * as mesh from "./mesh";
 import * as ml from "./ml";
 import * as rtc from "./rtc";
 import * as texts from "./text";
+import * as bluetooth from "./bluetooth";
 
 const blocks = [
 	...lists.blocks,
@@ -20,6 +21,7 @@ const blocks = [
 	...mesh.blocks,
 	...rtc.blocks,
 	...ml.blocks,
+	...bluetooth.blocks,
 ];
 
 export { blocks };

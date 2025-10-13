@@ -547,6 +547,7 @@ import * as sensors from "./arduino/sensors";
 import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
+import * as bluetooth from "./arduino/bluetooth";
 
 arduino.default(generator);
 leaphy_common.default(generator);
@@ -564,5 +565,6 @@ mesh.default(generator);
 rtc.default(generator);
 ml.default(generator);
 sensors.default(generator);
+bluetooth.default(generator);
 
 export default generator;
