@@ -797,9 +797,9 @@ messages.LEAPHY_BLE_IS_PRESSED = "Toets %1 is ingedrukt";
 messages.LEAPHY_BLE_CONNECT = "Verbind met robot";
 messages.LEAPHY_BLE_CONNECTED = "Open afstandsbesturing";
 messages.LEAPHY_KEY_SPACE = "spatiebalk";
-messages.LEAPHY_KEY_ARROW_UP = "pijtlje omhoog";
-messages.LEAPHY_KEY_ARROW_DOWN = "pijtlje omlaag";
-messages.LEAPHY_KEY_ARROW_RIGHT = "pijtlje rechts";
-messages.LEAPHY_KEY_ARROW_LEFT = "pijtlje links";
+messages.LEAPHY_KEY_ARROW_UP = "pijltje omhoog";
+messages.LEAPHY_KEY_ARROW_DOWN = "pijltje omlaag";
+messages.LEAPHY_KEY_ARROW_RIGHT = "pijltje rechts";
+messages.LEAPHY_KEY_ARROW_LEFT = "pijltje links";
 
 export default messages;
