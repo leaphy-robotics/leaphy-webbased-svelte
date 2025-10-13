@@ -1,14 +1,14 @@
 import type { BlockDefinition } from "blockly/core/blocks";
 
-const rawKeys = "abcdefghijklmnopqrstuvwxyz"
+const rawKeys = "abcdefghijklmnopqrstuvwxyz";
 const keys = [
 	["%{BKY_LEAPHY_KEY_SPACE}", "Space"],
 	["%{BKY_LEAPHY_KEY_ARROW_UP}", "ArrowUp"],
 	["%{BKY_LEAPHY_KEY_ARROW_DOWN}", "ArrowDown"],
 	["%{BKY_LEAPHY_KEY_ARROW_LEFT}", "ArrowLeft"],
 	["%{BKY_LEAPHY_KEY_ARROW_RIGHT}", "ArrowRight"],
-	...rawKeys.split('').map(key => [key, `Key${key.toUpperCase()}`]),
-	...new Array(10).fill(0).map((_, digit) => [`${digit}`, `Digit${digit}`])
+	...rawKeys.split("").map((key) => [key, `Key${key.toUpperCase()}`]),
+	...new Array(10).fill(0).map((_, digit) => [`${digit}`, `Digit${digit}`]),
 ];
 
 const blocks: BlockDefinition = [

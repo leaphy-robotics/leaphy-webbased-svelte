@@ -532,6 +532,7 @@ const generator = new Arduino();
 
 import { listManager } from "../categories/lists";
 import * as arduino from "./arduino/arduino";
+import * as bluetooth from "./arduino/bluetooth";
 import * as leaphy_extra from "./arduino/leaphy_extra";
 import * as leaphy_flitz from "./arduino/leaphy_flitz";
 import * as leaphy_original from "./arduino/leaphy_original";
@@ -547,7 +548,6 @@ import * as sensors from "./arduino/sensors";
 import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
-import * as bluetooth from "./arduino/bluetooth";
 
 arduino.default(generator);
 leaphy_common.default(generator);
