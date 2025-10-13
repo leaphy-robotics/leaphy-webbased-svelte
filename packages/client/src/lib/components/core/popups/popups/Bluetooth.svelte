@@ -5,12 +5,19 @@
 	import {getContext} from "svelte";
 	import type {PopupState} from "$state/popup.svelte";
 
+	const pressed = new Set<string>()
+
 	function onKeyDown(ev: KeyboardEvent) {
+		if (pressed.has(ev.code)) return
+		pressed.add(ev.code)
+
 		ev.stopImmediatePropagation()
 		BluetoothState.press(ev.code)
 	}
 
 	function onKeyUp(ev: KeyboardEvent) {
+		pressed.delete(ev.code)
+
 		ev.stopImmediatePropagation();
 		BluetoothState.release(ev.code)
 	}
