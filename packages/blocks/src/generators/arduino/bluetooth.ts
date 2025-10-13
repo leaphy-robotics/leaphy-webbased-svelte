@@ -2,6 +2,9 @@
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 
+// UUID used to identify Leaphy's control service
+export const SERVICE_UUID = "33c7afab-1609-4a7e-861d-9cfbefb33541";
+
 export function encodeStringToUUID(str: string) {
 	// Convert string to hex
 	const hex = str
@@ -51,7 +54,7 @@ function getCodeGenerators(arduino: Arduino) {
 
 		arduino.addDefinition(
 			"BLE",
-			`BLEService controlService("33c7afab-1609-4a7e-861d-9cfbefb33541");\n\n${keys
+			`BLEService controlService("${SERVICE_UUID}");\n\n${keys
 				.map(
 					(key) =>
 						`BLEByteCharacteristic ${key}Characteristic("${encodeStringToUUID(key)}", BLEWrite);`,

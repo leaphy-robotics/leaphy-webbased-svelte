@@ -1,6 +1,6 @@
 import BlocklyState from "$state/blockly.svelte";
 import { track } from "$state/utils";
-import { decodeUUIDToString } from "@leaphy-robotics/leaphy-blocks/src/generators/arduino/bluetooth";
+import {decodeUUIDToString, SERVICE_UUID} from "@leaphy-robotics/leaphy-blocks/src/generators/arduino/bluetooth";
 
 interface QueueItem {
 	characteristic: BluetoothRemoteGATTCharacteristic;
@@ -73,9 +73,7 @@ class BluetoothState {
 
 	async setup() {
 		this.server = await this.device.gatt.connect();
-		this.controlService = await this.server.getPrimaryService(
-			"33c7afab-1609-4a7e-861d-9cfbefb33541",
-		);
+		this.controlService = await this.server.getPrimaryService(SERVICE_UUID);
 		this.connected = true;
 		this.updateSelection();
 	}
@@ -84,7 +82,7 @@ class BluetoothState {
 		this.connected = false;
 
 		this.device = await navigator.bluetooth.requestDevice({
-			filters: [{ services: ["33c7afab-1609-4a7e-861d-9cfbefb33541"] }],
+			filters: [{ services: [SERVICE_UUID] }],
 		});
 		this.device.addEventListener("gattserverdisconnected", async () => {
 			this.connected = false;
