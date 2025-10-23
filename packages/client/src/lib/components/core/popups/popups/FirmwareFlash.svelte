@@ -1,26 +1,33 @@
 <script lang="ts">
-import SerialState, { type LeaphyPort } from "$state/serial.svelte";
-import base64 from "base64-js";
-import { getContext } from "svelte";
+import ProgressBar from "$components/ui/ProgressBar.svelte";
+import type { Programmer } from "$domain/robots.types";
+import PopupState from "$state/popup.svelte";
+import SerialState from "$state/serial.svelte";
 import { _ } from "svelte-i18n";
 import DFU from "../../../../programmers/DFU";
+import Pico from "../../../../programmers/Pico";
 import Windowed from "../Windowed.svelte";
+import ImageDownloader from "./ImageDownloader.svelte";
+import ImageFlasher from "./ImageFlasher.svelte";
+import Warning from "./Warning.svelte";
 
 enum FlashingState {
 	SELECT_BOARD = 0,
-	VERIFY_OK = 1,
-	DOWNLOAD_FW = 2,
-	FLASH_FW = 3,
-	DONE = 4,
-	ERROR = 5,
+	RUNNING = 1,
+	DONE = 2,
+	ERROR = 3,
 }
 
 class FirmwareOption {
 	name: string;
 	icon_url: string;
 	is_connected: (manufacturer: number, device: number) => boolean;
+	programmer: Programmer;
 	firmware_url: string;
 }
+
+const dfu = new DFU();
+const picotool = new Pico();
 
 const knownFirmware: FirmwareOption[] = [
 	{
@@ -31,6 +38,7 @@ const knownFirmware: FirmwareOption[] = [
 		is_connected: (manufacturer: number, device: number) => {
 			return manufacturer === 0x2341 && device === 0x025e;
 		},
+		programmer: picotool,
 	},
 	{
 		name: "ESP32",
@@ -40,81 +48,87 @@ const knownFirmware: FirmwareOption[] = [
 		is_connected: (manufacturer: number, device: number) => {
 			return manufacturer === 0x2341 && device === 0x0070;
 		},
+		programmer: dfu,
 	},
 ];
 
 let show_all = $state(false);
 let progress: FlashingState = $state(FlashingState.SELECT_BOARD);
-
-let onAccept: () => void;
-let onReject: () => void;
-let accepted_button: Promise<void> = $state(
-	new Promise<void>((resolve, reject) => {
-		onAccept = resolve;
-		onReject = reject;
-	}),
-);
-
+let running_progress: number = $state(0);
 let latest_error: string = $state("FIRMWARE_ERROR_DEFAULT");
 
 async function flashFirmware(selected: FirmwareOption) {
-	//todo: download and flash the firmware.
+	const step_perc = 100 / 4;
+	progress = FlashingState.RUNNING;
 	console.log(`Flashing firmware for ${selected.name}`);
 	if (SerialState.usb_ids === null) {
 		progress = FlashingState.ERROR;
 		latest_error = "FIRMWARE_NO_CONNECTION";
 		return;
 	}
-	progress = FlashingState.VERIFY_OK;
-	try {
-		await accepted_button;
-	} catch {
+	running_progress += step_perc;
+	const verify_popup = await PopupState.open({
+		component: Warning,
+		data: {
+			title: "FIRMWARE_CONFIRM_TITLE",
+			message: "FIRMWARE_FINAL_WARNING",
+			showCancel: true,
+		},
+		allowInteraction: false,
+	});
+	if (!(await verify_popup)) {
 		latest_error = "FIRMWARE_CANCEL_BUTTON";
 		progress = FlashingState.ERROR;
 		return;
 	}
+	running_progress += step_perc;
 
-	progress = FlashingState.DOWNLOAD_FW;
-	let image_data: string = null;
-	try {
-		let response = await fetch(selected.firmware_url);
-		if (response.status !== 200) {
-			latest_error = "FIRMWARE_DOWNLOAD_FAILED_RESPONSE";
-			progress = FlashingState.ERROR;
-			return;
-		}
-		//Conversion needed since existing DFU utility expects a string.
-		image_data = base64.fromByteArray(await response.bytes());
-	} catch {
-		latest_error = "FIRMWARE_DOWNLOAD_FAILED_OTHER";
+	let download_result = await PopupState.open({
+		component: ImageDownloader,
+		data: {
+			url: selected.firmware_url,
+		},
+		allowInteraction: false,
+		position: {
+			x: 0,
+			y: 100,
+		},
+	});
+	if (
+		typeof download_result === "string" ||
+		download_result instanceof String
+	) {
+		latest_error = download_result.toString();
 		progress = FlashingState.ERROR;
 		return;
 	}
-
-	progress = FlashingState.FLASH_FW;
-	//The DFU utility expects that specifically a USB device is connected.
-	//SerialState only uses USB as a fallback if no serial devices are found.
-	//Will be an unexpected interaction for the user, but should work.
-	if ((await navigator.usb.getDevices()).length === 0) {
-		try {
-			const filters = [
-				{ vendorId: SerialState.usb_ids[0], productId: SerialState[1] },
-			];
-			await navigator.usb.requestDevice({ filters });
-		} catch {
-			latest_error = "FIRMWARE_NO_USB_CONNECTION";
-			progress = FlashingState.ERROR;
-			return;
-		}
-	}
-
-	const dfu = new DFU();
-	try {
-		await dfu.upload(SerialState.port, { sketch: image_data });
-	} catch (err) {
-		latest_error = "FIRMWARE_FLASHING_FAILED";
+	if (download_result === undefined) {
+		latest_error = "FIRMWARE_CANCELLED";
 		progress = FlashingState.ERROR;
-		console.error(err);
+		return;
+	}
+	running_progress += step_perc;
+
+	let flash_result = await PopupState.open({
+		component: ImageFlasher,
+		data: {
+			prog: selected.programmer,
+			image: download_result,
+		},
+		allowInteraction: false,
+		position: {
+			x: 0,
+			y: 100,
+		},
+	});
+	if (typeof flash_result === "string" || flash_result instanceof String) {
+		latest_error = flash_result.toString();
+		progress = FlashingState.ERROR;
+		return;
+	}
+	if (flash_result === undefined) {
+		latest_error = "FIRMWARE_CANCELLED";
+		progress = FlashingState.ERROR;
 		return;
 	}
 
@@ -139,20 +153,17 @@ async function flashFirmware(selected: FirmwareOption) {
                 <input type="checkbox" bind:checked={show_all}/>
                 {$_("FIRMWARE_SHOW_ALL_OPTIONS")}
             </label>
-        {:else if progress === FlashingState.VERIFY_OK}
-            {$_("FIRMWARE_FINAL_WARNING")}
-            <button onclick={onAccept}>{$_("FIRMWARE_BUTTON_CONFIRM")}</button>
-            <button onclick={onReject}>{$_("FIRMWARE_BUTTON_CANCEL")}</button>
-        {:else if progress === FlashingState.DOWNLOAD_FW}
-            {$_("FIRMWARE_STATE_DOWNLOADING")}
-        {:else if progress === FlashingState.FLASH_FW}
-            {$_("FIRMWARE_STATE_FLASHING")}
-        {:else if progress === FlashingState.DONE}
-            {$_("FIRMWARE_STATE_DONE")}
-        {:else if progress === FlashingState.ERROR}
-            {$_("FIRMWARE_STATE_ERROR")}<br/><br/>
-            {$_(latest_error)}
-        {/if}
+        {:else}
+			<ProgressBar progress={running_progress}></ProgressBar>
+		{/if}
+		<div class="text">
+			{#if progress === FlashingState.DONE}
+				{$_("FIRMWARE_STATE_DONE")}
+			{:else if progress === FlashingState.ERROR}
+				{$_("FIRMWARE_STATE_ERROR")}<br/><br/>
+				{$_(latest_error)}
+			{/if}
+		</div>
     </div>
 </Windowed>
 
@@ -161,6 +172,8 @@ async function flashFirmware(selected: FirmwareOption) {
         min-height: 175px;
         min-width: 250px;
         margin: 8px 10px;
+		text-align: center;
+		padding:20px;
     }
 
     .buttonrow {

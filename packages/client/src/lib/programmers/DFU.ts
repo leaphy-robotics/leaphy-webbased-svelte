@@ -9,7 +9,6 @@ const dfu = new DFUUtil("/dfu-util/");
 
 export default class DFU implements Programmer {
 	async upload(port: LeaphyPort, response: Record<string, string>) {
-		await SerialState.reserve();
 		await port.close();
 		await delay(1000);
 		await USBRequestState.request();
@@ -17,7 +16,6 @@ export default class DFU implements Programmer {
 		const sketch = base64.toByteArray(response.sketch);
 		await dfu.flash(sketch);
 		await delay(1000);
-		SerialState.release();
 
 		await SerialState.reconnect();
 	}
