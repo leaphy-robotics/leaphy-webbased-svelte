@@ -151,7 +151,7 @@ class SerialState {
 
 	async requestPort(prompt: Prompt): Promise<SerialPort | USBDevice> {
 		this.showFeedback = prompt === Prompt.ALWAYS;
-		if (navigator.serial) {
+		if (navigator.serial && !navigator.userAgent.includes("Android")) {
 			if (prompt !== Prompt.ALWAYS) {
 				const [port] = await navigator.serial.getPorts();
 				if (port) return port;

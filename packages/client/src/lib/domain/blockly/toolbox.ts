@@ -2,7 +2,7 @@ import robotGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 import { format } from "date-fns";
 
-function number(value: number) {
+export function number(value: number) {
 	return {
 		shadow: {
 			type: "math_number",
@@ -11,7 +11,7 @@ function number(value: number) {
 	};
 }
 
-function text(value: string) {
+export function text(value: string) {
 	return {
 		shadow: {
 			type: "text",
@@ -20,7 +20,7 @@ function text(value: string) {
 	};
 }
 
-function boolean() {
+export function boolean() {
 	return {
 		shadow: {
 			type: "logic_boolean",
@@ -690,6 +690,13 @@ export default [
 		id: "l_mesh",
 		robots: robotGroups.L_ESP32_ALL,
 		custom: "MESH",
+	},
+	{
+		name: "Bluetooth",
+		style: "ble_category",
+		id: "l_ble",
+		robots: robotGroups.L_ESP32_ALL,
+		custom: "BLE",
 	},
 	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",

@@ -1,5 +1,6 @@
 import * as loops from "./alternatives";
 import * as arduino from "./arduino";
+import * as bluetooth from "./bluetooth";
 import * as leaphyCommon from "./leaphy_common";
 import * as leaphyFlitz from "./leaphy_flitz";
 import * as leaphyOriginal from "./leaphy_original";
@@ -20,6 +21,7 @@ const blocks = [
 	...mesh.blocks,
 	...rtc.blocks,
 	...ml.blocks,
+	...bluetooth.blocks,
 ];
 
 export { blocks };
