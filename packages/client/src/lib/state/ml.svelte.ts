@@ -20,6 +20,7 @@ import type { Component } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import PopupState from "./popup.svelte";
+import {BluetoothWriteQueue} from "$state/bluetooth.svelte";
 
 export const Step = {
 	SETUP: Setup as Component,
@@ -83,7 +84,8 @@ class MLState {
 
 	// Bluetooth LE communication handles for real-time data streaming
 	inputCharacteristic: BluetoothRemoteGATTCharacteristic;
-	outputWriter: WritableStreamDefaultWriter<Uint8Array>;
+	outputCharacteristic: BluetoothRemoteGATTCharacteristic;
+	queue = new BluetoothWriteQueue();
 
 	learning = $state(false);
 	snapshot: number[] = $state([]);
@@ -113,7 +115,7 @@ class MLState {
 			] = 1;
 		}
 
-		await this.outputWriter.write(buffer);
+		this.queue.write(this.outputCharacteristic, buffer);
 	}
 
 	constructor() {
@@ -213,17 +215,9 @@ class MLState {
 		const gatt = await device.gatt.connect();
 		const service = await gatt.getPrimaryService(ml.trainingID);
 
-		const outputCharacteristic = await service.getCharacteristic(
+		this.outputCharacteristic = await service.getCharacteristic(
 			"6f1c1de7-bc7d-4bcb-a30e-918b82d115e8",
 		);
-		this.outputWriter = new WritableStream<Uint8Array>({
-			async write(chunk) {
-				await Promise.race([
-					outputCharacteristic.writeValue(chunk),
-					new Promise((resolve) => setTimeout(resolve, 250)),
-				]);
-			},
-		}).getWriter();
 
 		this.inputCharacteristic = await service.getCharacteristic(
 			"f0e84eb0-f3ed-495c-926c-b2e3815415a7",
