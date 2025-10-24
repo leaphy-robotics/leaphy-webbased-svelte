@@ -14,8 +14,7 @@ export default class DFU implements Programmer {
 		const device = await USBRequestState.request();
 		const interfaces = dfu.Device.findDeviceDfuInterfaces(device);
 		if (interfaces.length === 0) {
-			console.log("No DFU interfaces found.");
-			return;
+			throw new Error("No DFU interfaces found, you might need to install drivers");
 		}
 
 		const dfuDevice = new dfu.Device(device, interfaces[0]);

@@ -337,9 +337,9 @@ export namespace dfu {
 				await this.device_.reset();
 			} catch (error) {
 				if (
-					error === "NetworkError: Unable to reset the device." ||
-					error === "NotFoundError: Device unavailable." ||
-					error === "NotFoundError: The device was disconnected."
+					error.toString().includes("Unable to reset the device") ||
+					error.toString().includes("Device unavailable") ||
+					error.toString().includes("The device was disconnected")
 				) {
 					this.logDebug("Ignored reset error");
 				} else {
