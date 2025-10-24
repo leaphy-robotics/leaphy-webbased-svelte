@@ -76,14 +76,6 @@ export default function (workspace: WorkspaceSvg) {
 				{
 					kind: "block",
 					type: "mesh_setup",
-					inputs: {
-						NAME: {
-							shadow: {
-								type: "text",
-								fields: { TEXT: "Leaphy Mesh" },
-							},
-						},
-					},
 				},
 				{ kind: "sep", gap: 8 },
 				{ kind: "block", type: "mesh_update" },

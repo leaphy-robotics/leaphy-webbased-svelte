@@ -7,9 +7,10 @@ const blocks: BlockDefinition = [
 		message0: "%{BKY_LEAPHY_MESH_SETUP}",
 		args0: [
 			{
-				type: "input_value",
+				type: "field_input",
 				name: "NAME",
-				check: ["String"],
+				text: "Leaphy Mesh",
+				spellcheck: false,
 			},
 		],
 		previousStatement: null,
