@@ -18,9 +18,6 @@ export default function bluetooth(workspace: WorkspaceSvg) {
 		{
 			kind: "block",
 			type: "ble_setup",
-			inputs: {
-				NAME: text("Leaphy Robot"),
-			},
 		},
 		{
 			kind: "block",
