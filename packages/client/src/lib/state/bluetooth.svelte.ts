@@ -10,7 +10,7 @@ interface QueueItem {
 	value: Uint8Array;
 }
 
-class BluetoothWriteQueue {
+export class BluetoothWriteQueue {
 	queue: QueueItem[] = [];
 	processing = false;
 
