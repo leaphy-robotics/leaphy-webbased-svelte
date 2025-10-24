@@ -10,15 +10,17 @@ void receivedCallback(uint32_t from, String &msg) {
 }
 
 void leaphyProgram() {
-  mesh.init("Leaphy Mesh", "Leaphy123");
-  mesh.onReceive(&receivedCallback);
   while (true) {
-    mesh.update();
     mesh.sendBroadcast("test");
+    mesh.update();
   }
 }
 
 void setup() {
+	Serial.begin(115200);
+  mesh.init("Leaphy Mesh", "Leaphy123");
+  mesh.onReceive(&receivedCallback);
+
 
   leaphyProgram();
 }
