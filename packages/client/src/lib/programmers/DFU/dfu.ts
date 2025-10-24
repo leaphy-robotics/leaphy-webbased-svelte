@@ -58,17 +58,17 @@ export namespace dfu {
 
 		public logDebug(msg: string): void {
 			WorkspaceState.uploadLog.push(msg);
-			console.debug(msg)
+			console.debug(msg);
 		}
 
 		public logInfo(msg: string): void {
 			WorkspaceState.uploadLog.push(msg);
-			console.info(msg)
+			console.info(msg);
 		}
 
 		public logWarning(msg: string): void {
 			WorkspaceState.uploadLog.push(msg);
-			console.warn(msg)
+			console.warn(msg);
 		}
 
 		public logProgress(done: number, total?: number): void {
