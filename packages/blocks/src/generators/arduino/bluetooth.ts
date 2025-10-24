@@ -63,9 +63,16 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 
 		const name = block.getFieldValue("NAME");
-		arduino.addSetup("BLE", `if (!BLE.begin()) {\n    Serial.println("starting Bluetooth® Low Energy module failed!");\n\n    while (1);\n  }\n\n  BLE.setLocalName("${name}");\n  BLE.setDeviceName("${name}");\n  BLE.setAdvertisedService(controlService);\n\n${keys
-			.map((key) => `  controlService.addCharacteristic(${key}Characteristic);`)
-			.join("\n")}\n  BLE.addService(controlService);\n\n  BLE.advertise();\n`)
+		arduino.addSetup(
+			"BLE",
+			`if (!BLE.begin()) {\n    Serial.println("starting Bluetooth® Low Energy module failed!");\n\n    while (1);\n  }\n\n  BLE.setLocalName("${name}");\n  BLE.setDeviceName("${name}");\n  BLE.setAdvertisedService(controlService);\n\n${keys
+				.map(
+					(key) => `  controlService.addCharacteristic(${key}Characteristic);`,
+				)
+				.join(
+					"\n",
+				)}\n  BLE.addService(controlService);\n\n  BLE.advertise();\n`,
+		);
 
 		return "";
 	};

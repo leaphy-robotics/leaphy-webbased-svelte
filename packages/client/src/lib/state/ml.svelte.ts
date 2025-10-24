@@ -5,6 +5,7 @@ import Setup from "$components/workspace/ml/flow/Setup.svelte";
 import Train from "$components/workspace/ml/flow/Train.svelte";
 import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import {
@@ -20,7 +21,6 @@ import type { Component } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import PopupState from "./popup.svelte";
-import {BluetoothWriteQueue} from "$state/bluetooth.svelte";
 
 export const Step = {
 	SETUP: Setup as Component,
