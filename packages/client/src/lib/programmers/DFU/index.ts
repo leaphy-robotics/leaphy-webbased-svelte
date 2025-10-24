@@ -18,7 +18,10 @@ export default class DFU implements Programmer {
 		}
 
 		const dfuDevice = new dfu.Device(device, interfaces[0]);
-		await dfuDevice.open();
+		const result = await Promise.race([dfuDevice.open(), new Promise<string>(resolve => setTimeout(() => resolve('timeout'), 1000))]);
+		if (result === "timeout") {
+			throw new Error("Unable to connect to device, you might need to install drivers");
+		}
 
 		await dfuDevice.do_download(4096, sketch.buffer as ArrayBuffer, true);
 		await dfuDevice.detach();
