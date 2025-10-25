@@ -11,7 +11,7 @@ const blocks: BlockDefinition[] = [
 		nextStatement: null,
 		style: "loop_blocks",
 		helpUrl: "%{BKY_CONTROLS_IF_HELPURL}",
-		mutator: "l_controls_if_mutator",
+		mutator: "controls_if_mutator",
 		extensions: ["controls_if_tooltip"],
 	},
 	{

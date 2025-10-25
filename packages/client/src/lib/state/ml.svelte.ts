@@ -1,3 +1,4 @@
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import Collect from "$components/workspace/ml/flow/Collect.svelte";
 import Result from "$components/workspace/ml/flow/Result.svelte";
@@ -201,6 +202,18 @@ class MLState {
 	// Web Bluetooth API integration for real-time sensor data streaming
 	async connect() {
 		this.connected = false;
+		if (!("bluetooth" in navigator)) {
+			await PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "NO_BLUETOOTH_TITLE",
+					message: "NO_BLUETOOTH_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+			return;
+		}
+
 		const device = await navigator.bluetooth.requestDevice({
 			filters: [
 				{

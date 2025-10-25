@@ -1,4 +1,6 @@
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import PopupState from "$state/popup.svelte";
 import { track } from "$state/utils";
 import {
 	SERVICE_UUID,
@@ -83,6 +85,17 @@ class BluetoothState {
 
 	async connect() {
 		this.connected = false;
+		if (!("bluetooth" in navigator)) {
+			await PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "NO_BLUETOOTH_TITLE",
+					message: "NO_BLUETOOTH_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+			return;
+		}
 
 		this.device = await navigator.bluetooth.requestDevice({
 			filters: [{ services: [SERVICE_UUID] }],
