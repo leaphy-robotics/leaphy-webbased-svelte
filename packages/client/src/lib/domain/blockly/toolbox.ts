@@ -38,7 +38,7 @@ export default [
 	{
 		name: "%{BKY_SENSOREN_CATEGORY}",
 		style: "leaphy_category",
-		id: "%robot%_sensors",
+		id: "l_sensors",
 		robots: [
 			...robotGroups.ALL,
 			RobotType.L_MICROPYTHON,
@@ -205,7 +205,7 @@ export default [
 	{
 		name: "%{BKY_ACTUATOREN_CATEGORY}",
 		style: "leaphy_category",
-		id: "%robot%_actuators",
+		id: "l_actuators",
 		robots: [
 			...robotGroups.ALL,
 			-RobotType.L_FLITZ_UNO,
@@ -678,27 +678,6 @@ export default [
 		],
 	},
 	{
-		name: "Machine learning",
-		style: "ml_category",
-		id: "l_ml",
-		robots: robotGroups.L_ESP32_ALL,
-		custom: "ML",
-	},
-	{
-		name: "Mesh",
-		style: "mesh_category",
-		id: "l_mesh",
-		robots: robotGroups.L_ESP32_ALL,
-		custom: "MESH",
-	},
-	{
-		name: "Bluetooth",
-		style: "ble_category",
-		id: "l_ble",
-		robots: robotGroups.L_ESP32_ALL,
-		custom: "BLE",
-	},
-	{
 		name: "%{BKY_LEAPHY_FLITZ_CATEGORY}",
 		style: "leaphy_category",
 		id: "%robot%",
@@ -800,7 +779,6 @@ export default [
 		name: "%{BKY_LEAPHY_NUMBERS_CATEGORY}",
 		style: "numbers_category",
 		id: "l_numbers",
-		robots: [...robotGroups.ALL, ...robotGroups.L_ARDUINO_ALL.map((e) => -e)],
 		groups: [
 			[
 				{
@@ -871,8 +849,7 @@ export default [
 	{
 		name: "%{BKY_LEAPHY_OPERATORS_CATEGORY}",
 		style: "numbers_category",
-		id: "l_numbers",
-		robots: [...robotGroups.L_ARDUINO_ALL, RobotType.L_MICROPYTHON],
+		id: "l_operators",
 		groups: [
 			[
 				{
@@ -991,7 +968,6 @@ export default [
 		name: "%{BKY_LEAPHY_LISTS_CATEGORY}",
 		style: "lists_category",
 		id: "l_lists",
-		robots: robotGroups.L_ARDUINO_ALL,
 		custom: "LISTS",
 	},
 	{
@@ -999,5 +975,23 @@ export default [
 		style: "functions_category",
 		id: "l_functions",
 		custom: "PROCEDURE",
+	},
+	{
+		name: "Machine learning",
+		style: "ml_category",
+		id: "l_ml",
+		custom: "ML",
+	},
+	{
+		name: "Mesh",
+		style: "mesh_category",
+		id: "l_mesh",
+		custom: "MESH",
+	},
+	{
+		name: "Bluetooth",
+		style: "ble_category",
+		id: "l_ble",
+		custom: "BLE",
 	},
 ];

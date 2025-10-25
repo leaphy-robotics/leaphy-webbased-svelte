@@ -24,6 +24,8 @@ import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
 import bluetooth from "$domain/blockly/bluetooth";
+import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
+import Extensions from "./extensions.svelte"
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -33,6 +35,11 @@ Blockly.registry.register(
 	LeaphyCategory,
 	true,
 );
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"extensions",
+	Extensions
+)
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"lists",
@@ -211,6 +218,9 @@ export function setupWorkspace(
 			controls: true,
 			startScale: 0.8,
 		},
+		plugins: {
+			toolbox: LeaphyToolbox
+		}
 	});
 	Blockly.serialization.workspaces.load(
 		content || JSON.parse(defaultProgram),
