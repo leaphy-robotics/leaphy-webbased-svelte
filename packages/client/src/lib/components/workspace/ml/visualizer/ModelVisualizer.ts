@@ -163,10 +163,10 @@ export class ModelVisualizer {
 
 		// Calculate network width and center it in the SVG
 		const networkWidth = totalLayers * this.LAYER_SPACING;
-		const svgWidth = networkWidth + labelWidthBuffer * 2; // Extra space for labels on both sides
+		const svgWidth = networkWidth; // Extra space for labels on both sides
 		const networkXOffset = (svgWidth - networkWidth) / 2; // Center the network horizontally
 
-		const svgHeight = maxUnits * this.NODE_SPACING + 200; // Extra space for titles and labels
+		const svgHeight = maxUnits * this.NODE_SPACING; // Extra space for titles and labels
 
 		this.svg.setAttribute("width", `${svgWidth}`);
 		this.svg.setAttribute("height", `${svgHeight}`);
