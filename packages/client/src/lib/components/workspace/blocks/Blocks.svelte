@@ -59,10 +59,7 @@ onMount(() => {
 		BlocklyState.canUndo = BlocklyState.workspace.getUndoStack().length > 0;
 		BlocklyState.canRedo = BlocklyState.workspace.getRedoStack().length > 0;
 
-		WorkspaceState.code = getCodeGenerator().workspaceToCode(
-			BlocklyState.workspace,
-			WorkspaceState.robot.id,
-		);
+		WorkspaceState.code = getCodeGenerator().workspaceToCode(BlocklyState.workspace);
 
 		AppState.libraries.clear();
 		AppState.libraries.install(...arduino.getDependencies());
@@ -95,10 +92,7 @@ locale.subscribe((locale) => {
 			content,
 		);
 		BlocklyState.workspace.addChangeListener(() => {
-			WorkspaceState.code = getCodeGenerator().workspaceToCode(
-				BlocklyState.workspace,
-				WorkspaceState.robot.id,
-			);
+			WorkspaceState.code = getCodeGenerator().workspaceToCode(BlocklyState.workspace);
 
 			AppState.libraries.clear();
 			AppState.libraries.install(...arduino.getDependencies());

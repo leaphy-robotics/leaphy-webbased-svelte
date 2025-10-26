@@ -49,36 +49,34 @@ export type RobotListing = RobotListingVariants | RobotListingMode;
 export type Robot = RobotListing | RobotDevice;
 
 export enum PinMapping {
-	UNO = 0,
-	NANO = 1,
-	NANO_ESP32 = 2,
+	UNIFIED = 0,
 	MEGA = 3,
 	MICROPYTHON = 4,
 }
 
 const baseUno = {
-	mapping: PinMapping.UNO,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:avr:uno",
 	programmer: new STK500v1(),
 	board: "l_uno",
 };
 
 const baseNano = {
-	mapping: PinMapping.NANO,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:avr:nano",
 	programmer: new STK500v1(),
 	board: "l_nano",
 };
 
 const baseNanoESP32 = {
-	mapping: PinMapping.NANO_ESP32,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:esp32:nano_nora",
 	programmer: new DFU(),
 	board: "l_nano_esp32",
 };
 
 const baseNanoRP2040 = {
-	mapping: PinMapping.NANO,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:mbed_nano:nanorp2040connect",
 	programmer: new Pico(),
 	board: "l_nano_rp2040",
@@ -136,22 +134,8 @@ const robotDevices: RobotDevice[] = [
 	{
 		...baseNano,
 		id: "l_starling_nano",
-		type: RobotType.L_STARLING_NANO,
-		name: "Starling Nano",
-		icon: starlingIcon,
-	},
-	{
-		...baseNanoESP32,
-		id: "l_starling_nano_esp32",
-		type: RobotType.L_STARLING_NANO_ESP32,
-		name: "Starling Nano ESP32",
-		icon: starlingIcon,
-	},
-	{
-		...baseNanoRP2040,
-		id: "l_starling_nano_rp2040",
-		type: RobotType.L_STARLING_NANO_RP2040,
-		name: "Starling Nano RP2040",
+		type: RobotType.L_STARLING,
+		name: "Leaphy Starling",
 		icon: starlingIcon,
 	},
 	{
@@ -220,15 +204,7 @@ export const robotListing: Robot[][] = [
 			icon: flitzIcon,
 			variants: [[robots.l_flitz_uno, robots.l_flitz_nano]],
 		},
-		{
-			id: "l_starling_select",
-			name: "Leaphy Starling",
-			icon: starlingIcon,
-			variants: [
-				[robots.l_starling_nano],
-				[robots.l_starling_nano_esp32, robots.l_starling_nano_rp2040],
-			],
-		},
+		robots.l_starling_nano,
 		{
 			id: "l_original_select",
 			name: "Leaphy Original",

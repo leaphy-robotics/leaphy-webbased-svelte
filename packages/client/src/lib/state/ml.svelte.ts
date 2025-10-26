@@ -22,6 +22,7 @@ import type { Component } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import PopupState from "./popup.svelte";
+import SerialState from "$state/serial.svelte";
 
 export const Step = {
 	SETUP: Setup as Component,
@@ -254,17 +255,16 @@ class MLState {
 	}
 
 	async upload() {
-		const code = arduino.workspaceToCode(
-			BlocklyState.workspace,
-			WorkspaceState.robot.id,
-		);
-		AppState.libraries.clear();
-		AppState.libraries.install(...arduino.getDependencies());
-
 		await PopupState.open({
 			component: Uploader,
 			data: {
-				source: code,
+				getCode: () => {
+					const code = arduino.workspaceToCode(BlocklyState.workspace);
+					AppState.libraries.clear();
+					AppState.libraries.install(...arduino.getDependencies());
+
+					return code
+				}
 			},
 			allowInteraction: false,
 		});

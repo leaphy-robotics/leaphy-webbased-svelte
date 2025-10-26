@@ -71,7 +71,8 @@ export class Arduino extends Blockly.Generator {
 	public murphy = this.builder.add("murphy", Murphy);
 	public i2c = this.builder.add("murphy-i2c", MurphyI2C);
 
-	public robotType = "l_uno";
+	public robotType = "l_original";
+	public boardType = "l_uno";
 	public program: Uint8Array | null = null;
 
 	constructor() {
@@ -88,6 +89,19 @@ export class Arduino extends Blockly.Generator {
 				"lowByte,highByte,bitRead,bitWrite,bitSet,bitClear,bit,attachInterrupt," +
 				"detachInterrupt,interrupts,noInterrupts",
 		);
+	}
+
+	public getRawPinMapping(pin: string) {
+		if (this.boardType.includes("esp32") && parseInt(pin) > 13) {
+			return `A${parseInt(pin) - 14}`;
+		}
+
+		return pin
+	}
+
+	public getPinMapping(block: Block, field: string) {
+		const pin = block.getFieldValue(field);
+		return this.getRawPinMapping(pin);
 	}
 
 	public clearBuilder() {
@@ -115,7 +129,7 @@ export class Arduino extends Blockly.Generator {
 			`bool checkSerial() {\n  if (Serial.available() == 0) return true;\n  if (Serial.peek() != 0xff) return false;\n\n  Serial.print(F("leaphy_program [${this.robotType}] (")); // F() macro also saves RAM\n  Serial.print(sizeof(program));\n  Serial.println(F(")"));\n  while (Serial.available() > 0) {\n    Serial.read();\n  }\n  delay(10);\n  \n  // Read from flash and send in chunks to avoid buffer overflow\n  const size_t CHUNK_SIZE = 64;\n  size_t programSize = sizeof(program);\n  \n  for (size_t i = 0; i < programSize; i += CHUNK_SIZE) {\n    size_t chunkSize = min(CHUNK_SIZE, programSize - i);\n    for (size_t j = 0; j < chunkSize; j++) {\n      Serial.write(pgm_read_byte(&program[i + j]));\n    }\n  }\n  return false;\n}`,
 		);
 
-		if (this.robotType.includes("esp32")) {
+		if (this.boardType.includes("esp32")) {
 			// ESP32 doesn't reset when a serial connection happens, furthermore the nano esp32 doesn't provide reset signals so we can't manually reset it either
 			// Here's some magic to make the ESP32 listen to when a request happens using interrupts
 
@@ -375,7 +389,7 @@ export class Arduino extends Blockly.Generator {
        for the current robotType
      */
 	public includeServoHeader() {
-		if (this.robotType.includes("esp32")) {
+		if (this.boardType.includes("esp32")) {
 			this.addDependency(Dependencies.ESP_SERVO);
 			this.addInclude("servo", "#include <ESP32Servo.h>");
 		} else {
@@ -522,8 +536,7 @@ export class Arduino extends Blockly.Generator {
 		return commentCode + code + nextCode;
 	}
 
-	public workspaceToCode(workspace: Workspace, robotType?: string): string {
-		if (robotType) this.robotType = robotType;
+	public workspaceToCode(workspace: Workspace): string {
 		return super.workspaceToCode(workspace);
 	}
 }

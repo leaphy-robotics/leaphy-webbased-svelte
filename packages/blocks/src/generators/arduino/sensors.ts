@@ -70,7 +70,7 @@ export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
 	arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 	arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
 
-	return `getDistanceSonar(${trig}, ${echo})`;
+	return `getDistanceSonar(${arduino.getRawPinMapping(trig)}, ${arduino.getRawPinMapping(echo)})`;
 }
 
 export default function getCodeGenerators(arduino: Arduino) {
@@ -81,8 +81,8 @@ export default function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_sonar_read = (block) => {
-		const trig = block.getFieldValue("TRIG_PIN");
-		const echo = block.getFieldValue("ECHO_PIN");
+		const trig = arduino.getPinMapping(block, "TRIG_PIN");
+		const echo = arduino.getPinMapping(block, "ECHO_PIN");
 
 		return [getDistanceSonar(arduino, trig, echo), arduino.ORDER_ATOMIC];
 	};

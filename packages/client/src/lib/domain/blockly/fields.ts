@@ -30,28 +30,7 @@ export default class PinSelectorField extends FieldDropdown {
 
 	static processPinMappings(board: RobotDevice) {
 		switch (board.mapping) {
-			case PinMapping.UNO: {
-				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(
-					2,
-					19,
-				);
-				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
-					0,
-					5,
-					"A",
-				);
-				PinSelectorField.pwmPinOptions = [
-					["3", "3"],
-					["5", "5"],
-					["6", "6"],
-					["9", "9"],
-					["10", "10"],
-					["11", "11"],
-				];
-				break;
-			}
-
-			case PinMapping.NANO: {
+			case PinMapping.UNIFIED: {
 				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(
 					2,
 					19,
@@ -69,21 +48,6 @@ export default class PinSelectorField extends FieldDropdown {
 					["10", "10"],
 					["11", "11"],
 				];
-				break;
-			}
-
-			case PinMapping.NANO_ESP32: {
-				PinSelectorField.digitalPinOptions = [
-					...PinSelectorField.generatePinRange(2, 13),
-					...PinSelectorField.generatePinRange(0, 5, "A", 14, ""),
-					...PinSelectorField.generatePinRange(6, 7, "A"),
-				];
-				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
-					0,
-					7,
-					"A",
-				);
-				PinSelectorField.pwmPinOptions = PinSelectorField.digitalPinOptions;
 				break;
 			}
 
