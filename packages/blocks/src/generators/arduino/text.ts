@@ -14,6 +14,13 @@ function getCodeGenerators(arduino: Arduino) {
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
+	arduino.forBlock.text_length = (block) => {
+		const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE);
+		const code = `String(${value}).length()`;
+
+		return [code, arduino.ORDER_ATOMIC];
+	};
+
 	arduino.forBlock.text_charAt = (block) => {
 		const at = arduino.valueToCode(block, "AT", arduino.ORDER_NONE);
 		const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE);

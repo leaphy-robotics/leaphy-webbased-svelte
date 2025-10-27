@@ -148,25 +148,12 @@ export class ModelVisualizer {
 			),
 		);
 
-		// Calculate max label width to ensure SVG is wide enough
-		const allLabels = [
-			...(this.config.inputLabels || []),
-			...(this.config.outputLabels || []),
-			this.config.inputTitle || "",
-			this.config.outputTitle || "",
-		];
-		const maxLabelLength = Math.max(
-			...allLabels.map((label) => label.length),
-			0,
-		);
-		const labelWidthBuffer = Math.max(100, maxLabelLength * 6); // Approximate 6px per character
-
 		// Calculate network width and center it in the SVG
 		const networkWidth = totalLayers * this.LAYER_SPACING;
-		const svgWidth = networkWidth + labelWidthBuffer * 2; // Extra space for labels on both sides
+		const svgWidth = networkWidth; // Extra space for labels on both sides
 		const networkXOffset = (svgWidth - networkWidth) / 2; // Center the network horizontally
 
-		const svgHeight = maxUnits * this.NODE_SPACING + 200; // Extra space for titles and labels
+		const svgHeight = maxUnits * this.NODE_SPACING; // Extra space for titles and labels
 
 		this.svg.setAttribute("width", `${svgWidth}`);
 		this.svg.setAttribute("height", `${svgHeight}`);
@@ -415,12 +402,5 @@ export class ModelVisualizer {
 
 		this.outputContainer.innerText = outputText;
 		tf.dispose(inputTensor);
-	}
-
-	// Method to update labels after initialization
-	public updateConfig(newConfig: Partial<VisualizerConfig>): void {
-		this.config = { ...this.config, ...newConfig };
-		this.render();
-		this.setupInputControls();
 	}
 }

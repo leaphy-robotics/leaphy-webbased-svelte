@@ -271,11 +271,13 @@ class SerialState {
 					reject("Failed to reconnect");
 				}
 
-				const port = await this.connect(Prompt.NEVER);
-				if (port) {
-					clearInterval(interval);
-					resolve(port);
-				}
+				try {
+					const port = await this.connect(Prompt.NEVER);
+					if (port) {
+						clearInterval(interval);
+						resolve(port);
+					}
+				} catch (e) {}
 			}, 50);
 		});
 	}

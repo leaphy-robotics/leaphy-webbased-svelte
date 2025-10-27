@@ -1,3 +1,4 @@
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import Collect from "$components/workspace/ml/flow/Collect.svelte";
 import Result from "$components/workspace/ml/flow/Result.svelte";
@@ -5,6 +6,7 @@ import Setup from "$components/workspace/ml/flow/Setup.svelte";
 import Train from "$components/workspace/ml/flow/Train.svelte";
 import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import {
@@ -83,7 +85,8 @@ class MLState {
 
 	// Bluetooth LE communication handles for real-time data streaming
 	inputCharacteristic: BluetoothRemoteGATTCharacteristic;
-	outputWriter: WritableStreamDefaultWriter<Uint8Array>;
+	outputCharacteristic: BluetoothRemoteGATTCharacteristic;
+	queue = new BluetoothWriteQueue();
 
 	learning = $state(false);
 	snapshot: number[] = $state([]);
@@ -113,7 +116,7 @@ class MLState {
 			] = 1;
 		}
 
-		await this.outputWriter.write(buffer);
+		this.queue.write(this.outputCharacteristic, buffer);
 	}
 
 	constructor() {
@@ -199,6 +202,18 @@ class MLState {
 	// Web Bluetooth API integration for real-time sensor data streaming
 	async connect() {
 		this.connected = false;
+		if (!("bluetooth" in navigator)) {
+			await PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "NO_BLUETOOTH_TITLE",
+					message: "NO_BLUETOOTH_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+			return;
+		}
+
 		const device = await navigator.bluetooth.requestDevice({
 			filters: [
 				{
@@ -213,17 +228,9 @@ class MLState {
 		const gatt = await device.gatt.connect();
 		const service = await gatt.getPrimaryService(ml.trainingID);
 
-		const outputCharacteristic = await service.getCharacteristic(
+		this.outputCharacteristic = await service.getCharacteristic(
 			"6f1c1de7-bc7d-4bcb-a30e-918b82d115e8",
 		);
-		this.outputWriter = new WritableStream<Uint8Array>({
-			async write(chunk) {
-				await Promise.race([
-					outputCharacteristic.writeValue(chunk),
-					new Promise((resolve) => setTimeout(resolve, 250)),
-				]);
-			},
-		}).getWriter();
 
 		this.inputCharacteristic = await service.getCharacteristic(
 			"f0e84eb0-f3ed-495c-926c-b2e3815415a7",

@@ -18,9 +18,10 @@ const blocks: BlockDefinition = [
 		message0: "%{BKY_LEAPHY_BLE_SETUP}",
 		args0: [
 			{
-				type: "input_value",
+				type: "field_input",
 				name: "NAME",
-				check: ["String"],
+				text: "Leaphy Robot",
+				spellcheck: false,
 			},
 		],
 		previousStatement: null,

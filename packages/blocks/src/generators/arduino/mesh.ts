@@ -26,8 +26,12 @@ function getCodeGenerators(arduino: Arduino) {
 
 		arduino.addDeclaration("mesh_receiver", receive_callback, true, 1);
 
-		const name = arduino.valueToCode(block, "NAME", arduino.ORDER_NONE);
-		return `mesh.init(${name}, "Leaphy123");\nmesh.onReceive(&receivedCallback);\n`;
+		const name = block.getFieldValue("NAME");
+		arduino.addSetup(
+			"MESH",
+			`mesh.init("${name}", "Leaphy123");\n  mesh.onReceive(&receivedCallback);\n`,
+		);
+		return "";
 	};
 
 	arduino.forBlock.mesh_update = () => "mesh.update();\n";

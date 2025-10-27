@@ -245,5 +245,7 @@
 	"PROGRAM_STORED_DESCRIPTION": "This program was stored when you previously used this robot",
 	"CONNECT_TO_RESTORE": "Connect to restore from robot",
 	"BLUETOOTH_CONTROL": "Remote control",
-	"BLUETOOTH_CONTROL_DESCRIPTION": "Use your keyboard to control your robot"
+	"BLUETOOTH_CONTROL_DESCRIPTION": "Use your keyboard to control your robot",
+	"NO_BLUETOOTH_TITLE": "Bluetooth not found",
+	"NO_BLUETOOTH_MESSAGE": "Bluetooth not found, please check if you're using a Chromium based browser, on Linux please enable chrome://flags/#enable-web-bluetooth"
 }
