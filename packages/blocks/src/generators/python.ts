@@ -183,7 +183,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 					return "";
 				}
 				if (pin_state === PinState.ADC) {
-					return `pin_${pin_name.toLowerCase()} = Pin("${pin_name}", Pin.ANALOG)\nadc_${pin_name.toLowerCase()} = ADC(pin_${pin_name.toLowerCase()})\n`;
+					return `pin_${pin_name.toLowerCase()} = Pin("${pin_name}")\nadc_${pin_name.toLowerCase()} = ADC(pin_${pin_name.toLowerCase()})\n`;
 				}
 				if (pin_state === PinState.PWM) {
 					return `pin_${pin_name.toLowerCase()} = Pin("${pin_name}", Pin.OUT)\npwm_${pin_name.toLowerCase()} = PWM(pin_${pin_name.toLowerCase()})\n`;
