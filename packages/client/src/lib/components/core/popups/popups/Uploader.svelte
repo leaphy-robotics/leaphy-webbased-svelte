@@ -15,6 +15,8 @@ import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {arduino, Dependencies} from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
+import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
+import { inFilter } from "$domain/robots";
 
 interface Props {
 	getCode?: () => Promise<string>|string;
@@ -113,6 +115,26 @@ onMount(async () => {
 			progress += 100 / 4;
 		} catch {
 			throw new UploadError("NO_DEVICE_SELECTED", "");
+		}
+
+		const board = SerialState.board || WorkspaceState.robot;
+		const incompatibleExtension = ExtensionState.enabled.find(e => !inFilter(board, extensions.find(ext => ext.id === e)?.boards));
+		if (incompatibleExtension) {
+			popupState.close();
+			return PopupsState.open({
+				component: ErrorPopup,
+				data: {
+					title: "INVALID_ROBOT_TITLE",
+					message: $_("INVALID_ROBOT", {
+						values: {
+							robot: WorkspaceState.robot.name,
+							extension: extensions.find(ext => ext.id === incompatibleExtension)?.name || "Unknown",
+						},
+					}),
+					showCancel: true,
+				},
+				allowInteraction: false,
+			})
 		}
 
 		const res = program || (await compile());

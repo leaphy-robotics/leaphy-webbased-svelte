@@ -130,7 +130,7 @@
 	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED": "I understand",
 	"ACKNOWLEDGE_BROWSER_NOT_SUPPORTED_DONT_SHOW_AGAIN": "Don't show again",
 	"INVALID_ROBOT_TITLE": "Incompatible device",
-	"INVALID_ROBOT": "The selected robot {robot} does not work with the automatically detected {board}!",
+	"INVALID_ROBOT": "The detected robot {robot} does not work with the installed extension {extension}!",
 	"INCOMPATIBLE_PROJECT": "Incompatible",
 	"CONTINUE": "Continue",
 	"UNKNOWN_BOARD": "Unknown",

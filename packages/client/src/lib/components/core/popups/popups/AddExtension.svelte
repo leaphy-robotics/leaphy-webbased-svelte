@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Fa from "svelte-fa";
-	import {faArrowLeft, faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
+	import {faArrowLeft, faExclamationTriangle, faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
 	import Button from "$components/ui/Button.svelte";
 	import {_} from "svelte-i18n";
 	import {extensions} from "$domain/blockly/extensions.svelte.js";
@@ -15,8 +15,9 @@
 	import { inFilter, robots } from "$domain/robots";
 
 	let board = $derived(SerialState.board || robots.l_nano)
-	console.log(extensions)
 	let enabledExtensions = $derived(extensions.filter(e => inFilter(board, e.boards)))
+
+	let incompatibleExtensions = $derived(Extensions.enabled.map(e => extensions.find(ext => ext.id === e)).filter(e => !inFilter(board, e.boards)))
 
 	function getColor(theme: string) {
 		console.log(theme)
@@ -54,6 +55,25 @@
 					<button style:background={enabled ? 'salmon' : 'var(--accent)'} onclick={() => toggle(extension.id)}>
 						<Fa icon={enabled ? faXmark : faPlus} />
 						{enabled ? 'Remove' : 'Add'}
+					</button>
+				</div>
+			{/each}
+
+			{#each incompatibleExtensions as extension}
+				<div class="extension incompatible">
+					<div class="cover" style:background={getColor(extension.style)}>
+						<img src={`blockly-assets/${extension.id}.svg`} alt="">
+					</div>
+					<div class="content">
+						<div class="line">
+							<div class="name">{Blockly.utils.parsing.replaceMessageReferences(extension.name)}</div>
+							<div class="warning"><Fa icon={faExclamationTriangle} /> {$_("INCOMPATIBLE_PROJECT")}</div>
+						</div>
+						<div class="description">{extension.description}</div>
+					</div>
+					<button style:background={'salmon'} onclick={() => toggle(extension.id)}>
+						<Fa icon={faXmark} />
+						Remove
 					</button>
 				</div>
 			{/each}
@@ -176,5 +196,28 @@
 		display: flex;
 		flex-direction: column;
 		gap: 30px;
+	}
+
+	.incompatible {
+		.cover {
+			filter: grayscale(100%);
+			opacity: 0.5;
+		}
+		.name, .description {
+			opacity: 0.5;
+		}
+	}
+
+	.line {
+		display: flex;
+		gap: 10px;
+		align-items: center;
+	}
+
+	.warning {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		color: salmon;
 	}
 </style>
