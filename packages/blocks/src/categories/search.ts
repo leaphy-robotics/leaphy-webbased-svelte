@@ -12,6 +12,7 @@ import type {
 	FlyoutItemInfoArray,
 } from "blockly/core/utils/toolbox";
 import { serializeBlock } from "../../../client/src/lib/domain/blockly/pseudo";
+import Extensions from "../../../client/src/lib/domain/blockly/extensions.svelte";
 
 const input = document.createElement("input");
 input.type = "text";
@@ -58,9 +59,10 @@ export default function (workspace: WorkspaceSvg) {
 			// biome-ignore lint/complexity/useLiteralKeys: protected properties must be accessed using brackets
 			toolbox["contents"].values(),
 		) as ToolboxCategory[];
+		const enabledCategories = categories.filter(e => Extensions.isEnabled(e.getId()))
 
 		const blocks = new Map<string, BlockDefinition>();
-		categories.forEach((category) => {
+		enabledCategories.forEach((category) => {
 			if (category.getId() === "l_search") return;
 
 			const contents = category.getContents();
