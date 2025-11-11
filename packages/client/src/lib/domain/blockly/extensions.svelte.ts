@@ -4,6 +4,8 @@ import type LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import * as Blockly from "blockly";
 import type {ISerializer} from "blockly/core/interfaces/i_serializer";
 import { RobotType } from "$domain/robots.types";
+import BlocklyState from "$state/blockly.svelte";
+import type { Toolbox, ToolboxCategory } from "blockly";
 
 export const extensions = [
 	{
@@ -84,19 +86,43 @@ class Extensions implements ISerializer {
 		const toolbox = (getMainWorkspace() as WorkspaceSvg).getToolbox() as LeaphyToolbox
  		const extension = extensions.find(e => e.id === id)
 
-		if (this.enabled.includes(id)) {
-			this.enabled.splice(this.enabled.indexOf(id), 1)
-
-			if (extension.inactiveId) {
-				this.selectCategory(extension.inactiveId)
-			} else if (toolbox.getSelectedItem().getId() === id) {
-				toolbox.selectItemByPosition(1)
-			}
+		if (!this.enabled.includes(id)) {
+			this.enabled.push(id);
+			this.selectCategory(id);
 			return
 		}
 
-		this.enabled.push(id);
-		this.selectCategory(id)
+		const categories = Array.from(
+			// biome-ignore lint/complexity/useLiteralKeys: protected properties must be accessed using brackets
+			toolbox["contents"].values(),
+		) as ToolboxCategory[];
+
+		const category = categories.find(e => e.getId() === id);
+		let contents = category.getContents();
+		if (typeof contents === "string") {
+			const callback = BlocklyState.workspace.getToolboxCategoryCallback(contents);
+			if (!callback) return;
+
+			const customContents = callback(BlocklyState.workspace);
+			if (!Array.isArray(customContents)) return;
+
+			contents = customContents as Blockly.utils.toolbox.FlyoutItemInfoArray;
+		}
+
+		contents.forEach(e => {
+			if (e.kind !== "block" || !("type" in e)) return;
+
+			BlocklyState.workspace.getBlocksByType(e.type).forEach(block => {
+				block.dispose(true);
+			})
+		})
+
+		this.enabled.splice(this.enabled.indexOf(id), 1)
+		if (extension.inactiveId) {
+			this.selectCategory(extension.inactiveId)
+		} else if (toolbox.getSelectedItem().getId() === id) {
+			toolbox.selectItemByPosition(1)
+		}
 	}
 }
 
