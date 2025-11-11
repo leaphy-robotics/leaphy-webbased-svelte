@@ -3,6 +3,7 @@ import {getMainWorkspace, type WorkspaceSvg} from "blockly";
 import type LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import * as Blockly from "blockly";
 import type {ISerializer} from "blockly/core/interfaces/i_serializer";
+import { RobotType } from "$domain/robots.types";
 
 export const extensions = [
 	{
@@ -10,7 +11,7 @@ export const extensions = [
 		description: "Store multiple similar objects into a list of data",
 		style: "lists_category",
 		id: "l_lists",
-		robots: robotGroups.L_ARDUINO_ALL,
+		boards: robotGroups.L_ARDUINO_ALL,
 	},
 	{
 		name: "Operators",
@@ -18,28 +19,28 @@ export const extensions = [
 		style: "numbers_category",
 		id: "l_operators",
 		inactiveId: "l_numbers",
-		robots: robotGroups.L_ARDUINO_ALL,
+		boards: robotGroups.L_ARDUINO_ALL,
 	},
 	{
 		name: "Machine Learning",
 		description: "Train your own Machine Learning model for classification",
 		style: "ml_category",
 		id: "l_ml",
-		robots: robotGroups.L_ESP32_ALL,
+		boards: [RobotType.L_NANO_ESP32],
 	},
 	{
 		name: "Mesh",
 		description: "Connect a network of robots together and make them communicate",
 		style: "mesh_category",
 		id: "l_mesh",
-		robots: robotGroups.L_ESP32_ALL,
+		boards: [RobotType.L_NANO_ESP32],
 	},
 	{
 		name: "Bluetooth",
 		description: "Control your robot using your keyboard remotely",
 		style: "ble_category",
 		id: "l_ble",
-		robots: robotGroups.L_ESP32_ALL,
+		boards: [RobotType.L_NANO_ESP32],
 	},
 ]
 

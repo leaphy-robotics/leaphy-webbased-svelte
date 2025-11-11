@@ -55,23 +55,7 @@ export default [
 						type: "analog_read",
 						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 					},
-				],
-			},
-			{
-				label: "Communication",
-				defaultExpanded: true,
-				blocks: [
 					{ type: "i2c_use_channel" },
-					{
-						kind: "block",
-						type: "leaphy_serial_available",
-						robots: robotGroups.ALL,
-					},
-					{
-						kind: "block",
-						type: "leaphy_serial_read_line",
-						robots: robotGroups.ALL,
-					},
 				],
 			},
 			{
@@ -208,6 +192,22 @@ export default [
 					},
 				],
 			},
+			{
+				label: "Communication",
+				defaultExpanded: false,
+				blocks: [
+					{
+						kind: "block",
+						type: "leaphy_serial_available",
+						robots: robotGroups.ALL,
+					},
+					{
+						kind: "block",
+						type: "leaphy_serial_read_line",
+						robots: robotGroups.ALL,
+					},
+				],
+			},
 		],
 	},
 
@@ -248,6 +248,30 @@ export default [
 						},
 					},
 					{
+						type: "leaphy_serial_print_line",
+						robots: [
+							...robotGroups.ALL,
+							-RobotType.L_FLITZ_UNO,
+							-RobotType.L_FLITZ_NANO,
+							RobotType.L_MICROPYTHON,
+						],
+						inputs: {
+							VALUE: text("text"),
+						},
+					},
+					{
+						type: "leaphy_serial_print_value",
+						robots: [
+							...robotGroups.ALL,
+							-RobotType.L_FLITZ_UNO,
+							-RobotType.L_FLITZ_NANO,
+						],
+						inputs: {
+							NAME: text("text"),
+							VALUE: number(0),
+						},
+					},
+					{
 						type: "leaphy_original_set_led",
 						inputs: {
 							LED_RED: number(0),
@@ -283,28 +307,6 @@ export default [
 						},
 					},
 					{
-						type: "leaphy_original_servo_set",
-						robots: [
-							...robotGroups.L_ARDUINO_NANO_ALL,
-							RobotType.L_STARLING,
-							RobotType.L_MICROPYTHON,
-						],
-						inputs: {
-							SPEED: number(100),
-						},
-					},
-					{
-						type: "leaphy_original_servo_move",
-						robots: [
-							...robotGroups.L_ARDUINO_NANO_ALL,
-							RobotType.L_STARLING,
-							RobotType.L_MICROPYTHON,
-						],
-						inputs: {
-							SPEED: number(100),
-						},
-					},
-					{
 						type: "leaphy_servo_write",
 						robots: [
 							...robotGroups.ALL,
@@ -316,46 +318,14 @@ export default [
 						},
 					},
 					{
-						type: "leaphy_original_buzz",
-						robots: [
-							...robotGroups.ALL,
-							-RobotType.L_FLITZ_UNO,
-							-RobotType.L_FLITZ_NANO,
-						],
-						inputs: {
-							FREQUENCY: number(440),
-							DURATION: number(100),
-						},
-					},
-					{
-						type: "leaphy_serial_print_line",
-						robots: [
-							...robotGroups.ALL,
-							-RobotType.L_FLITZ_UNO,
-							-RobotType.L_FLITZ_NANO,
-							RobotType.L_MICROPYTHON,
-						],
-						inputs: {
-							VALUE: text("text"),
-						},
-					},
-					{
-						type: "leaphy_serial_print_value",
-						robots: [
-							...robotGroups.ALL,
-							-RobotType.L_FLITZ_UNO,
-							-RobotType.L_FLITZ_NANO,
-						],
-						inputs: {
-							NAME: text("text"),
-							VALUE: number(0),
-						},
+						type: "i2c_use_channel",
+						robots: robotGroups.ALL,
 					},
 				],
 			},
 			{
 				label: "Led strip",
-				defaultExpanded: true,
+				defaultExpanded: false,
 				blocks: [
 					{
 						type: "leaphy_led_set_strip",
@@ -411,7 +381,7 @@ export default [
 			},
 			{
 				label: "Standard display",
-				defaultExpanded: true,
+				defaultExpanded: false,
 				blocks: [
 					{
 						type: "leaphy_display_clear",
@@ -624,7 +594,7 @@ export default [
 				],
 			},
 			{
-				label: "Speaker",
+				label: "Audio",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -665,6 +635,18 @@ export default [
 							-RobotType.L_FLITZ_NANO,
 						],
 					},
+					{
+						type: "leaphy_original_buzz",
+						robots: [
+							...robotGroups.ALL,
+							-RobotType.L_FLITZ_UNO,
+							-RobotType.L_FLITZ_NANO,
+						],
+						inputs: {
+							FREQUENCY: number(440),
+							DURATION: number(100),
+						},
+					},
 				],
 			},
 			{
@@ -673,10 +655,6 @@ export default [
 				blocks: [
 					{
 						type: "i2c_list_devices",
-						robots: robotGroups.ALL,
-					},
-					{
-						type: "i2c_use_channel",
 						robots: robotGroups.ALL,
 					},
 					{

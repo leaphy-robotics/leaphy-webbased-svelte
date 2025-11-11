@@ -9,6 +9,14 @@
 	import {getMainWorkspace, type WorkspaceSvg} from "blockly";
 	import * as Blockly from "blockly";
 	import Extensions from "$domain/blockly/extensions.svelte.js"
+	import SerialState, { Prompt } from "$state/serial.svelte";
+	import { faUsb } from "@fortawesome/free-brands-svg-icons";
+	import { RobotType } from "$domain/robots.types";
+	import { inFilter, robots } from "$domain/robots";
+
+	let board = $derived(SerialState.board || robots.l_nano)
+	console.log(extensions)
+	let enabledExtensions = $derived(extensions.filter(e => inFilter(board, e.boards)))
 
 	function getColor(theme: string) {
 		console.log(theme)
@@ -31,24 +39,38 @@
 		<Button onclick={back} mode="outlined" icon={faArrowLeft} name={$_("BACK")} />
 	</div>
 
-	<div class="grid">
-		{#each extensions as extension}
-			{@const enabled = Extensions.isEnabled(extension.id)}
-			<div class="extension">
-				<div class="cover" style:background={getColor(extension.style)}>
-					<img src={`blockly-assets/${extension.id}.svg`} alt="">
+	{#if SerialState.port}
+		<div class="grid">
+			{#each enabledExtensions as extension}
+				{@const enabled = Extensions.isEnabled(extension.id)}
+				<div class="extension">
+					<div class="cover" style:background={getColor(extension.style)}>
+						<img src={`blockly-assets/${extension.id}.svg`} alt="">
+					</div>
+					<div class="content">
+						<div class="name">{Blockly.utils.parsing.replaceMessageReferences(extension.name)}</div>
+						<div class="description">{extension.description}</div>
+					</div>
+					<button style:background={enabled ? 'salmon' : 'var(--accent)'} onclick={() => toggle(extension.id)}>
+						<Fa icon={enabled ? faXmark : faPlus} />
+						{enabled ? 'Remove' : 'Add'}
+					</button>
 				</div>
-				<div class="content">
-					<div class="name">{Blockly.utils.parsing.replaceMessageReferences(extension.name)}</div>
-					<div class="description">{extension.description}</div>
+			{/each}
+		</div>
+	{:else}
+		<div class="connect-wrapper">
+			<div class="form">
+				<div class="connect-text">
+					<div class="connect-icon"><Fa icon={faUsb} /></div>
+					<h2>{$_("EXTENSIONS_CONNECT_TITLE")}</h2>
+					<div>{$_("EXTENSIONS_CONNECT_DESC")}</div>
 				</div>
-				<button style:background={enabled ? 'salmon' : 'var(--accent)'} onclick={() => toggle(extension.id)}>
-					<Fa icon={enabled ? faXmark : faPlus} />
-					{enabled ? 'Remove' : 'Add'}
-				</button>
+				
+				<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CONNECT")} />
 			</div>
-		{/each}
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -120,5 +142,39 @@
 		justify-content: center;
 		gap: 5px;
 		cursor: pointer;
+	}
+
+	.connect-wrapper {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.connect-icon {
+		font-size: 30px;
+		padding-bottom: 10px;
+	}
+
+	.connect-text {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.form {
+		padding: 20px;
+		padding-top: 30px;
+		max-width: 600px;
+		width: 100%;
+		background: var(--background);
+		border-radius: 20px;
+
+		display: flex;
+		flex-direction: column;
+		gap: 30px;
 	}
 </style>
