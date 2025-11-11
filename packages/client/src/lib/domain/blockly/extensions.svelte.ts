@@ -46,6 +46,21 @@ export const extensions = [
 	},
 ]
 
+function getBlocksInCategory(category: ToolboxCategory) {
+	let contents = category.getContents();
+	if (typeof contents === "string") {
+		const callback = BlocklyState.workspace.getToolboxCategoryCallback(contents);
+		if (!callback) return;
+
+		const customContents = callback(BlocklyState.workspace);
+		if (!Array.isArray(customContents)) return;
+
+		contents = customContents as Blockly.utils.toolbox.FlyoutItemInfoArray;
+	}
+
+	return contents.filter(e => e.kind === "block" && "type" in e).map(e => (e as Blockly.utils.toolbox.BlockInfo).type);
+}
+
 class Extensions implements ISerializer {
 	enabled = $state<string[]>([])
 
@@ -97,22 +112,19 @@ class Extensions implements ISerializer {
 			toolbox["contents"].values(),
 		) as ToolboxCategory[];
 
-		const category = categories.find(e => e.getId() === id);
-		let contents = category.getContents();
-		if (typeof contents === "string") {
-			const callback = BlocklyState.workspace.getToolboxCategoryCallback(contents);
-			if (!callback) return;
+		const categoryBlocks = categories.map(category => ({
+			category: category.getId(),
+			blocks: getBlocksInCategory(category),
+		}))
 
-			const customContents = callback(BlocklyState.workspace);
-			if (!Array.isArray(customContents)) return;
+		const blocks = categoryBlocks.find(e => e.category === id)?.blocks;
+		blocks?.forEach(block => {
+			// check if the block is in another category (for example: numbers and operators have several overlapping blocks)
+			if (categoryBlocks.find(e => e.category !== id && e.blocks.includes(block))) {
+				return;
+			}
 
-			contents = customContents as Blockly.utils.toolbox.FlyoutItemInfoArray;
-		}
-
-		contents.forEach(e => {
-			if (e.kind !== "block" || !("type" in e)) return;
-
-			BlocklyState.workspace.getBlocksByType(e.type).forEach(block => {
+			BlocklyState.workspace.getBlocksByType(block).forEach(block => {
 				block.dispose(true);
 			})
 		})
