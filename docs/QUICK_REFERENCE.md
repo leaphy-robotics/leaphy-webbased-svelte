@@ -140,6 +140,75 @@ Examples:
 | Leaphy Extensions | `Dependencies.LEAPHY_EXTENSIONS` |
 | SD Card | `Dependencies.SD` |
 
+## Toolbox Configuration
+
+### Adding Blocks to Toolbox
+
+Blocks are added to the toolbox in `packages/client/src/lib/domain/blockly/toolbox.ts`.
+
+```typescript
+{
+    name: "Category Name",
+    style: "leaphy_category",
+    id: "category_id",
+    robots: [...robotGroups.ALL],
+    groups: [
+        [
+            {
+                type: "block_type_name",
+                robots: [...robotGroups.ALL],
+                inputs: {
+                    INPUT_NAME: number(0),
+                },
+            },
+        ],
+    ],
+}
+```
+
+### Using Labels in Toolbox
+
+Labels can be used to organize blocks into sections within a category:
+
+```typescript
+{
+    kind: "label",
+    text: "Section Name",
+    robots: [...robotGroups.ALL],
+    cssClass: "custom-label-class", // Optional
+}
+```
+
+**Example:**
+
+```typescript
+groups: [
+    [
+        {
+            kind: "label",
+            text: "Basic I/O",
+            robots: [...robotGroups.ALL],
+        },
+        {
+            type: "digital_read",
+            robots: [...robotGroups.ALL],
+        },
+        {
+            type: "analog_read",
+            robots: [...robotGroups.ALL],
+        },
+    ],
+]
+```
+
+### Toolbox Helper Functions
+
+| Function | Purpose | Example |
+|----------|---------|---------|
+| `number(value)` | Add number shadow block | `inputs: { NUM: number(0) }` |
+| `text(value)` | Add text shadow block | `inputs: { TEXT: text("hello") }` |
+| `boolean()` | Add boolean shadow block | `inputs: { BOOL: boolean() }` |
+
 ## Testing Checklist
 
 - [ ] Block appears in toolbox

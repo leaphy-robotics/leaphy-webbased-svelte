@@ -98,6 +98,7 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 
 export function loadToolbox(
 	robot: RobotDevice,
+	dynamicCategories = false,
 ): utils.toolbox.ToolboxDefinition {
 	const contents = toolbox
 		.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
@@ -112,16 +113,7 @@ export function loadToolbox(
 			if (category.custom) result.custom = category.custom;
 			if (!category.groups) return result as utils.toolbox.CategoryInfo;
 
-			result.contents = category.groups.flatMap((group) => {
-				return group
-					.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
-					.flatMap((block) => [
-						{ kind: "sep", gap: "8" },
-						{ kind: "block", ...block },
-					])
-					.slice(1);
-			});
-
+			result.custom = category.id;
 			return result as utils.toolbox.CategoryInfo;
 		});
 
@@ -130,6 +122,95 @@ export function loadToolbox(
 		contents,
 	};
 }
+
+function getCategoryContents(robot: RobotDevice, category: any) {
+	return 
+}
+
+function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) {
+	for (const category of toolbox) {
+		if (!category.groups) continue;
+
+		const expanded = new Set<number>();
+		for (let i = 0; i < category.groups.length; i++) {
+			const group = category.groups[i];
+
+			if (!("defaultExpanded" in group)) {
+				expanded.add(i);
+				continue;
+			}
+			if (group.defaultExpanded) {
+				expanded.add(i);
+			}
+		}
+
+		workspace.registerToolboxCategoryCallback(category.id, () => {
+			return category.groups.flatMap((group, i) => {
+				const contents = []
+				
+				if ("label" in group) {
+					contents.push(
+						{ 
+							kind: "label", 
+							text: (expanded.has(i) ? "▼ " : "▶ ") + group.label, 
+							"web-class": `category-${category.id}-group-${i}` 
+						}
+					)
+					if (expanded.has(i)) {
+						contents.push({ kind: "sep", gap: "8" });
+					}
+				}
+				if (expanded.has(i)) {
+					contents.push(
+						...group.blocks
+							.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
+							.flatMap((item) => {
+								return [
+									{ kind: "sep", gap: "8" },
+									{ kind: "block", ...item },
+								];
+							})
+							.slice(1)
+					)
+				}
+
+				return contents;
+			});
+		});
+
+		
+		let removeController: AbortController;
+		function registerListeners() {
+			removeController?.abort();
+			removeController = new AbortController();
+
+			category.groups.forEach((group, i) => {
+				if (!("label" in group)) return;
+
+				const label = document.querySelector(`.category-${category.id}-group-${i}`)
+				if (!label) return;
+
+				console.log(label);
+				label.addEventListener("click", () => {
+					console.log("click")
+					if (expanded.has(i)) {
+						expanded.delete(i);
+					} else {
+						expanded.add(i);
+					}
+					workspace.refreshToolboxSelection();
+					registerListeners();
+				}, { signal: removeController.signal });
+			})
+		}
+
+		workspace.addChangeListener((event: Blockly.Events.Abstract) => {
+			if (event.type !== "toolbox_item_select") return;
+			registerListeners();
+		})
+	}
+}
+
 
 export function isCompatible(workspace: WorkspaceSvg, robot: RobotDevice) {
 	let incompatible = new Set<string>();
@@ -228,6 +309,7 @@ export function setupWorkspace(
 	);
 
 	const toolbox = workspace.getToolbox();
+	registerDynamicCategories(robot, workspace);
 	workspace.registerToolboxCategoryCallback("LISTS", CATEGORIES.LISTS);
 	workspace.registerToolboxCategoryCallback("MESH", CATEGORIES.MESH);
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);

@@ -76,7 +76,7 @@ function openTutorials() {
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
 			{/if}
-			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, robotsGroups.L_NANO_ALL)}
+			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [RobotType.L_STARLING])}
 				<SideButton icon={faDiagramProject} action="CIRCUIT" onclick={openCircuit} />
 			{/if}
 			<!-- TODO: add all tutorials first -->

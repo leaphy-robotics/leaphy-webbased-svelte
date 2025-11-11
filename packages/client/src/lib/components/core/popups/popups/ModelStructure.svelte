@@ -1,7 +1,6 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
 import ModelVisualizer from "$components/workspace/ml/ModelVisualizer.svelte";
-import { loadToolbox } from "$domain/blockly/blockly";
 import { dark, light } from "$domain/blockly/theme";
 import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
