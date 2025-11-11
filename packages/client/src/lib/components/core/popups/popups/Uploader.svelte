@@ -127,7 +127,7 @@ onMount(async () => {
 					title: "INVALID_ROBOT_TITLE",
 					message: $_("INVALID_ROBOT", {
 						values: {
-							robot: WorkspaceState.robot.name,
+							board: board.name,
 							extension: extensions.find(ext => ext.id === incompatibleExtension)?.name || "Unknown",
 						},
 					}),
