@@ -165,8 +165,10 @@ class SerialState {
 					})),
 				})
 				.then((port) => {
-					const port_info = port.getInfo();
-					this.usb_ids = [port_info.usbVendorId, port_info.usbProductId];
+					if (port) {
+						const port_info = port.getInfo();
+						this.usb_ids = [port_info.usbVendorId, port_info.usbProductId];
+					}
 					return port;
 				});
 		}
