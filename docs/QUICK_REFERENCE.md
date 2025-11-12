@@ -151,31 +151,41 @@ Blocks are added to the toolbox in `packages/client/src/lib/domain/blockly/toolb
     name: "Category Name",
     style: "leaphy_category",
     id: "category_id",
-    robots: [...robotGroups.ALL],
+    robots: [...robotGroups.ALL],  // Optional: filter by robot types
     groups: [
-        [
-            {
-                type: "block_type_name",
-                robots: [...robotGroups.ALL],
-                inputs: {
-                    INPUT_NAME: number(0),
+        {
+            // Optional: label and defaultExpanded for collapsible sections
+            label: "SECTION_NAME",
+            defaultExpanded: true,
+            blocks: [
+                {
+                    type: "block_type_name",
+                    robots: [...robotGroups.ALL],  // Optional: filter by robot types
+                    inputs: {
+                        INPUT_NAME: number(0),
+                    },
+                    fields: {
+                        FIELD_NAME: "value",
+                    },
                 },
-            },
-        ],
+            ],
+        },
     ],
 }
 ```
 
 ### Using Labels in Toolbox
 
-Labels can be used to organize blocks into sections within a category:
+Labels can be used to organize blocks into collapsible sections within a category. Each group can have a label that acts as a clickable header:
 
 ```typescript
 {
-    kind: "label",
-    text: "Section Name",
-    robots: [...robotGroups.ALL],
-    cssClass: "custom-label-class", // Optional
+    label: "TRANSLATION_KEY",      // Translation key for the label text
+    defaultExpanded: true,         // Optional: whether section is expanded by default (defaults to true if omitted)
+    blocks: [                      // Array of block definitions
+        { type: "block_type_name" },
+        // ... more blocks
+    ],
 }
 ```
 
@@ -183,23 +193,30 @@ Labels can be used to organize blocks into sections within a category:
 
 ```typescript
 groups: [
-    [
-        {
-            kind: "label",
-            text: "Basic I/O",
-            robots: [...robotGroups.ALL],
-        },
-        {
-            type: "digital_read",
-            robots: [...robotGroups.ALL],
-        },
-        {
-            type: "analog_read",
-            robots: [...robotGroups.ALL],
-        },
-    ],
+    {
+        label: "IO_SECTION",
+        defaultExpanded: true,
+        blocks: [
+            { type: "digital_read" },
+            { type: "analog_read", robots: [...robotGroups.ALL] },
+        ],
+    },
+    {
+        label: "DISTANCE_MOTION_SECTION",
+        defaultExpanded: false,
+        blocks: [
+            { type: "leaphy_sonar_read" },
+            { type: "leaphy_tof_get_distance" },
+        ],
+    },
 ]
 ```
+
+**Notes:**
+- Labels are clickable and toggle between expanded (▼) and collapsed (►) states
+- If `defaultExpanded` is omitted, the section defaults to expanded
+- Translation keys should be added to both `en.ts` and `nl.ts` translation files
+- Groups without a `label` property will always be expanded and show all blocks
 
 ### Toolbox Helper Functions
 
