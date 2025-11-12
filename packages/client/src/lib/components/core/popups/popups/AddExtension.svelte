@@ -1,38 +1,50 @@
 <script lang="ts">
-	import Fa from "svelte-fa";
-	import {faArrowLeft, faExclamationTriangle, faPlus, faXmark} from "@fortawesome/free-solid-svg-icons";
-	import Button from "$components/ui/Button.svelte";
-	import {_} from "svelte-i18n";
-	import {extensions} from "$domain/blockly/extensions.svelte.js";
-	import {getContext} from "svelte";
-	import {PopupState} from "$state/popup.svelte";
-	import {getMainWorkspace, type WorkspaceSvg} from "blockly";
-	import * as Blockly from "blockly";
-	import Extensions from "$domain/blockly/extensions.svelte.js"
-	import SerialState, { Prompt } from "$state/serial.svelte";
-	import { faUsb } from "@fortawesome/free-brands-svg-icons";
-	import { RobotType } from "$domain/robots.types";
-	import { inFilter, robots } from "$domain/robots";
+import Button from "$components/ui/Button.svelte";
+import { extensions } from "$domain/blockly/extensions.svelte.js";
+import Extensions from "$domain/blockly/extensions.svelte.js";
+import { inFilter, robots } from "$domain/robots";
+import { RobotType } from "$domain/robots.types";
+import type { PopupState } from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import {
+	faArrowLeft,
+	faExclamationTriangle,
+	faPlus,
+	faXmark,
+} from "@fortawesome/free-solid-svg-icons";
+import { type WorkspaceSvg, getMainWorkspace } from "blockly";
+import * as Blockly from "blockly";
+import { getContext } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 
-	let board = $derived(SerialState.board || robots.l_nano)
-	let enabledExtensions = $derived(extensions.filter(e => inFilter(board, e.boards)))
+let board = $derived(SerialState.board || robots.l_nano);
+let enabledExtensions = $derived(
+	extensions.filter((e) => inFilter(board, e.boards)),
+);
 
-	let incompatibleExtensions = $derived(Extensions.enabled.map(e => extensions.find(ext => ext.id === e)).filter(e => !inFilter(board, e.boards)))
+let incompatibleExtensions = $derived(
+	Extensions.enabled
+		.map((e) => extensions.find((ext) => ext.id === e))
+		.filter((e) => !inFilter(board, e.boards)),
+);
 
-	function getColor(theme: string) {
-		console.log(theme)
-		return (getMainWorkspace() as WorkspaceSvg).getTheme().categoryStyles[theme].colour
-	}
+function getColor(theme: string) {
+	console.log(theme);
+	return (getMainWorkspace() as WorkspaceSvg).getTheme().categoryStyles[theme]
+		.colour;
+}
 
-	const popupState = getContext<PopupState>("state");
-	function back() {
-		popupState.close()
-	}
+const popupState = getContext<PopupState>("state");
+function back() {
+	popupState.close();
+}
 
-	function toggle(extension: string) {
-		Extensions.toggle(extension);
-		back()
-	}
+function toggle(extension: string) {
+	Extensions.toggle(extension);
+	back();
+}
 </script>
 
 <div class="page">

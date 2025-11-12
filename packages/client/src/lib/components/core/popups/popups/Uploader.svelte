@@ -4,6 +4,8 @@ import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
+import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
+import { inFilter } from "$domain/robots";
 import AppState from "$state/app.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState, {
@@ -12,14 +14,12 @@ import SerialState, {
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import {arduino, Dependencies} from "@leaphy-robotics/leaphy-blocks";
+import { Dependencies, arduino } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
-import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
-import { inFilter } from "$domain/robots";
 
 interface Props {
-	getCode?: () => Promise<string>|string;
+	getCode?: () => Promise<string> | string;
 	program?: Record<string, string>;
 }
 const popupState = getContext<PopupState>("state");
@@ -98,7 +98,8 @@ async function upload(res: Record<string, string>) {
 			});
 		}
 
-		const programmer = SerialState.board?.programmer || WorkspaceState.robot.programmer
+		const programmer =
+			SerialState.board?.programmer || WorkspaceState.robot.programmer;
 		await programmer.upload(SerialState.port, res);
 	} catch (e) {
 		console.log(e);
@@ -118,7 +119,9 @@ onMount(async () => {
 		}
 
 		const board = SerialState.board || WorkspaceState.robot;
-		const incompatibleExtension = ExtensionState.enabled.find(e => !inFilter(board, extensions.find(ext => ext.id === e)?.boards));
+		const incompatibleExtension = ExtensionState.enabled.find(
+			(e) => !inFilter(board, extensions.find((ext) => ext.id === e)?.boards),
+		);
 		if (incompatibleExtension) {
 			popupState.close();
 			return PopupsState.open({
@@ -128,13 +131,15 @@ onMount(async () => {
 					message: $_("INVALID_ROBOT", {
 						values: {
 							board: board.name,
-							extension: extensions.find(ext => ext.id === incompatibleExtension)?.name || "Unknown",
+							extension:
+								extensions.find((ext) => ext.id === incompatibleExtension)
+									?.name || "Unknown",
 						},
 					}),
 					showCancel: true,
 				},
 				allowInteraction: false,
-			})
+			});
 		}
 
 		const res = program || (await compile());

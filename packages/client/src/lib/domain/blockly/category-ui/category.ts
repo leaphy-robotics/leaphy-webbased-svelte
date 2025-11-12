@@ -8,7 +8,7 @@ export class LeaphyCategory extends Blockly.ToolboxCategory {
 	static readonly registrationName = "category";
 
 	protected createDom_(): HTMLDivElement {
-		super.createDom_() // Ensure that all properties are set so nothing else breaks but ignore the output
+		super.createDom_(); // Ensure that all properties are set so nothing else breaks but ignore the output
 
 		this.htmlDiv_ = document.createElement("div");
 		return this.htmlDiv_;

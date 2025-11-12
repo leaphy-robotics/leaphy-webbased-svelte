@@ -92,11 +92,11 @@ export class Arduino extends Blockly.Generator {
 	}
 
 	public getRawPinMapping(pin: string) {
-		if (this.boardType.includes("esp32") && parseInt(pin) > 13) {
-			return `A${parseInt(pin) - 14}`;
+		if (this.boardType.includes("esp32") && Number.parseInt(pin) > 13) {
+			return `A${Number.parseInt(pin) - 14}`;
 		}
 
-		return pin
+		return pin;
 	}
 
 	public getPinMapping(block: Block, field: string, defaultValue?: string) {

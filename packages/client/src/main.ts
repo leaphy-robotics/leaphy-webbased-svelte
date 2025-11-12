@@ -1,5 +1,5 @@
 import "@xterm/xterm/css/xterm.css";
-import 'overlayscrollbars/overlayscrollbars.css';
+import "overlayscrollbars/overlayscrollbars.css";
 import "./app.css";
 import { mount } from "svelte";
 import { addMessages, init } from "svelte-i18n";

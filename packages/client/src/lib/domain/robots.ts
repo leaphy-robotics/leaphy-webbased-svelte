@@ -182,11 +182,7 @@ export const robotListing: Robot[][] = [
 		robots.l_starling,
 		robots.l_original,
 	],
-	[
-		robots.l_nano,
-		robots.l_uno,
-		robots.l_mega,
-	],
+	[robots.l_nano, robots.l_uno, robots.l_mega],
 	[
 		{
 			id: "l_cpp",

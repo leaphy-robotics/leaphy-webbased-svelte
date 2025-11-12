@@ -31,7 +31,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		if (trigger === "DEFAULT") {
 			trigger = "A3";
 		}
-		
+
 		let echo = block.getFieldValue("ECHO_PIN") || "A2";
 		if (echo === "DEFAULT") {
 			echo = "A2";

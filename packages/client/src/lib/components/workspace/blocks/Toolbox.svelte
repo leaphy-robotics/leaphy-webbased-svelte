@@ -1,41 +1,43 @@
 <script lang="ts">
-	import * as Blockly from "blockly"
-	import addExtensionIcon from "$assets/add-extension.svg"
-	import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
-	import PopupState from "$state/popup.svelte"
-	import AddExtension from "$components/core/popups/popups/AddExtension.svelte";
-	import Extensions from "$domain/blockly/extensions.svelte.js"
-	import WorkspaceState from "$state/workspace.svelte";
-	import robotsGroups from "$domain/robots.groups";
-	import { RobotType } from "$domain/robots.types";
+import addExtensionIcon from "$assets/add-extension.svg";
+import AddExtension from "$components/core/popups/popups/AddExtension.svelte";
+import Extensions from "$domain/blockly/extensions.svelte.js";
+import robotsGroups from "$domain/robots.groups";
+import { RobotType } from "$domain/robots.types";
+import PopupState from "$state/popup.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+import type * as Blockly from "blockly";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 
-	interface Item {
-		toolboxitemid: string
-		categorystyle: string
-		name: string
-	}
+interface Item {
+	toolboxitemid: string;
+	categorystyle: string;
+	name: string;
+}
 
-	interface Props {
-		toolboxDef: Item[]
-		workspace: Blockly.WorkspaceSvg
-		selected: string
-	}
-	let { toolboxDef, workspace, selected }: Props = $props()
+interface Props {
+	toolboxDef: Item[];
+	workspace: Blockly.WorkspaceSvg;
+	selected: string;
+}
+let { toolboxDef, workspace, selected }: Props = $props();
 
-	function getColor(theme: string) {
-		return workspace.getTheme().categoryStyles[theme].colour
-	}
+function getColor(theme: string) {
+	return workspace.getTheme().categoryStyles[theme].colour;
+}
 
-	function addExtension() {
-		PopupState.open({
-			component: AddExtension,
-			data: {},
-			allowInteraction: false,
-			allowOverflow: true,
-		})
-	}
+function addExtension() {
+	PopupState.open({
+		component: AddExtension,
+		data: {},
+		allowInteraction: false,
+		allowOverflow: true,
+	});
+}
 
-	const enabledCategories = $derived(toolboxDef.filter(e => Extensions.isEnabled(e.toolboxitemid)))
+const enabledCategories = $derived(
+	toolboxDef.filter((e) => Extensions.isEnabled(e.toolboxitemid)),
+);
 </script>
 
 <div class="toolbox">

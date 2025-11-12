@@ -6,6 +6,7 @@ import Python from "$components/workspace/python/Python.svelte";
 import { loadWorkspaceFromString } from "$domain/blockly/blockly";
 import { FileHandle, type Handle } from "$domain/handles";
 import { type RobotDevice, robots } from "$domain/robots";
+import { RobotType } from "$domain/robots.types";
 import { projectDB } from "$domain/storage";
 import { findAsync, track } from "$state/utils";
 import { serialization } from "blockly";
@@ -14,7 +15,6 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
-import { RobotType } from "$domain/robots.types";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -51,7 +51,7 @@ const extensionMap = {
 	l_nano_esp32: RobotType.L_NANO,
 	l_uno: RobotType.L_UNO,
 	l_mega: RobotType.L_MEGA,
-}
+};
 
 class WorkspaceState {
 	uploadLog = $state<string[]>([]);
@@ -194,7 +194,7 @@ class WorkspaceState {
 				BlocklyState.restore = JSON.parse(content);
 				this.Mode = Mode.BLOCKS;
 			}
-			
+
 			const extension = name.split(".").at(-1);
 			const robot = extensionMap[extension];
 			if (!robot) {

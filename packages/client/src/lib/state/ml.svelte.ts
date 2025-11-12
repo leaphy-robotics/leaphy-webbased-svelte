@@ -4,6 +4,7 @@ import Collect from "$components/workspace/ml/flow/Collect.svelte";
 import Result from "$components/workspace/ml/flow/Result.svelte";
 import Setup from "$components/workspace/ml/flow/Setup.svelte";
 import Train from "$components/workspace/ml/flow/Train.svelte";
+import ExtensionState from "$domain/blockly/extensions.svelte";
 import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
@@ -22,7 +23,6 @@ import type { Component } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import PopupState from "./popup.svelte";
-import ExtensionState from "$domain/blockly/extensions.svelte";
 
 export const Step = {
 	SETUP: Setup as Component,
@@ -262,8 +262,8 @@ class MLState {
 					AppState.libraries.clear();
 					AppState.libraries.install(...arduino.getDependencies());
 
-					return code
-				}
+					return code;
+				},
 			},
 			allowInteraction: false,
 		});

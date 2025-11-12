@@ -85,7 +85,10 @@ export default class PinSelectorField extends FieldDropdown {
 		}
 	}
 
-	static getOptions(mode: "digital" | "analog" | "pwm", includeDefault?: boolean): [string, string][] {
+	static getOptions(
+		mode: "digital" | "analog" | "pwm",
+		includeDefault?: boolean,
+	): [string, string][] {
 		let options: [string, string][] = [];
 		if (includeDefault) {
 			options.push(["Default", "DEFAULT"]);
@@ -110,7 +113,11 @@ export default class PinSelectorField extends FieldDropdown {
 	}
 
 	constructor(options: PinSelectorOptions) {
-		super(PinSelectorField.getOptions(options.mode, options.includeDefault), undefined, options);
+		super(
+			PinSelectorField.getOptions(options.mode, options.includeDefault),
+			undefined,
+			options,
+		);
 	}
 
 	static fromJson(options: PinSelectorOptions) {

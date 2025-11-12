@@ -93,7 +93,10 @@ async function upload() {
 		component: Uploader,
 		data: {
 			getCode: async () => {
-				if (WorkspaceState.Mode !== Mode.BLOCKS || WorkspaceState.robot.type === RobotType.L_MICROPYTHON) {
+				if (
+					WorkspaceState.Mode !== Mode.BLOCKS ||
+					WorkspaceState.robot.type === RobotType.L_MICROPYTHON
+				) {
 					return arduino.workspaceToCode(BlocklyState.workspace);
 				}
 
@@ -115,7 +118,7 @@ async function upload() {
 				arduino.program = null;
 
 				return code;
-			}
+			},
 		},
 		allowInteraction: false,
 	});

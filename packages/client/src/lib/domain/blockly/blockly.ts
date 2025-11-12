@@ -25,9 +25,9 @@ import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
 import bluetooth from "$domain/blockly/bluetooth";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
-import Extensions from "./extensions.svelte"
 import { _ as translate } from "svelte-i18n";
 import { get } from "svelte/store";
+import Extensions from "./extensions.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -40,8 +40,8 @@ Blockly.registry.register(
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"extensions",
-	Extensions
-)
+	Extensions,
+);
 Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"lists",
@@ -126,10 +126,13 @@ export function loadToolbox(
 }
 
 function getCategoryContents(robot: RobotDevice, category: any) {
-	return 
+	return;
 }
 
-function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) {
+function registerDynamicCategories(
+	robot: RobotDevice,
+	workspace: WorkspaceSvg,
+) {
 	for (const category of toolbox) {
 		if (!category.groups) continue;
 
@@ -148,16 +151,14 @@ function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) 
 
 		workspace.registerToolboxCategoryCallback(category.id, () => {
 			return category.groups.flatMap((group, i) => {
-				const contents = []
-				
+				const contents = [];
+
 				if ("label" in group) {
-					contents.push(
-						{ 
-							kind: "label", 
-							text: (expanded.has(i) ? "▼ " : "► ") + get(translate)(group.label), 
-							"web-class": `category-${category.id}-group-${i}` 
-						}
-					)
+					contents.push({
+						kind: "label",
+						text: (expanded.has(i) ? "▼ " : "► ") + get(translate)(group.label),
+						"web-class": `category-${category.id}-group-${i}`,
+					});
 					if (expanded.has(i)) {
 						contents.push({ kind: "sep", gap: "8" });
 					}
@@ -172,15 +173,14 @@ function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) 
 									{ kind: "block", ...item },
 								];
 							})
-							.slice(1)
-					)
+							.slice(1),
+					);
 				}
 
 				return contents;
 			});
 		});
 
-		
 		let removeController: AbortController;
 		function registerListeners() {
 			removeController?.abort();
@@ -189,29 +189,34 @@ function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) 
 			category.groups.forEach((group, i) => {
 				if (!("label" in group)) return;
 
-				const label = document.querySelector(`.category-${category.id}-group-${i}`)
+				const label = document.querySelector(
+					`.category-${category.id}-group-${i}`,
+				);
 				if (!label) return;
 
-				label.addEventListener("click", () => {
-					console.log("click")
-					if (expanded.has(i)) {
-						expanded.delete(i);
-					} else {
-						expanded.add(i);
-					}
-					workspace.refreshToolboxSelection();
-					registerListeners();
-				}, { signal: removeController.signal });
-			})
+				label.addEventListener(
+					"click",
+					() => {
+						console.log("click");
+						if (expanded.has(i)) {
+							expanded.delete(i);
+						} else {
+							expanded.add(i);
+						}
+						workspace.refreshToolboxSelection();
+						registerListeners();
+					},
+					{ signal: removeController.signal },
+				);
+			});
 		}
 
 		workspace.addChangeListener((event: Blockly.Events.Abstract) => {
 			if (event.type !== "toolbox_item_select") return;
 			registerListeners();
-		})
+		});
 	}
 }
-
 
 export function isCompatible(workspace: WorkspaceSvg, robot: RobotDevice) {
 	let incompatible = new Set<string>();
@@ -301,8 +306,8 @@ export function setupWorkspace(
 			startScale: 0.8,
 		},
 		plugins: {
-			toolbox: LeaphyToolbox
-		}
+			toolbox: LeaphyToolbox,
+		},
 	});
 	Blockly.serialization.workspaces.load(
 		content || JSON.parse(defaultProgram),
