@@ -5,7 +5,7 @@ import { goToHomePage, openExample, selectRobot } from "./utils";
 test.beforeEach(goToHomePage);
 
 test("Load Blink example and check code", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	await page.locator(".side").first().click(); // Open code

@@ -6,7 +6,7 @@ import robotsGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import type * as Blockly from "blockly";
+import { type WorkspaceSvg, utils } from "blockly";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 
 interface Item {
@@ -17,7 +17,7 @@ interface Item {
 
 interface Props {
 	toolboxDef: Item[];
-	workspace: Blockly.WorkspaceSvg;
+	workspace: WorkspaceSvg;
 	selected: string;
 }
 let { toolboxDef, workspace, selected }: Props = $props();
@@ -50,7 +50,7 @@ const enabledCategories = $derived(
 						<div class="container">
 							<img class="icon" src={`blockly-assets/${item.toolboxitemid}.svg`} alt="">
 						</div>
-						<div class="name">{Blockly.utils.parsing.replaceMessageReferences(item.name)}</div>
+						<div class="name">{utils.parsing.replaceMessageReferences(item.name)}</div>
 					</div>
 				</div>
 			{/each}

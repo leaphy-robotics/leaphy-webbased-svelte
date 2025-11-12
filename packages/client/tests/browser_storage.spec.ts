@@ -4,7 +4,7 @@ import { goToHomePage, openExample, selectRobot } from "./utils";
 test.beforeEach(goToHomePage);
 
 test("Saving - Backpack", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	// Put something in the backpack
@@ -25,7 +25,7 @@ test("Saving - Backpack", async ({ page }) => {
 
 	await page.getByText("Cancel").click();
 	// Load a different robot type than before, cause why not
-	await selectRobot(page, "Leaphy Starling", "Starling Nano");
+	await selectRobot(page, "Leaphy Starling");
 
 	await expect(page.getByText("repeat forever")).toBeHidden();
 	await page.locator(".blocklyBackpack").click();
@@ -45,23 +45,23 @@ test("Saving - Backpack", async ({ page }) => {
 });
 
 test("Saving - Blockly", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	await page.reload();
 
 	await page.getByText("Cancel").click();
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await expect(page.getByText("repeat forever")).toBeVisible();
 });
 
 test("Saving - Blockly - Continue working", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	await page.reload();
 
-	await page.getByText("Original Uno").click();
+	await page.getByText("Leaphy Original").click();
 	await page.getByText("Continue").and(page.getByRole("button")).click();
 	await expect(page.getByText("repeat forever")).toBeVisible();
 });
