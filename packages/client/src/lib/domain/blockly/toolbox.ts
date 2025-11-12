@@ -64,13 +64,8 @@ export default [
 				blocks: [
 					{
 						type: "leaphy_sonar_read",
-						fields: { TRIG_PIN: "17", ECHO_PIN: "16" },
-						robots: robotGroups.ALL,
-					},
-					{
-						type: "leaphy_sonar_read",
-						fields: { TRIG_PIN: "A3", ECHO_PIN: "A2" },
-						robots: [RobotType.L_MICROPYTHON],
+						fields: { TRIG_PIN: "DEFAULT", ECHO_PIN: "DEFAULT" },
+						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 					},
 					{
 						type: "leaphy_tof_get_distance",

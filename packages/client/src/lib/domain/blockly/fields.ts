@@ -3,6 +3,7 @@ import { PinMapping, type RobotDevice } from "../robots";
 
 interface PinSelectorOptions extends FieldConfig {
 	mode: "digital" | "analog" | "pwm";
+	includeDefault?: boolean;
 }
 
 export default class PinSelectorField extends FieldDropdown {
@@ -84,22 +85,32 @@ export default class PinSelectorField extends FieldDropdown {
 		}
 	}
 
-	static getOptions(mode: "digital" | "analog" | "pwm"): [string, string][] {
+	static getOptions(mode: "digital" | "analog" | "pwm", includeDefault?: boolean): [string, string][] {
+		let options: [string, string][] = [];
+		if (includeDefault) {
+			options.push(["Default", "DEFAULT"]);
+		}
+
 		switch (mode) {
 			case "digital": {
-				return PinSelectorField.digitalPinOptions;
+				options.push(...PinSelectorField.digitalPinOptions);
+				break;
 			}
 			case "analog": {
-				return PinSelectorField.analogPinOptions;
+				options.push(...PinSelectorField.analogPinOptions);
+				break;
 			}
 			case "pwm": {
-				return PinSelectorField.pwmPinOptions;
+				options.push(...PinSelectorField.pwmPinOptions);
+				break;
 			}
 		}
+
+		return options;
 	}
 
 	constructor(options: PinSelectorOptions) {
-		super(PinSelectorField.getOptions(options.mode), undefined, options);
+		super(PinSelectorField.getOptions(options.mode, options.includeDefault), undefined, options);
 	}
 
 	static fromJson(options: PinSelectorOptions) {

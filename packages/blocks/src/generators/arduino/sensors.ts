@@ -81,8 +81,15 @@ export default function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_sonar_read = (block) => {
-		const trig = arduino.getPinMapping(block, "TRIG_PIN");
-		const echo = arduino.getPinMapping(block, "ECHO_PIN");
+		let defaultTrig = "7";
+		let defaultEcho = "8";
+		if (arduino.boardType.includes("nano")) {
+			defaultTrig = "17";
+			defaultEcho = "16";
+		}
+
+		const trig = arduino.getPinMapping(block, "TRIG_PIN", defaultTrig);
+		const echo = arduino.getPinMapping(block, "ECHO_PIN", defaultEcho);
 
 		return [getDistanceSonar(arduino, trig, echo), arduino.ORDER_ATOMIC];
 	};

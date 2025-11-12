@@ -99,8 +99,12 @@ export class Arduino extends Blockly.Generator {
 		return pin
 	}
 
-	public getPinMapping(block: Block, field: string) {
-		const pin = block.getFieldValue(field);
+	public getPinMapping(block: Block, field: string, defaultValue?: string) {
+		let pin = block.getFieldValue(field);
+		if (pin === "DEFAULT" && defaultValue) {
+			pin = defaultValue;
+		}
+
 		return this.getRawPinMapping(pin);
 	}
 
