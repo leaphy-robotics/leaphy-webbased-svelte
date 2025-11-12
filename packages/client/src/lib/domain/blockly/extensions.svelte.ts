@@ -5,41 +5,41 @@ import * as Blockly from "blockly";
 import type {ISerializer} from "blockly/core/interfaces/i_serializer";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
-import type { Toolbox, ToolboxCategory } from "blockly";
+import type { ToolboxCategory } from "blockly";
 
 export const extensions = [
 	{
-		name: "%{BKY_LEAPHY_LISTS_CATEGORY}",
-		description: "Store multiple similar objects into a list of data",
+		name: "LISTS_CATEGORY",
+		description: "LISTS_CATEGORY_DESCRIPTION",
 		style: "lists_category",
 		id: "l_lists",
 		boards: robotGroups.L_ARDUINO_ALL,
 	},
 	{
-		name: "Operators",
-		description: "Add blocks for handling both strings and numbers",
+		name: "OPERATORS_CATEGORY",
+		description: "OPERATORS_CATEGORY_DESCRIPTION",
 		style: "numbers_category",
 		id: "l_operators",
 		inactiveId: "l_numbers",
 		boards: robotGroups.L_ARDUINO_ALL,
 	},
 	{
-		name: "Machine Learning",
-		description: "Train your own Machine Learning model for classification",
+		name: "ML_CATEGORY",
+		description: "ML_CATEGORY_DESCRIPTION",
 		style: "ml_category",
 		id: "l_ml",
 		boards: [RobotType.L_NANO_ESP32],
 	},
 	{
-		name: "Mesh",
-		description: "Connect a network of robots together and make them communicate",
+		name: "MESH_CATEGORY",
+		description: "MESH_CATEGORY_DESCRIPTION",
 		style: "mesh_category",
 		id: "l_mesh",
 		boards: [RobotType.L_NANO_ESP32],
 	},
 	{
-		name: "Bluetooth",
-		description: "Control your robot using your keyboard remotely",
+		name: "BLE_CATEGORY",
+		description: "BLE_CATEGORY_DESCRIPTION",
 		style: "ble_category",
 		id: "l_ble",
 		boards: [RobotType.L_NANO_ESP32],

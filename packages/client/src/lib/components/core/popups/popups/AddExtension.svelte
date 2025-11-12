@@ -49,12 +49,12 @@
 						<img src={`blockly-assets/${extension.id}.svg`} alt="">
 					</div>
 					<div class="content">
-						<div class="name">{Blockly.utils.parsing.replaceMessageReferences(extension.name)}</div>
-						<div class="description">{extension.description}</div>
+						<div class="name">{$_(extension.name)}</div>
+						<div class="description">{$_(extension.description)}</div>
 					</div>
 					<button style:background={enabled ? 'salmon' : 'var(--accent)'} onclick={() => toggle(extension.id)}>
 						<Fa icon={enabled ? faXmark : faPlus} />
-						{enabled ? 'Remove' : 'Add'}
+						{enabled ? $_("REMOVE_EXTENSION") : $_("ADD_EXTENSION")}
 					</button>
 				</div>
 			{/each}
@@ -66,14 +66,14 @@
 					</div>
 					<div class="content">
 						<div class="line">
-							<div class="name">{Blockly.utils.parsing.replaceMessageReferences(extension.name)}</div>
+							<div class="name">{$_(extension.name)}</div>
 							<div class="warning"><Fa icon={faExclamationTriangle} /> {$_("INCOMPATIBLE_PROJECT")}</div>
 						</div>
-						<div class="description">{extension.description}</div>
+						<div class="description">{$_(extension.description)}</div>
 					</div>
 					<button style:background={'salmon'} onclick={() => toggle(extension.id)}>
 						<Fa icon={faXmark} />
-						Remove
+						{$_("REMOVE_EXTENSION")}
 					</button>
 				</div>
 			{/each}
@@ -87,7 +87,7 @@
 					<div>{$_("EXTENSIONS_CONNECT_DESC")}</div>
 				</div>
 				
-				<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CONNECT")} />
+				<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
 			</div>
 		</div>
 	{/if}

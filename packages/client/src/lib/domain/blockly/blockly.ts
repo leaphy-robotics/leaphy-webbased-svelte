@@ -26,6 +26,8 @@ import "@blockly/toolbox-search";
 import bluetooth from "$domain/blockly/bluetooth";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import Extensions from "./extensions.svelte"
+import { _ as translate } from "svelte-i18n";
+import { get } from "svelte/store";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -152,7 +154,7 @@ function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) 
 					contents.push(
 						{ 
 							kind: "label", 
-							text: (expanded.has(i) ? "▼ " : "▶ ") + group.label, 
+							text: (expanded.has(i) ? "▼ " : "▶ ") + get(translate)(group.label), 
 							"web-class": `category-${category.id}-group-${i}` 
 						}
 					)

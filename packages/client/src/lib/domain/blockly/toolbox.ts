@@ -47,7 +47,7 @@ export default [
 		],
 		groups: [
 			{
-				label: "I/O",
+				label: "IO_SECTION",
 				defaultExpanded: true,
 				blocks: [
 					{ type: "digital_read" },
@@ -59,7 +59,7 @@ export default [
 				],
 			},
 			{
-				label: "Distance & Motion",
+				label: "DISTANCE_MOTION_SECTION",
 				defaultExpanded: true,
 				blocks: [
 					{
@@ -86,7 +86,7 @@ export default [
 				],
 			},
 			{
-				label: "Environmental",
+				label: "ENVIRONMENTAL_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -104,7 +104,7 @@ export default [
 				],
 			},
 			{
-				label: "Color & Light",
+				label: "COLOR_LIGHT_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -122,7 +122,7 @@ export default [
 				],
 			},
 			{
-				label: "Time",
+				label: "TIME_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -188,7 +188,7 @@ export default [
 				],
 			},
 			{
-				label: "Communication",
+				label: "COMMUNICATION_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -218,7 +218,7 @@ export default [
 		],
 		groups: [
 			{
-				label: "Output",
+				label: "OUTPUT_SECTION",
 				defaultExpanded: true,
 				blocks: [
 					{
@@ -319,7 +319,7 @@ export default [
 				],
 			},
 			{
-				label: "Led strip",
+				label: "LED_STRIP_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -375,7 +375,7 @@ export default [
 				],
 			},
 			{
-				label: "Standard display",
+				label: "STANDARD_DISPLAY_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -435,7 +435,7 @@ export default [
 				],
 			},
 			{
-				label: "Large display",
+				label: "LARGE_DISPLAY_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -491,7 +491,7 @@ export default [
 				],
 			},
 			{
-				label: "Matrix display",
+				label: "MATRIX_DISPLAY_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -545,7 +545,7 @@ export default [
 				],
 			},
 			{
-				label: "Segment display",
+				label: "SEGMENT_DISPLAY_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -589,7 +589,7 @@ export default [
 				],
 			},
 			{
-				label: "Audio",
+				label: "AUDIO_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
@@ -645,7 +645,7 @@ export default [
 				],
 			},
 			{
-				label: "Communication & Storage",
+				label: "COMMUNICATION_STORAGE_SECTION",
 				defaultExpanded: false,
 				blocks: [
 					{
