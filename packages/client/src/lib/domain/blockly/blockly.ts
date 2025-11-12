@@ -154,7 +154,7 @@ function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) 
 					contents.push(
 						{ 
 							kind: "label", 
-							text: (expanded.has(i) ? "▼ " : "▶ ") + get(translate)(group.label), 
+							text: (expanded.has(i) ? "▼ " : "► ") + get(translate)(group.label), 
 							"web-class": `category-${category.id}-group-${i}` 
 						}
 					)
@@ -192,7 +192,6 @@ function registerDynamicCategories(robot: RobotDevice, workspace: WorkspaceSvg) 
 				const label = document.querySelector(`.category-${category.id}-group-${i}`)
 				if (!label) return;
 
-				console.log(label);
 				label.addEventListener("click", () => {
 					console.log("click")
 					if (expanded.has(i)) {
