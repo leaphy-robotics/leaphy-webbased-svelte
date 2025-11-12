@@ -5,6 +5,9 @@
 	import PopupState from "$state/popup.svelte"
 	import AddExtension from "$components/core/popups/popups/AddExtension.svelte";
 	import Extensions from "$domain/blockly/extensions.svelte.js"
+	import WorkspaceState from "$state/workspace.svelte";
+	import robotsGroups from "$domain/robots.groups";
+	import { RobotType } from "$domain/robots.types";
 
 	interface Item {
 		toolboxitemid: string
@@ -33,7 +36,6 @@
 	}
 
 	const enabledCategories = $derived(toolboxDef.filter(e => Extensions.isEnabled(e.toolboxitemid)))
-	console.log(toolboxDef)
 </script>
 
 <div class="toolbox">
@@ -53,10 +55,11 @@
 		</div>
 	</OverlayScrollbarsComponent>
 
-
-	<button onclick={addExtension} class="addExtension">
-		<img class="icon" src={addExtensionIcon} alt="">
-	</button>
+	{#if !([RobotType.L_MICROPYTHON, ...robotsGroups.L_FLITZ_ALL].includes(WorkspaceState.robot.type))}
+		<button onclick={addExtension} class="addExtension">
+			<img class="icon" src={addExtensionIcon} alt="">
+		</button>
+	{/if}
 </div>
 
 <style>
