@@ -65,6 +65,7 @@ async function compile() {
 			}),
 		});
 	} catch (e) {
+		console.error(e);
 		throw new UploadError("COMPILATION_FAILED", $_("NO_INTERNET"));
 	}
 

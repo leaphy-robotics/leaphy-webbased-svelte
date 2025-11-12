@@ -10,7 +10,7 @@ let test_files = [
 
 for (let [testName, file] of test_files) {
 	test(`LoadAndSave - ${testName}`, async ({ page }) => {
-		await selectRobot(page, "Leaphy Original", "Original Uno");
+		await selectRobot(page, "Leaphy Original");
 		await page.getByRole("button", { name: "My projects" }).click();
 
 		// Playwright doesn't seem to support `showOpenFilePicker()` so mock it

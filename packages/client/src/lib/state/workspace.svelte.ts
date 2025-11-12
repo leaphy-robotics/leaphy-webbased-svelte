@@ -44,6 +44,7 @@ const extensionMap = {
 	l_starling: RobotType.L_STARLING,
 	l_starling_nano: RobotType.L_STARLING,
 	l_starling_nano_esp32: RobotType.L_STARLING,
+	l_original: RobotType.L_ORIGINAL,
 	l_original_uno: RobotType.L_ORIGINAL,
 	l_original_nano: RobotType.L_ORIGINAL,
 	l_original_nano_esp32: RobotType.L_ORIGINAL,
@@ -51,6 +52,7 @@ const extensionMap = {
 	l_nano_esp32: RobotType.L_NANO,
 	l_uno: RobotType.L_UNO,
 	l_mega: RobotType.L_MEGA,
+	l_micropython: RobotType.L_MICROPYTHON,
 };
 
 class WorkspaceState {

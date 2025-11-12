@@ -37,7 +37,7 @@ test("Load Blink example and check code", async ({ page }) => {
 	const download = await downloadPromise;
 
 	// Check filename
-	expect(download.suggestedFilename()).toBe("MyModifiedBlink.l_original_uno");
+	expect(download.suggestedFilename()).toBe("MyModifiedBlink.l_original");
 
 	// Check that the delay is now 500
 	const data = await consumers.text(await download.createReadStream());

@@ -61,7 +61,11 @@ test("Saving - Blockly - Continue working", async ({ page }) => {
 
 	await page.reload();
 
-	await page.getByText("Leaphy Original").click();
+	await page
+		.getByRole("button", {
+			name: "Leaphy Original Leaphy Original Temporary save",
+		})
+		.click();
 	await page.getByText("Continue").and(page.getByRole("button")).click();
 	await expect(page.getByText("repeat forever")).toBeVisible();
 });
@@ -99,7 +103,7 @@ test("Saving - C++ - Continue working", async ({ page }) => {
 });
 
 test("Saving - New project", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	// Start a new project, should reset to the default

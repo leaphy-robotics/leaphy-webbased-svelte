@@ -93,11 +93,8 @@ async function upload() {
 		component: Uploader,
 		data: {
 			getCode: async () => {
-				if (
-					WorkspaceState.Mode !== Mode.BLOCKS ||
-					WorkspaceState.robot.type === RobotType.L_MICROPYTHON
-				) {
-					return arduino.workspaceToCode(BlocklyState.workspace);
+				if (WorkspaceState.Mode !== Mode.BLOCKS) {
+					return WorkspaceState.code;
 				}
 
 				const cs = new CompressionStream("gzip");

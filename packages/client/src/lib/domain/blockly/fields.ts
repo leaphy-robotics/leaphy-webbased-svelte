@@ -91,7 +91,7 @@ export default class PinSelectorField extends FieldDropdown {
 	): [string, string][] {
 		let options: [string, string][] = [];
 		if (includeDefault) {
-			options.push(["Default", "DEFAULT"]);
+			options.push(["%{BKY_DEFAULT}", "DEFAULT"]);
 		}
 
 		switch (mode) {

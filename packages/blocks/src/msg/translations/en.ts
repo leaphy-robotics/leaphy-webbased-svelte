@@ -654,5 +654,6 @@ messages.LEAPHY_KEY_ARROW_UP = "up arrow";
 messages.LEAPHY_KEY_ARROW_DOWN = "down arrow";
 messages.LEAPHY_KEY_ARROW_RIGHT = "right arrow";
 messages.LEAPHY_KEY_ARROW_LEFT = "left arrow";
+messages.DEFAULT = "Default";
 
 export default messages;

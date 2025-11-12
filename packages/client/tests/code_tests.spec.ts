@@ -142,28 +142,18 @@ const CppRobotTypes = [
 	},
 	{
 		robot: "Leaphy Starling",
-		model: "Starling Nano",
-		extension: ".l_starling_nano",
-	},
-	{
-		robot: "Leaphy Starling",
-		model: "Starling Nano ESP32",
-		extension: ".l_starling_nano_esp32",
+		model: undefined,
+		extension: ".l_starling",
 	},
 	{
 		robot: "Leaphy Original",
-		model: "Original Uno",
-		extension: ".l_original_uno",
-	},
-	{
-		robot: "Leaphy Original",
-		model: "Original Nano ESP32",
-		extension: ".l_original_nano_esp32",
+		model: undefined,
+		extension: ".l_original",
 	},
 	{
 		robot: "Arduino Nano",
-		model: "Arduino Nano ESP32",
-		extension: ".l_nano_esp32",
+		model: undefined,
+		extension: ".l_nano",
 	},
 	{
 		robot: "Arduino Uno",

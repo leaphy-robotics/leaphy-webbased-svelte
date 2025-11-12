@@ -11,7 +11,7 @@ async function redo(page: Page) {
 }
 
 test("Undo redo - Deletion", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	// Delete the repeat forever block
@@ -40,7 +40,7 @@ test("Undo redo - Deletion", async ({ page }) => {
 });
 
 test("Undo redo - Variable change", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	// Change a boolean
@@ -73,7 +73,7 @@ test("Undo redo - Variable change", async ({ page }) => {
 });
 
 test("Undo redo - Dragging", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	await page.locator(".side").first().click(); // Open code
