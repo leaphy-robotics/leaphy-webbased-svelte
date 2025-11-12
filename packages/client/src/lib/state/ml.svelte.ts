@@ -22,7 +22,7 @@ import type { Component } from "svelte";
 import { _ } from "svelte-i18n";
 import { get } from "svelte/store";
 import PopupState from "./popup.svelte";
-import SerialState from "$state/serial.svelte";
+import ExtensionState from "$domain/blockly/extensions.svelte";
 
 export const Step = {
 	SETUP: Setup as Component,
@@ -67,7 +67,7 @@ function readFloat32Array(view: DataView) {
 class MLState {
 	// Important: persistent state should not be directly updated on this class in order to ensure consistent project serialization, use utilities and setters from the ML class contained in the Blockly category instead
 
-	enabled = $state(false);
+	enabled = $derived(ExtensionState.isEnabled("l_ml"));
 	stepIndex = $state(0);
 	maxStep = $state(0);
 	// Derived reactive value that updates when stepIndex changes
@@ -160,7 +160,6 @@ class MLState {
 			"updateSensors",
 			() => (this.sensors = ml.sensors.getItems()),
 		);
-		ml.addEventListener("updateEnabled", () => (this.enabled = ml.enabled));
 		ml.addEventListener("updateMaxStep", () => {
 			this.maxStep = ml.maxStep;
 			if (this.stepIndex > this.maxStep) {
