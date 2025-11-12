@@ -243,6 +243,8 @@
 	"MESH_CATEGORY_DESCRIPTION": "Connect a network of robots together and make them communicate",
 	"BLE_CATEGORY": "Bluetooth",
 	"BLE_CATEGORY_DESCRIPTION": "Control your robot using your keyboard remotely",
+	"OR_SELECT": "Or select a board",
+	"SELECT": "Select",
 
 	"IO_SECTION": "I/O",
 	"DISTANCE_MOTION_SECTION": "Distance & Motion",

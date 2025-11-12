@@ -243,6 +243,8 @@
 	"MESH_CATEGORY_DESCRIPTION": "Verbind een netwerk van robots en laat ze met elkaar communiceren",
 	"BLE_CATEGORY": "Bluetooth",
 	"BLE_CATEGORY_DESCRIPTION": "Stuur je robot op afstand aan met je toetsenbord",
+	"OR_SELECT": "Of selecteer een bord",
+	"SELECT": "Selecteer",
 
 	"IO_SECTION": "I/O",
 	"DISTANCE_MOTION_SECTION": "Afstand & beweging",

@@ -1,8 +1,10 @@
 <script lang="ts">
 import Button from "$components/ui/Button.svelte";
+import Select from "$components/ui/Select.svelte";
 import { extensions } from "$domain/blockly/extensions.svelte.js";
 import Extensions from "$domain/blockly/extensions.svelte.js";
 import { inFilter, robots } from "$domain/robots";
+import type { RobotDevice } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import type { PopupState } from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
@@ -18,6 +20,19 @@ import * as Blockly from "blockly";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+
+const boardOptions: [string, string][] = [
+	["Arduino Uno", robots.l_uno.id],
+	["Arduino Nano", robots.l_nano.id],
+	["Arduino Nano ESP32", robots.l_nano_esp32.id],
+];
+let selectedBoard = $state(boardOptions[1][1]);
+let enabled = $state(false);
+
+function selectBoard() {
+	SerialState.board = robots[selectedBoard];
+	enabled = true;
+}
 
 let board = $derived(SerialState.board || robots.l_nano);
 let enabledExtensions = $derived(
@@ -52,7 +67,7 @@ function toggle(extension: string) {
 		<Button onclick={back} mode="outlined" icon={faArrowLeft} name={$_("BACK")} />
 	</div>
 
-	{#if SerialState.port}
+	{#if SerialState.port || enabled}
 		<div class="grid">
 			{#each enabledExtensions as extension}
 				{@const enabled = Extensions.isEnabled(extension.id)}
@@ -99,7 +114,17 @@ function toggle(extension: string) {
 					<div>{$_("EXTENSIONS_CONNECT_DESC")}</div>
 				</div>
 				
-				<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
+				<div class="connect-options">
+					<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
+					
+					<div class="group">
+						<span>{$_("OR_SELECT")}</span>
+						<div class="line">
+							<Select mode="secondary" full options={boardOptions} bind:value={selectedBoard} />
+							<Button onclick={selectBoard} mode={"primary"} center name={$_("SELECT")} />
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	{/if}
@@ -231,5 +256,23 @@ function toggle(extension: string) {
 		align-items: center;
 		gap: 5px;
 		color: salmon;
+	}
+
+	.connect-options {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.group {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.connect-options span {
+		text-align: center;
+		color: var(--on-secondary);
+		font-size: 14px;
 	}
 </style>
