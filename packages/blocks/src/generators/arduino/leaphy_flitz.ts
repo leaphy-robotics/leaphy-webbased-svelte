@@ -51,7 +51,7 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "FLITZ_LED_B", arduino.ORDER_ATOMIC) || "0";
 
 		let code: string;
-		if (arduino.robotType.includes("nano")) {
+		if (arduino.boardType.includes("nano")) {
 			// Ground is connected to pin 8 on the nano, so it needs to be pulled LOW
 			arduino.addSetup(
 				"setup_flitz_nano_rgb",

@@ -11,6 +11,7 @@ import type {
 	FlyoutDefinition,
 	FlyoutItemInfoArray,
 } from "blockly/core/utils/toolbox";
+import Extensions from "../../../client/src/lib/domain/blockly/extensions.svelte";
 import { serializeBlock } from "../../../client/src/lib/domain/blockly/pseudo";
 
 const input = document.createElement("input");
@@ -21,6 +22,7 @@ input.style.position = "fixed";
 input.style.left = "80px";
 input.style.top = "65px";
 input.style.zIndex = "99999";
+input.classList.add("search-input");
 Object.assign(input.style, {
 	position: "fixed",
 	left: "80px",
@@ -32,7 +34,6 @@ Object.assign(input.style, {
 	border: "none",
 	outline: "0",
 	borderRadius: "50px",
-	display: "none",
 });
 document.body.appendChild(input);
 
@@ -41,9 +42,10 @@ input.addEventListener("input", () => {
 });
 
 export default function (workspace: WorkspaceSvg) {
-	let blockList: FlyoutDefinition = [
+	let blockList = [
 		{
 			kind: "label",
+			"web-class": "search-input-label",
 			text: new Array(64).fill(" ").join(""),
 		},
 		{
@@ -58,9 +60,12 @@ export default function (workspace: WorkspaceSvg) {
 			// biome-ignore lint/complexity/useLiteralKeys: protected properties must be accessed using brackets
 			toolbox["contents"].values(),
 		) as ToolboxCategory[];
+		const enabledCategories = categories.filter((e) =>
+			Extensions.isEnabled(e.getId()),
+		);
 
 		const blocks = new Map<string, BlockDefinition>();
-		categories.forEach((category) => {
+		enabledCategories.forEach((category) => {
 			if (category.getId() === "l_search") return;
 
 			const contents = category.getContents();
@@ -85,17 +90,14 @@ export default function (workspace: WorkspaceSvg) {
 			}
 		});
 
-		const visibleBlocks: FlyoutItemInfoArray = [];
 		blocks.forEach((blockDef, type) => {
 			const block = new BlockSvg(workspace, type);
 			const message = serializeBlock(block);
 			if (message.toUpperCase().includes(input.value.toUpperCase())) {
-				visibleBlocks.push(blockDef, { kind: "sep", gap: 8 });
+				blockList.push(blockDef, { kind: "sep", gap: 8 });
 			}
 			block.dispose();
 		});
-
-		blockList.push(...visibleBlocks);
 	}
 
 	workspace.addChangeListener((ev) => {
@@ -103,11 +105,9 @@ export default function (workspace: WorkspaceSvg) {
 		if (ev.type !== "toolbox_item_select") return;
 
 		if (workspace?.getToolbox()?.getSelectedItem()?.getId() === "l_search") {
-			input.style.display = "block";
 			input.placeholder = Msg.SEARCH;
 			input.focus();
 		} else {
-			input.style.display = "none";
 			input.value = "";
 		}
 	});

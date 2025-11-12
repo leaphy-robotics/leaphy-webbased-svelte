@@ -77,7 +77,7 @@ void leaphyProgram() {
 void setup() {
 	Serial.begin(115200);
   Wire.begin();
-  Wire.setTimeout(50);
+  Wire.setWireTimeout();
   i2cSelectChannel(0xff);
 
   leaphyProgram();

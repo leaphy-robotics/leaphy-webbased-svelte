@@ -6,7 +6,8 @@
 			"$assets/*": ["./src/lib/assets/*"],
 			"$domain/*": ["./src/lib/domain/*"],
 			"$state/*": ["./src/lib/state/*"],
-			"$education/*": ["./src/lib/education/*"]
+			"$education/*": ["./src/lib/education/*"],
+			"blockly/*": ["./node_modules/blockly/*"]
 		},
 
 		"target": "ESNext",

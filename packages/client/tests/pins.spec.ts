@@ -5,7 +5,7 @@ test.beforeEach(goToHomePage);
 
 let uno_pins = {
 	digitalPinRange: [2, 19],
-	analogPinRange: [0, 5],
+	analogPinRange: [0, 7],
 	pwm: [3, 5, 6, 9, 10, 11],
 };
 
@@ -90,7 +90,7 @@ test("Pins - Uno", async ({ page }) => {
 });
 
 test("Pins - Nano", async ({ page }) => {
-	await selectRobot(page, "Arduino Nano", "Arduino Nano");
+	await selectRobot(page, "Arduino Nano");
 
 	await test_pins(page, nano_pins);
 });

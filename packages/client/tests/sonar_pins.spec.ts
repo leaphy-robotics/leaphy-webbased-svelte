@@ -1,13 +1,11 @@
-import { type Page, expect, test } from "@playwright/test";
-import { goToHomePage, selectRobot, switchRobot } from "./utils";
+import { expect, test } from "@playwright/test";
+import { goToHomePage, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
-async function test_sonar_pins(
-	page: Page,
-	first_pin: string,
-	second_pin: string,
-) {
+test("SonarPins", async ({ page }) => {
+	await selectRobot(page, "Arduino Uno");
+
 	let values = page
 		.locator(".blocklyDraggable")
 		.filter({
@@ -16,23 +14,6 @@ async function test_sonar_pins(
 		.first()
 		.locator(".blocklyEditableField");
 
-	expect(values.nth(0)).toHaveText(first_pin);
-	expect(values.nth(1)).toHaveText(second_pin);
-}
-
-test("SonarPins", async ({ page }) => {
-	await selectRobot(page, "Arduino Uno");
-	await test_sonar_pins(page, "7", "8");
-
-	await switchRobot(page);
-	await selectRobot(page, "Arduino Nano", "Arduino Nano ESP32");
-	await test_sonar_pins(page, "17", "16");
-
-	await switchRobot(page);
-	await selectRobot(page, "Leaphy Original", "Original Nano");
-	await test_sonar_pins(page, "17", "16");
-
-	await switchRobot(page);
-	await selectRobot(page, "Leaphy Starling", "Starling Nano");
-	await test_sonar_pins(page, "17", "16");
+	expect(values.nth(0)).toHaveText("Default");
+	expect(values.nth(1)).toHaveText("Default");
 });

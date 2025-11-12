@@ -51,27 +51,6 @@ async function onselect(type: Robot) {
 		WorkspaceState.robot = type;
 		WorkspaceState.Mode = Mode.BLOCKS;
 		BlocklyState.restore = JSON.parse(tempSave?.content || null);
-
-		if (SerialState.board && type.board !== SerialState.board.id) {
-			PopupState.open({
-				component: Warning,
-				data: {
-					title: "INVALID_ROBOT_TITLE",
-					message: $_("INVALID_ROBOT", {
-						values: {
-							robot: WorkspaceState.robot.name,
-							board: SerialState.board.name,
-						},
-					}),
-					showCancel: true,
-				},
-				allowInteraction: false,
-			}).then((result) => {
-				if (result) return;
-
-				AppState.Screen = Screen.START;
-			});
-		}
 	}
 
 	WorkspaceState.saveState = true;

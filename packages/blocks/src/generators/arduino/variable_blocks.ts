@@ -3,8 +3,8 @@ import { Dependencies } from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.leaphy_segment_init = (block) => {
-		const clk = block.getFieldValue("CLK");
-		const dio = block.getFieldValue("DIO");
+		const clk = arduino.getPinMapping(block, "CLK");
+		const dio = arduino.getPinMapping(block, "DIO");
 
 		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("tm1637", "#include <SegmentDisplay.h>");
@@ -18,9 +18,9 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_matrix_init = (block) => {
-		const din = block.getFieldValue("DIN");
-		const clk = block.getFieldValue("CLK");
-		const cs = block.getFieldValue("CS");
+		const din = arduino.getPinMapping(block, "DIN");
+		const clk = arduino.getPinMapping(block, "CLK");
+		const cs = arduino.getPinMapping(block, "CS");
 
 		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("matrix", "#include <LedControl.h>");
@@ -39,8 +39,8 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_sound_init = (block) => {
-		const RX = block.getFieldValue("RX");
-		const TX = block.getFieldValue("TX");
+		const RX = arduino.getPinMapping(block, "RX");
+		const TX = arduino.getPinMapping(block, "TX");
 
 		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 		arduino.addInclude("sound", "#include <RedMP3.h>");

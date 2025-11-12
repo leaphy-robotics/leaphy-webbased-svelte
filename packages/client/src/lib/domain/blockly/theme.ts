@@ -65,7 +65,7 @@ export const light = Theme.defineTheme("leaphy-light", {
 		toolboxBackgroundColour: "#343444",
 		toolboxForegroundColour: "#fff",
 		flyoutBackgroundColour: "#FFFFFF",
-		flyoutForegroundColour: "#ccc",
+		flyoutForegroundColour: "#000",
 		insertionMarkerColour: "#000",
 		scrollbarColour: "#ccc",
 		flyoutOpacity: 1,

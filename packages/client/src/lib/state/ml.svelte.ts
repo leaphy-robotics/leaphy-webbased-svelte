@@ -4,6 +4,7 @@ import Collect from "$components/workspace/ml/flow/Collect.svelte";
 import Result from "$components/workspace/ml/flow/Result.svelte";
 import Setup from "$components/workspace/ml/flow/Setup.svelte";
 import Train from "$components/workspace/ml/flow/Train.svelte";
+import ExtensionState from "$domain/blockly/extensions.svelte";
 import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
@@ -66,7 +67,7 @@ function readFloat32Array(view: DataView) {
 class MLState {
 	// Important: persistent state should not be directly updated on this class in order to ensure consistent project serialization, use utilities and setters from the ML class contained in the Blockly category instead
 
-	enabled = $state(false);
+	enabled = $derived(ExtensionState.isEnabled("l_ml"));
 	stepIndex = $state(0);
 	maxStep = $state(0);
 	// Derived reactive value that updates when stepIndex changes
@@ -159,7 +160,6 @@ class MLState {
 			"updateSensors",
 			() => (this.sensors = ml.sensors.getItems()),
 		);
-		ml.addEventListener("updateEnabled", () => (this.enabled = ml.enabled));
 		ml.addEventListener("updateMaxStep", () => {
 			this.maxStep = ml.maxStep;
 			if (this.stepIndex > this.maxStep) {
@@ -254,17 +254,16 @@ class MLState {
 	}
 
 	async upload() {
-		const code = arduino.workspaceToCode(
-			BlocklyState.workspace,
-			WorkspaceState.robot.id,
-		);
-		AppState.libraries.clear();
-		AppState.libraries.install(...arduino.getDependencies());
-
 		await PopupState.open({
 			component: Uploader,
 			data: {
-				source: code,
+				getCode: () => {
+					const code = arduino.workspaceToCode(BlocklyState.workspace);
+					AppState.libraries.clear();
+					AppState.libraries.install(...arduino.getDependencies());
+
+					return code;
+				},
 			},
 			allowInteraction: false,
 		});

@@ -801,5 +801,6 @@ messages.LEAPHY_KEY_ARROW_UP = "pijltje omhoog";
 messages.LEAPHY_KEY_ARROW_DOWN = "pijltje omlaag";
 messages.LEAPHY_KEY_ARROW_RIGHT = "pijltje rechts";
 messages.LEAPHY_KEY_ARROW_LEFT = "pijltje links";
+messages.DEFAULT = "Standaard";
 
 export default messages;

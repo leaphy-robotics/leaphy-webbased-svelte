@@ -45,7 +45,7 @@ function addI2CDeclarations() {
 	Arduino.addDeclaration("i2c_restore_channel", RESTORE_CHANNEL);
 	Arduino.addDeclaration("i2c_get_channel", GET_CHANNEL);
 
-	if (Arduino.robotType.includes("esp32")) {
+	if (Arduino.boardType.includes("esp32")) {
 		Arduino.addSetup("i2c_broadcast_mode", BROADCAST_MODE_ESP32);
 	} else {
 		Arduino.addSetup("i2c_broadcast_mode", BROADCAST_MODE);
