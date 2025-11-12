@@ -83,3 +83,11 @@ td {
 	transform: translateX(-16px) translateY(-8px);
 	height: 34px !important;
 }
+
+.search-input {
+	display: none;
+}
+
+body:has(.search-input-label) .search-input {
+	display: block;
+}
