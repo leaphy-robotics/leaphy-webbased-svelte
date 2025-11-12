@@ -14,6 +14,7 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
+import { RobotType } from "$domain/robots.types";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -35,6 +36,21 @@ export function getModeID(mode: Component) {
 			return "PYTHON";
 		}
 	}
+}
+
+const extensionMap = {
+	l_flitz_uno: RobotType.L_FLITZ_UNO,
+	l_flitz_nano: RobotType.L_FLITZ_NANO,
+	l_starling: RobotType.L_STARLING,
+	l_starling_nano: RobotType.L_STARLING,
+	l_starling_nano_esp32: RobotType.L_STARLING,
+	l_original_uno: RobotType.L_ORIGINAL,
+	l_original_nano: RobotType.L_ORIGINAL,
+	l_original_nano_esp32: RobotType.L_ORIGINAL,
+	l_nano: RobotType.L_NANO,
+	l_nano_esp32: RobotType.L_NANO,
+	l_uno: RobotType.L_UNO,
+	l_mega: RobotType.L_MEGA,
 }
 
 class WorkspaceState {
@@ -178,7 +194,10 @@ class WorkspaceState {
 				BlocklyState.restore = JSON.parse(content);
 				this.Mode = Mode.BLOCKS;
 			}
-			if (!robots[name.split(".").at(-1)]) {
+			
+			const extension = name.split(".").at(-1);
+			const robot = extensionMap[extension];
+			if (!robot) {
 				PopupState.open({
 					component: ErrorPopup,
 					data: {
@@ -190,7 +209,7 @@ class WorkspaceState {
 				return;
 			}
 
-			this.robot = robots[name.split(".").at(-1)];
+			this.robot = Object.values(robots).find((r) => r.type === robot);
 		}
 	}
 }
