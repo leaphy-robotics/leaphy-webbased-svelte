@@ -3,6 +3,7 @@ import { PinMapping, type RobotDevice } from "../robots";
 
 interface PinSelectorOptions extends FieldConfig {
 	mode: "digital" | "analog" | "pwm";
+	includeDefault?: boolean;
 }
 
 export default class PinSelectorField extends FieldDropdown {
@@ -30,28 +31,7 @@ export default class PinSelectorField extends FieldDropdown {
 
 	static processPinMappings(board: RobotDevice) {
 		switch (board.mapping) {
-			case PinMapping.UNO: {
-				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(
-					2,
-					19,
-				);
-				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
-					0,
-					5,
-					"A",
-				);
-				PinSelectorField.pwmPinOptions = [
-					["3", "3"],
-					["5", "5"],
-					["6", "6"],
-					["9", "9"],
-					["10", "10"],
-					["11", "11"],
-				];
-				break;
-			}
-
-			case PinMapping.NANO: {
+			case PinMapping.UNIFIED: {
 				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(
 					2,
 					19,
@@ -69,21 +49,6 @@ export default class PinSelectorField extends FieldDropdown {
 					["10", "10"],
 					["11", "11"],
 				];
-				break;
-			}
-
-			case PinMapping.NANO_ESP32: {
-				PinSelectorField.digitalPinOptions = [
-					...PinSelectorField.generatePinRange(2, 13),
-					...PinSelectorField.generatePinRange(0, 5, "A", 14, ""),
-					...PinSelectorField.generatePinRange(6, 7, "A"),
-				];
-				PinSelectorField.analogPinOptions = PinSelectorField.generatePinRange(
-					0,
-					7,
-					"A",
-				);
-				PinSelectorField.pwmPinOptions = PinSelectorField.digitalPinOptions;
 				break;
 			}
 
@@ -120,22 +85,39 @@ export default class PinSelectorField extends FieldDropdown {
 		}
 	}
 
-	static getOptions(mode: "digital" | "analog" | "pwm"): [string, string][] {
+	static getOptions(
+		mode: "digital" | "analog" | "pwm",
+		includeDefault?: boolean,
+	): [string, string][] {
+		let options: [string, string][] = [];
+		if (includeDefault) {
+			options.push(["%{BKY_DEFAULT}", "DEFAULT"]);
+		}
+
 		switch (mode) {
 			case "digital": {
-				return PinSelectorField.digitalPinOptions;
+				options.push(...PinSelectorField.digitalPinOptions);
+				break;
 			}
 			case "analog": {
-				return PinSelectorField.analogPinOptions;
+				options.push(...PinSelectorField.analogPinOptions);
+				break;
 			}
 			case "pwm": {
-				return PinSelectorField.pwmPinOptions;
+				options.push(...PinSelectorField.pwmPinOptions);
+				break;
 			}
 		}
+
+		return options;
 	}
 
 	constructor(options: PinSelectorOptions) {
-		super(PinSelectorField.getOptions(options.mode), undefined, options);
+		super(
+			PinSelectorField.getOptions(options.mode, options.includeDefault),
+			undefined,
+			options,
+		);
 	}
 
 	static fromJson(options: PinSelectorOptions) {

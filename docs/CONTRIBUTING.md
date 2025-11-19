@@ -117,7 +117,7 @@ The block should be automatically registered if you added it to an existing file
 
 ### Step 5: Add Block to Toolbox
 
-To make your block visible in the Blockly toolbox, add it to the appropriate category in `packages/client/src/lib/domain/blockly/toolbox.ts`.
+To make your block visible in the Blockly toolbox, add it to the appropriate category in `packages/client/src/lib/domain/blockly/toolbox.svelte.ts`.
 
 Find the relevant category (e.g., sensors, actuators) and add your block type:
 

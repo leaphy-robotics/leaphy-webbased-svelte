@@ -68,7 +68,7 @@ function getCodeGenerators(arduino: Arduino) {
 		let pin_red: number;
 		let pin_blue: number;
 		let pin_green: number;
-		if (arduino.robotType.includes("nano")) {
+		if (arduino.boardType.includes("nano")) {
 			// Use different pins for the original nano since they conflict with the motors
 			if (arduino.robotType.includes("original")) {
 				pin_red = 5;
@@ -131,7 +131,7 @@ function getCodeGenerators(arduino: Arduino) {
 			'#include "Leaphyoriginal1.h"',
 		);
 		// Set different motor pins for nano robots
-		if (arduino.robotType.includes("nano")) {
+		if (arduino.boardType.includes("nano")) {
 			if (Number.parseInt(speed) > 0) {
 				// Map the speed to a range of 100 - 255 to compensate for low PWM signal voltage
 				speed = `map(${speed}, 0, 255, 100, 255)`;
@@ -157,7 +157,7 @@ function getCodeGenerators(arduino: Arduino) {
 		);
 
 		// Set different motor pins for nano robots
-		if (arduino.robotType.includes("nano")) {
+		if (arduino.boardType.includes("nano")) {
 			// Map the speed to a range of 100 - 255 to compensate for low PWM signal voltage
 			if (Number.parseInt(speed) > 0) {
 				speed = `map(${speed}, 0, 255, 100, 255)`;
@@ -176,7 +176,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.digital_read = (block) => {
-		const dropdown_pin = block.getFieldValue("PIN");
+		const dropdown_pin = arduino.getPinMapping(block, "PIN");
 
 		const sensor = arduino.builder.add(`digital-${dropdown_pin}`, LineSensor);
 		arduino.builder.connect(
@@ -202,7 +202,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.analog_read = (block) => {
-		const dropdown_pin = block.getFieldValue("PIN");
+		const dropdown_pin = arduino.getPinMapping(block, "PIN");
 
 		const lightSensor = arduino.builder.add(
 			`analog-${dropdown_pin}`,

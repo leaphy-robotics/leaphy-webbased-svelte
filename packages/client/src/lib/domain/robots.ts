@@ -1,10 +1,8 @@
 import defaultCPP from "$assets/default-program.ino?raw";
 import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
 import flitzUnoBackground from "$assets/robots/backgrounds/flitz_uno.svg";
-import originalNanoBackground from "$assets/robots/backgrounds/orig_nano.svg";
-import originalNanoESP32Background from "$assets/robots/backgrounds/orig_nano_esp32.svg";
-import originalNanoRP2040Background from "$assets/robots/backgrounds/orig_nano_rp2040.svg";
-import originalUnoBackground from "$assets/robots/backgrounds/orig_uno.svg";
+import originalBackground from "$assets/robots/backgrounds/original.svg";
+import starlingBackground from "$assets/robots/backgrounds/starling.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
 import flitzIcon from "$assets/robots/icons/l_flitz.svg";
 import megaIcon from "$assets/robots/icons/l_mega.svg";
@@ -49,36 +47,34 @@ export type RobotListing = RobotListingVariants | RobotListingMode;
 export type Robot = RobotListing | RobotDevice;
 
 export enum PinMapping {
-	UNO = 0,
-	NANO = 1,
-	NANO_ESP32 = 2,
+	UNIFIED = 0,
 	MEGA = 3,
 	MICROPYTHON = 4,
 }
 
 const baseUno = {
-	mapping: PinMapping.UNO,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:avr:uno",
 	programmer: new STK500v1(),
 	board: "l_uno",
 };
 
 const baseNano = {
-	mapping: PinMapping.NANO,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:avr:nano",
 	programmer: new STK500v1(),
 	board: "l_nano",
 };
 
 const baseNanoESP32 = {
-	mapping: PinMapping.NANO_ESP32,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:esp32:nano_nora",
 	programmer: new DFU(),
 	board: "l_nano_esp32",
 };
 
 const baseNanoRP2040 = {
-	mapping: PinMapping.NANO,
+	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:mbed_nano:nanorp2040connect",
 	programmer: new Pico(),
 	board: "l_nano_rp2040",
@@ -103,56 +99,19 @@ const robotDevices: RobotDevice[] = [
 	},
 	{
 		...baseUno,
-		id: "l_original_uno",
-		type: RobotType.L_ORIGINAL_UNO,
-		name: "Original Uno",
+		id: "l_original",
+		type: RobotType.L_ORIGINAL,
+		name: "Leaphy Original",
 		icon: originalIcon,
-		background: originalUnoBackground,
+		background: originalBackground,
 	},
 	{
 		...baseNano,
-		id: "l_original_nano",
-		type: RobotType.L_ORIGINAL_NANO,
-		name: "Original Nano",
-		icon: originalIcon,
-		background: originalNanoBackground,
-	},
-	{
-		...baseNanoESP32,
-		id: "l_original_nano_esp32",
-		type: RobotType.L_ORIGINAL_NANO_ESP32,
-		name: "Original Nano ESP32",
-		icon: originalIcon,
-		background: originalNanoESP32Background,
-	},
-	{
-		...baseNanoRP2040,
-		id: "l_original_nano_rp2040",
-		type: RobotType.L_ORIGINAL_NANO_RP2040,
-		name: "Original Nano RP2040",
-		icon: originalIcon,
-		background: originalNanoRP2040Background,
-	},
-	{
-		...baseNano,
-		id: "l_starling_nano",
-		type: RobotType.L_STARLING_NANO,
-		name: "Starling Nano",
+		id: "l_starling",
+		type: RobotType.L_STARLING,
+		name: "Leaphy Starling",
 		icon: starlingIcon,
-	},
-	{
-		...baseNanoESP32,
-		id: "l_starling_nano_esp32",
-		type: RobotType.L_STARLING_NANO_ESP32,
-		name: "Starling Nano ESP32",
-		icon: starlingIcon,
-	},
-	{
-		...baseNanoRP2040,
-		id: "l_starling_nano_rp2040",
-		type: RobotType.L_STARLING_NANO_RP2040,
-		name: "Starling Nano RP2040",
-		icon: starlingIcon,
+		background: starlingBackground,
 	},
 	{
 		...baseNano,
@@ -220,35 +179,10 @@ export const robotListing: Robot[][] = [
 			icon: flitzIcon,
 			variants: [[robots.l_flitz_uno, robots.l_flitz_nano]],
 		},
-		{
-			id: "l_starling_select",
-			name: "Leaphy Starling",
-			icon: starlingIcon,
-			variants: [
-				[robots.l_starling_nano],
-				[robots.l_starling_nano_esp32, robots.l_starling_nano_rp2040],
-			],
-		},
-		{
-			id: "l_original_select",
-			name: "Leaphy Original",
-			icon: originalIcon,
-			variants: [
-				[robots.l_original_uno, robots.l_original_nano],
-				[robots.l_original_nano_esp32, robots.l_original_nano_rp2040],
-			],
-		},
+		robots.l_starling,
+		robots.l_original,
 	],
-	[
-		{
-			id: "l_nano_select",
-			name: "Arduino Nano",
-			icon: nanoIcon,
-			variants: [[robots.l_nano], [robots.l_nano_esp32, robots.l_nano_rp2040]],
-		},
-		robots.l_uno,
-		robots.l_mega,
-	],
+	[robots.l_nano, robots.l_uno, robots.l_mega],
 	[
 		{
 			id: "l_cpp",
@@ -283,13 +217,8 @@ export function getSelector(): Selector[] {
 				robots: [
 					robots.l_flitz_uno,
 					robots.l_flitz_nano,
-					robots.l_original_uno,
-					robots.l_original_nano,
-					robots.l_original_nano_esp32,
-					robots.l_original_nano_rp2040,
-					robots.l_starling_nano,
-					robots.l_starling_nano_esp32,
-					robots.l_starling_nano_rp2040,
+					robots.l_original,
+					robots.l_starling,
 				],
 			},
 			{

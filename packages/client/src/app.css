@@ -77,3 +77,17 @@ td {
 	z-index: 0;
 	background-color: transparent !important;
 }
+
+.blocklyFlyoutLabel .blocklyFlyoutLabelBackground {
+	width: 400% !important; /* 400% instead of 100% to ensure that the label is full width at any zoom level */
+	transform: translateX(-16px) translateY(-8px);
+	height: 34px !important;
+}
+
+.search-input {
+	display: none;
+}
+
+body:has(.search-input-label) .search-input {
+	display: block;
+}

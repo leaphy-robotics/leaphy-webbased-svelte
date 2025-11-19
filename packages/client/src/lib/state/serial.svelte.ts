@@ -206,6 +206,7 @@ class SerialState {
 					case 0x0043: {
 						return robots.l_uno;
 					}
+					case 0x056b:
 					case 0x0070: {
 						return robots.l_nano_esp32;
 					}

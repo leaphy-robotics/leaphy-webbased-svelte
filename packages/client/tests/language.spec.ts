@@ -10,12 +10,13 @@ test("Language", async ({ page }) => {
 	await page.getByRole("cell", { name: "Nederlands" }).click();
 	await page.getByRole("button", { name: "Mijn projecten" }).click();
 	await page.getByRole("cell", { name: "Verander robot" }).click();
-	await selectRobot(page, "Leaphy Original", "Original Nano ESP32");
+	await selectRobot(page, "Leaphy Original");
 	await expect(page.getByText("Lees afstand")).toBeVisible();
 	await expect(page.getByText("Lees anapin")).toBeVisible();
+	await page.getByText("Omgeving").click();
 	await expect(page.getByText("Lees gas")).toBeVisible();
 	await expect(page.getByText("Lees luchtdruk")).toBeVisible();
-	await page.locator("#l_numbers.blocklyToolboxCategory").click();
+	await page.locator("#l_numbers").click();
 	await expect(page.getByText("willekeurig getal van")).toBeVisible();
 	await expect(page.getByText("niet")).toBeVisible();
 	await page.getByText("even", { exact: true }).click();

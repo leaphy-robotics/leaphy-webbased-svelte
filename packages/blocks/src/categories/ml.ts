@@ -35,7 +35,6 @@ export class ML extends EventTarget {
 	// Controls Arduino code generation: data collection vs inference mode
 	public generateInference = false;
 
-	private _enabled = false;
 	private _maxStep = 0;
 	private _confusion: number[][] | null = null;
 	private _structure: ModelLayer[] = [
@@ -62,15 +61,6 @@ export class ML extends EventTarget {
 		this.dispatchEvent(new Event("updateMaxStep"));
 	}
 
-	get enabled() {
-		return this._enabled;
-	}
-
-	set enabled(value: boolean) {
-		this._enabled = value;
-		this.dispatchEvent(new Event("updateEnabled"));
-	}
-
 	get confusion() {
 		return this._confusion;
 	}
@@ -91,7 +81,6 @@ export class ML extends EventTarget {
 		this.datasets.clear();
 
 		this.maxStep = 0;
-		this.enabled = false;
 	}
 }
 
@@ -114,7 +103,6 @@ interface MLState {
 	maxStep: number;
 	trainingID: string;
 	confusion: number[][] | null;
-	enabled: boolean;
 	classes: SerialClass[];
 	datasets: SerialDataset[];
 	sensors: SensorReference[];
@@ -135,7 +123,6 @@ export class MLSerializer implements ISerializer {
 		if (ml.freeze) return;
 
 		ml.structure = state.structure || ml.structure;
-		ml.enabled = state.enabled;
 		ml.modelHeaders = state.modelHeaders || null;
 		ml.trainingID = state.trainingID || crypto.randomUUID();
 		ml.maxStep = state.maxStep || 0;
@@ -187,7 +174,6 @@ export class MLSerializer implements ISerializer {
 			classes,
 			datasets,
 			sensors,
-			enabled: ml.enabled,
 			modelHeaders: ml.modelHeaders,
 			trainingID: ml.trainingID,
 			maxStep: ml.maxStep,
@@ -200,42 +186,27 @@ export class MLSerializer implements ISerializer {
 // Generates dynamic toolbox content based on current ML state
 export default function (workspace: WorkspaceSvg) {
 	let blockList: FlyoutDefinition = [
+		{ kind: "sep", gap: 8 },
 		{
 			kind: "button",
-			text: ml.enabled ? "%{BKY_ML_DISABLE}" : "%{BKY_ML_ENABLE}",
-			callbackkey: "toggle_ml",
+			text: "%{BKY_ML_ADD_CLASS}",
+			callbackkey: "add_class",
 		},
 	];
 
-	if (ml.enabled) {
+	if (ml.classes.getItems().length > 0) {
 		blockList.push(
+			{
+				kind: "block",
+				type: "ml_classify",
+			},
 			{ kind: "sep", gap: 8 },
 			{
-				kind: "button",
-				text: "%{BKY_ML_ADD_CLASS}",
-				callbackkey: "add_class",
+				kind: "block",
+				type: "ml_certainty",
 			},
 		);
-
-		if (ml.classes.getItems().length > 0) {
-			blockList.push(
-				{
-					kind: "block",
-					type: "ml_classify",
-				},
-				{ kind: "sep", gap: 8 },
-				{
-					kind: "block",
-					type: "ml_certainty",
-				},
-			);
-		}
 	}
-
-	workspace.registerButtonCallback("toggle_ml", () => {
-		ml.enabled = !ml.enabled;
-		workspace.refreshToolboxSelection();
-	});
 
 	// Adding a class clears existing datasets to prevent training data inconsistency
 	workspace.registerButtonCallback("add_class", async () => {

@@ -115,8 +115,8 @@ class UltrasonicSensor extends Sensor {
 	}
 
 	settings = [
-		pinSetting("trig", "digital", "Trig", "", "A3"),
-		pinSetting("echo", "digital", "Echo", "", "A2"),
+		pinSetting("trig", "digital", "Trig", "", "17"),
+		pinSetting("echo", "digital", "Echo", "", "16"),
 	];
 
 	getValues(

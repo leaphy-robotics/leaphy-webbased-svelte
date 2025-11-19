@@ -61,7 +61,6 @@ onMount(() => {
 
 		WorkspaceState.code = getCodeGenerator().workspaceToCode(
 			BlocklyState.workspace,
-			WorkspaceState.robot.id,
 		);
 
 		AppState.libraries.clear();
@@ -97,7 +96,6 @@ locale.subscribe((locale) => {
 		BlocklyState.workspace.addChangeListener(() => {
 			WorkspaceState.code = getCodeGenerator().workspaceToCode(
 				BlocklyState.workspace,
-				WorkspaceState.robot.id,
 			);
 
 			AppState.libraries.clear();

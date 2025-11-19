@@ -103,7 +103,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_servo_write = (block) => {
-		const pinKey = block.getFieldValue("SERVO_PIN");
+		const pinKey = arduino.getPinMapping(block, "SERVO_PIN");
 		const servoAngle =
 			arduino.valueToCode(block, "SERVO_ANGLE", arduino.ORDER_ATOMIC) || "90";
 		const servoName = `myServo${pinKey}`;
@@ -137,7 +137,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_servo_read = (block) => {
-		const pinKey = block.getFieldValue("SERVO_PIN");
+		const pinKey = arduino.getPinMapping(block, "SERVO_PIN");
 		const servoName = `myServo${pinKey}`;
 
 		arduino.reservePin(block, pinKey, arduino.PinTypes.SERVO, "Servo Read");
@@ -153,7 +153,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_io_digitalwrite = (block) => {
-		const pin = block.getFieldValue("PIN");
+		const pin = arduino.getPinMapping(block, "PIN");
 		const stateOutput =
 			arduino.valueToCode(block, "STATE", arduino.ORDER_ATOMIC) || "false";
 
@@ -166,7 +166,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_io_analogwrite = (block) => {
-		const pin = block.getFieldValue("PIN");
+		const pin = arduino.getPinMapping(block, "PIN");
 		const stateOutput =
 			arduino.valueToCode(block, "NUM", arduino.ORDER_ATOMIC) || "0";
 

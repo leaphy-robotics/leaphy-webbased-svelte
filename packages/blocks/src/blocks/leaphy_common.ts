@@ -130,11 +130,13 @@ const blocks: BlockDefinition = [
 				type: "field_pin_selector",
 				name: "TRIG_PIN",
 				mode: "digital",
+				includeDefault: true,
 			},
 			{
 				type: "field_pin_selector",
 				name: "ECHO_PIN",
 				mode: "digital",
+				includeDefault: true,
 			},
 		],
 		output: "Number",

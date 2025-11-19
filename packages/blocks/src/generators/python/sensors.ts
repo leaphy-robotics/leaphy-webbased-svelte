@@ -27,8 +27,15 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.leaphy_sonar_read = (block, generator) => {
 		generator.addImport("leaphymicropython.sensors.sonar", "read_distance");
 
-		const trigger = block.getFieldValue("TRIG_PIN") || "A3";
-		const echo = block.getFieldValue("ECHO_PIN") || "A2";
+		let trigger = block.getFieldValue("TRIG_PIN") || "A3";
+		if (trigger === "DEFAULT") {
+			trigger = "A3";
+		}
+
+		let echo = block.getFieldValue("ECHO_PIN") || "A2";
+		if (echo === "DEFAULT") {
+			echo = "A2";
+		}
 
 		return [`read_distance("${trigger}","${echo}")`, Order.FUNCTION_CALL];
 	};

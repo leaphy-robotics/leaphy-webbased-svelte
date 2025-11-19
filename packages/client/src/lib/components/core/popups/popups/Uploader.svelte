@@ -4,6 +4,8 @@ import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
+import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
+import { inFilter } from "$domain/robots";
 import AppState from "$state/app.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState, {
@@ -12,16 +14,16 @@ import SerialState, {
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { Dependencies } from "@leaphy-robotics/leaphy-blocks";
+import { Dependencies, arduino } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
 
 interface Props {
-	source?: string;
+	getCode?: () => Promise<string> | string;
 	program?: Record<string, string>;
 }
 const popupState = getContext<PopupState>("state");
-const { source, program }: Props = $props();
+const { getCode, program }: Props = $props();
 let progress = $state(0);
 let currentState = $state("CONNECTING");
 let error = $state<string | null>(null);
@@ -40,6 +42,9 @@ class UploadError extends Error {
 async function compile() {
 	currentState = "COMPILATION_STARTED";
 	let res: Response;
+
+	arduino.boardType = SerialState.board?.id || WorkspaceState.robot.id;
+	arduino.robotType = WorkspaceState.robot.id;
 	try {
 		res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
 			method: "POST",
@@ -47,8 +52,8 @@ async function compile() {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				source_code: source,
-				board: WorkspaceState.robot.fqbn,
+				source_code: await getCode(),
+				board: SerialState.board?.fqbn || WorkspaceState.robot.fqbn,
 				libraries: [
 					...(WorkspaceState.Mode === Mode.ADVANCED
 						? [Dependencies.LEAPHY_EXTENSIONS]
@@ -60,6 +65,7 @@ async function compile() {
 			}),
 		});
 	} catch (e) {
+		console.error(e);
 		throw new UploadError("COMPILATION_FAILED", $_("NO_INTERNET"));
 	}
 
@@ -93,7 +99,9 @@ async function upload(res: Record<string, string>) {
 			});
 		}
 
-		await WorkspaceState.robot.programmer.upload(SerialState.port, res);
+		const programmer =
+			SerialState.board?.programmer || WorkspaceState.robot.programmer;
+		await programmer.upload(SerialState.port, res);
 	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
@@ -109,6 +117,30 @@ onMount(async () => {
 			progress += 100 / 4;
 		} catch {
 			throw new UploadError("NO_DEVICE_SELECTED", "");
+		}
+
+		const board = SerialState.board || WorkspaceState.robot;
+		const incompatibleExtension = ExtensionState.enabled.find(
+			(e) => !inFilter(board, extensions.find((ext) => ext.id === e)?.boards),
+		);
+		if (incompatibleExtension) {
+			popupState.close();
+			return PopupsState.open({
+				component: ErrorPopup,
+				data: {
+					title: "INVALID_ROBOT_TITLE",
+					message: $_("INVALID_ROBOT", {
+						values: {
+							board: board.name,
+							extension:
+								extensions.find((ext) => ext.id === incompatibleExtension)
+									?.name || "Unknown",
+						},
+					}),
+					showCancel: true,
+				},
+				allowInteraction: false,
+			});
 		}
 
 		const res = program || (await compile());

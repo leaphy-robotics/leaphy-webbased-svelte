@@ -7,7 +7,7 @@ test.beforeEach(setupArduino);
 test.beforeEach(goToHomePage);
 
 test("Arduino - Blockly upload", async ({ page }) => {
-	await selectRobot(page, "Arduino Nano", "Arduino Nano");
+	await selectRobot(page, "Arduino Nano");
 	await openExample(page, "Snake");
 
 	await page.getByRole("button", { name: "Upload to robot" }).click();

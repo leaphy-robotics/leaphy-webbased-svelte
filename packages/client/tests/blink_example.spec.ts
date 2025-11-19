@@ -5,7 +5,7 @@ import { goToHomePage, openExample, selectRobot } from "./utils";
 test.beforeEach(goToHomePage);
 
 test("Load Blink example and check code", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original", "Original Uno");
+	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
 
 	await page.locator(".side").first().click(); // Open code
@@ -37,7 +37,7 @@ test("Load Blink example and check code", async ({ page }) => {
 	const download = await downloadPromise;
 
 	// Check filename
-	expect(download.suggestedFilename()).toBe("MyModifiedBlink.l_original_uno");
+	expect(download.suggestedFilename()).toBe("MyModifiedBlink.l_original");
 
 	// Check that the delay is now 500
 	const data = await consumers.text(await download.createReadStream());
