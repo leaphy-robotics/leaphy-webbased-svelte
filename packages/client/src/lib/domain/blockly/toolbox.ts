@@ -292,6 +292,18 @@ export default [
 					},
 					{
 						robots: [
+							RobotType.L_STARLING,
+						],
+						type: "leaphy_original_servo_set"
+					},
+					{
+						robots: [
+							RobotType.L_STARLING,
+						],
+						type: "leaphy_original_servo_move"
+					},
+					{
+						robots: [
 							...robotGroups.ALL,
 							-RobotType.L_STARLING,
 							RobotType.L_MICROPYTHON,
