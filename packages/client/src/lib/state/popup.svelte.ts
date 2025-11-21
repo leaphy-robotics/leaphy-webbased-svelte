@@ -21,6 +21,40 @@ interface Popup {
 	anchor?: Anchor;
 }
 
+// Map old robot types to new robot types. Can be removed after 2026-11
+function mapRobots<Type extends { robot: string }>(saves: Type[] = []): Type[] {
+	return saves.map((save) => {
+		let robot = save.robot;
+		if (
+			[
+				"l_starling_nano",
+				"l_starling_nano_esp32",
+				"l_starling_nano_rp2040",
+			].includes(robot)
+		) {
+			robot = "l_starling";
+		}
+		if (
+			[
+				"l_original_uno",
+				"l_original_nano",
+				"l_original_nano_esp32",
+				"l_original_nano_rp2040",
+			].includes(robot)
+		) {
+			robot = "l_original";
+		}
+		if (["l_nano_esp32", "l_nano_rp2040"].includes(robot)) {
+			robot = "l_nano";
+		}
+
+		return {
+			...save,
+			robot,
+		};
+	});
+}
+
 export class PopupState {
 	id = $state<number>();
 
@@ -108,14 +142,14 @@ class PopupsState {
 		}
 
 		// Issue #250: remove all temp saves that reference a non-existant robot.
-		let to_remove = (await projectDB.tempSaves.toArray())
+		let to_remove = mapRobots(await projectDB.tempSaves.toArray())
 			.filter((save) => robots[save.robot] === undefined)
 			.map((save) => save.id);
 		if (to_remove.length) {
 			await projectDB.tempSaves.bulkDelete(to_remove);
 		}
 
-		to_remove = (await projectDB.saves.toArray())
+		to_remove = mapRobots(await projectDB.saves.toArray())
 			.filter((save) => robots[save.robot] === undefined)
 			.map((save) => save.id);
 		if (to_remove.length) {
@@ -125,7 +159,7 @@ class PopupsState {
 		const fileSaves = await projectDB.saves.toArray();
 		const tempSaves = await projectDB.tempSaves.toArray();
 
-		let saves = [
+		let saves = mapRobots([
 			...fileSaves.map((e) => ({
 				...e,
 				saveID: e.id,
@@ -138,7 +172,7 @@ class PopupsState {
 				id: `temp-${e.id}`,
 				type: "temp" as const,
 			})),
-		];
+		]);
 
 		saves = saves.sort((a, b) => {
 			// Check for file-content linking relationship first (overrides date sorting)
@@ -167,6 +201,7 @@ class PopupsState {
 			return b.date - a.date;
 		});
 
+		// Keep only the last 5 saves to save browser storage
 		if (saves.length > 5) {
 			const deleteSaves = saves.splice(5);
 
