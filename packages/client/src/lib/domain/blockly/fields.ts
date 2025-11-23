@@ -76,10 +76,10 @@ export default class PinSelectorField extends FieldDropdown {
 					15,
 					"A",
 				);
-				PinSelectorField.pwmPinOptions = PinSelectorField.generatePinRange(
-					2,
-					13,
-				);
+				PinSelectorField.pwmPinOptions = [
+					...PinSelectorField.generatePinRange(2,13),
+					...PinSelectorField.generatePinRange(44,46)
+					];
 				break;
 			}
 		}
