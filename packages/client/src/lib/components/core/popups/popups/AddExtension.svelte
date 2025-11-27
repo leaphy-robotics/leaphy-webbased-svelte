@@ -113,10 +113,10 @@ function toggle(extension: string) {
 					<h2>{$_("EXTENSIONS_CONNECT_TITLE")}</h2>
 					<div>{$_("EXTENSIONS_CONNECT_DESC")}</div>
 				</div>
-				
+
 				<div class="connect-options">
 					<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
-					
+
 					<div class="group">
 						<span>{$_("OR_SELECT")}</span>
 						<div class="line">
@@ -135,6 +135,8 @@ function toggle(extension: string) {
 		width: 100vw;
 		height: 100vh;
 		background: var(--background-tint);
+		display: flex;
+		flex-direction: column;
 	}
 
 	.header {
@@ -146,8 +148,11 @@ function toggle(extension: string) {
 	.grid {
 		padding: 10px;
 		display: flex;
+		align-items: flex-start;
 		flex-wrap: wrap;
 		gap: 10px;
+		flex: 1;
+		overflow-y: auto;
 	}
 
 	.extension {
