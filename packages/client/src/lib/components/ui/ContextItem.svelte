@@ -31,7 +31,7 @@ let element = $state<HTMLDivElement>();
 let contextShowing = $state(false);
 
 function interact() {
-	if (!onclick) return;
+	if (!onclick || disabled) return;
 
 	open.set(false);
 	onclick();

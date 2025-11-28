@@ -133,15 +133,19 @@ class WorkspaceState {
 		this.open(file.name, await content.text());
 	}
 
-	async tempSave() {
-		let mode = this.mode;
-		let content = this.code;
-
-		if (mode === "BLOCKS") {
-			content = JSON.stringify(
+	serialize() {
+		if (this.Mode === Mode.BLOCKS || this.Mode === Mode.ML) {
+			return JSON.stringify(
 				serialization.workspaces.save(BlocklyState.workspace),
 			);
 		}
+	
+		return this.code;
+	}
+
+	async tempSave() {
+		let mode = this.mode;
+		let content = this.serialize();
 
 		const existingSave = await projectDB.tempSaves
 			.where("mode")

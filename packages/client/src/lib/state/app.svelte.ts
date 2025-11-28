@@ -77,6 +77,7 @@ class AppState {
 	Screen = $state(Screen.START);
 	theme = $state(localStorage.getItem("theme") as Theme);
 	libraries = new LibraryState();
+	isEmbedded = $state(false);
 
 	constructor() {
 		$effect.root(() => {

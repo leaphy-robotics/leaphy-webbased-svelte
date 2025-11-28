@@ -178,6 +178,47 @@ class ComponentBuilder {
 		this.components = [];
 		this.wires = [];
 	}
+
+	private findComponentById(id: string): VisibleComponent | undefined {
+		for (const joined of this.components) {
+			const found = joined.components.find((comp) => comp.id === id);
+			if (found) return found;
+		}
+		return undefined;
+	}
+
+	private getComponentName(component: VisibleComponent): string {
+		// Extract component name from schema path if possible
+		const schema = component.component.schema;
+		const match = schema.match(/\/([^/]+)\/schema\.svg$/);
+		if (match) {
+			return match[1];
+		}
+		// Fallback to ID if schema path doesn't match expected pattern
+		return component.id;
+	}
+
+	getConnectionsString(): string {
+		if (this.wires.length === 0) {
+			return "No connections found.";
+		}
+
+		const lines: string[] = [];
+		lines.push("Circuit Connections:");
+		for (const wire of this.wires) {
+			const compA = this.findComponentById(wire.componentA);
+			const compB = this.findComponentById(wire.componentB);
+
+			const nameA = compA ? this.getComponentName(compA) : wire.componentA;
+			const nameB = compB ? this.getComponentName(compB) : wire.componentB;
+
+			lines.push(
+				`${nameA}[${wire.portA}] --> ${nameB}[${wire.portB}]`,
+			);
+		}
+
+		return lines.join("\n");
+	}
 }
 
 const elk = new ELK();

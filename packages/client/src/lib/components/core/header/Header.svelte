@@ -154,15 +154,6 @@ async function newProject() {
 	);
 }
 
-function serialize() {
-	if (WorkspaceState.Mode === Mode.BLOCKS || WorkspaceState.Mode === Mode.ML)
-		return JSON.stringify(
-			serialization.workspaces.save(BlocklyState.workspace),
-		);
-
-	return WorkspaceState.code;
-}
-
 async function saveProjectAs() {
 	const name = await PopupState.open({
 		component: SaveProject,
@@ -181,7 +172,7 @@ async function saveProjectAs() {
 	if (WorkspaceState.Mode === Mode.PYTHON) extension = "py";
 
 	const url = URL.createObjectURL(
-		new Blob([serialize()], { type: "text/plain" }),
+		new Blob([WorkspaceState.serialize()], { type: "text/plain" }),
 	);
 	const link = document.createElement("a");
 	link.href = url;
@@ -203,7 +194,7 @@ async function openProject() {
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
-	await WorkspaceState.handle.write(serialize());
+	await WorkspaceState.handle.write(WorkspaceState.serialize());
 	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }
@@ -361,7 +352,13 @@ async function openCircuitPopup() {
 						onclick={saveProjectAs}
 						{open}
 					/>
-					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} />
+					<ContextItem 
+						icon={faRobot} 
+						name={$_("CHANGE_ROBOT")} 
+						onclick={changeRobot} 
+						disabled={AppState.isEmbedded}
+						{open} 
+					/>
 				{/snippet}
 			</Button>
             <Button name={$_("HELP")} mode={"outlined"}>
@@ -485,6 +482,7 @@ async function openCircuitPopup() {
 						icon={faPen}
 						name={$_("CODE")}
 						onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp}
+						disabled={AppState.isEmbedded}
 					/>
             {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
                 <Button
@@ -492,6 +490,7 @@ async function openCircuitPopup() {
                     icon={block}
                     name={$_("BLOCKS")}
                     onclick={blocks}
+                    disabled={AppState.isEmbedded}
                 />
             {/if}
 
