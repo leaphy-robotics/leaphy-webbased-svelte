@@ -68,6 +68,7 @@ function onclick(event: MouseEvent) {
 	/>
 	{#if relevantSuggestions.length > 0}
 		<SelectContext
+			element={input}
 			{mode}
 			open={selected}
 			options={relevantSuggestions.map(suggestion => [suggestion, suggestion])}

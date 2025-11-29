@@ -17,6 +17,7 @@ let {
 }: Props = $props();
 
 let open = $state(false);
+let element = $state<HTMLButtonElement>();
 
 function getName(value: any) {
 	return options.find(([_, data]) => data === value)?.[0] || "";
@@ -33,11 +34,11 @@ function select(newValue: string) {
 </script>
 
 <div class="select" class:full class:secondary={mode === 'secondary'}>
-    <button type="button" {onclick} class:open class="preview">
+    <button type="button" bind:this={element} {onclick} class:open class="preview">
         <div class="name">{getName(value)}</div>
         <div class="icon"><Fa icon={faCaretDown} /></div>
     </button>
-    <SelectContext {mode} {open} {options} onselect={select} />
+    <SelectContext {mode} {open} {options} onselect={select} {element} />
 </div>
 
 <style>
