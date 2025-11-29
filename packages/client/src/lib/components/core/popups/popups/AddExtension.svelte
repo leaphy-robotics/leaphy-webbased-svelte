@@ -148,10 +148,8 @@ function toggle(extension: string) {
 	.grid {
 		padding: 10px;
 		display: flex;
-		align-items: flex-start;
 		flex-wrap: wrap;
 		gap: 10px;
-		flex: 1;
 		overflow-y: auto;
 	}
 
