@@ -293,10 +293,16 @@ export default [
 					{
 						robots: [RobotType.L_STARLING],
 						type: "leaphy_original_servo_set",
+						inputs: {
+							SPEED: number(100),
+						},
 					},
 					{
 						robots: [RobotType.L_STARLING],
 						type: "leaphy_original_servo_move",
+						inputs: {
+							SPEED: number(100),
+						}
 					},
 					{
 						robots: [
