@@ -302,7 +302,7 @@ export default [
 						type: "leaphy_original_servo_move",
 						inputs: {
 							SPEED: number(100),
-						}
+						},
 					},
 					{
 						robots: [
