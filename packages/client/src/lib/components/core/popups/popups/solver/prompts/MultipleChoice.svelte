@@ -14,7 +14,6 @@ let otherAnswer = $state("");
 </script>
 
 <div class="content">
-    <div class="title">{$_("Multiple Choice")}</div>
     <div class="question">{question.question}</div>
     <div class="choices">
         {#each question.choices as choice}
@@ -24,7 +23,7 @@ let otherAnswer = $state("");
                     question.respond(otherAnswer);
                 }}>
                     <input class="input" bind:value={otherAnswer} placeholder={$_("OTHER_ANSWER")} />
-                    <button class="submit" type={"submit"}>{$_("SUBMIT")}</button>
+                    <button class="submit" type={"submit"}>{$_("SUBMIT_OTHER_ANSWER")}</button>
                 </form>
             {:else}
                 <button class="choice" onclick={() => question.respond(choice)}>{choice}</button>
@@ -65,10 +64,6 @@ let otherAnswer = $state("");
         background: var(--background-tint);
         border-radius: 10px;
         padding: 10px;
-    }
-
-    .title {
-        font-weight: bold;
     }
 
     .choices {

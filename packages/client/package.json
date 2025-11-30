@@ -30,6 +30,7 @@
 	},
 	"dependencies": {
 		"@ai-sdk/groq": "^2.0.32",
+		"@ai-sdk/mistral": "^2.0.25",
 		"@blockly/field-bitmap": "^4.1.1",
 		"@blockly/toolbox-search": "^3.1.0",
 		"@blockly/workspace-backpack": "^5.3.9",
