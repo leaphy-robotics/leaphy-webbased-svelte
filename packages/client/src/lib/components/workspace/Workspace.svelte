@@ -18,9 +18,11 @@ import {
 	faCode,
 	faDiagramProject,
 	faSquarePollHorizontal,
+	faBrain,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
+import Solver from "$components/core/popups/popups/solver/Solver.svelte";
 
 function openSerial() {
 	PopupState.open({
@@ -61,6 +63,14 @@ function openTutorials() {
 		allowInteraction: true,
 	});
 }
+
+function openSolver() {
+	PopupState.open({
+		component: Solver,
+		data: {},
+		allowInteraction: true,
+	});
+}
 </script>
 
 <div class="content">
@@ -78,6 +88,7 @@ function openTutorials() {
 			{/if}
 			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [RobotType.L_STARLING])}
 				<SideButton icon={faDiagramProject} action="CIRCUIT" onclick={openCircuit} />
+				<SideButton icon={faBrain} action="SOLVER" onclick={openSolver} />
 			{/if}
 			<!-- TODO: add all tutorials first -->
 			<!--{#if WorkspaceState.Mode === Mode.BLOCKS}-->
