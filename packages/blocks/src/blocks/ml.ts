@@ -7,6 +7,9 @@ const blocks: BlockDefinition = [
 		message0: "%{BKY_ML_CLASSIFY}",
 		previousStatement: null,
 		nextStatement: null,
+
+		aiHelp: `ML: Classify the input data (should be called before checking certainty values)`,
+		relevanceKey: "ML"
 	},
 	{
 		type: "ml_certainty",
@@ -21,6 +24,9 @@ const blocks: BlockDefinition = [
 		extensions: ["class_select_extension"],
 		style: "ml_blocks",
 		output: "Boolean",
+
+		aiHelp: `ML: Check the certainty of the class as a boolean`,
+		relevanceKey: "ML"
 	},
 
 	{
