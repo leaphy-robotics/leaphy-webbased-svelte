@@ -1,15 +1,44 @@
 <script lang="ts">
+import { computePosition, size } from "@floating-ui/dom";
+
 interface Props {
 	open: boolean;
 	options: [string, any][];
 	mode: "primary" | "secondary" | "background";
+	element: HTMLElement;
 	onselect?: (value: string) => void;
 }
-const { open, options, mode, onselect }: Props = $props();
+const { open, options, mode, onselect, element }: Props = $props();
+
+let wrapper = $state<HTMLDivElement>();
+let position = $state<{ x: number; y: number }>();
+
+$effect(() => {
+	if (!open || !wrapper) return;
+
+	computePosition(element, wrapper, {
+		strategy: "fixed",
+		placement: "bottom-start",
+		middleware: [
+			size({
+				apply({ availableWidth, availableHeight, elements }) {
+					console.log(availableWidth, availableHeight, elements.floating);
+					Object.assign(elements.floating.style, {
+						width: `${elements.reference.clientWidth}px`,
+						maxWidth: `${Math.max(0, availableWidth)}px`,
+						maxHeight: `${Math.max(0, availableHeight)}px`,
+					});
+				},
+			}),
+		],
+	}).then(({ x, y }) => {
+		position = { x, y };
+	});
+});
 </script>
 
 {#if open}
-	<div class="popup" class:secondary={mode === 'secondary'}>
+	<div bind:this={wrapper} class="popup" class:secondary={mode === 'secondary'} style:left={`${position?.x}px`} style:top={`${position?.y}px`}>
 		<div class="container">
 			{#each options as option (option[1])}
 				<button type="button" onclick={() => onselect(option[1])} class="option"
@@ -35,15 +64,15 @@ const { open, options, mode, onselect }: Props = $props();
 	}
 
 	.popup {
+		position: fixed;
 		width: 100%;
-		position: absolute;
-		max-height: 400px;
 		overflow-y: auto;
 		z-index: 99;
 		border-radius: 20px;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 		overflow: hidden;
+		overflow-y: auto;
 		box-shadow: var(--shadow-el1);
 	}
 
