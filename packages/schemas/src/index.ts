@@ -87,9 +87,8 @@ class VisibleComponent {
 
 	port(port: string): VisiblePort {
 		if (!this.component.mappings[port]) {
-			throw Error(
-				`Port ${port} not found on ${this.id} (${this.component.schema})`,
-			);
+			console.warn(`Port ${port} does not exist on component ${this.id}`);
+			return { component: this.id, port: "" };
 		}
 
 		return {
