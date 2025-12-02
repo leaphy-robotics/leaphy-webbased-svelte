@@ -10,6 +10,7 @@ import { RobotType } from "$domain/robots.types";
 import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import WorkspaceState from "$state/workspace.svelte";
+import SerialState from "$state/serial.svelte";
 import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
 import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
@@ -33,6 +34,9 @@ function getCodeGenerator(): typeof python | typeof arduino {
 	if (WorkspaceState.robot.type === RobotType.L_MICROPYTHON) {
 		return python;
 	}
+
+	arduino.boardType = SerialState.board?.id || WorkspaceState.robot.board;
+	arduino.robotType = WorkspaceState.robot.id;
 	return arduino;
 }
 
