@@ -1,17 +1,17 @@
 <script lang="ts">
-    import type { ComponentBuilder } from "@leaphy-robotics/schemas";
-    import { layoutComponents } from "@leaphy-robotics/schemas";
+import type { ComponentBuilder } from "@leaphy-robotics/schemas";
+import { layoutComponents } from "@leaphy-robotics/schemas";
 
-    interface Props {
-        builder: ComponentBuilder;
-    }
+interface Props {
+	builder: ComponentBuilder;
+}
 
-    let { builder }: Props = $props();
+let { builder }: Props = $props();
 
-    let canvas = $state<HTMLCanvasElement>();
-    $effect(() => {
-        layoutComponents(canvas, builder);
-    });
+let canvas = $state<HTMLCanvasElement>();
+$effect(() => {
+	layoutComponents(canvas, builder);
+});
 </script>
 
 <div class="content">

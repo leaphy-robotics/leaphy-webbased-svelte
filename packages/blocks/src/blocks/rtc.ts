@@ -22,8 +22,8 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 
-		aiHelp: `RTC: Get the current time`,
-		relevanceKey: "RTC"
+		aiHelp: "RTC: Get the current time",
+		relevanceKey: "RTC",
 	},
 	{
 		type: "leaphy_i2c_rtc_set",
@@ -40,8 +40,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `RTC: Set the current time`,
-		relevanceKey: "RTC"
+		aiHelp: "RTC: Set the current time",
+		relevanceKey: "RTC",
 	},
 	{
 		type: "leaphy_i2c_rtc_format",
@@ -50,8 +50,8 @@ const blocks: BlockDefinition = [
 		output: "String",
 		mutator: "l_format_date_mutator",
 
-		aiHelp: `RTC: Format the current time`,
-		relevanceKey: "RTC"
+		aiHelp: "RTC: Format the current time",
+		relevanceKey: "RTC",
 	},
 
 	{

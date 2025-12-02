@@ -64,7 +64,7 @@ function getLeaphyDisplayBlocks(
 			helpUrl: "",
 
 			aiHelp: `Clear the ${translatePrefix} display`,
-			relevanceKey: `${translatePrefix}_DISPLAY`
+			relevanceKey: `${translatePrefix}_DISPLAY`,
 		},
 		{
 			type: `${prefix}_display`,
@@ -75,7 +75,7 @@ function getLeaphyDisplayBlocks(
 			helpUrl: "",
 
 			aiHelp: `Display the changed values on the ${translatePrefix} display`,
-			relevanceKey: `${translatePrefix}_DISPLAY`
+			relevanceKey: `${translatePrefix}_DISPLAY`,
 		},
 		{
 			type: `${prefix}_print_line`,
@@ -97,7 +97,7 @@ function getLeaphyDisplayBlocks(
 			helpUrl: "",
 
 			aiHelp: `Print the value to the ${translatePrefix} display on a selected row`,
-			relevanceKey: `${translatePrefix}_DISPLAY`
+			relevanceKey: `${translatePrefix}_DISPLAY`,
 		},
 		{
 			type: `${prefix}_set_text_size`,
@@ -111,7 +111,7 @@ function getLeaphyDisplayBlocks(
 			helpUrl: "",
 
 			aiHelp: `Set the text size on the ${translatePrefix} display`,
-			relevanceKey: `${translatePrefix}_DISPLAY`
+			relevanceKey: `${translatePrefix}_DISPLAY`,
 		},
 		{
 			type: `${prefix}_print_value`,
@@ -135,7 +135,7 @@ function getLeaphyDisplayBlocks(
 			helpUrl: "",
 
 			aiHelp: `Print the value with name to the ${translatePrefix} display on a selected row`,
-			relevanceKey: `${translatePrefix}_DISPLAY`
+			relevanceKey: `${translatePrefix}_DISPLAY`,
 		},
 	];
 }
@@ -171,7 +171,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl: "",
 
-		aiHelp: `Print the value to the serial port`,
+		aiHelp: "Print the value to the serial port",
 	},
 	{
 		type: "leaphy_serial_print_value",
@@ -188,7 +188,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl: "",
 
-		aiHelp: `Print the value with name to the serial port`,
+		aiHelp: "Print the value with name to the serial port",
 	},
 	{
 		type: "leaphy_serial_available",
@@ -197,7 +197,7 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Check if there is data available to read from on the serial port`,
+		aiHelp: "Check if there is data available to read from on the serial port",
 	},
 	{
 		type: "leaphy_serial_read_line",
@@ -206,7 +206,7 @@ const blocks: BlockDefinition = [
 		output: "String",
 		helpUrl: "",
 
-		aiHelp: `Read a line from the serial port`,
+		aiHelp: "Read a line from the serial port",
 	},
 	{
 		type: "leaphy_rgb_color",
@@ -222,8 +222,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the RGB color from the TCS34725 sensor`,
-		relevanceKey: "RGB_COLOR"
+		aiHelp: "Read the RGB color from the TCS34725 sensor",
+		relevanceKey: "RGB_COLOR",
 	},
 	{
 		type: "leaphy_rgb_color_raw",
@@ -239,8 +239,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the raw RGB color from the TCS34725 sensor`,
-		relevanceKey: "RGB_COLOR"
+		aiHelp: "Read the raw RGB color from the TCS34725 sensor",
+		relevanceKey: "RGB_COLOR",
 	},
 	{
 		type: "leaphy_read_accelerometer",
@@ -256,8 +256,9 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 
-		aiHelp: `Read the acceleration value from the LSM6DS3TRC accelerometer on a selected axis`,
-		relevanceKey: "ACCELEROMETER"
+		aiHelp:
+			"Read the acceleration value from the LSM6DS3TRC accelerometer on a selected axis",
+		relevanceKey: "ACCELEROMETER",
 	},
 	{
 		type: "leaphy_read_gyroscope",
@@ -273,8 +274,9 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 
-		aiHelp: `Read the gyroscope value from the LSM6DS3TRC gyroscope on a selected axis`,
-		relevanceKey: "ACCELEROMETER"
+		aiHelp:
+			"Read the gyroscope value from the LSM6DS3TRC gyroscope on a selected axis",
+		relevanceKey: "ACCELEROMETER",
 	},
 	{
 		type: "leaphy_rgb_raw_color_red",
@@ -283,8 +285,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the raw red color value from the TCS34725 sensor`,
-		relevanceKey: "RGB_COLOR"
+		aiHelp: "Read the raw red color value from the TCS34725 sensor",
+		relevanceKey: "RGB_COLOR",
 	},
 	{
 		type: "leaphy_rgb_raw_color_green",
@@ -293,8 +295,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the raw green color value from the TCS34725 sensor`,
-		relevanceKey: "RGB_COLOR"
+		aiHelp: "Read the raw green color value from the TCS34725 sensor",
+		relevanceKey: "RGB_COLOR",
 	},
 	{
 		type: "leaphy_rgb_raw_color_blue",
@@ -303,8 +305,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the raw blue color value from the TCS34725 sensor`,
-		relevanceKey: "RGB_COLOR"
+		aiHelp: "Read the raw blue color value from the TCS34725 sensor",
+		relevanceKey: "RGB_COLOR",
 	},
 	{
 		type: "leaphy_i2c_rgb_color",
@@ -321,8 +323,8 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Ambient%20light%20sensor",
 
-		aiHelp: `Read the RGB color from the APDS9960 sensor`,
-		relevanceKey: "RGB_I2C_COLOR"
+		aiHelp: "Read the RGB color from the APDS9960 sensor",
+		relevanceKey: "RGB_I2C_COLOR",
 	},
 	{
 		type: "leaphy_i2c_gesture",
@@ -331,8 +333,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the gesture from the APDS9960 sensor`,
-		relevanceKey: "RGB_I2C_COLOR"
+		aiHelp: "Read the gesture from the APDS9960 sensor",
+		relevanceKey: "RGB_I2C_COLOR",
 	},
 	{
 		type: "leaphy_led_set_strip",
@@ -351,7 +353,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Potmeter-,Multiple%20leds%C2%A0,-Led%20matrix%C2%A0",
 
-		relevanceKey: "LED_STRIP"
+		relevanceKey: "LED_STRIP",
 	},
 	{
 		type: "leaphy_led_set_basic",
@@ -378,7 +380,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
 
-		relevanceKey: "LED_STRIP"
+		relevanceKey: "LED_STRIP",
 	},
 	{
 		type: "leaphy_led_set_speed",
@@ -397,7 +399,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
 
-		relevanceKey: "LED_STRIP"
+		relevanceKey: "LED_STRIP",
 	},
 	...getLeaphyDisplayBlocks("leaphy_display", "BKY_LEAPHY_DISPLAY", 3),
 	...getLeaphyDisplayBlocks(
@@ -424,8 +426,9 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the gas value from the SGP30 gas sensor (TVOC, eCO2, Raw H2, Raw Ethanol)`,
-		relevanceKey: "GAS_SENSOR"
+		aiHelp:
+			"Read the gas value from the SGP30 gas sensor (TVOC, eCO2, Raw H2, Raw Ethanol)",
+		relevanceKey: "GAS_SENSOR",
 	},
 	{
 		type: "i2c_use_channel",
@@ -460,7 +463,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Batteries%20and%20power-,I2C%20sensor%20module%C2%A0,-Sensors",
 
-		aiHelp: `Select the I2C channel to use on the multiplexer`,
+		aiHelp: "Select the I2C channel to use on the multiplexer",
 	},
 	{
 		type: "i2c_list_devices",
@@ -471,7 +474,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Batteries%20and%20power-,I2C%20sensor%20module%C2%A0,-Sensors",
 
-		aiHelp: `List the connected I2C devices on the multiplexer`,
+		aiHelp: "List the connected I2C devices on the multiplexer",
 	},
 	{
 		type: "leaphy_tof_get_distance",
@@ -481,8 +484,8 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 
-		aiHelp: `Read the distance from the VL53L0X ToF sensor`,
-		relevanceKey: "TOF_SENSOR"
+		aiHelp: "Read the distance from the VL53L0X ToF sensor",
+		relevanceKey: "TOF_SENSOR",
 	},
 	{
 		type: "leaphy_get_air_pressure",
@@ -491,8 +494,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the air pressure from the BMP280 sensor`,
-		relevanceKey: "BMP280_SENSOR"
+		aiHelp: "Read the air pressure from the BMP280 sensor",
+		relevanceKey: "BMP280_SENSOR",
 	},
 	{
 		type: "leaphy_tmp102_read_temperature",
@@ -501,8 +504,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the temperature from the TMP102 sensor`,
-		relevanceKey: "TMP102_SENSOR"
+		aiHelp: "Read the temperature from the TMP102 sensor",
+		relevanceKey: "TMP102_SENSOR",
 	},
 	{
 		type: "leaphy_segment_set",
@@ -520,8 +523,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the value on the 4 digit segment display`,
-		relevanceKey: "SEGMENT_DISPLAY"
+		aiHelp: "Set the value on the 4 digit segment display",
+		relevanceKey: "SEGMENT_DISPLAY",
 	},
 	{
 		type: "leaphy_segment_clear",
@@ -532,8 +535,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Clear the segment display`,
-		relevanceKey: "SEGMENT_DISPLAY"
+		aiHelp: "Clear the segment display",
+		relevanceKey: "SEGMENT_DISPLAY",
 	},
 	{
 		type: "leaphy_segment_set_brightness",
@@ -551,8 +554,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the brightness of the segment display`,
-		relevanceKey: "SEGMENT_DISPLAY"
+		aiHelp: "Set the brightness of the segment display",
+		relevanceKey: "SEGMENT_DISPLAY",
 	},
 	{
 		type: "leaphy_matrix_set",
@@ -581,8 +584,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set a pixel on the 8x8 LED matrix at a selected position`,
-		relevanceKey: "LED_MATRIX"
+		aiHelp: "Set a pixel on the 8x8 LED matrix at a selected position",
+		relevanceKey: "LED_MATRIX",
 	},
 	{
 		type: "leaphy_matrix_set_brightness",
@@ -600,8 +603,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the brightness of the 8x8 LED matrix`,
-		relevanceKey: "LED_MATRIX"
+		aiHelp: "Set the brightness of the 8x8 LED matrix",
+		relevanceKey: "LED_MATRIX",
 	},
 	{
 		type: "leaphy_matrix_clear",
@@ -612,8 +615,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Clear the 8x8 LED matrix`,
-		relevanceKey: "LED_MATRIX"
+		aiHelp: "Clear the 8x8 LED matrix",
+		relevanceKey: "LED_MATRIX",
 	},
 	{
 		type: "leaphy_matrix_fill",
@@ -633,8 +636,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Fill the 8x8 LED matrix with a selected pattern`,
-		relevanceKey: "LED_MATRIX"
+		aiHelp: "Fill the 8x8 LED matrix with a selected pattern",
+		relevanceKey: "LED_MATRIX",
 	},
 	{
 		type: "leaphy_sound_play",
@@ -653,8 +656,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Play a sound from the RedMP3 module`,
-		relevanceKey: "REDMP3_MODULE"
+		aiHelp: "Play a sound from the RedMP3 module",
+		relevanceKey: "REDMP3_MODULE",
 	},
 	{
 		type: "leaphy_sound_stop",
@@ -665,8 +668,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Stop the sound from the RedMP3 module`,
-		relevanceKey: "REDMP3_MODULE"
+		aiHelp: "Stop the sound from the RedMP3 module",
+		relevanceKey: "REDMP3_MODULE",
 	},
 	{
 		type: "leaphy_sound_set_volume",
@@ -685,8 +688,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the volume of the RedMP3 module`,
-		relevanceKey: "REDMP3_MODULE"
+		aiHelp: "Set the volume of the RedMP3 module",
+		relevanceKey: "REDMP3_MODULE",
 	},
 	{
 		type: "leaphy_led_strip_demo",
@@ -721,8 +724,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Run a demo on the LED strip`,
-		relevanceKey: "LED_STRIP"
+		aiHelp: "Run a demo on the LED strip",
+		relevanceKey: "LED_STRIP",
 	},
 	{
 		type: "math_map",
@@ -761,7 +764,7 @@ const blocks: BlockDefinition = [
 		tooltip: "%{BKY_MATH_MAP_TOOLTIP}",
 		helpUrl: "https://www.arduino.cc/reference/en/language/functions/math/map/",
 
-		aiHelp: `Map a value from one range to another`,
+		aiHelp: "Map a value from one range to another",
 	},
 ];
 

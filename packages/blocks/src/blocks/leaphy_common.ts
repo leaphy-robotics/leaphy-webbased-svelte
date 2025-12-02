@@ -15,7 +15,8 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the digital value from a selected pin (automatic mode select)`,
+		aiHelp:
+			"Read the digital value from a selected pin (automatic mode select)",
 	},
 	{
 		type: "analog_read",
@@ -31,7 +32,7 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the analog value from a selected pin (automatic mode select)`,
+		aiHelp: "Read the analog value from a selected pin (automatic mode select)",
 	},
 	{
 		type: "leaphy_servo_write",
@@ -54,7 +55,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=TT%20motors-,Servo%20motors,-Rotating%20servo%20motor",
 
-		aiHelp: `Write the servo angle to a selected pin`,
+		aiHelp: "Write the servo angle to a selected pin",
 	},
 	{
 		type: "leaphy_servo_read",
@@ -72,7 +73,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=TT%20motors-,Servo%20motors,-Rotating%20servo%20motor",
 
-		aiHelp: `Read the servo angle from a selected pin`,
+		aiHelp: "Read the servo angle from a selected pin",
 	},
 	{
 		type: "leaphy_io_digitalwrite",
@@ -91,7 +92,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl: "http://arduino.cc/en/Reference/DigitalWrite",
 
-		aiHelp: `Write the digital value to a selected pin (automatic mode select)`,
+		aiHelp: "Write the digital value to a selected pin (automatic mode select)",
 	},
 	{
 		type: "leaphy_multiplexer_digitalwrite",
@@ -117,7 +118,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Write the digital value to a selected pin on the multiplexer`,
+		aiHelp: "Write the digital value to a selected pin on the multiplexer",
 	},
 	{
 		type: "leaphy_io_analogwrite",
@@ -133,7 +134,8 @@ const blocks: BlockDefinition = [
 		// "extensions": "inputAndUpdateAnalog",
 		helpUrl: "http://arduino.cc/en/Reference/AnalogWrite",
 
-		aiHelp: `Write the analog value (pwm) to a selected pin (automatic mode select)`,
+		aiHelp:
+			"Write the analog value (pwm) to a selected pin (automatic mode select)",
 	},
 	{
 		type: "leaphy_sonar_read",
@@ -157,8 +159,8 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Programming-,Ultrasonic%20sensor,-Light%20sensor",
-		
-		aiHelp: `Read the distance from a selected HC-SR04 ultrasonic sensor`,
+
+		aiHelp: "Read the distance from a selected HC-SR04 ultrasonic sensor",
 	},
 
 	{
@@ -182,8 +184,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Initialize the 4 digit segment display`,
-		relevanceKey: "SEGMENT_DISPLAY"
+		aiHelp: "Initialize the 4 digit segment display",
+		relevanceKey: "SEGMENT_DISPLAY",
 	},
 	{
 		type: "leaphy_matrix_init",
@@ -211,8 +213,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Initialize the 8x8 LED matrix`,
-		relevanceKey: "LED_MATRIX"
+		aiHelp: "Initialize the 8x8 LED matrix",
+		relevanceKey: "LED_MATRIX",
 	},
 	{
 		type: "leaphy_sound_init",
@@ -236,8 +238,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Initialize the speaker (RedMP3 module)`,
-		relevanceKey: "REDMP3_MODULE"
+		aiHelp: "Initialize the speaker (RedMP3 module)",
+		relevanceKey: "REDMP3_MODULE",
 	},
 	{
 		type: "leaphy_sdcard_write",
@@ -251,8 +253,8 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		tooltip: "CS=10",
 
-		aiHelp: `Write a value to a file on the SD card`,
-		relevanceKey: "SD_CARD"
+		aiHelp: "Write a value to a file on the SD card",
+		relevanceKey: "SD_CARD",
 	},
 	{
 		type: "leaphy_sdcard_remove",
@@ -262,8 +264,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Remove a file from the SD card`,
-		relevanceKey: "SD_CARD"
+		aiHelp: "Remove a file from the SD card",
+		relevanceKey: "SD_CARD",
 	},
 	{
 		type: "leaphy_sdcard_mkdir",
@@ -273,8 +275,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Create a directory on the SD card`,
-		relevanceKey: "SD_CARD"
+		aiHelp: "Create a directory on the SD card",
+		relevanceKey: "SD_CARD",
 	},
 ];
 

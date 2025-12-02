@@ -25,11 +25,11 @@ import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
 import bluetooth from "$domain/blockly/bluetooth";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+import type { BlockDefinition } from "blockly/core/blocks";
 import { _ as translate } from "svelte-i18n";
 import { get } from "svelte/store";
 import Extensions from "./extensions.svelte";
-import WorkspaceState from "$state/workspace.svelte";
-import type { BlockDefinition } from "blockly/core/blocks";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -102,21 +102,29 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 
 export function getAllBlocks() {
 	const contents = toolbox
-		.filter(category => category.id !== "l_search")
-		.filter(({ robots }) => (robots ? inFilter(WorkspaceState.robot, robots) : true))
-		.filter(category => Extensions.isEnabled(category.id))
+		.filter((category) => category.id !== "l_search")
+		.filter(({ robots }) =>
+			robots ? inFilter(WorkspaceState.robot, robots) : true,
+		)
+		.filter((category) => Extensions.isEnabled(category.id))
 		.flatMap((category) => {
 			if (category.custom) {
-				const callback = BlocklyState.workspace.getToolboxCategoryCallback(category.custom);
-            	if (!callback) return;
+				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
+					category.custom,
+				);
+				if (!callback) return;
 
-				return callback(BlocklyState.workspace) as utils.toolbox.FlyoutItemInfoArray;
-			};
+				return callback(
+					BlocklyState.workspace,
+				) as utils.toolbox.FlyoutItemInfoArray;
+			}
 			if (!category.groups) return;
-			return category.groups.flatMap((group) => group.blocks.map((block) => ({
-				kind: "block",
-				...block,
-			})));
+			return category.groups.flatMap((group) =>
+				group.blocks.map((block) => ({
+					kind: "block",
+					...block,
+				})),
+			);
 		})
 		.filter((block) => block.kind === "block" && "type" in block);
 

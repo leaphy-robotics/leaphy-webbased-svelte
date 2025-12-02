@@ -83,7 +83,8 @@ const blocks: BlockDefinition[] = [
 		helpUrl: "%{BKY_LOGIC_COMPARE_HELPURL}",
 		extensions: ["logic_op_tooltip"],
 
-		aiHelp: "Compare two values using a comparison operator, returning a boolean value.",
+		aiHelp:
+			"Compare two values using a comparison operator, returning a boolean value.",
 	},
 ];
 

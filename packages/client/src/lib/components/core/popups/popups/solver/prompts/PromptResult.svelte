@@ -1,9 +1,9 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+import { onMount } from "svelte";
 
 interface Props {
-    question: string;
-    answer: string;
+	question: string;
+	answer: string;
 }
 
 let { question, answer }: Props = $props();
@@ -17,35 +17,35 @@ let bottomOffset = $state(0);
 let containerHeight = $state(0);
 
 let pathData = $derived.by(() => {
-    if (containerHeight === 0 || topOffset === 0 || bottomOffset === 0) return '';
-    
-    const cornerRadius = 6;
-    const lineWidth = 3;
-    const connectorWidth = 30;
-    
-    // Start at right edge, at question center
-    const startX = connectorWidth;
-    const startY = topOffset;
-    
-    // Go left to where we'll turn down
-    const leftTurnX = lineWidth + cornerRadius;
-    const leftTurnY = topOffset;
-    
-    // Turn down (rounded corner)
-    const verticalStartY = topOffset + cornerRadius;
-    
-    // Vertical line down
-    const verticalEndY = bottomOffset - cornerRadius;
-    
-    // Turn right (rounded corner)
-    const rightTurnX = leftTurnX;
-    const rightTurnY = bottomOffset;
-    
-    // Go right to answer
-    const endX = connectorWidth;
-    const endY = bottomOffset;
-    
-    return `M ${startX} ${startY} 
+	if (containerHeight === 0 || topOffset === 0 || bottomOffset === 0) return "";
+
+	const cornerRadius = 6;
+	const lineWidth = 3;
+	const connectorWidth = 30;
+
+	// Start at right edge, at question center
+	const startX = connectorWidth;
+	const startY = topOffset;
+
+	// Go left to where we'll turn down
+	const leftTurnX = lineWidth + cornerRadius;
+	const leftTurnY = topOffset;
+
+	// Turn down (rounded corner)
+	const verticalStartY = topOffset + cornerRadius;
+
+	// Vertical line down
+	const verticalEndY = bottomOffset - cornerRadius;
+
+	// Turn right (rounded corner)
+	const rightTurnX = leftTurnX;
+	const rightTurnY = bottomOffset;
+
+	// Go right to answer
+	const endX = connectorWidth;
+	const endY = bottomOffset;
+
+	return `M ${startX} ${startY} 
             L ${leftTurnX} ${leftTurnY} 
             Q ${lineWidth} ${topOffset} ${lineWidth} ${verticalStartY}
             L ${lineWidth} ${verticalEndY}
@@ -54,34 +54,35 @@ let pathData = $derived.by(() => {
 });
 
 onMount(() => {
-    const updatePositions = () => {
-        if (questionElement && answerElement && containerElement) {
-            const questionRect = questionElement.getBoundingClientRect();
-            const answerRect = answerElement.getBoundingClientRect();
-            const containerRect = containerElement.getBoundingClientRect();
-            
-            // Calculate offsets relative to container (center of each element)
-            topOffset = questionRect.top - containerRect.top + questionRect.height / 2;
-            bottomOffset = answerRect.top - containerRect.top + answerRect.height / 2;
-            containerHeight = containerRect.height;
-        }
-    };
-    
-    // Initial update
-    setTimeout(updatePositions, 0);
-    
-    // Use ResizeObserver to handle dynamic content changes
-    const resizeObserver = new ResizeObserver(() => {
-        setTimeout(updatePositions, 0);
-    });
-    
-    if (questionElement) resizeObserver.observe(questionElement);
-    if (answerElement) resizeObserver.observe(answerElement);
-    if (containerElement) resizeObserver.observe(containerElement);
-    
-    return () => {
-        resizeObserver.disconnect();
-    };
+	const updatePositions = () => {
+		if (questionElement && answerElement && containerElement) {
+			const questionRect = questionElement.getBoundingClientRect();
+			const answerRect = answerElement.getBoundingClientRect();
+			const containerRect = containerElement.getBoundingClientRect();
+
+			// Calculate offsets relative to container (center of each element)
+			topOffset =
+				questionRect.top - containerRect.top + questionRect.height / 2;
+			bottomOffset = answerRect.top - containerRect.top + answerRect.height / 2;
+			containerHeight = containerRect.height;
+		}
+	};
+
+	// Initial update
+	setTimeout(updatePositions, 0);
+
+	// Use ResizeObserver to handle dynamic content changes
+	const resizeObserver = new ResizeObserver(() => {
+		setTimeout(updatePositions, 0);
+	});
+
+	if (questionElement) resizeObserver.observe(questionElement);
+	if (answerElement) resizeObserver.observe(answerElement);
+	if (containerElement) resizeObserver.observe(containerElement);
+
+	return () => {
+		resizeObserver.disconnect();
+	};
 });
 </script>
 

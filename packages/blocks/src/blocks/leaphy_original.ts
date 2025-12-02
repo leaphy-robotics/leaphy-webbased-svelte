@@ -37,7 +37,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the RGB color of the RGB LED`,
+		aiHelp: "Set the RGB color of the RGB LED",
 	},
 	{
 		type: "leaphy_original_set_motor",
@@ -58,7 +58,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the speed of a selected motor (two wheel differential drive motors)`,
+		aiHelp:
+			"Set the speed of a selected motor (two wheel differential drive motors)",
 	},
 	{
 		type: "leaphy_original_move_motors",
@@ -79,7 +80,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Move the robot in a selected direction (two wheel differential drive motors)`,
+		aiHelp:
+			"Move the robot in a selected direction (two wheel differential drive motors)",
 	},
 	{
 		type: "leaphy_original_buzz",
@@ -94,7 +96,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Make a sound from the buzzer`,
+		aiHelp: "Make a sound from the buzzer",
 	},
 	{
 		type: "leaphy_original_servo_set",
@@ -121,7 +123,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the speed of a selected motor (two wheel differential drive motors)`,
+		aiHelp:
+			"Set the speed of a selected motor (two wheel differential drive motors)",
 	},
 	{
 		type: "leaphy_original_servo_move",
@@ -150,7 +153,8 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 
-		aiHelp: `Move the robot in a selected direction (two wheel differential drive motors)`,
+		aiHelp:
+			"Move the robot in a selected direction (two wheel differential drive motors)",
 	},
 ];
 

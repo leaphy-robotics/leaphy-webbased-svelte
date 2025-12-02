@@ -11,9 +11,9 @@ import type {
 	FlyoutDefinition,
 	FlyoutItemInfoArray,
 } from "blockly/core/utils/toolbox";
+import { getAllBlocks } from "../../../client/src/lib/domain/blockly/blockly";
 import Extensions from "../../../client/src/lib/domain/blockly/extensions.svelte";
 import { serializeBlock } from "../../../client/src/lib/domain/blockly/pseudo";
-import { getAllBlocks } from "../../../client/src/lib/domain/blockly/blockly";
 
 const input = document.createElement("input");
 input.type = "text";

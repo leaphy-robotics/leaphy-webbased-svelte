@@ -3,6 +3,7 @@ import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import PythonMonitor from "$components/core/popups/popups/PythonMonitor.svelte";
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import Tutorials from "$components/core/popups/popups/Tutorials.svelte";
+import Solver from "$components/core/popups/popups/solver/Solver.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
@@ -14,15 +15,14 @@ import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faBook,
+	faBrain,
 	faChalkboardTeacher,
 	faCode,
 	faDiagramProject,
 	faSquarePollHorizontal,
-	faBrain,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
-import Solver from "$components/core/popups/popups/solver/Solver.svelte";
 
 function openSerial() {
 	PopupState.open({

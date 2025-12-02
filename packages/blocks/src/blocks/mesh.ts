@@ -16,8 +16,8 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 
-		aiHelp: `Setup the Mesh network`,
-		relevanceKey: "MESH"
+		aiHelp: "Setup the Mesh network",
+		relevanceKey: "MESH",
 	},
 	{
 		type: "mesh_update",
@@ -26,8 +26,9 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 
-		aiHelp: `Update the Mesh network (required to always run in loop if mesh is used)`,
-		relevanceKey: "MESH"
+		aiHelp:
+			"Update the Mesh network (required to always run in loop if mesh is used)",
+		relevanceKey: "MESH",
 	},
 
 	{
@@ -36,8 +37,8 @@ const blocks: BlockDefinition = [
 		message0: "%{BKY_LEAPHY_MESH_SENDER}",
 		output: "Number",
 
-		aiHelp: `Get the sender of the last received message`,
-		relevanceKey: "MESH"
+		aiHelp: "Get the sender of the last received message",
+		relevanceKey: "MESH",
 	},
 
 	{
@@ -53,8 +54,8 @@ const blocks: BlockDefinition = [
 		extensions: ["mesh_signal_select_extension", "appendStatementInputStack"],
 		style: "mesh_blocks",
 
-		aiHelp: `When I receive a selected signal`,
-		relevanceKey: "MESH"
+		aiHelp: "When I receive a selected signal",
+		relevanceKey: "MESH",
 	},
 	{
 		type: "mesh_broadcast_signal",
@@ -71,8 +72,8 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 
-		aiHelp: `Broadcast a selected signal`,
-		relevanceKey: "MESH"
+		aiHelp: "Broadcast a selected signal",
+		relevanceKey: "MESH",
 	},
 	{
 		type: "mesh_call_signal",
@@ -94,8 +95,8 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 
-		aiHelp: `Send a selected signal to a selected recipient`,
-		relevanceKey: "MESH"
+		aiHelp: "Send a selected signal to a selected recipient",
+		relevanceKey: "MESH",
 	},
 ];
 

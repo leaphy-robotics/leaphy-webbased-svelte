@@ -8,8 +8,9 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 
-		aiHelp: `ML: Classify the input data (should be called before checking certainty values)`,
-		relevanceKey: "ML"
+		aiHelp:
+			"ML: Classify the input data (should be called before checking certainty values)",
+		relevanceKey: "ML",
 	},
 	{
 		type: "ml_certainty",
@@ -25,8 +26,8 @@ const blocks: BlockDefinition = [
 		style: "ml_blocks",
 		output: "Boolean",
 
-		aiHelp: `ML: Check the certainty of the class as a boolean`,
-		relevanceKey: "ML"
+		aiHelp: "ML: Check the certainty of the class as a boolean",
+		relevanceKey: "ML",
 	},
 
 	{

@@ -62,7 +62,7 @@ const blocks: BlockDefinition = [
 			"https://www.leaphy.nl/leaphy-flitz.html#:~:text=het%20licht%20wordt.-,Bouwfilmpjes%20Leaphy%20Flitz,-Software%20Leaphy%20Flitz",
 		style: "leaphy_blocks",
 
-		aiHelp: `Set the RGB color of the RGB LED`,
+		aiHelp: "Set the RGB color of the RGB LED",
 	},
 ];
 

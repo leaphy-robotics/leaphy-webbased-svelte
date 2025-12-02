@@ -1,11 +1,11 @@
 <script lang="ts">
+import Button from "$components/ui/Button.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
 import { _ } from "svelte-i18n";
 import type { MultipleChoiceQuestion } from "../types";
-import TextInput from "$components/ui/TextInput.svelte";
-import Button from "$components/ui/Button.svelte";
 
 interface Props {
-    question: MultipleChoiceQuestion;
+	question: MultipleChoiceQuestion;
 }
 
 let { question }: Props = $props();
