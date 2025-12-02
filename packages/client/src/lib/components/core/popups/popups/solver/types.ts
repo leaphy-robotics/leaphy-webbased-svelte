@@ -19,7 +19,6 @@ type BaseMessage = {
 
 type TextMessage = BaseMessage & {
     type: "text";
-    role: "user" | "assistant";
     content: string;
 }
 
@@ -36,7 +35,33 @@ type SchemaMessage = BaseMessage & {
 
 type Message = TextMessage | PromptResultMessage | SchemaMessage;
 
+type BasePacket = {
+    type: string;
+}
+
+type MultipleChoicePacket = BasePacket & {
+    type: "multiple_choice_question";
+    question: string;
+    choices: string[];
+}
+
+type CircuitSchemaPacket = BasePacket & {
+    type: "show_circuit_schema";
+}
+
+type TextPacket = BasePacket & {
+    type: "agent_text";
+    content: string;
+}
+
+type DonePacket = BasePacket & {
+    type: "agent_done";
+}
+
+type Packet = MultipleChoicePacket | CircuitSchemaPacket | TextPacket | DonePacket;
+
 export type { 
     BaseQuestion, MultipleChoiceQuestion, Question, 
-    BaseMessage, TextMessage, PromptResultMessage, SchemaMessage, Message as SolverMessage
+    BaseMessage, TextMessage, PromptResultMessage, SchemaMessage, Message as SolverMessage,
+    BasePacket, MultipleChoicePacket, CircuitSchemaPacket, TextPacket, DonePacket, Packet
 };

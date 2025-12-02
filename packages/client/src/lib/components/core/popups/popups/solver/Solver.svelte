@@ -1,13 +1,9 @@
 <script lang="ts">
     import Windowed from "$components/core/popups/Windowed.svelte";
     import { _ } from "svelte-i18n";
-    import type { Question, SolverMessage } from "./types";
+    import type { Packet, Question, SolverMessage } from "./types";
     import MultipleChoice from "./prompts/MultipleChoice.svelte";
-    import { createGroq } from '@ai-sdk/groq';
-    import { createMistral } from '@ai-sdk/mistral';
-    import { streamText, stepCountIs, tool, type ModelMessage } from 'ai';
-    import { z } from 'zod';
-    import { getStartConversation } from "./system";
+    import { getHelpRequest } from "./system";
     import { onMount } from "svelte";
     import PromptResult from "./prompts/PromptResult.svelte";
     import SvelteMarkdown from "svelte-markdown";
@@ -18,23 +14,12 @@
     import type { PopupState } from "$state/popup.svelte";
     import { getContext } from "svelte";
 
-    const groq = createGroq({
-        apiKey: import.meta.env.VITE_GROQ_API_KEY,
-    });
-
-    const mistral = createMistral({
-        apiKey: import.meta.env.VITE_MISTRAL_API_KEY,
-    });
-
     let messages = $state<SolverMessage[]>([]);
-
-    let conversation = $state<ModelMessage[]>(getStartConversation());
     let question = $state<Question>();
     let processing = $state(false);
+
     let popupState = getContext<PopupState>("state");
     let contentElement: HTMLDivElement;
-    let currentTextMessage = $state<string>("");
-    let currentTextMessageIndex = $state<number>(-1);
 
     function close() {
         popupState.close(true);
@@ -42,143 +27,72 @@
 
     async function continueConversation() {
         processing = true;
-        currentTextMessage = "";
-        currentTextMessageIndex = -1;
-
-        // Helper function to finalize current text message if it has content
-        function finalizeCurrentTextMessage() {
-            if (currentTextMessageIndex >= 0 && currentTextMessageIndex < messages.length) {
-                if (currentTextMessage.trim()) {
-                    messages[currentTextMessageIndex] = {
-                        type: "text",
-                        role: "assistant",
-                        content: currentTextMessage,
-                    };
-                } else {
-                    // Remove empty text message
-                    messages.splice(currentTextMessageIndex, 1);
-                }
-                currentTextMessage = "";
-                currentTextMessageIndex = -1;
-            }
-        }
-
-        // Helper function to start a new text message
-        function startNewTextMessage() {
-            if (currentTextMessageIndex === -1) {
-                currentTextMessageIndex = messages.length;
-                messages.push({
-                    type: "text",
-                    role: "assistant",
-                    content: "",
-                });
-            }
-        }
-
-        const result = await streamText({
-            model: mistral("mistral-medium-latest"),
-            messages: conversation,
-            tools: {
-                showMultipleChoice: tool({
-                    description: "Show the user a multiple choice question",
-                    inputSchema: z.object({
-                        question: z.string(),
-                        choices: z.array(z.string()),
-                    }),
-                    execute: (prompt) => {
-                        // Finalize any current text message before tool execution
-                        finalizeCurrentTextMessage();
-                        return new Promise((resolve => {
-                            question = {
-                                type: "multiple_choice",
-                                question: prompt.question,
-                                choices: prompt.choices,
-                                respond(answer) {
-                                    resolve({ content: answer });
-                                    messages.push({
-                                        type: "prompt_result",
-                                        question: prompt.question,
-                                        answer: answer,
-                                    });
-                                    question = undefined;
-                                }
+        
+        const socket = new WebSocket(`${import.meta.env.VITE_BACKEND_URL}/ai/help`);
+        await new Promise<void>((resolve) => {
+            socket.addEventListener("open", () => {
+                socket.send(JSON.stringify({
+                    type: "help_request",
+                    request: getHelpRequest(),
+                }));
+            });
+            socket.addEventListener("message", (event) => {
+                const message = JSON.parse(event.data) as Packet;
+                switch (message.type) {
+                    case "multiple_choice_question": {
+                        question = {
+                            type: "multiple_choice",
+                            question: message.question,
+                            choices: message.choices,
+                            respond: (answer) => {
+                                socket.send(JSON.stringify({
+                                    type: "answer_multiple_choice_question",
+                                    answer: answer,
+                                }));
+                                messages.push({
+                                    type: "prompt_result",
+                                    question: message.question,
+                                    answer: answer,
+                                });
+                                question = undefined;
                             }
-                        }))
-                    },
-                }),
-                displayCircuitSchema: tool({
-                    description: "Display a circuit schema for the current project",
-                    inputSchema: z.object({}), 
-                    execute: () => {
-                        // Finalize any current text message before tool execution
-                        finalizeCurrentTextMessage();
+                        };
+                        break;
+                    }
+                    case "show_circuit_schema": {
                         messages.push({
                             type: "schema",
                             builder: arduino.builder,
-                        })
-
-                        console.log('test');
-
-                        return { content: "done" }
+                        });
+                        break;
                     }
-                })
-            },
-            stopWhen: () => false
-        });
+                    case "agent_text": {
+                        const lastMessage = messages.at(-1);
+                        if (lastMessage?.type !== "text") {
+                            messages.push({
+                                type: "text",
+                                content: message.content,
+                            });
+                            break;
+                        }
 
-        // Stream all events (text and tool calls)
-        for await (const chunk of result.fullStream) {
-            if (chunk.type === 'text-delta') {
-                // Start a new text message if we don't have one
-                startNewTextMessage();
-                currentTextMessage += chunk.text;
-                if (currentTextMessageIndex >= 0 && currentTextMessageIndex < messages.length) {
-                    messages[currentTextMessageIndex] = {
-                        type: "text",
-                        role: "assistant",
-                        content: currentTextMessage,
-                    };
+                        lastMessage.content += message.content;
+                        scrollToBottom();
+                        break;
+                    }
+                    case "agent_done": {
+                        resolve();
+                        break;
+                    }
                 }
-            } else if (chunk.type === 'tool-call') {
-                // When a tool call starts, finalize any current text message
-                finalizeCurrentTextMessage();
-                // Tool execution will add messages via the execute functions
-            } else if (chunk.type === 'text-end') {
-                // Text chunk is done, finalize it
-                finalizeCurrentTextMessage();
-            }
-        }
-
-        // Finalize any remaining text message
-        finalizeCurrentTextMessage();
-
-        // Wait for the stream to complete and get the final result
-        const finalResult = await result;
-        const response = await finalResult.response;
+            });
+        })
         
-        // The response contains the final messages with tool calls and results in correct order
-        // Add them to the conversation
-        if (response?.messages) {
-            conversation.push(...response.messages);
-        }
-        
-        // Add system message indicating user is still stuck
-        conversation.push({
-            role: "user",
-            content: "The user has indicated that they are still stuck. Please ask them for more information."
-        });
-
-        currentTextMessage = "";
-        currentTextMessageIndex = -1;
         processing = false;
     }
 
     onMount(() => {
         continueConversation();
-    });
-
-    $effect(() => {
-        $inspect(conversation);
     });
 
     function scrollToBottom() {
@@ -225,7 +139,6 @@
             </div>
         {:else}
             <div class="no-question">
-                <Button mode="primary" onclick={continueConversation} name={$_("STILL_STUCK")} />
                 <Button mode="secondary" onclick={close} name={$_("CLOSE")} />
             </div>
         {/if}
