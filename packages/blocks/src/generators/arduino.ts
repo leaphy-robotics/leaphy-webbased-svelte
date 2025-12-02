@@ -72,7 +72,7 @@ export class Arduino extends Blockly.Generator {
 	public i2c = this.builder.add("murphy-i2c", MurphyI2C);
 
 	public robotType = "l_original";
-	public boardType = "l_uno";
+	public boardType = "l_nano";
 	public program: Uint8Array | null = null;
 
 	constructor() {

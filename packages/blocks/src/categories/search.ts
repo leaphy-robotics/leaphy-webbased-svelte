@@ -11,6 +11,7 @@ import type {
 	FlyoutDefinition,
 	FlyoutItemInfoArray,
 } from "blockly/core/utils/toolbox";
+import { getAllBlocks } from "../../../client/src/lib/domain/blockly/blockly";
 import Extensions from "../../../client/src/lib/domain/blockly/extensions.svelte";
 import { serializeBlock } from "../../../client/src/lib/domain/blockly/pseudo";
 
@@ -55,43 +56,9 @@ export default function (workspace: WorkspaceSvg) {
 	];
 
 	if (input.value) {
-		const toolbox = workspace.getToolbox() as Toolbox;
-		const categories = Array.from(
-			// biome-ignore lint/complexity/useLiteralKeys: protected properties must be accessed using brackets
-			toolbox["contents"].values(),
-		) as ToolboxCategory[];
-		const enabledCategories = categories.filter((e) =>
-			Extensions.isEnabled(e.getId()),
-		);
-
-		const blocks = new Map<string, BlockDefinition>();
-		enabledCategories.forEach((category) => {
-			if (category.getId() === "l_search") return;
-
-			const contents = category.getContents();
-			if (Array.isArray(contents)) {
-				contents.forEach((block) => {
-					if (!("type" in block) || !block.type) return;
-
-					blocks.set(block.type, block);
-				});
-			} else {
-				const callback = workspace.getToolboxCategoryCallback(contents);
-				if (!callback) return;
-
-				const customContents = callback(workspace) as FlyoutItemInfoArray;
-				if (!Array.isArray(customContents)) return;
-
-				customContents.forEach((block) => {
-					if (!("type" in block) || !block.type) return;
-
-					blocks.set(block.type, block);
-				});
-			}
-		});
-
-		blocks.forEach((blockDef, type) => {
-			const block = new BlockSvg(workspace, type);
+		const blocks = getAllBlocks();
+		blocks.forEach((blockDef) => {
+			const block = new BlockSvg(workspace, blockDef.type);
 			const message = serializeBlock(block);
 			if (message.toUpperCase().includes(input.value.toUpperCase())) {
 				blockList.push(blockDef, { kind: "sep", gap: 8 });

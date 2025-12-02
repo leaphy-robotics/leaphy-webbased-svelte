@@ -259,5 +259,11 @@
 	"MATRIX_DISPLAY_SECTION": "Matrix scherm",
 	"SEGMENT_DISPLAY_SECTION": "Segment scherm",
 	"AUDIO_SECTION": "Geluid",
-	"COMMUNICATION_STORAGE_SECTION": "Communicatie & opslag"
+	"COMMUNICATION_STORAGE_SECTION": "Communicatie & opslag",
+
+	"STILL_STUCK": "Niet gelukt?",
+	"SOLVER": "Hulp robot",
+	"OTHER_ANSWER": "Iets anders...",
+	"SUBMIT_OTHER_ANSWER": "Verstuur",
+	"THINKING": "Denken..."
 }

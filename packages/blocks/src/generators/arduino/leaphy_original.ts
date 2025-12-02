@@ -56,8 +56,6 @@ function getCodeGenerators(arduino: Arduino) {
 	}
 
 	arduino.forBlock.leaphy_original_set_led = (block) => {
-		const led = arduino.builder.add("rgb", RGBFlitz);
-
 		const red =
 			arduino.valueToCode(block, "LED_RED", arduino.ORDER_ATOMIC) || "0";
 		const green =
@@ -69,6 +67,8 @@ function getCodeGenerators(arduino: Arduino) {
 		let pin_blue: number;
 		let pin_green: number;
 		if (arduino.boardType.includes("nano")) {
+			const led = arduino.builder.add("rgb", RGBFlitz);
+
 			// Use different pins for the original nano since they conflict with the motors
 			if (arduino.robotType.includes("original")) {
 				pin_red = 5;
