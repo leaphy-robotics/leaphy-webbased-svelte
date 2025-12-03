@@ -83,11 +83,11 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const active_channel = generator.currentI2cChannel() || "BC";
 		const variable_name = generator.getVariableName(`ADPS_${active_channel}`);
 		generator.addI2cSupport(false);
-		generator.addImport("leaphymicropython.sensors.adps9960", "ADPS_9960");
+		generator.addImport("leaphymicropython.sensors.adps9960", "Adps9960");
 		generator.addImport("leaphymicropython.sensors.adps9960", "GESTURE_NONE");
 		generator.addDefinition(
 			`channel${active_channel}obj`,
-			`${variable_name} = ADPS(${active_channel !== "BC" ? `channel = ${active_channel}` : ""})\n${variable_name}.begin()`,
+			`${variable_name} = Adps9960(${active_channel !== "BC" ? `channel = ${active_channel}` : ""})\n${variable_name}.begin()`,
 		);
 		generator.addDefinition(
 			`channel${active_channel}gesturebuffer`,
@@ -105,10 +105,10 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const variable_name = generator.getVariableName(`ADPS_${active_channel}`);
 		const color_type = block.getFieldValue("COLOR_TYPE");
 		generator.addI2cSupport(false);
-		generator.addImport("leaphymicropython.sensors.adps9960", "ADPS_9960");
+		generator.addImport("leaphymicropython.sensors.adps9960", "Adps9960");
 		generator.addDefinition(
 			`channel${active_channel}obj`,
-			`${variable_name} = ADPS(${active_channel !== "BC" ? `channel = ${active_channel}` : ""})\n${variable_name}.begin()`,
+			`${variable_name} = Adps9960(${active_channel !== "BC" ? `channel = ${active_channel}` : ""})\n${variable_name}.begin()`,
 		);
 		generator.addDefinition(
 			`channel${active_channel}colorbuffer`,
