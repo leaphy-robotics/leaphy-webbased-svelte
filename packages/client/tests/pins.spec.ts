@@ -17,7 +17,7 @@ let nano_pins = {
 let mega_pins = {
 	digitalPinRange: [2, 53],
 	analogPinRange: [0, 15],
-	pwm: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+	pwm: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 44, 45, 46],
 };
 
 async function expect_dropdown_options(
