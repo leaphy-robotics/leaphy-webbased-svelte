@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "pnpm --filter @leaphy-robotics/leaphy-webbased dev",
-    "test": "pnpm biome check packages/client/src packages/client/tests packages/blocks packages/schemas && pnpm -r test",
+   "test": "pnpm biome check packages/client/src packages/client/tests packages/blocks packages/schemas && pnpm -r test",
     "apply": "pnpm biome check --write packages/client/src packages/client/tests packages/blocks packages/schemas"
   },
   "keywords": [],
