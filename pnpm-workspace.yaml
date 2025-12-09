@@ -1,3 +1,11 @@
 packages:
-  - "./packages/**"
-
+  - ./packages/**
+ignoredBuiltDependencies:
+  - '@biomejs/biome'
+onlyBuiltDependencies:
+  - '@sentry/cli'
+  - '@serialport/bindings-cpp'
+  - '@swc/core'
+  - core-js
+  - es5-ext
+  - esbuild
