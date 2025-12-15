@@ -51,7 +51,6 @@ export enum PinMapping {
 	MEGA = 3,
 	MICROPYTHON = 4,
 }
-
 const baseUno = {
 	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:avr:uno",
