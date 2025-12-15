@@ -28,3 +28,6 @@ dist-ssr
 /playwright/.cache/
 
 vite.config.ts.timestamp*.mjs
+
+# Playwright
+/playwright/.auth/
