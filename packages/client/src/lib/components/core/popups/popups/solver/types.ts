@@ -1,4 +1,4 @@
-import type { ComponentBuilder } from "../../../../../../../../schemas/src";
+import type { ComponentBuilder } from "@leaphy-robotics/schemas";
 
 type BaseQuestion = {
 	type: string;

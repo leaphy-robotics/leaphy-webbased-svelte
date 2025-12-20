@@ -10,13 +10,10 @@ function filterRelevantBlocks(selectedBlocks: BlockDefinition[]) {
 	const relevantKeys = new Set<string>();
 	workspace.getAllBlocks().forEach((block) => {
 		const blockDefinition = blocks.find((b) => b.type === block.type);
-		console.log(blockDefinition);
 		if (!blockDefinition || !blockDefinition.relevanceKey) return;
-		console.log(blockDefinition.relevanceKey);
 
 		relevantKeys.add(blockDefinition.relevanceKey);
 	});
-	console.log(relevantKeys);
 
 	return selectedBlocks.filter((block) => {
 		const blockDefinition = blocks.find((b) => b.type === block.type);
@@ -50,6 +47,5 @@ export function getBlocksMessage() {
 	const blocks = getAllBlocks();
 	const relevantBlocks = filterRelevantBlocks(blocks);
 
-	console.log(blocks, relevantBlocks);
 	return formatBlocks(relevantBlocks);
 }
