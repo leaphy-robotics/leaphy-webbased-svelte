@@ -259,5 +259,11 @@
 	"MATRIX_DISPLAY_SECTION": "Matrix display",
 	"SEGMENT_DISPLAY_SECTION": "Segment display",
 	"AUDIO_SECTION": "Audio",
-	"COMMUNICATION_STORAGE_SECTION": "Communication & Storage"
+	"COMMUNICATION_STORAGE_SECTION": "Communication & Storage",
+
+	"STILL_STUCK": "Still stuck?",
+	"SOLVER": "Help robot",
+	"OTHER_ANSWER": "Something else...",
+	"SUBMIT_OTHER_ANSWER": "Submit",
+	"THINKING": "Thinking..."
 }
