@@ -8,8 +8,10 @@ function getCodeGenerators(arduino: Arduino) {
 		const delayTime =
 			arduino.valueToCode(block, "DELAY_TIME_MILI", arduino.ORDER_ATOMIC) ||
 			"0";
+		const unit = block.getFieldValue("UNIT");
+		const delayFunction = unit === "ms" ? "delay" : "delayMicroseconds";
 
-		return `delay(${delayTime});\n`;
+		return `${delayFunction}(${delayTime});\n`;
 	};
 
 	arduino.forBlock.leaphy_serial_available = () => {
