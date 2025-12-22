@@ -1,3 +1,6 @@
+
 packages:
-  - "./packages/**"
+  - "packages/client"
+  - "packages/blocks"
+  - "packages/schemas"
 

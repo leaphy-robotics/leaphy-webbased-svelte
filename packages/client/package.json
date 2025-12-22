@@ -11,8 +11,6 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
-		"@leaphy-robotics/playwright-arduino": "1.0.6",
-		"@playwright/test": "^1.52.0",
 		"@sentry/vite-plugin": "^3.5.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@tsconfig/svelte": "^5.0.4",
@@ -26,7 +24,9 @@
 		"tslib": "^2.8.1",
 		"typescript": "^5.8.3",
 		"vite": "^6.4.1",
-		"vite-plugin-top-level-await": "^1.5.0"
+		"vite-plugin-static-copy": "^2.3.2",
+		"vite-plugin-top-level-await": "^1.5.0",
+		"vitest": "^4.0.15"
 	},
 	"dependencies": {
 		"@blockly/field-bitmap": "^4.1.1",
@@ -64,7 +64,6 @@
 		"svelte-i18n": "^4.0.1",
 		"svelte-loading-spinners": "^0.3.6",
 		"svelte-markdown": "^0.4.1",
-		"vite-plugin-static-copy": "^2.3.2",
 		"web-serial-polyfill": "^1.0.15"
 	}
 }
