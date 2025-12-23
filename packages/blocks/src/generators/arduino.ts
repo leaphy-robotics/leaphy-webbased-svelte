@@ -102,6 +102,7 @@ export class Arduino extends Blockly.Generator {
 	}
 
 	public createSchemaBuilder() {
+		this.builder = undefined;
 		if (this.boardType.includes("nano")) {
 			this.builder = new ComponentBuilder();
 		}
