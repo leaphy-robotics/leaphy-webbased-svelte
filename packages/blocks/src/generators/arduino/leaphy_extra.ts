@@ -108,22 +108,24 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "SERVO_ANGLE", arduino.ORDER_ATOMIC) || "90";
 		const servoName = `myServo${pinKey}`;
 
-		const servo = arduino.builder.add(`servo-${pinKey}`, Servo);
-		arduino.builder.connect(
-			arduino.murphy.port(pinKey),
-			servo.port("pulse"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${pinKey}.3V3`),
-			servo.port("vcc"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${pinKey}.GND`),
-			servo.port("gnd"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const servo = arduino.builder.add(`servo-${pinKey}`, Servo);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(pinKey),
+				servo.port("pulse"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${pinKey}.3V3`),
+				servo.port("vcc"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${pinKey}.GND`),
+				servo.port("gnd"),
+				WireColor.GND,
+			);
+		}
 
 		arduino.reservePin(block, pinKey, arduino.PinTypes.SERVO, "Servo Write");
 

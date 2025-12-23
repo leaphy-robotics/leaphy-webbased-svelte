@@ -383,13 +383,14 @@ async function openCircuitPopup() {
 							onclick={examples}
 							{open}
 						/>
-
-						<ContextItem
-							icon={faProjectDiagram}
-							name={$_("CIRCUIT")}
-							onclick={openCircuitPopup}
-							{open}
-						/>
+						{#if arduino.builder}
+							<ContextItem
+								icon={faProjectDiagram}
+								name={$_("CIRCUIT")}
+								onclick={openCircuitPopup}
+								{open}
+							/>
+						{/if}
 					{/if}
 					<ContextItem
 						icon={faWindows}
