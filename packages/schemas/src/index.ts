@@ -103,8 +103,8 @@ class VisibleComponent {
 class ComponentBuilder {
 	public components: JoinedComponent[] = [];
 	public wires: Wire[] = [];
-	public murphy = this.add("murphy", Murphy);
-	public i2c = this.add("murphy-i2c", MurphyI2C);
+	public murphy : VisibleComponent
+	public i2c : VisibleComponent
 
 	constructor() {
 		this.murphy = this.add("murphy", Murphy);
