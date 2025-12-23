@@ -14,9 +14,8 @@ messages.ARD_SERVO_ARM_WRITE = "Set Arm servo pin";
 messages.ARD_SERVO_WRITE = "Set Servo Pin";
 messages.ARD_SERVO_WRITE_DEG_180 = "degrees";
 messages.ARD_SERVO_WRITE_TO = "angle to";
-messages.ARD_TIME_DELAY = "during";
-messages.ARD_TIME_DELAY_TIP = "Wait specific time in milliseconds";
-messages.ARD_TIME_MS = "ms";
+messages.ARD_TIME_DELAY = "Wait";
+messages.ARD_TIME_DELAY_TIP = "Wait specific time in milli/microseconds";
 messages.ARD_WRITE_TO = "To";
 messages.CANNOT_DELETE_VARIABLE_PROCEDURE =
 	"Can't delete the variable '%1' because it's part of the definition of the function '%2'";

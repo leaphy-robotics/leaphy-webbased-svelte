@@ -6,6 +6,7 @@ import defaultProgram from "$assets/default-program.json?raw";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import Connect from "$components/core/popups/popups/Connect.svelte";
+import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
@@ -17,6 +18,7 @@ import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import { faWindows } from "@fortawesome/free-brands-svg-icons";
 import {
 	faCircleCheck,
 	faComment,
@@ -236,6 +238,14 @@ function log() {
 	});
 }
 
+function driverHelp() {
+	PopupState.open({
+		component: DriverInstall,
+		data: {},
+		allowInteraction: true,
+	});
+}
+
 function discord() {
 	window.open("https://discord.com/invite/Yeg7Kkrq5W", "_blank").focus();
 }
@@ -390,6 +400,12 @@ async function openCircuitPopup() {
 							{open}
 						/>
 					{/if}
+					<ContextItem
+						icon={faWindows}
+						name={$_("DRIVER_INSTALL_TITLE")}
+						onclick={driverHelp}
+						{open}
+					/>
 					<ContextItem
 						icon={faQuestionCircle}
 						name={$_("HELP_FORUM")}
