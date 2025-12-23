@@ -152,6 +152,7 @@ const blocks: BlockDefinition = [
 				options: [
 					["ms", "ms"],
 					["μs", "μs"],
+					["s", "s"],
 				],
 			},
 		],
