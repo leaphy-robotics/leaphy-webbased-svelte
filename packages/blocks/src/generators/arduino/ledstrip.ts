@@ -80,6 +80,7 @@ function getCodeGenerators(arduino: Arduino) {
 			`ledstrip${pin}`,
 			`#define NUM_LEDS ${num_leds}\nCRGB ledstrip[NUM_LEDS];\n`,
 		);
+		arduino.addDeclaration("ledstrip_speed", "#define LEDSTRIP_SPEED 50\n");
 		arduino.addSetup(
 			"ledstrip",
 			`FastLED.addLeds<WS2812, ${pin}, GRB>(ledstrip, NUM_LEDS); `,
@@ -109,6 +110,7 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.addDeclaration(
 			"ledstrip_speed",
 			`#define LEDSTRIP_SPEED ${speedValue}\n`,
+			true,
 		);
 		return "";
 	};
