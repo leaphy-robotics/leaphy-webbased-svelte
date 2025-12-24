@@ -51,57 +51,6 @@ function getCodeGenerators(arduino: Arduino) {
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
-	arduino.forBlock.leaphy_led_set_strip = (block) => {
-		const pin =
-			arduino.valueToCode(block, "LED_SET_PIN", arduino.ORDER_ATOMIC) || "0";
-		const leds =
-			arduino.valueToCode(block, "LED_SET_LEDS", arduino.ORDER_ATOMIC) || "0";
-
-		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
-		arduino.addInclude("led_libs", '#include "ledstrip.h"');
-		arduino.addDeclaration("leds_pins", `LEDSTRIP ledstrip(${pin}, ${leds});`);
-
-		arduino.reservePin(block, pin, arduino.PinTypes.LEDSTRIP, "Led Strip");
-		return "";
-	};
-
-	arduino.forBlock.leaphy_led_set_basic = (block) => {
-		const led =
-			arduino.valueToCode(block, "LED_SET_LED", arduino.ORDER_ATOMIC) || "0";
-		const red =
-			arduino.valueToCode(block, "LED_BASIC_RED", arduino.ORDER_ATOMIC) || "0";
-		const green =
-			arduino.valueToCode(block, "LED_BASIC_GREEN", arduino.ORDER_ATOMIC) ||
-			"0";
-		const blue =
-			arduino.valueToCode(block, "LED_BASIC_BLUE", arduino.ORDER_ATOMIC) || "0";
-		return `ledstrip.basis(${led}, ${red}, ${green}, ${blue});\n`;
-	};
-
-	arduino.forBlock.leaphy_led_set_speed = (block) => {
-		const speedValue =
-			arduino.valueToCode(block, "LED_SET_SPEEDVALUE", arduino.ORDER_ATOMIC) ||
-			"0";
-		return `_snelHeid = ${speedValue}`;
-	};
-
-	arduino.forBlock.leaphy_led_strip_demo = (block) => {
-		const dropdownType = block.getFieldValue("DEMO_TYPE");
-		const red =
-			arduino.valueToCode(block, "LED_STRIP_DEMO_RED", arduino.ORDER_ATOMIC) ||
-			"0";
-		const green =
-			arduino.valueToCode(
-				block,
-				"LED_STRIP_DEMO_GREEN",
-				arduino.ORDER_ATOMIC,
-			) || "0";
-		const blue =
-			arduino.valueToCode(block, "LED_STRIP_DEMO_BLUE", arduino.ORDER_ATOMIC) ||
-			"0";
-		return `ledstrip.runFunction(${dropdownType}, ${red}, ${green}, ${blue});\n`;
-	};
-
 	arduino.forBlock.leaphy_servo_write = (block) => {
 		const pinKey = arduino.getPinMapping(block, "SERVO_PIN");
 		const servoAngle =

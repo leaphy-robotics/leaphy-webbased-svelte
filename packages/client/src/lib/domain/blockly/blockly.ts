@@ -236,7 +236,6 @@ function registerDynamicCategories(
 				label.addEventListener(
 					"click",
 					() => {
-						console.log("click");
 						if (expanded.has(i)) {
 							expanded.delete(i);
 						} else {
