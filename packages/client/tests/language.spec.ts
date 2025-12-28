@@ -26,7 +26,7 @@ test("Language", async ({ page }) => {
 	await page.getByRole("button", { name: "Annuleer" }).click();
 
 	// Prevent it from opening a popup requesting the port, act as if nothing gets selected
-	await page.evaluate("navigator.serial.requestPort = function() {}");
+	await page.evaluate("navigator.serial.requestPort = async function() {}");
 	await page.getByRole("button", { name: "Upload naar robot" }).click();
 	await page.getByRole("button", { name: "Ik begrijp het" }).click();
 });
