@@ -78,6 +78,7 @@ onDestroy(() => {
         color: var(--on-primary);
         display: flex;
 		padding: 5px;
+		border-radius: 10px 10px 0 0;
     }
 
 	.actions {

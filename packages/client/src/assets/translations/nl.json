@@ -158,6 +158,8 @@
 	"TEST_MODE_SELECT": "Selecteer hieronder een opdracht",
 	"NO_PARTICIPANTS": "Geen deelnemers, vraag je docent om deze aan te maken",
 	"TUTORIALS": "Tutorials",
+	"TUTORIALS_DESCRIPTION": "Leer hoe je je robot kunt programmeren en bouwen.",
+	"SEE_ALL": "Zie alles",
 	"CONFIRMSUBMIT_TITLE": "Weet je het zeker?",
 	"CONFIRMSUBMIT_MESSAGE": "Hierna kan je deze opdracht niet opnieuw inleveren",
 	"SUBMIT": "Inleveren",
@@ -218,6 +220,8 @@
 	"PREVIOUS": "Vorige",
 	"NEXT": "Volgende",
 	"CIRCUIT": "Circuit",
+	"CIRCUIT_DESCRIPTION": "Dit circuit is gebaseerd op de blokken die je in je programma hebt gebruikt.",
+	"HELP_TOOLS": "Hulpmiddelen",
 	"NO_PROGRAM": "Geen programma",
 	"NO_PROGRAM_MESSAGE": "We konden geen programma vinden op je robot",
 	"LOADING_ROBOT": "Robot laden...",
@@ -263,6 +267,8 @@
 
 	"STILL_STUCK": "Niet gelukt?",
 	"SOLVER": "Hulp robot",
+	"SOLVER_DESCRIPTION": "Ben je vastgelopen? Vraag onze AI assistent om hulp bij het vinden van de oplossing voor je probleem.",
+	"ASK": "Vraag",
 	"OTHER_ANSWER": "Iets anders...",
 	"SUBMIT_OTHER_ANSWER": "Verstuur",
 	"THINKING": "Denken..."

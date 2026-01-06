@@ -1,211 +1,371 @@
-import leaphyOriginal from "$assets/robots/icons/l_original.svg";
+import leaphyStarling from "$assets/robots/icons/l_starling.svg";
 import assembly from "./assembly.svg";
 import code from "./code.svg";
 import ultrasonic from "./ultrasonic.svg";
 
-export type Translation<Type = string> = Record<string, Type>;
-export type Video = Translation<string | [string, string][]>;
-
 export interface TutorialItem {
-	name: Translation;
-	icon: string;
-	video: Video;
+	name: string;
+	video: string;
 }
 
 export interface Tutorial {
-	name: Translation;
-	icon: string;
-	item: TutorialItem[] | Video;
+	name: string;
+	item: TutorialItem[] | string;
 }
 
-const tutorials: Tutorial[] = [
+const dutchTutorials: Tutorial[] = [
 	{
-		name: {
-			en: "Leaphy Starling",
-			nl: "Leaphy Starling",
-		},
-		icon: leaphyOriginal,
-		item: {
-			en: [
-				["QIsnMN-IATU", "1 Leaphy Starling Attaching the motors"],
-				["s8yRqKDul_8", "2 Leaphy Starling: Attaching the wheels"],
-				["2dZxQjRrduA", "3 Leaphy Starling Attaching the frame"],
-				["RRuu02SJltk", "4 Leaphy Starling Attaching electronics"],
-				["iemkOL-RHPI", "5 Leaphy Starling Battery holder"],
-				["gEqgtBcTwEM", "6 Leaphy Starling Attaching the computer"],
-				["fkbP0jFy8lo", "7 Leaphy Starling Ultrasonic sensor"],
-				["rifI-YBHXQ8", "8 Leaphy Starling Light sensors"],
-				["ckpt6lIJDd8", "9 Leaphy Starling Line sensors"],
-				["RMLfb_DT9Xw", "10 Leaphy Starling RGB Light"],
-				["TcafgW-mHa0", "11 Leaphy Starling Wiring the electronics"],
-			],
-			nl: [
-				["dSjeNtmFMF8", "Stap 1 Bouwen Leaphy Starling: Motoren vastzetten"],
-				["vj7QEjyS5is", "Stap 2 Bouwen Leaphy Starling: Wielen vastzetten"],
-				["SYgxEHDTl6o", "Stap 3 Bouwen Leaphy Starling: Frame vastzetten"],
-				[
-					"JqjtGiUV-DM",
-					"Stap 4 Bouwen Leaphy Starling: Elektronica vastzetten",
-				],
-				[
-					"CUiXgtLRnP8",
-					"Stap 5 Bouwen Leaphy Starling: Batterijhouder vastzetten",
-				],
-				["PKirp8oF_90", "Stap 6 Bouwen Leaphy Starling: Computer vastzetten"],
-				[
-					"HJABnvbLBnY",
-					"Stap 7 Bouwen Leaphy Starling: Ultrasone sensor vastzetten",
-				],
-				[
-					"uu5IbabW32E",
-					"Stap 8 Bouwen Leaphy Starling: Lichtsensoren vastzetten",
-				],
-				[
-					"nSRSzP814hU",
-					"Stap 9 Bouwen Leaphy Starling: Lijnvolg sensoren vastzetten",
-				],
-				[
-					"_NlqZXUzr2o",
-					"Stap 10 Bouwen Leaphy Starling: RGB lampje vastzetten",
-				],
-				[
-					"SYbJA4ns4Nk",
-					"Stap 11 Bouwen Leaphy Starling: Elektronica aansluiten",
-				],
-			],
-		},
-	},
-	{
-		name: {
-			en: "Leaphy Original",
-			nl: "Leaphy Original",
-		},
-		icon: leaphyOriginal,
+		name: "Bouwen Leaphy Starling",
 		item: [
 			{
-				name: {
-					en: "Assembly",
-					nl: "Bouwen",
-				},
-				icon: assembly,
-				video: {
-					en: [
-						["iEsCwRMnMsQ", "1 Leaphy Original: Attaching the motors"],
-						["_Gx1kIgLb1I", "2 Leaphy original: Connecting the wheels"],
-						["6Q5d7S2GCYs", "3 Leaphy original Putting the frame together"],
-						["2sagwNvQjdo", "4 Leaphy original: Attaching the battery holder"],
-						["B5suiqBWRRg", "5 Leaphy original: Connecting the shield"],
-						[
-							"7loksPLC7QQ",
-							"6 Leaphy original Attaching the motors to the motor shield",
-						],
-						[
-							"K8tbY7eQPkY",
-							"7 Leaphy original Connecting the batteryholder to the shield",
-						],
-						["X-UvbuvaY20", "8 Leaphy original Attaching the line followers"],
-						["6FPQu1tWPSw", "9 Leaphy original Attaching the light sensors"],
-						["BNiXYCcDOPg", "10 Leaphy original Connecting the RGB Led"],
-						["UO7T408jqek", "11 Leaphy original Connecting the nano computer"],
-						[
-							"nD4VvTaSwQM",
-							"12 Leaphy original Connecting the ultrasonic sensor",
-						],
-						["XkOlXtpx_uc", "13 Leaphy original Connecting the tail key"],
-					],
-					nl: [
-						[
-							"NEyQ7lier5c",
-							"Stap 1 Bouwfilm Leaphy Original: Motoren vastzetten",
-						],
-						[
-							"bNMsulixuoI",
-							"Stap 2 Bouwfilm Leaphy Original: Wielen vastzetten",
-						],
-						[
-							"HKH1tyzhbNg",
-							"Stap 3 Bouwfilm Leaphy original: Frame vastzetten",
-						],
-						[
-							"Dzq1hGwKKak",
-							"Stap 4 Bouwfilm Leaphy original: Batterijhouder vastzetten",
-						],
-						[
-							"D9rMlIijiLo",
-							"Stap 5 Bouwfilm Leaphy original: Shield vastzetten",
-						],
-						[
-							"72W1hptz_jw",
-							"stap 6 Bouwfilm Leaphy original: Motoren aan shield vastzetten",
-						],
-						[
-							"yrcl0tNjw58",
-							"Stap 7 Bouwfilms Leaphy original: Batterijhouder aansluiten",
-						],
-						[
-							"c5N1zgcTRgM",
-							"Stap 8 Bouwfilm Leaphy original: lijnvolgers aansluiten",
-						],
-						[
-							"hhZAGPMuHA4",
-							"Stap 9 Bouwfilm Leaphy original: lichtsensoren aansluiten",
-						],
-						[
-							"OPW8b0nsUlo",
-							"Stap 11 Bouwfilm Leaphy original: Nano aansluiten",
-						],
-						[
-							"v5ClmiOS_mg",
-							"Stap 12 Bouwfilm Leaphy original: ultrasoon aansluiten",
-						],
-						[
-							"a9w-0J9rMWk",
-							"Stap 13 Bouwfilm Leaphy original: staartsleutel vastzetten",
-						],
-						[
-							"Hu_KEU5HLvM",
-							"Stap 10 Bouwfilm Leaphy original: RGB Led aansluiten",
-						],
-					],
-				},
+			  "name": "Stap 1 Vastzetten van de motoren",
+			  "video": "dSjeNtmFMF8"
 			},
 			{
-				name: {
-					en: "Programming",
-					nl: "Programmeren",
-				},
-				icon: code,
-				video: {
-					nl: [
-						[
-							"i14O2vfNH30",
-							"Level 1 introductie in het werken met Leaphy Easybloqs",
-						],
-						[
-							"nLx8vUwj3uI",
-							"Level 2 Leaphy original De ultrasoon sensor: afstandsensor",
-						],
-						["-7Zrcv3Kx8E", "Level 2 Leaphy original Motorcontrole"],
-						["3M6XOGd23dA", "Level 3 Leaphy original Kleurendobbelsteen"],
-						["A8fOjkVgmRo", "Level 3 Leaphy original Kleurengolf"],
-						["hIDFF1fDAvU", "Level 4 Leaphy original Lijnvolgen"],
-						["EdPc2vf30E4", "Level 5 Leaphy original Lichtsensoren"],
-					],
-				},
+			  "name": "Stap 2 Vastzetten van de wielen",
+			  "video": "vj7QEjyS5is"
 			},
-		],
+			{
+			  "name": "Stap 3 Vastzetten van het frame",
+			  "video": "SYgxEHDTl6o"
+			},
+			{
+			  "name": "Stap 4 Vastzetten van de electronica",
+			  "video": "JqjtGiUV-DM"
+			},
+			{
+			  "name": "Stap 5 Vastzetten batterijhouder",
+			  "video": "CUiXgtLRnP8"
+			},
+			{
+			  "name": "Stap 6 Vastzetten computer",
+			  "video": "PKirp8oF_90"
+			},
+			{
+			  "name": "Stap 7 Vastzetten Ultrasoon",
+			  "video": "HJABnvbLBnY"
+			},
+			{
+			  "name": "Stap 8 Vastzetten Lichtsensoren",
+			  "video": "uu5IbabW32E"
+			},
+			{
+			  "name": "Stap 9 Vastzetten Lijnvolg sensoren",
+			  "video": "nSRSzP814hU"
+			},
+			{
+			  "name": "Stap 10 Vastzetten RGB lampje",
+			  "video": "_NlqZXUzr2o"
+			},
+			{
+			  "name": "Stap 11 Electronica aansluiten",
+			  "video": "SYbJA4ns4Nk"
+			}
+		  ]
 	},
 	{
-		name: {
-			en: "",
-			nl: "Ultrasonic sensor",
-		},
-		icon: ultrasonic,
-		item: {
-			en: "",
-			nl: "M-JJJRqTm9E",
-		},
+		name: "Inleiding Leaphy Tutorials",
+		item: "SdzdW9EWqyc"
 	},
-];
+	{
+		name: "Inleiding Leaphy Murphy en Delphy shield",
+		item: "bL2trk9mF6k"
+	},
+	{
+		name: "Batterijen aansluiten",
+		item: "J3ScoQvmhpo"
+	},
+	{
+		name: "Verschillende leds",
+		item: "hXcgCz6p-HM"
+	},
+	{
+		name: "I2C sensor module",
+		item: [
+			{ name: "Deel 1", video: "lQzemlhglYI" },
+			{ name: "Deel 2", video: "NBErZmx3CRE" }
+		]
+	},
+	{
+		name: "Ultrasoon sensor",
+		item: [
+			{ name: "Aansluiten", video: "i0KzLXeMB1A" },
+			{ name: "Programmeren", video: "M-JJJRqTm9E" }
+		]
+	},
+	{
+		name: "Licht sensor",
+		item: [
+			{ name: "Aansluiten", video: "5gEUPiqRRkM" },
+			{ name: "Programmeren", video: "q6Ka22fL2SI" }
+		]
+	},
+	{
+		name: "ToF sensor",
+		item: [
+			{ name: "Aansluiten", video: "RwBL6jCwtSA" },
+			{ name: "Programmeren", video: "AREtgakBQi0" }
+		]
+	},
+	{
+		name: "Infrarood sensor",
+		item: [
+			{ name: "Aansluiten", video: "EZ_5YhDqyZ4" },
+			{ name: "Programmeren", video: "d4P5zveR40c" }
+		]
+	},
+	{
+		name: "Omgevings sensor",
+		item: [
+			{ name: "Aansluiten", video: "sGbY752LYiw" },
+			{ name: "Programmeren", video: "TkC34jBwEOQ" }
+		]
+	},
+	{
+		name: "Luchtdruksensor",
+		item: [
+			{ name: "Aansluiten", video: "JBUfu9tSwkQ" },
+			{ name: "Programmeren", video: "LfW9TELp98g" }
+		]
+	},
+	{
+		name: "Piezo",
+		item: [
+			{ name: "Aansluiten", video: "PWYcKRQuvPw" },
+			{ name: "Programmeren", video: "g5ZRA17VS0o" }
+		]
+	},
+	{
+		name: "Gas sensor",
+		item: [
+			{ name: "Aansluiten", video: "GqMfyBV8LS0" },
+			{ name: "Programmeren", video: "vpGSoVq7pZo" }
+		]
+	},
+	{
+		name: "RGB Led",
+		item: [
+			{ name: "Aansluiten", video: "bqGnmGiuqyc" },
+			{ name: "Programmeren", video: "SJbBohi2DiI" }
+		]
+	},
+	{
+		name: "Eenkleurige leds",
+		item: [
+			{ name: "Aansluiten", video: "5TPv7Js9gRI" },
+			{ name: "Programmeren", video: "ceSBvmX9E0w" }
+		]
+	},
+	{
+		name: "TT motoren",
+		item: [
+			{ name: "Aansluiten", video: "adpjVscMvoA" },
+			{ name: "Programmeren", video: "7STdA0hRdPE" }
+		]
+	},
+	{
+		name: "Servomotor",
+		item: [
+			{ name: "Aansluiten", video: "mz-Aphg6hDA" },
+			{ name: "Programmeren", video: "SHMB_gmdUcw" }
+		]
+	},
+	{
+		name: "Roterende servo",
+		item: [
+			{ name: "Aansluiten", video: "I4fnZHUKC-w" },
+			{ name: "Programmeren", video: "SZ-zESdLZko" }
+		]
+	},
+	{
+		name: "Segment display",
+		item: [
+			{ name: "Aansluiten", video: "s94HaiBN1K0" },
+			{ name: "Programmeren", video: "vy1nFlVI9W4" }
+		]
+	},
+	{
+		name: "Oled display",
+		item: [
+			{ name: "Aansluiten", video: "8ffNLIf1Q1c" },
+			{ name: "Programmeren", video: "guwc5vM6V_A" }
+		]
+	},
+	{
+		name: "Potmeter",
+		item: [
+			{ name: "Aansluiten", video: "lvxsBR7RlmI" },
+			{ name: "Programmeren", video: "x32cxqokdhw" }
+		]
+	},
+	{
+		name: "Ledstrip en ledring",
+		item: [
+			{ name: "Aansluiten", video: "8BKNvGC37TM" },
+			{ name: "Programmeren", video: "Ob6oM7IqW14" }
+		]
+	},
+	{
+		name: "Led matrix",
+		item: [
+			{ name: "Aansluiten", video: "lvxjHwb_fYA" },
+			{ name: "Programmeren", video: "yJfdw-i0Who" }
+		]
+	},
+	{
+		name: "Speaker",
+		item: [
+			{ name: "Aansluiten", video: "2C1fhRZbXa4" },
+			{ name: "Programmeren", video: "6y_sxQHf3dY" }
+		]
+	}
+]
 
-export default tutorials;
+const englishTutorials: Tutorial[] = [
+	{
+		name: "Building Leaphy Starling",
+		item: [
+			{
+			  "name": "Step 1. Attaching the motors",
+			  "video": "QIsnMN-IATU"
+			},
+			{
+			  "name": "Step 2. Connecting the wheels",
+			  "video": "s8yRqKDul_8"
+			},
+			{
+			  "name": "Step 3. Putting the frame together",
+			  "video": "2dZxQjRrduA"
+			},
+			{
+			  "name": "Step 4. Attaching the shield",
+			  "video": "RRuu02SJltk"
+			},
+			{
+			  "name": "Step 5.Connecting battery holder",
+			  "video": "iemkOL-RHPI"
+			},
+			{
+			  "name": "Step 6.Attaching the nano computer",
+			  "video": "gEqgtBcTwEM"
+			},
+			{
+			  "name": "Step 7. Connecting the ultrasonic sensor",
+			  "video": "fkbP0jFy8lo"
+			},
+			{
+			  "name": "Step 8. Attaching the light sensors",
+			  "video": "rifI-YBHXQ8"
+			},
+			{
+			  "name": "Step 9. Attaching the line sensors",
+			  "video": "ckpt6lIJDd8"
+			},
+			{
+			  "name": "Step 10. Connecting the RGB led",
+			  "video": "RMLfb_DT9Xw"
+			},
+			{
+			  "name": "Step 11. Wiring the electronics",
+			  "video": "TcafgW-mHa0"
+			}
+		  ]
+	},
+	{
+		name: "Introduction Leaphy Tutorials",
+		item: "lWkcd9BDqmQ"
+	},
+	{
+		name: "Leaphy Murphy and Delphy shield",
+		item: "jeVymmo7Fs8"
+	},
+	{
+		name: "How to use the pins on Leaphy shield",
+		item: "lfd18TopY3w"
+	},
+	{
+		name: "Batteries and power",
+		item: "BmmOLhmYrs4"
+	},
+	{
+		name: "I2C sensor module",
+		item: "5s__7xrt-No"
+	},
+	{
+		name: "Ultrasonic sensor",
+		item: "3E49_uxERUo"
+	},
+	{
+		name: "Light sensor",
+		item: "mUZQ5ppuU3E"
+	},
+	{
+		name: "ToF sensor",
+		item: "CHcwRMOR7n8"
+	},
+	{
+		name: "Infrared sensor",
+		item: "4SdIcDCtioQ"
+	},
+	{
+		name: "Ambient light sensor",
+		item: "TKshAWKj4dA"
+	},
+	{
+		name: "Barometer",
+		item: "Odg0B8bvNMg"
+	},
+	{
+		name: "Different types of leds",
+		item: "AY5vHEwLUcM"
+	},
+	{
+		name: "TT motors",
+		item: "uEGQN5YPtSI"
+	},
+	{
+		name: "Servo motors",
+		item: "B0Tum9k9ZD0"
+	},
+	{
+		name: "Rotating servo motor",
+		item: "nMEB9Pkavwo"
+	},
+	{
+		name: "Single leds",
+		item: "b1PwN82DG7E"
+	},
+	{
+		name: "Segment display",
+		item: "TEHs2Yu1d-U"
+	},
+	{
+		name: "Oled display",
+		item: "o7auKZpVmc8"
+	},
+	{
+		name: "RGB led",
+		item: "YHYZTJ_YzP0"
+	},
+	{
+		name: "Potmeter",
+		item: "aGii_f0RDLk"
+	},
+	{
+		name: "Multiple leds",
+		item: "ogTVaCl_f-Y"
+	},
+	{
+		name: "Led matrix",
+		item: "Go8jqVs3zGc"
+	},
+	{
+		name: "Speaker",
+		item: "NLLHL0l8LPk"
+	}
+]
+
+export default {
+	nl: dutchTutorials,
+	en: englishTutorials,
+}
