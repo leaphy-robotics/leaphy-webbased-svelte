@@ -15,6 +15,7 @@ import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faBook,
+	faChalkboardTeacher,
 	faCode,
 	faLightbulb,
 	faSquarePollHorizontal,
@@ -60,6 +61,11 @@ function openTutorials() {
 		component: Tutorials,
 		data: {},
 		allowInteraction: true,
+		allowOverflow: true,
+		position: {
+			x: (window.innerWidth / 2) - 320,
+			y: (window.innerHeight / 2) - 210,
+		},
 	});
 }
 </script>
@@ -77,8 +83,11 @@ function openTutorials() {
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
 			{/if}
-			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [RobotType.L_STARLING])}
+			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [RobotType.L_STARLING, RobotType.L_NANO])}
 				<SideButton icon={faLightbulb} action="HELP_TOOLS" onclick={openDashboard} />
+			{/if}
+			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [...robotsGroups.ALL, -RobotType.L_STARLING, -RobotType.L_NANO])}
+				<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />
 			{/if}
 		</SideBar>
         {#if WorkspaceState.SidePanel}

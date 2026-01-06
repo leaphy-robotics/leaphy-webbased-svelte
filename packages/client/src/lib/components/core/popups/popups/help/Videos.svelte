@@ -1,8 +1,5 @@
 <script lang="ts">
-    import tutorials, {
-        type Tutorial,
-        type TutorialItem,
-    } from "$education/tutorials";
+    import { getTutorials, type Tutorial } from "$education/tutorials";
     import { _, locale } from "svelte-i18n";
     import { faPlay, faList, faVideo } from "@fortawesome/free-solid-svg-icons";
     import FontAwesomeIcon from "svelte-fa";
@@ -11,6 +8,7 @@
     import Tutorials from "../tutorials/Tutorials.svelte";
     import { getContext } from "svelte";
     import { type PopupState } from "$state/popup.svelte";
+    import WorkspaceState from "$state/workspace.svelte";
 
     let popupState = getContext<PopupState>("state");
 
@@ -30,7 +28,7 @@
 </script>
 
 <div class="tutorials">
-    {#each tutorials[$locale] as tutorial}
+    {#each getTutorials($locale, WorkspaceState.robot) as tutorial}
         <div class="tutorial">
             <Thumbnail name={tutorial.name} item={tutorial.item} onclick={() => openTutorial(tutorial)} />
         </div>

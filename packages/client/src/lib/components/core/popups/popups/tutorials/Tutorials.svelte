@@ -1,8 +1,6 @@
 <script lang="ts">
 import Windowed from "$components/core/popups/Windowed.svelte";
-import tutorials, {
-	type TutorialItem,
-} from "$education/tutorials";
+import { getTutorials, type TutorialItem } from "$education/tutorials";
 import { _, locale } from "svelte-i18n";
 	import Thumbnail from "./Thumbnail.svelte";
 	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -10,6 +8,7 @@ import { _, locale } from "svelte-i18n";
 	import FontAwesomeIcon from "svelte-fa";
 	import { onMount } from "svelte";
 	import type { Tutorial } from "$education/tutorials";
+	import WorkspaceState from "$state/workspace.svelte";
 
 	let tutorial = $state<Tutorial | null>(null);
 		let playlist = $derived(Array.isArray(tutorial?.item) ? tutorial?.item : null);
@@ -65,7 +64,7 @@ function previous() {
 	<div class="content">
 		{#if !video}
 			<div class="grid">
-				{#each tutorials[$locale] as tutorial}
+				{#each getTutorials($locale, WorkspaceState.robot) as tutorial}
 					<Thumbnail name={tutorial.name} item={tutorial.item} onclick={() => setTutorial(tutorial)} />
 				{/each}
 			</div>
