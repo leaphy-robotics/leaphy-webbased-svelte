@@ -53,9 +53,9 @@ $effect(() => {
 
 onMount(async () => {
 	// Render block to svg
-	arduino.clearBuilder();
+	arduino.createSchemaBuilder();
 	arduino.forBlock[AIState.block.type](AIState.block, arduino);
-	if (arduino.builder.components.length > 1) {
+	if (arduino.builder && arduino.builder.components.length > 1) {
 		await layoutComponents(circuitCanvas, arduino.builder);
 		showCircuit = true;
 	}

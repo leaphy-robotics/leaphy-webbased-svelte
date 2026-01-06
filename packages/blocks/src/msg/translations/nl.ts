@@ -14,9 +14,9 @@ messages.ARD_SERVO_ARM_WRITE = "Servo Arm";
 messages.ARD_SERVO_WRITE = "Servo";
 messages.ARD_SERVO_WRITE_DEG_180 = "°";
 messages.ARD_SERVO_WRITE_TO = "op";
-messages.ARD_TIME_DELAY = "duurt";
-messages.ARD_TIME_DELAY_TIP = "Wacht het gespecificeerde aantal milliseconden";
-messages.ARD_TIME_MS = "ms"; // untranslated
+messages.ARD_TIME_DELAY = "Wacht";
+messages.ARD_TIME_DELAY_TIP =
+	"Wacht het gespecificeerde aantal milli/microseconden";
 messages.ARD_WRITE_TO = "op";
 messages.CANNOT_DELETE_VARIABLE_PROCEDURE =
 	'De variabele "%1" kan niet verwijderd worden omdat die onderdeel uitmaakt van de definitie van de functie "%2"';
