@@ -1,42 +1,47 @@
 <script lang="ts">
-    import { _ } from "svelte-i18n";
-    import Windowed from "../../Windowed.svelte";
-    import Circuit from "./Circuit.svelte";
-    import Container from "./Container.svelte";
-    import { faProjectDiagram, faRobot, faBook, faMessage } from "@fortawesome/free-solid-svg-icons";
-    import { faList } from "@fortawesome/free-solid-svg-icons";
-    import Button from "$components/ui/Button.svelte";
-    import Videos from "./Videos.svelte";
-    import PopupsState, { type PopupState} from "$state/popup.svelte";
-    import { getContext } from "svelte";
-    import Solver from "../solver/Solver.svelte";
-    import Tutorials from "../tutorials/Tutorials.svelte";
+import Button from "$components/ui/Button.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
+import {
+	faBook,
+	faMessage,
+	faProjectDiagram,
+	faRobot,
+} from "@fortawesome/free-solid-svg-icons";
+import { faList } from "@fortawesome/free-solid-svg-icons";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
+import Windowed from "../../Windowed.svelte";
+import Solver from "../solver/Solver.svelte";
+import Tutorials from "../tutorials/Tutorials.svelte";
+import Circuit from "./Circuit.svelte";
+import Container from "./Container.svelte";
+import Videos from "./Videos.svelte";
 
-    let popupState = getContext<PopupState>("state");
+let popupState = getContext<PopupState>("state");
 
-    function openSolver() {
-        PopupsState.open({
-            component: Solver,
-            data: {},
-            allowInteraction: true,
-        });
-        popupState.close();
-    }
+function openSolver() {
+	PopupsState.open({
+		component: Solver,
+		data: {},
+		allowInteraction: true,
+	});
+	popupState.close();
+}
 
-    function openTutorials() {
-        PopupsState.open({
-            component: Tutorials,
-            data: {},
-            allowInteraction: true,
-            allowOverflow: true,
-            position: {
-                x: (window.innerWidth / 2) - 320,
-                y: (window.innerHeight / 2) - 210,
-            },
-        });
-        popupState.close();
-    }
-    </script>
+function openTutorials() {
+	PopupsState.open({
+		component: Tutorials,
+		data: {},
+		allowInteraction: true,
+		allowOverflow: true,
+		position: {
+			x: window.innerWidth / 2 - 320,
+			y: window.innerHeight / 2 - 210,
+		},
+	});
+	popupState.close();
+}
+</script>
     
     <Windowed title={$_("HELP_TOOLS")}>
         <div class="content">

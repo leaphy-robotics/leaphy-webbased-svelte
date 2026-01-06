@@ -1,21 +1,21 @@
 <script lang="ts">
-    import { faPlay, faVideo, faList } from "@fortawesome/free-solid-svg-icons";
-    import FontAwesomeIcon from "svelte-fa";
-    import type { TutorialItem } from "$education/tutorials";
+import type { TutorialItem } from "$education/tutorials";
+import { faList, faPlay, faVideo } from "@fortawesome/free-solid-svg-icons";
+import FontAwesomeIcon from "svelte-fa";
 
-    interface Props {
-        name: string;
-        item: TutorialItem[] | string;
-        onclick: () => void;
-    }
-    let { name, item, onclick }: Props = $props();
+interface Props {
+	name: string;
+	item: TutorialItem[] | string;
+	onclick: () => void;
+}
+let { name, item, onclick }: Props = $props();
 
-    function getThumbnail(item: TutorialItem[] | string) {
-        if (typeof item === "string") {
-            return `https://img.youtube.com/vi/${item}/0.jpg`;
-        }
-        return `https://img.youtube.com/vi/${item[0].video}/0.jpg`;
-    }
+function getThumbnail(item: TutorialItem[] | string) {
+	if (typeof item === "string") {
+		return `https://img.youtube.com/vi/${item}/0.jpg`;
+	}
+	return `https://img.youtube.com/vi/${item[0].video}/0.jpg`;
+}
 </script>
 
 <div class="tutorial" onclick={onclick}>

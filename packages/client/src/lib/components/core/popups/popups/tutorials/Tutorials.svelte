@@ -1,30 +1,30 @@
 <script lang="ts">
 import Windowed from "$components/core/popups/Windowed.svelte";
-import { getTutorials, type TutorialItem } from "$education/tutorials";
+import { type TutorialItem, getTutorials } from "$education/tutorials";
+import type { Tutorial } from "$education/tutorials";
+import WorkspaceState from "$state/workspace.svelte";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { onMount } from "svelte";
+import FontAwesomeIcon from "svelte-fa";
 import { _, locale } from "svelte-i18n";
-	import Thumbnail from "./Thumbnail.svelte";
-	import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-	import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-	import FontAwesomeIcon from "svelte-fa";
-	import { onMount } from "svelte";
-	import type { Tutorial } from "$education/tutorials";
-	import WorkspaceState from "$state/workspace.svelte";
+import Thumbnail from "./Thumbnail.svelte";
 
-	let tutorial = $state<Tutorial | null>(null);
-		let playlist = $derived(Array.isArray(tutorial?.item) ? tutorial?.item : null);
-let currentItem = $derived(playlist?.find(item => item.video === video));
+let tutorial = $state<Tutorial | null>(null);
+let playlist = $derived(Array.isArray(tutorial?.item) ? tutorial?.item : null);
+let currentItem = $derived(playlist?.find((item) => item.video === video));
 let video = $state<string>();
 
-	interface Props {
-		initialTutorial?: Tutorial;
-	}
-	let { initialTutorial }: Props = $props();
+interface Props {
+	initialTutorial?: Tutorial;
+}
+let { initialTutorial }: Props = $props();
 
-	onMount(() => {
-		if (initialTutorial) {
-			setTutorial(initialTutorial);
-		}
-	});
+onMount(() => {
+	if (initialTutorial) {
+		setTutorial(initialTutorial);
+	}
+});
 
 function setTutorial(item: Tutorial) {
 	tutorial = item;

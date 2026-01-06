@@ -1,30 +1,30 @@
 <script lang="ts">
-    import { getTutorials, type Tutorial } from "$education/tutorials";
-    import { _, locale } from "svelte-i18n";
-    import { faPlay, faList, faVideo } from "@fortawesome/free-solid-svg-icons";
-    import FontAwesomeIcon from "svelte-fa";
-    import Thumbnail from "../tutorials/Thumbnail.svelte";
-    import PopupsState, { Anchor } from "$state/popup.svelte";
-    import Tutorials from "../tutorials/Tutorials.svelte";
-    import { getContext } from "svelte";
-    import { type PopupState } from "$state/popup.svelte";
-    import WorkspaceState from "$state/workspace.svelte";
+import { type Tutorial, getTutorials } from "$education/tutorials";
+import PopupsState, { Anchor } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+import { faList, faPlay, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { getContext } from "svelte";
+import FontAwesomeIcon from "svelte-fa";
+import { _, locale } from "svelte-i18n";
+import Thumbnail from "../tutorials/Thumbnail.svelte";
+import Tutorials from "../tutorials/Tutorials.svelte";
 
-    let popupState = getContext<PopupState>("state");
+let popupState = getContext<PopupState>("state");
 
-    function openTutorial(tutorial: Tutorial) {
-        PopupsState.open({
-            component: Tutorials,
-            data: { initialTutorial: tutorial },
-            allowInteraction: true,
-            allowOverflow: true,
-            position: {
-                x: (window.innerWidth / 2) - 320,
-                y: (window.innerHeight / 2) - 210,
-            },
-        });
-        popupState.close();
-    }
+function openTutorial(tutorial: Tutorial) {
+	PopupsState.open({
+		component: Tutorials,
+		data: { initialTutorial: tutorial },
+		allowInteraction: true,
+		allowOverflow: true,
+		position: {
+			x: window.innerWidth / 2 - 320,
+			y: window.innerHeight / 2 - 210,
+		},
+	});
+	popupState.close();
+}
 </script>
 
 <div class="tutorials">

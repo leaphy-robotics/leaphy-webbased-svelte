@@ -1,34 +1,34 @@
 <script lang="ts">
-    import { track } from "$state/utils";
-    import WorkspaceState from "$state/workspace.svelte";
-	import { faMagnifyingGlassPlus } from "@fortawesome/free-solid-svg-icons";
-    import { arduino } from "@leaphy-robotics/leaphy-blocks";
-    import { layoutComponents } from "@leaphy-robotics/schemas";
-	import Fa from "svelte-fa";
-	import PopupsState, { type PopupState } from "$state/popup.svelte";
-	import { getContext } from "svelte";
-	import Circuit from "../Circuit.svelte";
-	import { _ } from "svelte-i18n";
-    
-    let popupState = getContext<PopupState>("state");
+import PopupsState, { type PopupState } from "$state/popup.svelte";
+import { track } from "$state/utils";
+import WorkspaceState from "$state/workspace.svelte";
+import { faMagnifyingGlassPlus } from "@fortawesome/free-solid-svg-icons";
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import { layoutComponents } from "@leaphy-robotics/schemas";
+import { getContext } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
+import Circuit from "../Circuit.svelte";
 
-    const canvas = document.createElement("canvas");
-    let image = $state<string>();
-    $effect(() => {
-        track(WorkspaceState.code);
-        layoutComponents(canvas, arduino.builder).then(() => {
-            image = canvas.toDataURL();
-        });
-    });
+let popupState = getContext<PopupState>("state");
 
-    function zoomIn() {
-        PopupsState.open({
-            component: Circuit,
-            data: {},
-            allowInteraction: true,
-        });
-        popupState.close();
-    }
+const canvas = document.createElement("canvas");
+let image = $state<string>();
+$effect(() => {
+	track(WorkspaceState.code);
+	layoutComponents(canvas, arduino.builder).then(() => {
+		image = canvas.toDataURL();
+	});
+});
+
+function zoomIn() {
+	PopupsState.open({
+		component: Circuit,
+		data: {},
+		allowInteraction: true,
+	});
+	popupState.close();
+}
 </script>
 
 <div class="container">

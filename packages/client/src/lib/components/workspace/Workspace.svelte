@@ -2,8 +2,9 @@
 import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import PythonMonitor from "$components/core/popups/popups/PythonMonitor.svelte";
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
-import Tutorials from "$components/core/popups/popups/tutorials/Tutorials.svelte";
+import Dashboard from "$components/core/popups/popups/help/Dashboard.svelte";
 import Solver from "$components/core/popups/popups/solver/Solver.svelte";
+import Tutorials from "$components/core/popups/popups/tutorials/Tutorials.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
@@ -22,7 +23,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
-import Dashboard from "$components/core/popups/popups/help/Dashboard.svelte";
 
 function openSerial() {
 	PopupState.open({
@@ -63,8 +63,8 @@ function openTutorials() {
 		allowInteraction: true,
 		allowOverflow: true,
 		position: {
-			x: (window.innerWidth / 2) - 320,
-			y: (window.innerHeight / 2) - 210,
+			x: window.innerWidth / 2 - 320,
+			y: window.innerHeight / 2 - 210,
 		},
 	});
 }

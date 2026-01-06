@@ -18,11 +18,7 @@ const ALL = [
 	...L_ARDUINO_ALL,
 	...L_FLITZ_ALL,
 ];
-const ALL_BUT_FLITZ = [
-	...ALL,
-	-RobotType.L_FLITZ_UNO,
-	-RobotType.L_FLITZ_NANO,
-]
+const ALL_BUT_FLITZ = [...ALL, -RobotType.L_FLITZ_UNO, -RobotType.L_FLITZ_NANO];
 
 export default {
 	L_ARDUINO_NANO_ALL,
