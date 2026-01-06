@@ -97,7 +97,7 @@ async function connectUSB() {
             {#if error}
                 <code class="error-result">{error}</code>
             {/if}
-            {#if done}
+            {#if done || error}
                 <Button
                     name={$_("LEAVE_UPLOADING")}
                     mode={"primary"}
