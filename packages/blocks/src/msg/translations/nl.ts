@@ -14,7 +14,7 @@ messages.ARD_SERVO_ARM_WRITE = "Servo Arm";
 messages.ARD_SERVO_WRITE = "Servo";
 messages.ARD_SERVO_WRITE_DEG_180 = "°";
 messages.ARD_SERVO_WRITE_TO = "op";
-messages.ARD_TIME_DELAY = "Wacht";
+messages.ARD_TIME_DELAY = "Duurt";
 messages.ARD_TIME_DELAY_TIP =
 	"Wacht het gespecificeerde aantal milli/microseconden";
 messages.ARD_WRITE_TO = "op";
