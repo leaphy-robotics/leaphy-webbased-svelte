@@ -1,6 +1,6 @@
 import defaultCPP from "$assets/default-program.ino?raw";
 import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
-import flitzUnoBackground from "$assets/robots/backgrounds/flitz_uno.svg";
+
 import originalBackground from "$assets/robots/backgrounds/original.svg";
 import starlingBackground from "$assets/robots/backgrounds/starling.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
@@ -51,7 +51,6 @@ export enum PinMapping {
 	MEGA = 3,
 	MICROPYTHON = 4,
 }
-
 const baseUno = {
 	mapping: PinMapping.UNIFIED,
 	fqbn: "arduino:avr:uno",
@@ -81,14 +80,6 @@ const baseNanoRP2040 = {
 };
 
 const robotDevices: RobotDevice[] = [
-	{
-		...baseUno,
-		id: "l_flitz_uno",
-		type: RobotType.L_FLITZ_UNO,
-		name: "Flitz Uno",
-		icon: flitzIcon,
-		background: flitzUnoBackground,
-	},
 	{
 		...baseNano,
 		id: "l_flitz_nano",
@@ -172,16 +163,7 @@ export const robots: Robots = robotDevices.reduce((robots, robot) => {
 }, {} as Robots);
 
 export const robotListing: Robot[][] = [
-	[
-		{
-			id: "l_flitz_select",
-			name: "Leaphy Flitz",
-			icon: flitzIcon,
-			variants: [[robots.l_flitz_uno, robots.l_flitz_nano]],
-		},
-		robots.l_starling,
-		robots.l_original,
-	],
+	[robots.l_flitz_nano, robots.l_starling, robots.l_original],
 	[robots.l_nano, robots.l_uno, robots.l_mega],
 	[
 		{
@@ -214,12 +196,7 @@ export function getSelector(): Selector[] {
 			{
 				id: "leaphy",
 				name: "Leaphy",
-				robots: [
-					robots.l_flitz_uno,
-					robots.l_flitz_nano,
-					robots.l_original,
-					robots.l_starling,
-				],
+				robots: [robots.l_flitz_nano, robots.l_original, robots.l_starling],
 			},
 			{
 				id: "arduino",

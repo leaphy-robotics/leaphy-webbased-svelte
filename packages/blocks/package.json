@@ -1,4 +1,8 @@
 {
+	"name": "@leaphy-robotics/leaphy-blocks",
+	"version": "0.0.0",
+	"private": true,
+
 	"type": "module",
 	"main": "src/index.ts",
 	"scripts": {
@@ -28,7 +32,5 @@
 		"url": "https://github.com/leaphy-robotics/leaphy-blocks/issues"
 	},
 	"files": ["dist", "media"],
-	"version": "4.0.0",
-	"description": "Leaphy custom Blockly blocks and arduino code generator",
-	"name": "@leaphy-robotics/leaphy-blocks"
+	"description": "Leaphy custom Blockly blocks and arduino code generator"
 }
