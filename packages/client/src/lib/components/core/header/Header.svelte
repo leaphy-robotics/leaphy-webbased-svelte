@@ -49,6 +49,7 @@ import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
+import FirmwareFlash from "../popups/popups/FirmwareFlash.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
@@ -324,6 +325,14 @@ function runPython() {
 	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 
+function flashFirmware() {
+	PopupState.open({
+		component: FirmwareFlash,
+		data: {},
+		allowInteraction: false,
+	});
+}
+
 async function submit() {
 	const ok = await PopupState.open({
 		component: Warning,
@@ -472,6 +481,12 @@ async function openCircuitPopup() {
 						icon={faDownload}
 						name={$_("DOWNLOAD_DRIVERS")}
 						onclick={downloadDrivers}
+						{open}
+					/>
+					<ContextItem
+						icon={faDownload}
+						name={$_("FLASH_FIRMWARE")}
+						onclick={flashFirmware}
 						{open}
 					/>
 				{/snippet}
