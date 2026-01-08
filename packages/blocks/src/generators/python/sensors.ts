@@ -120,6 +120,20 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		);
 		return [`color_${active_channel}(${color_type})`, Order.ATOMIC];
 	};
+
+	python.forBlock.leaphy_dht22_read_temperature = (block, generator) => {
+		generator.addImport("leaphymicropython.sensors.dht22", "DHT22");
+		const pin = block.getFieldValue("PIN") || "D2";
+		generator.addDefinition(`dht22${pin}obj`, `dht22_${pin} = DHT22(${pin})`);
+		return [`dht22_${pin}.read_temperature()`, Order.FUNCTION_CALL];
+	};
+
+	python.forBlock.leaphy_dht22_read_humidity = (block, generator) => {
+		generator.addImport("leaphymicropython.sensors.dht22", "DHT22");
+		const pin = block.getFieldValue("PIN") || "D2";
+		generator.addDefinition(`dht22${pin}obj`, `dht22_${pin} = DHT22(${pin})`);
+		return [`dht22_${pin}.read_humidity()`, Order.FUNCTION_CALL];
+	};
 }
 
 export default getCodeGenerators;
