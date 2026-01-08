@@ -2,8 +2,9 @@
 import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import PythonMonitor from "$components/core/popups/popups/PythonMonitor.svelte";
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
-import Tutorials from "$components/core/popups/popups/Tutorials.svelte";
+import Dashboard from "$components/core/popups/popups/help/Dashboard.svelte";
 import Solver from "$components/core/popups/popups/solver/Solver.svelte";
+import Tutorials from "$components/core/popups/popups/tutorials/Tutorials.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
@@ -15,10 +16,9 @@ import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faBook,
-	faBrain,
 	faChalkboardTeacher,
 	faCode,
-	faDiagramProject,
+	faLightbulb,
 	faSquarePollHorizontal,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
@@ -48,9 +48,9 @@ function openCode() {
 	WorkspaceState.toggleSidePanel(Code);
 }
 
-function openCircuit() {
+function openDashboard() {
 	PopupState.open({
-		component: Circuit,
+		component: Dashboard,
 		data: {},
 		allowInteraction: true,
 	});
@@ -61,14 +61,11 @@ function openTutorials() {
 		component: Tutorials,
 		data: {},
 		allowInteraction: true,
-	});
-}
-
-function openSolver() {
-	PopupState.open({
-		component: Solver,
-		data: {},
-		allowInteraction: true,
+		allowOverflow: true,
+		position: {
+			x: window.innerWidth / 2 - 320,
+			y: window.innerHeight / 2 - 210,
+		},
 	});
 }
 </script>
@@ -86,14 +83,12 @@ function openSolver() {
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />
 			{/if}
-			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [RobotType.L_STARLING])}
-				<SideButton icon={faDiagramProject} action="CIRCUIT" onclick={openCircuit} />
-				<SideButton icon={faBrain} action="SOLVER" onclick={openSolver} />
+			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [RobotType.L_STARLING, RobotType.L_NANO])}
+				<SideButton icon={faLightbulb} action="HELP_TOOLS" onclick={openDashboard} />
 			{/if}
-			<!-- TODO: add all tutorials first -->
-			<!--{#if WorkspaceState.Mode === Mode.BLOCKS}-->
-			<!--	<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />-->
-			<!--{/if}-->
+			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [...robotsGroups.ALL, -RobotType.L_STARLING, -RobotType.L_NANO])}
+				<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />
+			{/if}
 		</SideBar>
         {#if WorkspaceState.SidePanel}
             <SidePanel />
