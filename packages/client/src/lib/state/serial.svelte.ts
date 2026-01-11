@@ -213,9 +213,6 @@ class SerialState {
 					case 0x0042: {
 						return robots.l_mega;
 					}
-					case 0x005e: {
-						return robots.l_nano_rp2040;
-					}
 				}
 				break;
 			}

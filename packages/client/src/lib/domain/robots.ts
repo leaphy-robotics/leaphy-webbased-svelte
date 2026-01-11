@@ -13,7 +13,6 @@ import starlingIcon from "$assets/robots/icons/l_starling.svg";
 import unoIcon from "$assets/robots/icons/l_uno.svg";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import DFU from "../programmers/DFU";
-import Pico from "../programmers/Pico";
 import STK500v1 from "../programmers/STK500v1/STK500v1";
 import STK500v2 from "../programmers/STK500v2";
 import { type Programmer, RobotType } from "./robots.types";
@@ -73,13 +72,6 @@ const baseNanoESP32 = {
 	board: "l_nano_esp32",
 };
 
-const baseNanoRP2040 = {
-	mapping: PinMapping.UNIFIED,
-	fqbn: "arduino:mbed_nano:nanorp2040connect",
-	programmer: new Pico(),
-	board: "l_nano_rp2040",
-};
-
 const robotDevices: RobotDevice[] = [
 	{
 		...baseUno,
@@ -125,13 +117,6 @@ const robotDevices: RobotDevice[] = [
 		id: "l_nano_esp32",
 		type: RobotType.L_NANO_ESP32,
 		name: "Arduino Nano ESP32",
-		icon: nanoIcon,
-	},
-	{
-		...baseNanoRP2040,
-		id: "l_nano_rp2040",
-		type: RobotType.L_NANO_RP2040,
-		name: "Arduino Nano RP2040",
 		icon: nanoIcon,
 	},
 	{
@@ -228,7 +213,6 @@ export function getSelector(): Selector[] {
 					robots.l_uno,
 					robots.l_nano,
 					robots.l_nano_esp32,
-					robots.l_nano_rp2040,
 					robots.l_mega,
 				],
 			},

@@ -82,9 +82,6 @@ importers:
       '@leaphy-robotics/leaphy-blocks':
         specifier: workspace:*
         version: link:../blocks
-      '@leaphy-robotics/picotool-wasm':
-        specifier: 1.0.3
-        version: 1.0.3
       '@leaphy-robotics/schemas':
         specifier: workspace:*
         version: link:../schemas
@@ -1483,9 +1480,6 @@ packages:
 
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
-
-  '@leaphy-robotics/picotool-wasm@1.0.3':
-    resolution: {integrity: sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==}
 
   '@leaphy-robotics/playwright-arduino@1.0.6':
     resolution: {integrity: sha512-L0UR8/6o1Gpo73CiQLsZqc3USYsSPv4h7rZ6pKGAGOnxzACpBh4SpOCpv2ipkvWQAVtifWbKFdlZjO0HFFP6Tw==}
@@ -5643,8 +5637,6 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.5
 
   '@kurkle/color@0.3.4': {}
-
-  '@leaphy-robotics/picotool-wasm@1.0.3': {}
 
   '@leaphy-robotics/playwright-arduino@1.0.6':
     dependencies:
