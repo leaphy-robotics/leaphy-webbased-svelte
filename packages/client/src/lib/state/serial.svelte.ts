@@ -148,7 +148,7 @@ class SerialState {
 
 			this.log.enqueue(value);
 		}
-		
+
 		// Clean up reader when stream ends
 		if (this.reader) {
 			try {
@@ -288,13 +288,16 @@ class SerialState {
 		this.reserved = true;
 
 		try {
-			await Promise.race([this.ready, new Promise((resolve) => setTimeout(resolve, 1000))]); // Prevent race condition: port.open not being complete
+			await Promise.race([
+				this.ready,
+				new Promise((resolve) => setTimeout(resolve, 1000)),
+			]); // Prevent race condition: port.open not being complete
 		} catch (e) {
 			console.error(e);
 		}
 
 		const serialPort = this.port;
-		console.log('serialPort', serialPort)
+		console.log("serialPort", serialPort);
 		if (this.reader) {
 			try {
 				await this.reader.cancel();

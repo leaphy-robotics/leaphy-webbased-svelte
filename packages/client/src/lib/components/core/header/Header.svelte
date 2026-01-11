@@ -48,10 +48,10 @@ import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
-import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
