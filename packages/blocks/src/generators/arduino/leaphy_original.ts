@@ -20,39 +20,40 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.reservePin(block, "12", arduino.PinTypes.SERVO, "Servo Set");
 		arduino.reservePin(block, "13", arduino.PinTypes.SERVO, "Servo Set");
 
-		const servoLeft = arduino.builder.add("servo_left", Servo);
-		arduino.builder.connect(
-			arduino.murphy.port("D12"),
-			servoLeft.port("pulse"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D12.3V3"),
-			servoLeft.port("vcc"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D12.GND"),
-			servoLeft.port("gnd"),
-			WireColor.GND,
-		);
-
-		const servoRight = arduino.builder.add("servo_right", Servo);
-		arduino.builder.connect(
-			arduino.murphy.port("D13"),
-			servoRight.port("pulse"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D13.3V3"),
-			servoRight.port("vcc"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D13.GND"),
-			servoRight.port("gnd"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const servoLeft = arduino.builder.add("servo_left", Servo);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D12"),
+				servoLeft.port("pulse"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D12.3V3"),
+				servoLeft?.port("vcc"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D12.GND"),
+				servoLeft.port("gnd"),
+				WireColor.GND,
+			);
+			const servoRight = arduino.builder.add("servo_right", Servo);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D13"),
+				servoRight.port("pulse"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D13.3V3"),
+				servoRight.port("vcc"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D13.GND"),
+				servoRight.port("gnd"),
+				WireColor.GND,
+			);
+		}
 	}
 
 	arduino.forBlock.leaphy_original_set_led = (block) => {
@@ -67,8 +68,6 @@ function getCodeGenerators(arduino: Arduino) {
 		let pin_blue: number;
 		let pin_green: number;
 		if (arduino.boardType.includes("nano")) {
-			const led = arduino.builder.add("rgb", RGBFlitz);
-
 			// Use different pins for the original nano since they conflict with the motors
 			if (arduino.robotType.includes("original")) {
 				pin_red = 5;
@@ -80,26 +79,29 @@ function getCodeGenerators(arduino: Arduino) {
 				pin_blue = 9;
 			}
 
-			arduino.builder.connect(
-				arduino.murphy.port(pin_red.toString()),
-				led.port("R"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.murphy.port(pin_green.toString()),
-				led.port("G"),
-				WireColor.DATA_2,
-			);
-			arduino.builder.connect(
-				arduino.murphy.port(pin_blue.toString()),
-				led.port("B"),
-				WireColor.DATA_3,
-			);
-			arduino.builder.connect(
-				arduino.murphy.port("D8"),
-				led.port("GND"),
-				WireColor.GND,
-			);
+			if (arduino.builder) {
+				const led = arduino.builder.add("rgb", RGBFlitz);
+				arduino.builder.connect(
+					arduino.builder.murphy.port(pin_red.toString()),
+					led.port("R"),
+					WireColor.DATA_1,
+				);
+				arduino.builder.connect(
+					arduino.builder.murphy.port(pin_green.toString()),
+					led.port("G"),
+					WireColor.DATA_2,
+				);
+				arduino.builder.connect(
+					arduino.builder.murphy.port(pin_blue.toString()),
+					led.port("B"),
+					WireColor.DATA_3,
+				);
+				arduino.builder.connect(
+					arduino.builder.murphy.port("D8"),
+					led.port("GND"),
+					WireColor.GND,
+				);
+			}
 
 			// Ground is connected to pin 8 on the nano, so it needs to be pulled LOW
 			arduino.addSetup(
@@ -178,22 +180,24 @@ function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.digital_read = (block) => {
 		const dropdown_pin = arduino.getPinMapping(block, "PIN");
 
-		const sensor = arduino.builder.add(`digital-${dropdown_pin}`, LineSensor);
-		arduino.builder.connect(
-			arduino.murphy.port(dropdown_pin),
-			sensor.port("Out"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.3V3`),
-			sensor.port("3V3"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.GND`),
-			sensor.port("GND"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const sensor = arduino.builder.add(`digital-${dropdown_pin}`, LineSensor);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(dropdown_pin),
+				sensor.port("Out"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.3V3`),
+				sensor.port("3V3"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.GND`),
+				sensor.port("GND"),
+				WireColor.GND,
+			);
+		}
 
 		arduino.setups_[`setup_input_${dropdown_pin}`] =
 			`pinMode(${dropdown_pin}, INPUT);`;
@@ -204,25 +208,27 @@ function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.analog_read = (block) => {
 		const dropdown_pin = arduino.getPinMapping(block, "PIN");
 
-		const lightSensor = arduino.builder.add(
-			`analog-${dropdown_pin}`,
-			LightSensor,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(dropdown_pin),
-			lightSensor.port("Out"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.3V3`),
-			lightSensor.port("VCC"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.GND`),
-			lightSensor.port("GND"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const lightSensor = arduino.builder.add(
+				`analog-${dropdown_pin}`,
+				LightSensor,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(dropdown_pin),
+				lightSensor.port("Out"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.3V3`),
+				lightSensor.port("VCC"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.GND`),
+				lightSensor.port("GND"),
+				WireColor.GND,
+			);
+		}
 
 		const code = `analogRead(${dropdown_pin})`;
 		return [code, arduino.ORDER_ATOMIC];

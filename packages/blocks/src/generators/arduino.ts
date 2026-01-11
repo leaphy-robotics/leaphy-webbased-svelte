@@ -1,9 +1,4 @@
-import {
-	type Component,
-	ComponentBuilder,
-	Murphy,
-	MurphyI2C,
-} from "@leaphy-robotics/schemas";
+import { type Component, ComponentBuilder } from "@leaphy-robotics/schemas";
 import * as Blockly from "blockly/core";
 import {
 	type Block,
@@ -67,9 +62,7 @@ export class Arduino extends Blockly.Generator {
 	public declarations_: Record<string, { priority: number; code: string }> = {};
 	public dependencies = new Set<string>();
 
-	public builder = new ComponentBuilder();
-	public murphy = this.builder.add("murphy", Murphy);
-	public i2c = this.builder.add("murphy-i2c", MurphyI2C);
+	public builder?: ComponentBuilder;
 
 	public robotType = "l_original";
 	public boardType = "l_nano";
@@ -108,11 +101,11 @@ export class Arduino extends Blockly.Generator {
 		return this.getRawPinMapping(pin);
 	}
 
-	public clearBuilder() {
-		this.builder = new ComponentBuilder();
-		this.murphy = this.builder.add("murphy", Murphy);
-		this.i2c = this.builder.add("murphy-i2c", MurphyI2C);
-		this.builder.join(this.murphy, this.i2c);
+	public createSchemaBuilder() {
+		this.builder = undefined;
+		if (this.boardType.includes("nano")) {
+			this.builder = new ComponentBuilder();
+		}
 	}
 
 	public addSerial() {
@@ -176,7 +169,7 @@ export class Arduino extends Blockly.Generator {
 		this.pins_ = Object.create(null);
 		this.functionNames_ = Object.create(null);
 		this.declarations_ = Object.create(null);
-		this.clearBuilder();
+		this.createSchemaBuilder();
 
 		super.init(workspace);
 
@@ -461,12 +454,13 @@ export class Arduino extends Blockly.Generator {
 		block: Block,
 		component: Component,
 	) {
+		if (!this.builder) return;
 		const channel = this.getI2CChannel(block);
 		const sensor = this.builder.add(`${prefix}-${channel}`, component);
 		if (channel === null) {
-			this.builder.connectI2C(this.murphy, sensor);
+			this.builder.connectI2C(this.builder.murphy, sensor);
 		} else {
-			this.builder.connectI2C(this.i2c, sensor, channel);
+			this.builder.connectI2C(this.builder.i2c, sensor, channel);
 		}
 	}
 
@@ -553,6 +547,7 @@ import * as bluetooth from "./arduino/bluetooth";
 import * as leaphy_extra from "./arduino/leaphy_extra";
 import * as leaphy_flitz from "./arduino/leaphy_flitz";
 import * as leaphy_original from "./arduino/leaphy_original";
+import * as ledstrip from "./arduino/ledstrip";
 import * as lists from "./arduino/lists";
 import * as logic from "./arduino/logic";
 import * as loops from "./arduino/loops";
@@ -571,6 +566,7 @@ leaphy_common.default(generator);
 leaphy_extra.default(generator);
 leaphy_original.default(generator);
 leaphy_flitz.default(generator);
+ledstrip.default(generator);
 logic.default(generator);
 loops.default(generator);
 math.default(generator);

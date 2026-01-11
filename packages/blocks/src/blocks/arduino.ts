@@ -143,8 +143,19 @@ function getLeaphyDisplayBlocks(
 const blocks: BlockDefinition = [
 	{
 		type: "time_delay",
-		message0: "%{BKY_ARD_TIME_DELAY} %1 %{BKY_ARD_TIME_MS}",
-		args0: [{ type: "input_value", name: "DELAY_TIME_MILI", check: "Number" }],
+		message0: "%{BKY_ARD_TIME_DELAY} %1 %2",
+		args0: [
+			{ type: "input_value", name: "DELAY_TIME_MILI", check: "Number" },
+			{
+				type: "field_dropdown",
+				name: "UNIT",
+				options: [
+					["ms", "ms"],
+					["μs", "μs"],
+					["s", "s"],
+				],
+			},
+		],
 		inputsInline: true,
 		previousStatement: null,
 		nextStatement: null,
