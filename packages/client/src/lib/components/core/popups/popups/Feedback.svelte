@@ -32,7 +32,7 @@ async function save() {
 			? JSON.stringify(serialization.workspaces.save(BlocklyState.workspace))
 			: WorkspaceState.code;
 
-	await fetch(`${import.meta.env.VITE_API_URL}/feedback`, {
+	await fetch(`${import.meta.env.VITE_BACKEND_URL}/feedback`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
