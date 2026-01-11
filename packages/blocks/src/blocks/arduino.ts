@@ -519,6 +519,40 @@ const blocks: BlockDefinition = [
 		relevanceKey: "TMP102_SENSOR",
 	},
 	{
+		type: "leaphy_dht22_read_temperature",
+		message0: "%%{BKY_LEAPHY_DHT22_READ_TEMPERATURE} %1",
+		args0: [
+			{
+				type: "field_pin_selector",
+				name: "PIN",
+				mode: "digital",
+			},
+		],
+		style: "leaphy_blocks",
+		output: "Number",
+		helpUrl: "",
+
+		aiHelp: "Read the temperature from the DHT22 sensor",
+		relevanceKey: "DHT22_SENSOR",
+	},
+	{
+		type: "leaphy_dht22_read_humidity",
+		message0: "%%{BKY_LEAPHY_DHT22_READ_HUMIDITY} %1",
+		args0: [
+			{
+				type: "field_pin_selector",
+				name: "PIN",
+				mode: "digital",
+			},
+		],
+		style: "leaphy_blocks",
+		output: "Number",
+		helpUrl: "",
+
+		aiHelp: "Read the humidity from the DHT22 sensor",
+		relevanceKey: "DHT22_SENSOR",
+	},
+	{
 		type: "leaphy_segment_set",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=%C2%A0Single%20leds-,Segment%20display%C2%A0,-Oled%20display",
