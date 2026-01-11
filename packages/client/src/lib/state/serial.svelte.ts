@@ -297,7 +297,6 @@ class SerialState {
 		}
 
 		const serialPort = this.port;
-		console.log("serialPort", serialPort);
 		if (this.reader) {
 			try {
 				await this.reader.cancel();
