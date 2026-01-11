@@ -53,6 +53,7 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
@@ -345,6 +346,14 @@ async function openCircuitPopup() {
 		allowInteraction: true,
 	});
 }
+
+function openESPProgrammerPopup() {
+	PopupState.open({
+		component: ESPProgrammer,
+		data: {},
+		allowInteraction: true,
+	});
+}
 </script>
 
 <div class="header">
@@ -474,6 +483,7 @@ async function openCircuitPopup() {
 						onclick={downloadDrivers}
 						{open}
 					/>
+					<ContextItem icon={faRobot} name={$_("ESP_PROGRAMMER")} onclick={openESPProgrammerPopup} {open} />
 				{/snippet}
 			</Button>
             {#if WorkspaceState.Mode !== Mode.PYTHON}
