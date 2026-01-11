@@ -287,16 +287,6 @@ class SerialState {
 	async reserve() {
 		this.reserved = true;
 
-		try {
-			await Promise.race([
-				this.ready,
-				new Promise((resolve) => setTimeout(resolve, 1000)),
-			]); // Prevent race condition: port.open not being complete
-		} catch (e) {
-			console.error(e);
-		}
-
-		const serialPort = this.port;
 		if (this.reader) {
 			try {
 				await this.reader.cancel();
