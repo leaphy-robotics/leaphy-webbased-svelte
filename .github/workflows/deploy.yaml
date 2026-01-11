@@ -33,7 +33,7 @@ jobs:
         working-directory: ./packages/client
         run: |
           cat << EOF > .env
-          VITE_BACKEND_URL="https://testleaphyeasybloqs.com"
+          VITE_BACKEND_URL="https://testleaphyeasybloqs.com/api"
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"
           VITE_SENTRY_SAMPLE_RATE="0.0"
           VITE_RECORDINGS_API="https://recordings.leaphyeasybloqs.com"
@@ -47,7 +47,7 @@ jobs:
         working-directory: ./packages/client
         run: |
           cat << EOF > .env
-          VITE_BACKEND_URL="https://leaphyeasybloqs.com"
+          VITE_BACKEND_URL="https://leaphyeasybloqs.com/api"
           VITE_MATOMO_URL="/matomo/"
           VITE_MATOMO_SITE_ID="1"
           VITE_SENTRY_DSN="${{ secrets.VITE_SENTRY_DSN }}"

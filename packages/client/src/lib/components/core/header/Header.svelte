@@ -256,7 +256,7 @@ function feedback() {
 	PopupState.open({
 		component: Feedback,
 		data: {},
-		allowInteraction: true,
+		allowInteraction: false,
 	});
 }
 
