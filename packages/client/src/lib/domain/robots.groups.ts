@@ -3,7 +3,6 @@ import { RobotType } from "./robots.types";
 const L_ARDUINO_NANO_ALL = [
 	RobotType.L_NANO,
 	RobotType.L_NANO_ESP32,
-	RobotType.L_NANO_RP2040,
 ];
 const L_FLITZ_ALL = [RobotType.L_FLITZ_UNO, RobotType.L_FLITZ_NANO];
 

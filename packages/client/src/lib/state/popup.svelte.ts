@@ -29,7 +29,6 @@ function mapRobots<Type extends { robot: string }>(saves: Type[] = []): Type[] {
 			[
 				"l_starling_nano",
 				"l_starling_nano_esp32",
-				"l_starling_nano_rp2040",
 			].includes(robot)
 		) {
 			robot = "l_starling";
@@ -39,12 +38,11 @@ function mapRobots<Type extends { robot: string }>(saves: Type[] = []): Type[] {
 				"l_original_uno",
 				"l_original_nano",
 				"l_original_nano_esp32",
-				"l_original_nano_rp2040",
 			].includes(robot)
 		) {
 			robot = "l_original";
 		}
-		if (["l_nano_esp32", "l_nano_rp2040"].includes(robot)) {
+		if (["l_nano_esp32"].includes(robot)) {
 			robot = "l_nano";
 		}
 

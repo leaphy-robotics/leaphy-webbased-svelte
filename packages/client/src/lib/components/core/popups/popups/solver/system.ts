@@ -16,7 +16,6 @@ function getUserLevel() {
 			return "intermediate";
 		case RobotType.L_NANO:
 		case RobotType.L_NANO_ESP32:
-		case RobotType.L_NANO_RP2040:
 			return "advanced";
 	}
 

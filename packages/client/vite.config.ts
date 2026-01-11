@@ -20,10 +20,6 @@ export default defineConfig({
 					src: "./node_modules/@leaphy-robotics/leaphy-blocks/media/*",
 					dest: "blockly-assets",
 				},
-				{
-					src: "./node_modules/@leaphy-robotics/picotool-wasm/build/*",
-					dest: "picotool",
-				},
 			],
 		}),
 		// Upload source maps to Sentry
