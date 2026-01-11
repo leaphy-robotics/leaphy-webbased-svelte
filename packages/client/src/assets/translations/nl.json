@@ -265,5 +265,13 @@
 	"SOLVER": "Hulp robot",
 	"OTHER_ANSWER": "Iets anders...",
 	"SUBMIT_OTHER_ANSWER": "Verstuur",
-	"THINKING": "Denken..."
+	"THINKING": "Denken...",
+
+	"ESP_PROGRAMMER": "ESP Herstel assistent",
+	"ESP_PROGRAMMER_RESET_TWICE": "Bereid je robot voor",
+	"ESP_PROGRAMMER_RESET_TWICE_DESCRIPTION": "Druk twee keer snel achter elkaar op de reset knop om je robot voor te bereiden, druk daarna op verbinden",
+	"ESP_PROGRAMMER_FLASHING": "Flashing...",
+	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Nieuwe firmware wordt geflashed...",
+	"ESP_PROGRAMMER_RESET": "Bijna klaar!",
+	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Druk op de reset knop om het proces te voltooien"
 }
