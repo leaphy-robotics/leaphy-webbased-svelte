@@ -185,7 +185,7 @@ class WorkspaceState {
 			this.code = content;
 		} else if (name.endsWith(".py")) {
 			this.Mode = Mode.PYTHON;
-			this.robot = robots.l_nano_rp2040;
+			this.robot = robots.l_nano_esp32;
 			this.code = content;
 		} else {
 			if (this.Mode === Mode.BLOCKS && BlocklyState.workspace) {
