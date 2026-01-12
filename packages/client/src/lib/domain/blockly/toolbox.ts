@@ -94,8 +94,16 @@ export default [
 						robots: robotGroups.ALL,
 					},
 					{
+						type: "leaphy_dht22_read_temperature",
+						robots: [RobotType.L_MICROPYTHON],
+					},
+					{
 						type: "leaphy_gas_sensor",
 						robots: robotGroups.ALL,
+					},
+					{
+						type: "leaphy_dht22_read_humidity",
+						robots: [RobotType.L_MICROPYTHON],
 					},
 					{
 						type: "leaphy_get_air_pressure",
