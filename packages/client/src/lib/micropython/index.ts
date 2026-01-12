@@ -78,8 +78,6 @@ export default class MicroPythonIO {
 		const firmwareSources = {
 			l_nano_esp32:
 				"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/esp32.bin",
-			l_nano_rp2040:
-				"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
 		};
 
 		const res = await fetch(firmwareSources[robot.id]);

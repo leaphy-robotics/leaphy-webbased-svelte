@@ -3,7 +3,7 @@
 ## Introduction
 
 Leaphy Easybloqs is software to program [Leaphy Robots](https://www.leaphy.nl) and Arduino microcontrollers using a block-based programming language and a user-friendly interface.
-It also supports programming RP2040 controllers that are able to run MicroPython.
+It also supports programming ESP32 controllers that are able to run MicroPython.
 
 ## Contributing
 
