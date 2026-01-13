@@ -5,7 +5,8 @@
 	"main": "src/index.ts",
 	"type": "module",
 	"scripts": {
-		"add": "tsx cli/index.ts"
+		"add": "tsx cli/index.ts",
+		"test": "echo \"No tests in @leaphy-robotics/schemas\""
 	},
 	"keywords": [],
 	"author": "",
