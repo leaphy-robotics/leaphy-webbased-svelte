@@ -94,8 +94,16 @@ export default [
 						robots: robotGroups.ALL,
 					},
 					{
+						type: "leaphy_dht22_read_temperature",
+						robots: [RobotType.L_MICROPYTHON],
+					},
+					{
 						type: "leaphy_gas_sensor",
 						robots: robotGroups.ALL,
+					},
+					{
+						type: "leaphy_dht22_read_humidity",
+						robots: [RobotType.L_MICROPYTHON],
 					},
 					{
 						type: "leaphy_get_air_pressure",
@@ -117,7 +125,11 @@ export default [
 					},
 					{
 						type: "leaphy_i2c_rgb_color",
-						robots: robotGroups.ALL,
+						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
+					},
+					{
+						type: "leaphy_i2c_gesture",
+						robots: [RobotType.L_MICROPYTHON],
 					},
 				],
 			},
@@ -757,7 +769,7 @@ export default [
 					},
 					{
 						type: "leaphy_i2c_gesture",
-						robots: [RobotType.L_FLITZ_NANO],
+						robots: [RobotType.L_FLITZ_NANO, RobotType.L_MICROPYTHON],
 					},
 					{
 						type: "leaphy_i2c_rgb_color",

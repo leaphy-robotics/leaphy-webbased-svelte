@@ -25,26 +25,17 @@ interface Popup {
 function mapRobots<Type extends { robot: string }>(saves: Type[] = []): Type[] {
 	return saves.map((save) => {
 		let robot = save.robot;
-		if (
-			[
-				"l_starling_nano",
-				"l_starling_nano_esp32",
-				"l_starling_nano_rp2040",
-			].includes(robot)
-		) {
+		if (["l_starling_nano", "l_starling_nano_esp32"].includes(robot)) {
 			robot = "l_starling";
 		}
 		if (
-			[
-				"l_original_uno",
-				"l_original_nano",
-				"l_original_nano_esp32",
-				"l_original_nano_rp2040",
-			].includes(robot)
+			["l_original_uno", "l_original_nano", "l_original_nano_esp32"].includes(
+				robot,
+			)
 		) {
 			robot = "l_original";
 		}
-		if (["l_nano_esp32", "l_nano_rp2040"].includes(robot)) {
+		if (["l_nano_esp32"].includes(robot)) {
 			robot = "l_nano";
 		}
 

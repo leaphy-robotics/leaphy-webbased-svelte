@@ -21,7 +21,6 @@ let progress = $state(0);
 let currentState = $state("CONNECTING");
 let error = $state<string | null>(null);
 let done = $state(false);
-let robotRequest = $state<(robot: RobotDevice) => void>();
 
 class UploadError extends Error {
 	constructor(
@@ -108,7 +107,7 @@ async function connectUSB() {
             {#if error}
                 <code class="error-result">{error}</code>
             {/if}
-            {#if done}
+            {#if done || error}
                 <Button
                     name={$_("LEAVE_UPLOADING")}
                     mode={"primary"}
@@ -116,10 +115,6 @@ async function connectUSB() {
                 />
             {:else}
                 <ProgressBar {progress} />
-
-				{#if robotRequest}
-					<RobotSelector onselect={robotRequest} robots={[[robots.l_nano_rp2040, robots.l_nano_esp32]]} secondary={false} compact />
-				{/if}
             {/if}
         {/if}
     </div>

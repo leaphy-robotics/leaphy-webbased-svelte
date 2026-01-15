@@ -36,7 +36,9 @@ class LogState {
 	constructor(private serial: SerialState) {}
 
 	write(content: string) {
-		this.serial.writer.write(new TextEncoder().encode(content)).then();
+		if (this.serial.writer) {
+			this.serial.writer.write(new TextEncoder().encode(content)).then();
+		}
 	}
 
 	clear() {
@@ -94,8 +96,8 @@ class SerialState {
 	usb_ids = $state<null | [number, number]>(null);
 
 	reserved = $state(false);
-	reader: ReadableStreamDefaultReader<Uint8Array>;
-	writer: WritableStreamDefaultWriter<Uint8Array>;
+	reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+	writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 
 	onReady: () => void;
 	onFailure: () => void;
@@ -146,6 +148,16 @@ class SerialState {
 			if (done) break;
 
 			this.log.enqueue(value);
+		}
+
+		// Clean up reader when stream ends
+		if (this.reader) {
+			try {
+				this.reader.releaseLock();
+			} catch (e) {
+				// Reader may have already been released
+			}
+			this.reader = undefined;
 		}
 	}
 
@@ -212,9 +224,6 @@ class SerialState {
 					}
 					case 0x0042: {
 						return robots.l_mega;
-					}
-					case 0x005e: {
-						return robots.l_nano_rp2040;
 					}
 				}
 				break;
@@ -288,16 +297,30 @@ class SerialState {
 	async reserve() {
 		this.reserved = true;
 
-		await this.ready; // Prevent race condition: port.open not being complete
-
-		const serialPort = this.port;
-		if (serialPort.readable.locked) {
-			await this.reader.cancel();
-			this.reader.releaseLock();
+		if (this.reader) {
+			try {
+				await this.reader.cancel();
+			} catch (e) {
+				console.error(e);
+				// Reader may have already been released, ignore the error
+			}
+			try {
+				this.reader.releaseLock();
+			} catch (e) {
+				console.error(e);
+				// Reader may have already been released, ignore the error
+			}
+			this.reader = undefined;
 		}
 
-		if (serialPort.writable.locked) {
-			this.writer.releaseLock();
+		if (this.writer) {
+			try {
+				this.writer.releaseLock();
+			} catch (e) {
+				console.error(e);
+				// Writer may have already been released, ignore the error
+			}
+			this.writer = undefined;
 		}
 	}
 

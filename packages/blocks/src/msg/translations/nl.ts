@@ -14,7 +14,7 @@ messages.ARD_SERVO_ARM_WRITE = "Servo Arm";
 messages.ARD_SERVO_WRITE = "Servo";
 messages.ARD_SERVO_WRITE_DEG_180 = "°";
 messages.ARD_SERVO_WRITE_TO = "op";
-messages.ARD_TIME_DELAY = "Wacht";
+messages.ARD_TIME_DELAY = "Duurt";
 messages.ARD_TIME_DELAY_TIP =
 	"Wacht het gespecificeerde aantal milli/microseconden";
 messages.ARD_WRITE_TO = "op";
@@ -147,6 +147,8 @@ messages.LEAPHY_GET_DISTANCE = "Lees afstand";
 messages.LEAPHY_TOF_GET_DISTANCE = "Lees ToF";
 messages.LEAPHY_GET_AIR_PRESSURE = "Lees luchtdruk";
 messages.LEAPHY_TMP102_READ_TEMPERATURE = "Lees temperatuur";
+messages.LEAPHY_DHT22_READ_TEMPERATURE = "Lees temperatuur van DHT22 op pin";
+messages.LEAPHY_DHT22_READ_HUMIDITY = "Lees luchvochtigheid van DHT22 op pin";
 messages.LEAPHY_GET_GESTURE = "Lees gebaar";
 messages.LEAPHY_LED = "Led";
 messages.LEAPHY_LED_BASIC_BLUE = "B";
