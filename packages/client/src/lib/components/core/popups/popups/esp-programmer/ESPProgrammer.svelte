@@ -50,39 +50,47 @@ async function selectPort() {
 	// First request will fail, but it will create the correct port
 	const firstPort =
 		(await navigator.serial.requestPort({
-			filters: [{ usbProductId: 112, usbVendorId: 9025 }],
+			filters: [
+				{ usbProductId: 112, usbVendorId: 9025 },
+				{ usbProductId: 0x1001, usbVendorId: 0x303a },
+			],
 		})) || null;
-	try {
-		await firstPort.close();
-	} catch (e) {
-		console.error(e);
-	}
-	const firstTransport = new Transport(firstPort, true);
-	const firstLoader = new ESPLoader({
-		transport: firstTransport,
-		baudrate: 921600,
-		romBaudrate: 921600,
-		terminal: {
-			clean: () => {},
-			writeLine: (line: string) => {
-				WorkspaceState.uploadLog.push(line);
-			},
-			write: (data: string) => {
-				WorkspaceState.uploadLog.push(data);
-			},
-		},
-		debugLogging: true,
-	});
-	try {
-		await firstLoader.main();
-	} catch (e) {
-		console.error(e);
-	}
 
-	port =
-		(await navigator.serial.requestPort({
-			filters: [{ usbProductId: 4097, usbVendorId: 12346 }],
-		})) || null;
+	if (firstPort.getInfo().usbVendorId === 9025) {
+		try {
+			await firstPort.close();
+		} catch (e) {
+			console.error(e);
+		}
+		const firstTransport = new Transport(firstPort, true);
+		const firstLoader = new ESPLoader({
+			transport: firstTransport,
+			baudrate: 921600,
+			romBaudrate: 921600,
+			terminal: {
+				clean: () => {},
+				writeLine: (line: string) => {
+					WorkspaceState.uploadLog.push(line);
+				},
+				write: (data: string) => {
+					WorkspaceState.uploadLog.push(data);
+				},
+			},
+			debugLogging: true,
+		});
+		try {
+			await firstLoader.main();
+		} catch (e) {
+			console.error(e);
+		}
+
+		port =
+			(await navigator.serial.requestPort({
+				filters: [{ usbProductId: 4097, usbVendorId: 12346 }],
+			})) || null;
+	} else {
+		port = firstPort;
+	}
 
 	if (port) {
 		transport = new Transport(port, true);
@@ -142,35 +150,43 @@ async function flash() {
 </script>
 
 <Windowed title={$_("ESP_PROGRAMMER")}>
-    <div class="content">
-        <h1>{$_(`ESP_PROGRAMMER_${step}`)}</h1>
-        <span>{$_(`ESP_PROGRAMMER_${step}_DESCRIPTION`)}</span>
-        {#if step === "RESET_TWICE"}
-            <Visualization program="RESET_TWICE" />
-            <Button name={$_("CHOOSE_ROBOT")} mode="primary" onclick={() => selectPort()} />
-        {/if}
-        {#if step === "FLASHING"}
-            <ProgressBar {progress} />
-        {/if}
-        {#if step === "RESET"}
-            <Visualization program="RESET" />
-            <Button name={$_("DONE")} mode="primary" onclick={() => popupState.close()} />
-        {/if}
-    </div>
+	<div class="content">
+		<h1>{$_(`ESP_PROGRAMMER_${step}`)}</h1>
+		<span>{$_(`ESP_PROGRAMMER_${step}_DESCRIPTION`)}</span>
+		{#if step === "RESET_TWICE"}
+			<Visualization program="RESET_TWICE" />
+			<Button
+				name={$_("CHOOSE_ROBOT")}
+				mode="primary"
+				onclick={() => selectPort()}
+			/>
+		{/if}
+		{#if step === "FLASHING"}
+			<ProgressBar {progress} />
+		{/if}
+		{#if step === "RESET"}
+			<Visualization program="RESET" />
+			<Button
+				name={$_("DONE")}
+				mode="primary"
+				onclick={() => popupState.close()}
+			/>
+		{/if}
+	</div>
 </Windowed>
 
 <style>
-    .content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 20px;
-        width: 500px;
-    }
+	.content {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 20px;
+		width: 500px;
+	}
 
-    h1 {
-        margin: 0;
-    }
+	h1 {
+		margin: 0;
+	}
 </style>
