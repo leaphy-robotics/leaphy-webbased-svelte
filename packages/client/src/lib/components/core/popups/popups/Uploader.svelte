@@ -99,7 +99,6 @@ async function upload(res: Record<string, string>) {
 			});
 		}
 
-		console.log(SerialState.board);
 		const programmer =
 			SerialState.board?.programmer || WorkspaceState.robot.programmer;
 		await programmer.upload(SerialState.port, res);
