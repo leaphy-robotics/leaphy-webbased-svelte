@@ -24,7 +24,9 @@ export enum Prompt {
 
 export class ConnectionFailedError {}
 
-export const SUPPORTED_VENDOR_IDS = [0x1a86, 9025, 2341, 0x0403, 0x2e8a];
+export const SUPPORTED_VENDOR_IDS = [
+	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
+];
 
 class LogState {
 	log = $state<LogItem[]>([]);
@@ -223,6 +225,16 @@ class SerialState {
 						return robots.l_nano;
 					}
 				}
+				break;
+			}
+			// Espressif vendor ID
+			case 0x303a: {
+				switch (product) {
+					case 0x1001: {
+						return robots.l_nano_esp32;
+					}
+				}
+				break;
 			}
 		}
 
