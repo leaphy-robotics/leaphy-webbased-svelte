@@ -1,7 +1,6 @@
 import type { LeaphyPort } from "$state/serial.svelte";
 
 export const RobotType = {
-	
 	L_FLITZ_NANO: 2,
 	L_ORIGINAL: 3,
 	L_STARLING: 4,
