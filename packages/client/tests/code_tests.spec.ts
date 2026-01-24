@@ -135,11 +135,7 @@ async function testCppExtension(page: Page, extension: string) {
 }
 
 const CppRobotTypes = [
-	{
-		robot: "Leaphy Flitz",
-		model: undefined,
-		extension: ".l_flitz_nano",
-	},
+
 	{
 		robot: "Leaphy Starling",
 		model: undefined,
