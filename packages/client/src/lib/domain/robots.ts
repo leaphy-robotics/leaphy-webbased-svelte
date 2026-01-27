@@ -1,6 +1,5 @@
 import defaultCPP from "$assets/default-program.ino?raw";
 import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
-
 import originalBackground from "$assets/robots/backgrounds/original.svg";
 import starlingBackground from "$assets/robots/backgrounds/starling.svg";
 import cppIcon from "$assets/robots/icons/l_c++.svg";
