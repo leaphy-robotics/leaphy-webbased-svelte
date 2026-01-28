@@ -6,23 +6,20 @@ import {
 	mockShowOpenFilePicker,
 	selectRobot,
 } from "./utils";
-
 test.beforeEach(goToHomePage);
-
 async function getAllFiles(dir: string): Promise<string[]> {
 	let entries = await fs.readdir(dir, { withFileTypes: true });
 	let files = entries
-		.filter((file) => !file.isDirectory())
-		.map((file) => `${dir}/${file.name}`);
-	let folders = entries.filter((folder) => folder.isDirectory());
-
+		.filter((file: { isDirectory: () => any }) => !file.isDirectory())
+		.map((file: { name: any }) => `${dir}/${file.name}`);
+	let folders = entries.filter((folder: { isDirectory: () => any }) =>
+		folder.isDirectory(),
+	);
 	for (const folder of folders) {
 		files = files.concat(await getAllFiles(`${dir}/${folder.name}`));
 	}
-
 	return files;
 }
-
 async function GetAllWorkspaceFiles(extension: string): Promise<string[]> {
 	let code_tests_path = "./tests/code_tests";
 	if (!fileExists("./tests/code_tests")) {
@@ -51,7 +48,7 @@ async function testLibraries(
 	let expectedLibraries = (await fs.readFile(libraryFile))
 		.toString()
 		.split("\n")
-		.filter((lib) => lib.trim() !== "");
+		.filter((lib: string) => lib.trim() !== "");
 
 	for (const library of expectedLibraries) {
 		expect(unversionedLibraries).toContain(library);
@@ -169,6 +166,10 @@ const CppRobotTypes = [
 
 for (const { robot, model, extension } of CppRobotTypes) {
 	test(`Code blocks - ${model ? model : robot}`, async ({ page }) => {
+		await page.evaluate(() => {
+			// @ts-ignore
+			window.WorkspaceState.Mode = "ADVANCED";
+		});
 		await selectRobot(page, robot, model);
 		await testCppExtension(page, extension);
 	});
