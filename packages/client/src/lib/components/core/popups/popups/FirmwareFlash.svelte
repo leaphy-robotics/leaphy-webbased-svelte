@@ -6,7 +6,6 @@ import SerialState from "$state/serial.svelte";
 import base64 from "base64-js";
 import { _ } from "svelte-i18n";
 import DFU from "../../../../programmers/DFU";
-import Pico from "../../../../programmers/Pico";
 import Windowed from "../Windowed.svelte";
 import Process from "./Process.svelte";
 import Warning from "./Warning.svelte";
@@ -27,25 +26,15 @@ class FirmwareOption {
 }
 
 const dfu = new DFU();
-const picotool = new Pico();
 
 const knownFirmware: FirmwareOption[] = [
-	{
-		name: "Raspberry RP2040",
-		icon_url: "",
-		firmware_url:
-			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/firmware.uf2",
-		is_connected: (manufacturer: number, device: number) => {
-			return manufacturer === 0x2341 && device === 0x025e;
-		},
-		programmer: picotool,
-	},
 	{
 		name: "ESP32",
 		icon_url: "",
 		firmware_url:
 			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/esp32.bin",
 		is_connected: (manufacturer: number, device: number) => {
+			//TODO: As new platforms are added, make sure they are recognized as valid flash-targets.
 			return manufacturer === 0x2341 && device === 0x0070;
 		},
 		programmer: dfu,
