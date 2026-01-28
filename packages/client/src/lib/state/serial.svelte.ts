@@ -95,6 +95,7 @@ class SerialState {
 			this.onFailure = reject;
 		}),
 	);
+	usb_ids = $state<null | [number, number]>(null);
 
 	reserved = $state(false);
 	reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
@@ -171,11 +172,19 @@ class SerialState {
 			}
 			if (prompt === Prompt.NEVER) throw new ConnectionFailedError();
 
-			return await navigator.serial.requestPort({
-				filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
-					usbVendorId: vendor,
-				})),
-			});
+			return await navigator.serial
+				.requestPort({
+					filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
+						usbVendorId: vendor,
+					})),
+				})
+				.then((port) => {
+					if (port) {
+						const port_info = port.getInfo();
+						this.usb_ids = [port_info.usbVendorId, port_info.usbProductId];
+					}
+					return port;
+				});
 		}
 		if (navigator.usb) {
 			if (prompt !== Prompt.ALWAYS) {
@@ -189,7 +198,10 @@ class SerialState {
 					vendorId: vendor,
 				})),
 			});
-			if (device) return device;
+			if (device) {
+				this.usb_ids = [device.vendorId, device.productId];
+				return device;
+			}
 
 			throw new ConnectionFailedError();
 		}
@@ -264,6 +276,7 @@ class SerialState {
 				this.reserved = false;
 				this.port = undefined;
 				this.board = undefined;
+				this.usb_ids = null;
 				this.onFailure();
 			});
 		}
