@@ -1,8 +1,8 @@
 <script lang="ts">
 import MLState from "$state/ml.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import Lidar from "./sensors/Lidar.svelte";
 import { _ } from "svelte-i18n";
+import Lidar from "./sensors/Lidar.svelte";
 </script>
 
 <div class="state">

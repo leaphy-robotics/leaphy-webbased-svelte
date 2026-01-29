@@ -8,9 +8,16 @@ interface Props {
 	mode: "primary" | "secondary" | "background";
 	element: HTMLElement;
 	onselect?: (value: string) => void;
-	align?: "left" | "center"
+	align?: "left" | "center";
 }
-const { open, options, mode, onselect, element, align = "center" }: Props = $props();
+const {
+	open,
+	options,
+	mode,
+	onselect,
+	element,
+	align = "center",
+}: Props = $props();
 
 let wrapper = $state<HTMLDivElement>();
 let position = $state<{ x: number; y: number }>();

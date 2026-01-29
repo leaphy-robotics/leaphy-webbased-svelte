@@ -1,7 +1,4 @@
-import {
-	type Class,
-	ml,
-} from "../../categories/ml";
+import { type Class, ml } from "../../categories/ml";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 
@@ -17,7 +14,9 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.addDependency(Dependencies.ARDUINO_BLE);
 		arduino.addInclude("bluetooth", "#include <ArduinoBLE.h>");
 
-		const inputSize = ml.sensors.getItems().reduce((acc, sensor) => acc + sensor.type.values, 0);
+		const inputSize = ml.sensors
+			.getItems()
+			.reduce((acc, sensor) => acc + sensor.type.values, 0);
 
 		arduino.addDefinition(
 			"bluetooth",
@@ -148,8 +147,10 @@ function getCodeGenerators(arduino: Arduino) {
 
 		addBluetoothDetails();
 
-		const inputSize = ml.sensors.getItems().reduce((acc, sensor) => acc + sensor.type.values, 0);
-		const pageCount = Math.ceil(inputSize * 4 / MAX_PACKET_SIZE);
+		const inputSize = ml.sensors
+			.getItems()
+			.reduce((acc, sensor) => acc + sensor.type.values, 0);
+		const pageCount = Math.ceil((inputSize * 4) / MAX_PACKET_SIZE);
 
 		let offset = 0;
 		let code = `delay(10);\nBLE.poll();\n${ml.sensors
@@ -164,14 +165,12 @@ function getCodeGenerators(arduino: Arduino) {
 				offset += sensor.type.values;
 				return code;
 			})
-			.join(
-				"",
-			)}\n`;
+			.join("")}\n`;
 
 		for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
 			code += `packetBuffer[0] = ${pageIndex};\n`;
 			code += `packetBuffer[1] = ${pageCount};\n`;
-			code += `memcpy(&packetBuffer[4], &inputBuffer[${pageIndex * MAX_PACKET_SIZE / 4}], ${MAX_PACKET_SIZE});\n`;
+			code += `memcpy(&packetBuffer[4], &inputBuffer[${(pageIndex * MAX_PACKET_SIZE) / 4}], ${MAX_PACKET_SIZE});\n`;
 			code += `input.writeValue(packetBuffer, ${Math.min(MAX_PACKET_SIZE, inputSize * 4) + 4});\n`;
 		}
 

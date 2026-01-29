@@ -27,15 +27,15 @@ function abort() {
 }
 
 function getKeyLabel(key: string): [string, Record<string, string>] | [string] {
-	if (!key) return ['UNASSIGNED'];
+	if (!key) return ["UNASSIGNED"];
 	if (key.startsWith("Key")) {
-		return ['KEY', { key: key.slice(3) }]
+		return ["KEY", { key: key.slice(3) }];
 	}
 	if (key.startsWith("Digit")) {
-		return ['DIGIT', { key: key.slice(5) }]
+		return ["DIGIT", { key: key.slice(5) }];
 	}
-	
-	return [key.toUpperCase()]
+
+	return [key.toUpperCase()];
 }
 
 let label = $derived(getKeyLabel(classData.key));

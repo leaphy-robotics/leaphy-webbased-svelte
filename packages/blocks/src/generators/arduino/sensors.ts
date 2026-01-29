@@ -26,12 +26,24 @@ export function getLidarValue(pixel: number) {
 export function measureLidar(arduino: Arduino) {
 	arduino.addDependency(Dependencies.SPARKFUN_VL53L5CX);
 	arduino.addInclude("leaphy_lidar", "#include <SparkFun_VL53L5CX_Library.h>");
-	arduino.addDeclaration("leaphy_lidar", "SparkFun_VL53L5CX lidar;\nVL53L5CX_ResultsData lidarResults;");
+	arduino.addDeclaration(
+		"leaphy_lidar",
+		"SparkFun_VL53L5CX lidar;\nVL53L5CX_ResultsData lidarResults;",
+	);
 
-	const setup = arduino.addI2CSetup("lidar", "lidar.begin();\n      lidar.setResolution(8*8);\n      lidar.setRangingFrequency(15);\n      lidar.startRanging();");
-	arduino.addDeclaration("leaphy_lidar_measure", `void lidarMeasure() {\n    ${setup}\n    lidar.getRangingData(&lidarResults);\n}`);
-	arduino.addDeclaration("leaphy_lidar_read", `int getLidar(int pixel) {\n    return lidarResults.distance_mm[pixel];\n}`);
-	
+	const setup = arduino.addI2CSetup(
+		"lidar",
+		"lidar.begin();\n      lidar.setResolution(8*8);\n      lidar.setRangingFrequency(15);\n      lidar.startRanging();",
+	);
+	arduino.addDeclaration(
+		"leaphy_lidar_measure",
+		`void lidarMeasure() {\n    ${setup}\n    lidar.getRangingData(&lidarResults);\n}`,
+	);
+	arduino.addDeclaration(
+		"leaphy_lidar_read",
+		"int getLidar(int pixel) {\n    return lidarResults.distance_mm[pixel];\n}",
+	);
+
 	return "lidarMeasure()";
 }
 

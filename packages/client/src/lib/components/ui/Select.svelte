@@ -9,14 +9,14 @@ interface Props {
 	full?: boolean;
 	mode?: "primary" | "secondary";
 	value: any;
-    align?: "left" | "center"
+	align?: "left" | "center";
 }
 let {
 	options,
 	value = $bindable(),
 	full = false,
 	mode = "primary",
-    align = "center",
+	align = "center",
 }: Props = $props();
 
 let open = $state(false);

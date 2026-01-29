@@ -90,7 +90,12 @@ class MLState {
 	queue = new BluetoothWriteQueue();
 
 	learning = $state(false);
-	snapshot: { id: string; type: Sensor; settings: unknown; values: number[] }[] = $state([]);
+	snapshot: {
+		id: string;
+		type: Sensor;
+		settings: unknown;
+		values: number[];
+	}[] = $state([]);
 
 	datasets = $state<Dataset[]>([]);
 	sensors = $state<{ id: string; type: Sensor; settings: unknown }[]>([]);
@@ -272,15 +277,15 @@ class MLState {
 
 	processSnapshot(snapshot: number[]) {
 		let offset = 0;
-		
+
 		return this.sensors.map((sensor) => {
 			const values = snapshot.slice(offset, offset + sensor.type.values);
 			offset += sensor.type.values;
 			return {
 				...sensor,
 				values,
-			}
-		})
+			};
+		});
 	}
 
 	async upload() {
@@ -303,7 +308,10 @@ class MLState {
 	async *train() {
 		yield { title: "ML_TRAINING", progress: 0 };
 
-		const inputSize = this.sensors.reduce((acc, sensor) => acc + sensor.type.values, 0);
+		const inputSize = this.sensors.reduce(
+			(acc, sensor) => acc + sensor.type.values,
+			0,
+		);
 		this.model = tf.sequential({
 			layers: [
 				...ml.structure.map((layer, index) => {
