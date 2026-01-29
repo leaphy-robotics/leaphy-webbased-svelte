@@ -99,7 +99,7 @@ class MLState {
 	available: number[] = $state([]);
 	distribution: string[] = $state([]);
 
-	epochs = $state("100");
+	epochs = $state("50");
 
 	confusion: number[][] = $state([]);
 
