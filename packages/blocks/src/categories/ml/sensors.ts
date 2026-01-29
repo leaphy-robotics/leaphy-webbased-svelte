@@ -1,6 +1,6 @@
 import type { Arduino } from "../../generators/arduino";
 import { Dependencies } from "../../generators/arduino/dependencies";
-import { getDistanceSonar, getTOF } from "../../generators/arduino/sensors";
+import { getDistanceSonar, getLidarValue, getTOF, measureLidar } from "../../generators/arduino/sensors";
 import {
 	type Setting,
 	type SettingsToObject,
@@ -131,11 +131,43 @@ class UltrasonicSensor extends Sensor {
 	}
 }
 
+class LidarSensor extends Sensor {
+	type = "lidar";
+	values = 64;
+
+	name = "Lidar sensor";
+
+	renderName(settings: SettingsToObject<typeof this.settings>) {
+		if (settings.channel === -1) return this.name;
+
+		return `Lidar sensor (channel: ${settings.channel})`;
+	}
+
+	settings = [i2cSetting("channel")];
+
+	// I2C multiplexer integration for multi-sensor setups, with value normalization
+	getValues(
+		arduino: Arduino,
+		setNode: SetNode,
+		settings: SettingsToObject<typeof this.settings>,
+	) {
+		let code = `${measureLidar(arduino)};\n`
+		for (let i = 0; i < 64; i++) {
+			code += `${setNode(i, getLidarValue(i))}`
+		}
+
+		if (settings.channel === -1) return code;
+
+		return `i2cSelectChannel(${settings.channel});\n${code}i2cRestoreChannel();\n`;
+	}
+}
+
 export const sensors: Sensor[] = [
 	new DigitalSensor(),
 	new AnalogSensor(),
 	new ToFSensor(),
 	new UltrasonicSensor(),
+	new LidarSensor(),
 ];
 
 export const sensorByType = sensors.reduce(

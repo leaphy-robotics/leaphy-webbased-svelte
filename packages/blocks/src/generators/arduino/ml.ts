@@ -1,7 +1,5 @@
 import {
 	type Class,
-	SensorData,
-	SensorReference,
 	ml,
 } from "../../categories/ml";
 import type { Arduino } from "../arduino";
@@ -11,16 +9,22 @@ function getClassName(classData: Class) {
 	return `class_${classData.name.replaceAll(" ", "_")}`;
 }
 
+const MAX_PACKET_SIZE = 128;
+
 function getCodeGenerators(arduino: Arduino) {
 	// Dual-mode operation: configures BLE communication for data collection phase
 	function addBluetoothDetails() {
 		arduino.addDependency(Dependencies.ARDUINO_BLE);
 		arduino.addInclude("bluetooth", "#include <ArduinoBLE.h>");
+
+		const inputSize = ml.sensors.getItems().reduce((acc, sensor) => acc + sensor.type.values, 0);
+
 		arduino.addDefinition(
 			"bluetooth",
 			`BLEService controlService("${ml.trainingID}");\n` +
-				`float inputBuffer[${ml.sensors.getItems().length}];\n` +
-				`BLECharacteristic input("f0e84eb0-f3ed-495c-926c-b2e3815415a7", BLERead | BLENotify, ${ml.sensors.getItems().length * 4});\n` +
+				`float inputBuffer[${inputSize}];\n` +
+				`byte packetBuffer[${Math.min(MAX_PACKET_SIZE, inputSize * 4) + 4}];\n` +
+				`BLECharacteristic input("f0e84eb0-f3ed-495c-926c-b2e3815415a7", BLERead | BLENotify, ${Math.min(MAX_PACKET_SIZE, inputSize * 4) + 4});\n` +
 				`bool outputBuffer[${ml.classes.getItems().length}];\n` +
 				`BLECharacteristic output("6f1c1de7-bc7d-4bcb-a30e-918b82d115e8", BLEWrite, ${ml.classes.getItems().length});\n`,
 		);
@@ -144,18 +148,34 @@ function getCodeGenerators(arduino: Arduino) {
 
 		addBluetoothDetails();
 
-		return `delay(10);\nBLE.poll();\n${ml.sensors
+		const inputSize = ml.sensors.getItems().reduce((acc, sensor) => acc + sensor.type.values, 0);
+		const pageCount = Math.ceil(inputSize * 4 / MAX_PACKET_SIZE);
+
+		let offset = 0;
+		let code = `delay(10);\nBLE.poll();\n${ml.sensors
 			.getItems()
-			.map((sensor, index) =>
-				sensor.type.getValues(
+			.map((sensor) => {
+				const code = sensor.type.getValues(
 					arduino,
-					(_node, value) => `inputBuffer[${index}] = ${value};\n`,
+					(node, value) => `inputBuffer[${offset + node}] = ${value};\n`,
 					sensor.settings,
-				),
-			)
+				);
+
+				offset += sensor.type.values;
+				return code;
+			})
 			.join(
 				"",
-			)}\ninput.writeValue(inputBuffer, ${ml.sensors.getItems().length * 4});\n`;
+			)}\n`;
+
+		for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+			code += `packetBuffer[0] = ${pageIndex};\n`;
+			code += `packetBuffer[1] = ${pageCount};\n`;
+			code += `memcpy(&packetBuffer[4], &inputBuffer[${pageIndex * MAX_PACKET_SIZE / 4}], ${MAX_PACKET_SIZE});\n`;
+			code += `input.writeValue(packetBuffer, ${Math.min(MAX_PACKET_SIZE, inputSize * 4) + 4});\n`;
+		}
+
+		return code;
 	};
 
 	arduino.forBlock.ml_certainty = (block) => {
