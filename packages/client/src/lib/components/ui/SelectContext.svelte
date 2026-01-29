@@ -8,8 +8,9 @@ interface Props {
 	mode: "primary" | "secondary" | "background";
 	element: HTMLElement;
 	onselect?: (value: string) => void;
+	align?: "left" | "center"
 }
-const { open, options, mode, onselect, element }: Props = $props();
+const { open, options, mode, onselect, element, align = "center" }: Props = $props();
 
 let wrapper = $state<HTMLDivElement>();
 let position = $state<{ x: number; y: number }>();
@@ -39,7 +40,7 @@ $effect(() => {
 </script>
 
 {#if open}
-	<div bind:this={wrapper} class="popup" class:secondary={mode === 'secondary'} style:left={`${position?.x}px`} style:top={`${position?.y}px`}>
+	<div bind:this={wrapper} class="popup" class:left={align === 'left'} class:secondary={mode === 'secondary'} style:left={`${position?.x}px`} style:top={`${position?.y}px`}>
 		<div class="container">
 			{#each options as option (option[1])}
 				<button type="button" onclick={() => onselect(option[1])} class="option"
@@ -94,5 +95,9 @@ $effect(() => {
 
 	.secondary .option {
 		background: var(--robot);
+	}
+
+	.left .option {
+		text-align: left;
 	}
 </style>

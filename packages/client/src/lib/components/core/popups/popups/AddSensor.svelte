@@ -80,7 +80,7 @@ function addSensor() {
 
 	<div class="input-group">
 		<div class="label">{$_("ML_SENSOR_TYPE")}</div>
-		<Select mode="secondary" full options={sensorOptions} bind:value={sensor} />
+		<Select mode="secondary" full options={sensorOptions} bind:value={sensor} align="left" />
 	</div>
 
 	{#each parsedSensor.settings as setting}
@@ -91,7 +91,7 @@ function addSensor() {
 			</div>
 
 			{#if setting.type === 'select'}
-				<Select mode="secondary" full options={setting.options} bind:value={settings[setting.id]} />
+				<Select mode="secondary" full options={setting.options} bind:value={settings[setting.id]} align="left" />
 			{:else if setting.type === 'text'}
 				<TextInput mode="secondary" rounded bind:value={settings[setting.id]} />
 			{/if}
