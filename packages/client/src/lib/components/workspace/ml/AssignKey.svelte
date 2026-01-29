@@ -26,7 +26,7 @@ function abort() {
 }
 </script>
 
-<svelte:document onkeypress={onKey} onmousedown={abort} />
+<svelte:document onkeyup={onKey} onmousedown={abort} />
 <button onclick={assign} class="key" class:active={binding}>{binding ? 'Press any key' : classData.key || 'Unassigned'}</button>
 
 <style>
