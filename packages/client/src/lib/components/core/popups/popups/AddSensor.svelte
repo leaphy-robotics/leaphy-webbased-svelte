@@ -71,6 +71,7 @@ function addSensor() {
 		settings,
 	});
 	popupState.close();
+	ml.maxStep = 0;
 }
 </script>
 

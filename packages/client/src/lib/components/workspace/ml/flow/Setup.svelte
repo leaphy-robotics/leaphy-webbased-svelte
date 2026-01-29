@@ -51,6 +51,7 @@ async function addSensor() {
 
 function deleteSensor(id: string) {
 	ml.sensors.deleteItem(id);
+	ml.maxStep = 0;
 }
 </script>
 
