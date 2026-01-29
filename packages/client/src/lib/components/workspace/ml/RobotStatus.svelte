@@ -2,6 +2,7 @@
 import MLState from "$state/ml.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import Lidar from "./sensors/Lidar.svelte";
+import { _ } from "svelte-i18n";
 </script>
 
 <div class="state">
@@ -12,8 +13,9 @@ import Lidar from "./sensors/Lidar.svelte";
 
 	<div class="list">
 		{#each MLState.snapshot as sensor}
+			{@const name = sensor.type.renderName(sensor.settings)}
 			<div class="item" class:vertical={sensor.type.type === "lidar"}>
-				<div class="name">{sensor.type.renderName(sensor.settings)}</div>
+				<div class="name">{$_(name.translation, { values: name.values })}</div>
 				{#if sensor.type.type === "lidar"}
 					<Lidar values={sensor.values} />
 				{:else}

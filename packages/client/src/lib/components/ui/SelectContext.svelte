@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computePosition, size } from "@floating-ui/dom";
+import { _ } from "svelte-i18n";
 
 interface Props {
 	open: boolean;
@@ -42,7 +43,7 @@ $effect(() => {
 		<div class="container">
 			{#each options as option (option[1])}
 				<button type="button" onclick={() => onselect(option[1])} class="option"
-				>{option[0]}</button>
+				>{$_(option[0])}</button>
 			{/each}
 		</div>
 	</div>

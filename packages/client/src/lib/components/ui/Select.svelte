@@ -2,6 +2,7 @@
 import SelectContext from "$components/ui/SelectContext.svelte";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 
 interface Props {
 	options: [string, any][];
@@ -20,7 +21,7 @@ let open = $state(false);
 let element = $state<HTMLButtonElement>();
 
 function getName(value: any) {
-	return options.find(([_, data]) => data === value)?.[0] || "";
+	return $_(options.find(([_, data]) => data === value)?.[0] || "");
 }
 
 async function onclick() {

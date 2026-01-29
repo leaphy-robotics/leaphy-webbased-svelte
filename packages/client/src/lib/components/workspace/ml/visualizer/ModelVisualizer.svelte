@@ -16,9 +16,10 @@ onMount(() => {
 		controlsContainer,
 		outputContainer,
 		{
-			inputLabels: MLState.sensors.map((sensor) =>
-				sensor.type.renderName(sensor.settings),
-			),
+			inputLabels: MLState.sensors.map((sensor) => {
+				const name = sensor.type.renderName(sensor.settings);
+				return $_(name.translation, { values: name.values });
+			}),
 			outputLabels: MLState.classes.map((classData) => classData.name),
 		},
 	);

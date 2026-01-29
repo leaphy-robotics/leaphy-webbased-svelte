@@ -68,9 +68,10 @@ function deleteSensor(id: string) {
 			</div>
 		{/if}
 		{#each MLState.sensors as sensor}
+			{@const name = sensor.type.renderName(sensor.settings)}
 			<div class="sensor">
 				<div class="name">
-					{sensor.type.renderName(sensor.settings)}
+					{$_(name.translation, { values: name.values })}
 				</div>
 				<button onclick={() => deleteSensor(sensor.id)} class="delete"><Fa icon={faXmark} /></button>
 			</div>

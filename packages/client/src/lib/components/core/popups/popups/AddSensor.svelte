@@ -15,7 +15,7 @@ import { _ } from "svelte-i18n";
 
 const popupState = getContext<PopupState>("state");
 const sensorOptions = sensors.map(
-	(sensor) => [sensor.name, sensor] as [string, Sensor],
+	(sensor) => [$_(sensor.name), sensor] as [string, Sensor],
 );
 
 let sensor = $state<Sensor>(sensorOptions[0][1]);
@@ -86,8 +86,8 @@ function addSensor() {
 	{#each parsedSensor.settings as setting}
 		<div class="input-group">
 			<div class="desc">
-				<div class="label">{setting.name}</div>
-				<div class="description">{setting.description}</div>
+				<div class="label">{$_(setting.name)}</div>
+				<div class="description">{$_(setting.description)}</div>
 			</div>
 
 			{#if setting.type === 'select'}
