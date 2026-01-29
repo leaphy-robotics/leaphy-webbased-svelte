@@ -285,5 +285,15 @@
 	"ESP_PROGRAMMER_FLASHING": "Flashing...",
 	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Flashing the board...",
 	"ESP_PROGRAMMER_RESET": "Almost there!",
-	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Press the reset button to complete the process"
+	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Press the reset button to complete the process",
+
+	"PRESS_ANY_KEY": "Press any key",
+	"UNASSIGNED": "Unassigned",
+	"KEY": "Key {key}",
+	"DIGIT": "Digit {key}",
+	"ARROWUP": "Arrow up",
+	"ARROWDOWN": "Arrow down",
+	"ARROWLEFT": "Arrow left",
+	"ARROWRIGHT": "Arrow right",
+	"SPACE": "Space"
 }

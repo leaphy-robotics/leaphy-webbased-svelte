@@ -285,5 +285,15 @@
 	"ESP_PROGRAMMER_FLASHING": "Flashing...",
 	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Nieuwe firmware wordt geflashed...",
 	"ESP_PROGRAMMER_RESET": "Bijna klaar!",
-	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Druk op de reset knop om het proces te voltooien"
+	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Druk op de reset knop om het proces te voltooien",
+
+	"PRESS_ANY_KEY": "Druk op een toets",
+	"UNASSIGNED": "Niet toegewezen",
+	"KEY": "Toets {key}",
+	"DIGIT": "Getal {key}",
+	"ARROWUP": "Pijltje omhoog",
+	"ARROWDOWN": "Pijltje omlaag",
+	"ARROWLEFT": "Pijltje links",
+	"ARROWRIGHT": "Pijltje rechts",
+	"SPACE": "Spatie"
 }
