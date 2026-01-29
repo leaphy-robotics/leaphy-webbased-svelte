@@ -90,7 +90,12 @@ class MLState {
 	queue = new BluetoothWriteQueue();
 
 	learning = $state(false);
-	snapshot: number[] = $state([]);
+	snapshot: {
+		id: string;
+		type: Sensor;
+		settings: unknown;
+		values: number[];
+	}[] = $state([]);
 
 	datasets = $state<Dataset[]>([]);
 	sensors = $state<{ id: string; type: Sensor; settings: unknown }[]>([]);
@@ -99,7 +104,7 @@ class MLState {
 	available: number[] = $state([]);
 	distribution: string[] = $state([]);
 
-	epochs = $state("100");
+	epochs = $state("50");
 
 	confusion: number[][] = $state([]);
 
@@ -236,21 +241,51 @@ class MLState {
 			"f0e84eb0-f3ed-495c-926c-b2e3815415a7",
 		);
 		await this.inputCharacteristic.startNotifications();
+
+		let pages = [];
 		this.inputCharacteristic.addEventListener(
 			"characteristicvaluechanged",
 			async (e) => {
-				const input = readFloat32Array(
-					(e.target as unknown as { value: DataView }).value,
-				);
+				const value = (e.target as unknown as { value: DataView }).value;
+				const input = readFloat32Array(value).slice(1);
 
-				this.snapshot = input;
+				const pageIndex = value.getUint8(0);
+				const pageCount = value.getUint8(1);
+
+				if (pages.length === 0) {
+					pages = new Array(pageCount).fill(null);
+				}
+
+				pages[pageIndex] = input;
+
+				if (!pages.every((page) => page !== null)) {
+					return;
+				}
+
+				const data = pages.flat();
+				this.snapshot = this.processSnapshot(data);
+				pages = [];
+
 				if (!this.classification || !this.learning) return;
 
-				this.data.push({ input, detected: this.classification });
+				this.data.push({ input: data, detected: this.classification });
 			},
 		);
 
 		this.connected = true;
+	}
+
+	processSnapshot(snapshot: number[]) {
+		let offset = 0;
+
+		return this.sensors.map((sensor) => {
+			const values = snapshot.slice(offset, offset + sensor.type.values);
+			offset += sensor.type.values;
+			return {
+				...sensor,
+				values,
+			};
+		});
 	}
 
 	async upload() {
@@ -273,12 +308,16 @@ class MLState {
 	async *train() {
 		yield { title: "ML_TRAINING", progress: 0 };
 
+		const inputSize = this.sensors.reduce(
+			(acc, sensor) => acc + sensor.type.values,
+			0,
+		);
 		this.model = tf.sequential({
 			layers: [
 				...ml.structure.map((layer, index) => {
 					if (index === 0)
 						return tf.layers.dense({
-							inputShape: [this.sensors.length],
+							inputShape: [inputSize],
 							...layer,
 						});
 
@@ -298,7 +337,11 @@ class MLState {
 			.flatMap((classData, i) => {
 				const frames = ml.datasets
 					.getItems()
-					.flatMap((dataset) => dataset.getDataForClass(classData.id));
+					.flatMap((dataset) => dataset.getDataForClass(classData.id))
+					.map((frame) => {
+						frame.input = frame.input.slice(0, inputSize);
+						return frame;
+					});
 
 				return getRandomItems(frames, Number.parseInt(this.distribution[i]));
 			})

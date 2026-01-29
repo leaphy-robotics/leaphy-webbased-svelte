@@ -1,6 +1,11 @@
 import type { Arduino } from "../../generators/arduino";
 import { Dependencies } from "../../generators/arduino/dependencies";
-import { getDistanceSonar, getTOF } from "../../generators/arduino/sensors";
+import {
+	getDistanceSonar,
+	getLidarValue,
+	getTOF,
+	measureLidar,
+} from "../../generators/arduino/sensors";
 import {
 	type Setting,
 	type SettingsToObject,
@@ -15,8 +20,11 @@ export abstract class Sensor {
 	abstract values: number;
 
 	abstract name: string;
-	renderName(_settings: unknown) {
-		return this.name;
+	renderName(_settings: unknown): {
+		translation: string;
+		values?: Record<string, string>;
+	} {
+		return { translation: this.name };
 	}
 
 	abstract settings: Setting<unknown>[];
@@ -32,12 +40,16 @@ class ToFSensor extends Sensor {
 	type = "ToF";
 	values = 1;
 
-	name = "Time of Flight sensor";
+	name = "TIME_OF_FLIGHT_SENSOR";
 
 	renderName(settings: SettingsToObject<typeof this.settings>) {
-		if (settings.channel === -1) return this.name;
+		if (settings.channel === -1)
+			return { translation: "TIME_OF_FLIGHT_SENSOR" };
 
-		return `Time of Flight sensor (channel: ${settings.channel})`;
+		return {
+			translation: "TIME_OF_FLIGHT_SENSOR_CHANNEL",
+			values: { channel: `${settings.channel}` },
+		};
 	}
 
 	settings = [i2cSetting("channel")];
@@ -59,10 +71,10 @@ class DigitalSensor extends Sensor {
 	type = "digital";
 	values = 1;
 
-	name = "Digital Pin";
+	name = "DIGITAL_PIN_NAME";
 
 	renderName(settings: SettingsToObject<typeof this.settings>) {
-		return `Digital Pin ${settings.pin}`;
+		return { translation: "DIGITAL_PIN", values: { pin: `${settings.pin}` } };
 	}
 
 	settings = [pinSetting("pin", "digital", "Pin", "Select the pin to use")];
@@ -86,10 +98,10 @@ class AnalogSensor extends Sensor {
 	type = "analog";
 	values = 1;
 
-	name = "Analog Pin";
+	name = "ANALOG_PIN_NAME";
 
 	renderName(settings: SettingsToObject<typeof this.settings>) {
-		return `Analog Pin ${settings.pin}`;
+		return { translation: "ANALOG_PIN", values: { pin: `${settings.pin}` } };
 	}
 
 	settings = [pinSetting("pin", "analog", "Pin", "Select the pin to use")];
@@ -108,10 +120,13 @@ class UltrasonicSensor extends Sensor {
 	type = "ultrasonic";
 	values = 1;
 
-	name = "Ultrasonic";
+	name = "ULTRASONIC_SENSOR_NAME";
 
 	renderName(settings: SettingsToObject<typeof this.settings>) {
-		return `Ultrasonic sensor (trig: ${settings.trig}, echo: ${settings.echo})`;
+		return {
+			translation: "ULTRASONIC_SENSOR",
+			values: { trig: `${settings.trig}`, echo: `${settings.echo}` },
+		};
 	}
 
 	settings = [
@@ -131,11 +146,46 @@ class UltrasonicSensor extends Sensor {
 	}
 }
 
+class LidarSensor extends Sensor {
+	type = "lidar";
+	values = 64;
+
+	name = "LIDAR_SENSOR";
+
+	renderName(settings: SettingsToObject<typeof this.settings>) {
+		if (settings.channel === -1) return { translation: "LIDAR_SENSOR" };
+
+		return {
+			translation: "LIDAR_SENSOR_CHANNEL",
+			values: { channel: `${settings.channel}` },
+		};
+	}
+
+	settings = [i2cSetting("channel")];
+
+	// I2C multiplexer integration for multi-sensor setups, with value normalization
+	getValues(
+		arduino: Arduino,
+		setNode: SetNode,
+		settings: SettingsToObject<typeof this.settings>,
+	) {
+		let code = `${measureLidar(arduino)};\n`;
+		for (let i = 0; i < 64; i++) {
+			code += `${setNode(i, getLidarValue(i))}`;
+		}
+
+		if (settings.channel === -1) return code;
+
+		return `i2cSelectChannel(${settings.channel});\n${code}i2cRestoreChannel();\n`;
+	}
+}
+
 export const sensors: Sensor[] = [
 	new DigitalSensor(),
 	new AnalogSensor(),
 	new ToFSensor(),
 	new UltrasonicSensor(),
+	new LidarSensor(),
 ];
 
 export const sensorByType = sensors.reduce(
