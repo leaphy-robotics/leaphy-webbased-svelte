@@ -14,6 +14,6 @@ test("SonarPins", async ({ page }) => {
 		.first()
 		.locator(".blocklyEditableField");
 
-	expect(values.nth(0)).toHaveText("Default");
-	expect(values.nth(1)).toHaveText("Default");
+	await expect(values.nth(0)).toHaveText("Default");
+	await expect(values.nth(1)).toHaveText("Default");
 });
