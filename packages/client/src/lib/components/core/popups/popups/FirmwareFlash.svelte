@@ -1,4 +1,5 @@
 <script lang="ts">
+import Espressif_logo from "$assets/Espressif-logo.png";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import type { Programmer } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
@@ -9,7 +10,6 @@ import DFU from "../../../../programmers/DFU";
 import Windowed from "../Windowed.svelte";
 import Process from "./Process.svelte";
 import Warning from "./Warning.svelte";
-import Espressif_logo from "$assets/Espressif-logo.png";
 
 enum FlashingState {
 	SELECT_BOARD = 0,

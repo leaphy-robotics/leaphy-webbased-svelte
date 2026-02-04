@@ -305,5 +305,29 @@
 	"ESP_PROGRAMMER_FLASHING": "Flashing...",
 	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Nieuwe firmware wordt geflashed...",
 	"ESP_PROGRAMMER_RESET": "Bijna klaar!",
-	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Druk op de reset knop om het proces te voltooien"
+	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Druk op de reset knop om het proces te voltooien",
+
+	"PRESS_ANY_KEY": "Druk op een toets",
+	"UNASSIGNED": "Niet toegewezen",
+	"KEY": "Toets {key}",
+	"DIGIT": "Getal {key}",
+	"ARROWUP": "Pijltje omhoog",
+	"ARROWDOWN": "Pijltje omlaag",
+	"ARROWLEFT": "Pijltje links",
+	"ARROWRIGHT": "Pijltje rechts",
+	"SPACE": "Spatie",
+
+	"TIME_OF_FLIGHT_SENSOR": "Time of Flight sensor",
+	"TIME_OF_FLIGHT_SENSOR_CHANNEL": "Time of Flight sensor (I2C kanaal: {channel})",
+	"DIGITAL_PIN": "Digitale pin {pin}",
+	"DIGITAL_PIN_NAME": "Digitale pin",
+	"ANALOG_PIN": "Analoge pin {pin}",
+	"ANALOG_PIN_NAME": "Analoge pin",
+	"ULTRASONIC_SENSOR": "Afstand sensor (trig: {trig}, echo: {echo})",
+	"ULTRASONIC_SENSOR_NAME": "Afstand sensor",
+	"LIDAR_SENSOR": "Lidar sensor",
+	"LIDAR_SENSOR_CHANNEL": "Lidar sensor (I2C kanaal: {channel})",
+	"I2C_CHANNEL": "I2C kanaal",
+	"I2C_CHANNEL_DESCRIPTION": "Selecteer een I2C kanaal",
+	"NONE": "Geen"
 }
