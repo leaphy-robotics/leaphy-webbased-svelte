@@ -9,6 +9,7 @@ import DFU from "../../../../programmers/DFU";
 import Windowed from "../Windowed.svelte";
 import Process from "./Process.svelte";
 import Warning from "./Warning.svelte";
+import Espressif_logo from "$assets/Espressif-logo.png";
 
 enum FlashingState {
 	SELECT_BOARD = 0,
@@ -30,7 +31,7 @@ const dfu = new DFU();
 const knownFirmware: FirmwareOption[] = [
 	{
 		name: "ESP32",
-		icon_url: "",
+		icon_url: Espressif_logo,
 		firmware_url:
 			"https://raw.githubusercontent.com/leaphy-robotics/leaphy-firmware/main/micropython/esp32.bin",
 		is_connected: (manufacturer: number, device: number) => {
@@ -198,7 +199,6 @@ async function flashFirmware(selected: FirmwareOption) {
         flex-flow: row nowrap;
         justify-content: space-between;
         & > button {
-            background-color:red;
             height:max-content;
             width:120px;
             padding-bottom: 4px;
@@ -210,6 +210,7 @@ async function flashFirmware(selected: FirmwareOption) {
                 display:inline-block;
                 height:100px;
                 width:100px;
+				padding:10%;
             }
             & > div {
                 display:inline-block;
