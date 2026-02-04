@@ -44,14 +44,25 @@ async function upload(res: Record<string, string>) {
 
 onMount(async () => {
 	try {
+		console.log(SerialState.usb_ids);
 		const progress_step = 100 / 2;
 		const installed = await io.enterREPLMode();
 		progress += progress_step;
 
 		if (!installed) {
-			throw { name: "NOT_CONNECTED", description: "No REPL initiated." };
+			throw {
+				name: "NOT_CONNECTED",
+				description: "No REPL initiated.",
+			};
 		}
 
+		const raw_ver_info = await io.commands
+			.execute("version", {})
+			.catch((reason) => {
+				console.log(reason);
+				return "0";
+			});
+		const version_info = JSON.parse(raw_ver_info); //TODO: do something with this info.
 		currentState = "INSTALLING_LIBRARIES";
 		await io.packageManager.flashLibrary(
 			"github:leaphy-robotics/leaphy-micropython/package.json",

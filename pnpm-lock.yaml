@@ -174,8 +174,8 @@ importers:
         version: 1.0.15
     devDependencies:
       '@leaphy-robotics/playwright-arduino':
-        specifier: 1.0.6
-        version: 1.0.6
+        specifier: 1.0.7
+        version: 1.0.7
       '@playwright/test':
         specifier: ^1.52.0
         version: 1.52.0
@@ -1487,8 +1487,11 @@ packages:
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
-  '@leaphy-robotics/playwright-arduino@1.0.6':
-    resolution: {integrity: sha512-L0UR8/6o1Gpo73CiQLsZqc3USYsSPv4h7rZ6pKGAGOnxzACpBh4SpOCpv2ipkvWQAVtifWbKFdlZjO0HFFP6Tw==}
+  '@leaphy-robotics/picotool-wasm@1.0.3':
+    resolution: {integrity: sha512-K3St0eLNVRPXPMZ+o1q/+S46zPFw8PEsTMxYQqiLdjJvbvzGgwOZVWOkqukeEUTLtmdopTxkFksPZxmI+jDyTg==}
+
+  '@leaphy-robotics/playwright-arduino@1.0.7':
+    resolution: {integrity: sha512-BibioMR64NrZmSkU0pOTfNqYtCNgMcevFYgN8EX+LTCvoF8gUEYAYTY2fFXiywC0fDf8jgnx65zYXawmn4jDkg==}
 
   '@leaphy-robotics/webusb-ftdi@1.0.3':
     resolution: {integrity: sha512-9j3cGGsT7M0k5Y9rl7xnm9/TqRDSbC5LRBEC88MMntNDpoV1rBB9HKLXGiTZV26161Qmm2xhquEuVzG1RQkryA==}
@@ -5896,7 +5899,9 @@ snapshots:
 
   '@kurkle/color@0.3.4': {}
 
-  '@leaphy-robotics/playwright-arduino@1.0.6':
+  '@leaphy-robotics/picotool-wasm@1.0.3': {}
+
+  '@leaphy-robotics/playwright-arduino@1.0.7':
     dependencies:
       serialport: 12.0.0
     transitivePeerDependencies:
