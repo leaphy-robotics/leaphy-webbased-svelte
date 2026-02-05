@@ -1,4 +1,4 @@
-import { promises as fs, existsSync as fileExists } from "node:fs";
+import { promises as fs, existsSync as fileExists } from "fs";
 import { type Page, expect, test } from "@playwright/test";
 import {
 	getDownloadContents,
