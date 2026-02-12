@@ -131,9 +131,16 @@ export default class MicroPythonIO {
 	}
 
 	runCode(code: string) {
+		const need_restart = this.running;
 		this.running = true;
 		const events = new IOEventTarget();
 		(async () => {
+			if (need_restart) {
+				await this.writer.write(new Uint8Array([0x03]));
+				while (this.running) {
+					await new Promise((resolve) => setTimeout(() => resolve, 100));
+				}
+			}
 			const data = encoder.encode(`${code}\x04`);
 			for (let offset = 0; offset < data.length; offset += 256) {
 				await this.writer.write(data.slice(offset, offset + 256));
