@@ -2,6 +2,7 @@
 import leaphyLogo from "$assets/leaphy-logo-color.svg";
 import english from "$assets/translations/en.svg";
 import dutch from "$assets/translations/nl.svg";
+import ukrainian from "$assets/translations/ua.svg";
 import type { PopupState } from "$state/popup.svelte";
 import { getContext } from "svelte";
 import { locale } from "svelte-i18n";
@@ -24,6 +25,10 @@ function select(language: string) {
         <button class="language" onclick={() => select("nl")}>
             <img class="icon" src={dutch} alt="Nederlands" />
             <div class="name">Nederlands</div>
+        </button>
+        <button class="language" onclick={() => select("ua")}>
+            <img class="icon" src={ukrainian} alt="Ukrainian" />
+            <div class="name">Yкраїнський</div>
         </button>
     </div>
 </div>
