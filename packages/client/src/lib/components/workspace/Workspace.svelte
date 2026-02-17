@@ -15,7 +15,7 @@ import { RobotType } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
-	faBook,
+	faBook, faBug,
 	faChalkboardTeacher,
 	faCode,
 	faLightbulb,
@@ -23,6 +23,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
+import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 
 function openSerial() {
 	PopupState.open({

@@ -115,10 +115,12 @@ function getCodeGenerators(arduino: Arduino) {
 			pin_blue = 3;
 		}
 
+		const debug = arduino.createDebug("rgb-led", { type: "rgb", values: 3, name: "RGB Led" })
+
 		return (
-			`analogWrite(${pin_red}, ${red});\n` +
-			`analogWrite(${pin_green}, ${green});\n` +
-			`analogWrite(${pin_blue}, ${blue});\n`
+			`analogWrite(${pin_red}, ${debug(red, 0)});\n` +
+			`analogWrite(${pin_green}, ${debug(green, 1)});\n` +
+			`analogWrite(${pin_blue}, ${debug(blue, 2)});\n`
 		);
 	};
 
@@ -252,7 +254,12 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "SPEED", arduino.ORDER_ATOMIC) || "100";
 		const direction = motor === "left" ? 1 : -1;
 
-		return `servo_${motor}.write(90 + 90*${speed}/100*${direction});\n`;
+		const debug = arduino.createDebug('original-servo', {
+			type: 'motors',
+			values: 2,
+			name: "Leaphy Starling motors"
+		})
+		return `servo_${motor}.write(90 + 90*${debug(`${speed}*${direction}`, motor === 'left' ? 0 : 1)}/100);\n`;
 	};
 
 	arduino.forBlock.leaphy_original_servo_move = (block) => {
@@ -270,9 +277,14 @@ function getCodeGenerators(arduino: Arduino) {
 		const motor_left = MOTOR_SPEEDS[direction][0];
 		const motor_right = MOTOR_SPEEDS[direction][1];
 
+		const debug = arduino.createDebug('original-servo', {
+			type: 'motors',
+			values: 2,
+			name: "Leaphy Starling motors"
+		})
 		return (
-			`servo_left.write(90 + 90*${speed}/100*${motor_left});\n` +
-			`servo_right.write(90 + 90*${speed}/100*${motor_right});\n`
+			`servo_left.write(90 + 90*${debug(`${speed}*${motor_left}`, 0)}/100);\n` +
+			`servo_right.write(90 + 90*${debug(`${speed}*${motor_right}`, 1)}/100);\n`
 		);
 	};
 }

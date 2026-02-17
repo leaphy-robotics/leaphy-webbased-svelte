@@ -19,6 +19,7 @@ import { tick } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
+import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 
 enum Mode {
 	TEXT = 0,
@@ -119,6 +120,7 @@ function insertDate() {
 			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
 		</div>
 	{/if}
+	<Debugger />
 	{#if mode === Mode.TEXT}
 		<div class="content" bind:this={element}>
 			{#each SerialState.log.log as item (item.id)}
@@ -152,7 +154,7 @@ function insertDate() {
 <style>
     .content {
         width: 800px;
-        max-height: 50vh;
+        max-height: 30vh;
         overflow-y: auto;
         background: var(--background-tint);
     }

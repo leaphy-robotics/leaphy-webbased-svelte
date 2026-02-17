@@ -4,6 +4,13 @@ import PopupState from "$state/popup.svelte";
 import { track } from "$state/utils";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
+import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
+
+interface ActiveDebugger {
+	type: Debugger,
+	lastSignal: number,
+	values: number[]
+}
 
 export type LeaphyPort =
 	| SerialPort
@@ -28,9 +35,35 @@ export const SUPPORTED_VENDOR_IDS = [
 	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
 ];
 
+class DebugState {
+	debuggers = $state<ActiveDebugger[]>()
+
+	processCommand(command: string[]) {
+		switch (command[0]) {
+			case "start": {
+				this.debuggers = (JSON.parse(command[1]) as Debugger[]).map(type => ({ type, lastSignal: 0, values: new Array(type.values).fill(0) }))
+				break
+			}
+			case "log": {
+				if (!this.debuggers) break
+				if (!this.debuggers[parseInt(command[1])]) break
+
+				this.debuggers[parseInt(command[1])].values[parseInt(command[2])] = parseFloat(command[3])
+				this.debuggers[parseInt(command[1])].lastSignal = Date.now()
+				break
+			}
+		}
+	}
+
+	clear() {
+		this.debuggers = null
+	}
+}
+
 class LogState {
 	log = $state<LogItem[]>([]);
 	charts = $state<Record<string, { x: Date; y: number }[]>>({});
+	debugger = new DebugState()
 
 	private buffer = "";
 	private count = 0;
@@ -56,14 +89,22 @@ class LogState {
 	enqueue(content: Uint8Array) {
 		this.buffer += new TextDecoder().decode(content);
 
-		const items = this.buffer.split("\n");
+		let items = this.buffer.split("\n");
+		this.buffer = items.pop();
+
 		for (const item of items) {
 			const [label, value] = item.split(" = ");
 			if (!label || !value || Number.isNaN(Number.parseFloat(value))) continue;
 
 			this.point(label, Number.parseFloat(value));
 		}
-		this.buffer = items.pop();
+		items = items.filter(item => {
+			const commands = item.split("_")
+			if (commands[1] !== "debug") return true
+
+			this.debugger.processCommand(commands.slice(2))
+			return false
+		})
 
 		if (items.length > 0) {
 			this.log = [

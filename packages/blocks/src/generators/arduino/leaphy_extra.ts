@@ -84,7 +84,8 @@ function getCodeGenerators(arduino: Arduino) {
 		const setupCode = `${servoName}.attach(${pinKey});`;
 		arduino.addSetup(`servo_${pinKey}`, setupCode, true);
 
-		return `${servoName}.write(${servoAngle});\n`;
+		const debug = arduino.createDebug(`servo-${pinKey}`, { type: "servo", name: `Servo ${pinKey}`, values: 1 })
+		return `${servoName}.write(${debug(servoAngle)});\n`;
 	};
 
 	arduino.forBlock.leaphy_servo_read = (block) => {
