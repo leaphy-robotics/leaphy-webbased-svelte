@@ -37,10 +37,8 @@ class DoneEvent extends Event {
 class RestartEvent extends Event {
 	static type = "restart";
 
-	constructor(
-		public source: IOEventTarget
-	) {
-		super("restart")
+	constructor(public source: IOEventTarget) {
+		super("restart");
 	}
 }
 
@@ -157,7 +155,9 @@ export default class MicroPythonIO {
 				// `running` flag.
 				await this.writer.write(new Uint8Array([0x03]));
 				while (this.running) {
-					await new Promise((resolve) => {setTimeout(resolve, 100)});
+					await new Promise((resolve) => {
+						setTimeout(resolve, 100);
+					});
 				}
 				this.running = true;
 			}
