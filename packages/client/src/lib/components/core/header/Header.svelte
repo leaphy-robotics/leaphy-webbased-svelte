@@ -322,6 +322,9 @@ async function connectPython() {
 
 function runPython() {
 	const io = WorkspaceState.microPythonIO;
+	if (WorkspaceState.microPythonRun) {
+		WorkspaceState.microPythonRun.signalRestart();
+	}
 	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 

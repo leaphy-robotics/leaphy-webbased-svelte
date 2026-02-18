@@ -34,10 +34,21 @@ class DoneEvent extends Event {
 	}
 }
 
+class RestartEvent extends Event {
+	static type = "restart";
+
+	constructor(
+		public source: IOEventTarget
+	) {
+		super("restart")
+	}
+}
+
 type IOEvent =
 	| ({ type: "stdout" } & StdoutEvent)
 	| ({ type: "stderr" } & StderrEvent)
-	| ({ type: "done" } & DoneEvent);
+	| ({ type: "done" } & DoneEvent)
+	| ({ type: "restart" } & RestartEvent);
 
 export class IOEventTarget extends EventTarget {
 	public addEventListener<
@@ -45,6 +56,10 @@ export class IOEventTarget extends EventTarget {
 		E extends IOEvent & { type: T },
 	>(type: T, listener: ((e: Event & E) => void) | null) {
 		super.addEventListener(type, listener);
+	}
+
+	public signalRestart() {
+		super.dispatchEvent(new RestartEvent(this));
 	}
 }
 
@@ -135,11 +150,16 @@ export default class MicroPythonIO {
 		this.running = true;
 		const events = new IOEventTarget();
 		(async () => {
+			console.log(need_restart);
 			if (need_restart) {
+				//Another program was previously; send a cancel character,
+				//then wait until the previously-made IOEventTarget clears the
+				// `running` flag.
 				await this.writer.write(new Uint8Array([0x03]));
 				while (this.running) {
-					await new Promise((resolve) => setTimeout(() => resolve, 100));
+					await new Promise((resolve) => {setTimeout(resolve, 100)});
 				}
+				this.running = true;
 			}
 			const data = encoder.encode(`${code}\x04`);
 			for (let offset = 0; offset < data.length; offset += 256) {
@@ -182,6 +202,7 @@ export default class MicroPythonIO {
 						break;
 					}
 					case Mode.NONE: {
+						console.log(`NONE hit. Data: ${data}.`);
 						if (data !== ">") break;
 
 						this.running = false;

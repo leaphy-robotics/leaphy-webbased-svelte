@@ -35,7 +35,7 @@ $effect(() => {
 	render();
 
 	terminal.onData((data) => {
-		if (WorkspaceState.microPythonIO.running) {
+		if (WorkspaceState.microPythonIO.running || WorkspaceState.microPythonRun === undefined) {
 			return;
 		}
 
@@ -129,16 +129,26 @@ $effect(() => {
 });
 
 $effect(() => {
+	$inspect(WorkspaceState.microPythonRun);
 	if (!WorkspaceState.microPythonRun) return;
 
 	terminal.write("\r\n");
-	WorkspaceState.microPythonRun.addEventListener("stdout", (event) => {
+	const stdout_handler = (event) => {
 		terminal.write(event.data);
-	});
-	WorkspaceState.microPythonRun.addEventListener("stderr", (event) => {
+	};
+	const stderr_handler = (event) => {
 		terminal.write(`\x1b[31m${event.data}\x1b[0m`);
-	});
+	};
+	const restart_handler = (event) => {
+		event.source.removeEventListener("stdout",stdout_handler);
+		event.source.removeEventListener("stderr",stderr_handler);
+		event.source.removeEventListener("done", render);
+		event.source.removeEventListener("restart", restart_handler);
+	};
+	WorkspaceState.microPythonRun.addEventListener("stdout", stdout_handler);
+	WorkspaceState.microPythonRun.addEventListener("stderr", stderr_handler);
 	WorkspaceState.microPythonRun.addEventListener("done", render);
+	WorkspaceState.microPythonRun.addEventListener("restart", restart_handler);
 });
 </script>
 
