@@ -446,6 +446,12 @@ function openESPProgrammerPopup() {
 								onclick={() => setLocale("nl")}
 								{open}
 							/>
+							<ContextItem
+								selected={$locale === "ua"}
+								name={"Yкраїнська"}
+								onclick={() => setLocale("ua")}
+								{open}
+							/>
 						{/snippet}
 					</ContextItem>
 					<ContextItem
