@@ -24,6 +24,7 @@ import {
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
 import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
+import VisualRobot from "$components/core/popups/popups/debugger/VisualRobot.svelte";
 
 function openSerial() {
 	PopupState.open({
@@ -69,6 +70,14 @@ function openTutorials() {
 		},
 	});
 }
+
+function openDebugger() {
+	PopupState.open({
+		component: VisualRobot,
+		data: {},
+		allowInteraction: true,
+	})
+}
 </script>
 
 <div class="content">
@@ -80,6 +89,9 @@ function openTutorials() {
 			{/if}
 			{#if WorkspaceState.Mode !== Mode.PYTHON}
 				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? openPythonTerminal : openSerial} />
+			{/if}
+			{#if WorkspaceState.Mode !== Mode.PYTHON}
+				<SideButton icon={faBug} action="DEBUGGER" onclick={openDebugger} />
 			{/if}
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />

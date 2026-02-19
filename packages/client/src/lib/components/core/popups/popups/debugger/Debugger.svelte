@@ -83,11 +83,9 @@
 <style>
 	.content {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 		gap: 10px;
 		padding: 10px;
-
-		background: var(--background);
 		/*width: 600px;*/
 	}
 
