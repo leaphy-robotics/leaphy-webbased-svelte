@@ -29,6 +29,11 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const code = `while True:\n${branch}`;
 		return code;
 	};
+
+	python.forBlock.raw_code_line = (block, generator) => {
+		const code = block.getFieldValue("CODE_INPUT");
+		return code;
+	};
 }
 
 export default getCodeGenerators;
