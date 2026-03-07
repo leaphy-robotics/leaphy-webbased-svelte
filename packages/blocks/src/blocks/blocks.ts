@@ -9,6 +9,7 @@ import * as mesh from "./mesh";
 import * as ml from "./ml";
 import * as rtc from "./rtc";
 import * as texts from "./text";
+import * as spark from "./leaphy_spark"
 
 const blocks = [
 	...lists.blocks,
@@ -22,6 +23,7 @@ const blocks = [
 	...rtc.blocks,
 	...ml.blocks,
 	...bluetooth.blocks,
+	...spark.blocks,
 ];
 
 export { blocks };

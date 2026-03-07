@@ -21,6 +21,8 @@ export enum Dependencies {
 	DS3231_RTC = "DS3231@1.1.2",
 	PAINLESS_MESH = "painlessMesh@1.5.4",
 	ASYNC_TCP = "AsyncTCP@3.3.2",
+	TCA9354_GPIO = "SparkFun Qwiic GPIO TCA9534 Arduino Library@1.0.0",
+	ADS1X15_ADS = "Adafruit ADS1X15@2.6.2",
 
 	TENSORFLOW_ESP32 = "TensorFlowLite_ESP32@1.0.0",
 	SD = "SD@1.3.0",
