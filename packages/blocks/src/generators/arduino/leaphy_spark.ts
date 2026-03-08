@@ -23,9 +23,11 @@ export default function getCodeGenerators(arduino: Arduino) {
 			"sparkGPIO.config(1, TCA9534::Config::OUT);\n" +
 			"sparkGPIO.config(2, TCA9534::Config::OUT);")
 
-		return `sparkGPIO.output(2, ${red});
-sparkGPIO.output(1, ${green});
-sparkGPIO.output(0, ${blue});`;
+		const debug = arduino.createDebug("rgb-led", { type: "rgb", values: 3, name: "Leaphy Spark RGB" })
+
+		return `sparkGPIO.output(2, ${debug(`(${red}) ? 255 : 0`, 0)});
+sparkGPIO.output(1, ${debug(`(${green}) ? 255 : 0`, 1)});
+sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});`;
 	};
 
 	arduino.forBlock.leaphy_spark_read = (block) => {

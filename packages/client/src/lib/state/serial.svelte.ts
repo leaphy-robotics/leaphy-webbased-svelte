@@ -102,7 +102,10 @@ class LogState {
 			const commands = item.split("_")
 			if (commands[1] !== "debug") return true
 
-			this.debugger.processCommand(commands.slice(2))
+			try {
+				this.debugger.processCommand(commands.slice(2))
+			} catch (e) {}
+
 			return false
 		})
 
