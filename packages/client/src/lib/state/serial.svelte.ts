@@ -5,6 +5,7 @@ import { track } from "$state/utils";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
+import {clearReadBuffer, delay} from "../programmers/utils";
 
 interface ActiveDebugger {
 	type: Debugger,
@@ -90,6 +91,7 @@ class LogState {
 		this.buffer += new TextDecoder().decode(content);
 
 		let items = this.buffer.split("\n");
+		console.log(items)
 		this.buffer = items.pop();
 
 		for (const item of items) {
@@ -365,6 +367,15 @@ class SerialState {
 			}
 			this.writer = undefined;
 		}
+	}
+
+	async reset() {
+		await this.reserve()
+		await this.port.close();
+		await this.port.open({ baudRate: 115200 });
+
+		this.release()
+		await this.initPort()
 	}
 
 	release() {

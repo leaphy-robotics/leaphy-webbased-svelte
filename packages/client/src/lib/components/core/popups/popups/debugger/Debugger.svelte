@@ -2,8 +2,10 @@
 	import starling from "$assets/starling-svg.svg"
 	import Windowed from "$components/core/popups/Windowed.svelte";
 	import { onMount } from "svelte";
-	import SerialState from "$state/serial.svelte"
+	import SerialState, {Prompt} from "$state/serial.svelte"
 	import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
+	import { _ } from "svelte-i18n";
+	import Button from "$components/ui/Button.svelte"
 
 	let motorDebugger = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.type === 'motors'))
 	let leftSpeed = $derived(motorDebugger?.values?.[0] || 0)
@@ -28,6 +30,15 @@
 	let proximityFactor = $derived(Math.max(0, Math.min(1, (30 - distance) / 30)));
 	let proximityScale = $derived(distance > 30 ? 1 : 0.5 + (proximityFactor * 0.5));
 	let sonarHeight = $derived(distance * CM_TO_PX);
+
+	async function connect() {
+		if (SerialState.port) {
+			await SerialState.reset()
+			return
+		}
+
+		await SerialState.connect(Prompt.MAYBE);
+	}
 
 	function differentialDriveTick(leftSpeed: number, rightSpeed: number): void {
 		const leftVelocity = (leftSpeed / 100) * MAX_SPEED;
@@ -64,6 +75,15 @@
 </script>
 
 <Windowed title="DEBUGGER">
+	{#if !SerialState.port || !SerialState.log.debugger.debuggers}
+		<div class="warning">
+			<div class="desc">
+				<div class="name">{$_("NOT_CONNECTED")}</div>
+				<div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+			</div>
+			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
+		</div>
+	{/if}
 	<div class="viewport" class:near-mode={proximityFactor > 0}>
 		<div
 			class="playground"
@@ -128,6 +148,21 @@
 		height: 700px; /* Slightly taller to accommodate the scale */
 		overflow: hidden;
 		position: relative;
+	}
+
+	.warning {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--primary);
+		color: var(--on-primary);
+		width: 100%;
+		padding: 5px 5px 5px 10px;
+	}
+
+	.name {
+		font-size: 1.1em;
+		font-weight: bold;
 	}
 
 	.playground {

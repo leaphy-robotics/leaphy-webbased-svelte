@@ -201,7 +201,7 @@ export class Arduino extends Blockly.Generator {
 		if (!this.debugging) return;
 
 		this.addSetup("serial", "Serial.begin(115200);")
-		this.addSetup("debug", `Serial.println("_debug_start_${JSON.stringify(Object.values(this.debuggers_)).replaceAll("\"", "\\\"")}");`)
+		this.addSetup("debug", `Serial.println("\\n_debug_start_${JSON.stringify(Object.values(this.debuggers_)).replaceAll("\"", "\\\"")}");`)
 
 		this.addDefinition("debug", `#define DEBUG_VAL(id, idx, val) ([&](__typeof__(val) _v) { \\
   Serial.print("_debug_log_"); \\
