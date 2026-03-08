@@ -115,7 +115,11 @@ function getCodeGenerators(arduino: Arduino) {
 			pin_blue = 3;
 		}
 
-		const debug = arduino.createDebug("rgb-led", { type: "rgb", values: 3, name: "RGB Led" })
+		const debug = arduino.createDebug("rgb-led", {
+			type: "rgb",
+			values: 3,
+			name: "RGB Led",
+		});
 
 		return (
 			`analogWrite(${pin_red}, ${debug(red, 0)});\n` +
@@ -207,8 +211,8 @@ function getCodeGenerators(arduino: Arduino) {
 		const debug = arduino.createDebug(`digital-input-${dropdown_pin}`, {
 			type: "basic",
 			name: `Digital input ${dropdown_pin}`,
-			values: 1
-		})
+			values: 1,
+		});
 
 		const code = debug(`digitalRead(${dropdown_pin})`);
 		return [code, arduino.ORDER_ATOMIC];
@@ -242,8 +246,8 @@ function getCodeGenerators(arduino: Arduino) {
 		const debug = arduino.createDebug(`analog-input-${dropdown_pin}`, {
 			type: "basic",
 			name: `Analog input ${dropdown_pin}`,
-			values: 1
-		})
+			values: 1,
+		});
 
 		const code = debug(`analogRead(${dropdown_pin})`);
 		return [code, arduino.ORDER_ATOMIC];
@@ -267,12 +271,12 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "SPEED", arduino.ORDER_ATOMIC) || "100";
 		const direction = motor === "left" ? 1 : -1;
 
-		const debug = arduino.createDebug('original-servo', {
-			type: 'motors',
+		const debug = arduino.createDebug("original-servo", {
+			type: "motors",
 			values: 2,
-			name: "Leaphy Starling motors"
-		})
-		return `servo_${motor}.write(90 + 90*${debug(`${speed}*${direction}`, motor === 'left' ? 0 : 1)}/100);\n`;
+			name: "Leaphy Starling motors",
+		});
+		return `servo_${motor}.write(90 + 90*${debug(`${speed}*${direction}`, motor === "left" ? 0 : 1)}/100);\n`;
 	};
 
 	arduino.forBlock.leaphy_original_servo_move = (block) => {
@@ -290,11 +294,11 @@ function getCodeGenerators(arduino: Arduino) {
 		const motor_left = MOTOR_SPEEDS[direction][0];
 		const motor_right = MOTOR_SPEEDS[direction][1];
 
-		const debug = arduino.createDebug('original-servo', {
-			type: 'motors',
+		const debug = arduino.createDebug("original-servo", {
+			type: "motors",
 			values: 2,
-			name: "Leaphy Starling motors"
-		})
+			name: "Leaphy Starling motors",
+		});
 		return (
 			`servo_left.write(90 + 90*${debug(`${speed}*${motor_left}`, 0)}/100);\n` +
 			`servo_right.write(90 + 90*${debug(`${speed}*${motor_right}`, 1)}/100);\n`

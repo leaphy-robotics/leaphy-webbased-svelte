@@ -1,40 +1,39 @@
 <script lang="ts">
-	import {onMount} from "svelte";
-	import SerialState from "$state/serial.svelte.js";
+import SerialState from "$state/serial.svelte.js";
+import { onMount } from "svelte";
 
-	let date = $state(Date.now())
-	onMount(() => {
-		setInterval(() => {
-			date = Date.now()
-		}, 1)
-	})
+let date = $state(Date.now());
+onMount(() => {
+	setInterval(() => {
+		date = Date.now();
+	}, 1);
+});
 
-	function motorState(left: number, right: number) {
-		if (left === 0 && right === 0) return 'Stationary'
+function motorState(left: number, right: number) {
+	if (left === 0 && right === 0) return "Stationary";
 
-		if (left === right) {
-			if (left > 0) {
-				return 'Forward'
-			}
-
-			return 'Backward'
+	if (left === right) {
+		if (left > 0) {
+			return "Forward";
 		}
 
-		if (left === -right) {
-			if (left > right) {
-				return 'Right'
-			}
-
-			return 'Left'
-		}
-
-
-		if (left > right) {
-			return 'Curving right'
-		}
-
-		return 'Curving left'
+		return "Backward";
 	}
+
+	if (left === -right) {
+		if (left > right) {
+			return "Right";
+		}
+
+		return "Left";
+	}
+
+	if (left > right) {
+		return "Curving right";
+	}
+
+	return "Curving left";
+}
 </script>
 
 {#if SerialState.log.debugger.debuggers?.length}

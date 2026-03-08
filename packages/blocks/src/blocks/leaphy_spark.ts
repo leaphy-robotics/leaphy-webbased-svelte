@@ -26,13 +26,12 @@ const blocks: BlockDefinition = [
 		output: "Number",
 		helpUrl: "",
 
-		aiHelp: `Read the sensor values of sensors on the Leaphy spark shield (options: ${sparkSensorOptions.map(([_name, id]) => id).join(', ')})`,
+		aiHelp: `Read the sensor values of sensors on the Leaphy spark shield (options: ${sparkSensorOptions.map(([_name, id]) => id).join(", ")})`,
 		relevanceKey: "SPARK",
 	},
 	{
 		type: "leaphy_spark_led",
-		message0:
-			"%{BKY_LEAPHY_SPARK_RGB}",
+		message0: "%{BKY_LEAPHY_SPARK_RGB}",
 		args0: [
 			{ type: "input_value", name: "RED", check: "Boolean" },
 			{ type: "input_value", name: "GREEN", check: "Boolean" },

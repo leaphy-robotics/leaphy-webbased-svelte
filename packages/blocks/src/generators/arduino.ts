@@ -11,33 +11,37 @@ import { Dependencies } from "./arduino/dependencies";
 import { addI2CDeclarations } from "./arduino/i2c";
 
 type BaseDebugger = {
-	name: string
-	values: number
-	simulation?: string
-}
+	name: string;
+	values: number;
+	simulation?: string;
+};
 
 type BasicDebugger = BaseDebugger & {
-	type: "basic",
-	unit?: string,
-	values: 1,
-}
+	type: "basic";
+	unit?: string;
+	values: 1;
+};
 
 type RGBDebugger = BaseDebugger & {
-	type: "rgb",
-	values: 3,
-}
+	type: "rgb";
+	values: 3;
+};
 
 type ServoDebugger = BaseDebugger & {
-	type: "servo",
-	values: 1,
-}
+	type: "servo";
+	values: 1;
+};
 
 type MotorsDebugger = BaseDebugger & {
-	type: "motors",
-	values: 2,
-}
+	type: "motors";
+	values: 2;
+};
 
-export type Debugger = BasicDebugger | RGBDebugger | ServoDebugger | MotorsDebugger
+export type Debugger =
+	| BasicDebugger
+	| RGBDebugger
+	| ServoDebugger
+	| MotorsDebugger;
 
 export class Arduino extends Blockly.Generator {
 	public ORDER_ATOMIC = 0; // 0 "" ...
@@ -199,10 +203,15 @@ export class Arduino extends Blockly.Generator {
 	public addDebugging() {
 		if (!this.debugging) return;
 
-		this.addSetup("serial", "Serial.begin(115200);")
-		this.addSetup("debug", `Serial.println("\\n_debug_start_${JSON.stringify(Object.values(this.debuggers_)).replaceAll("\"", "\\\"")}");`)
+		this.addSetup("serial", "Serial.begin(115200);");
+		this.addSetup(
+			"debug",
+			`Serial.println("\\n_debug_start_${JSON.stringify(Object.values(this.debuggers_)).replaceAll('"', '\\"')}");`,
+		);
 
-		this.addDefinition("debug", `#define DEBUG_VAL(id, idx, val) ([&](__typeof__(val) _v) { \\
+		this.addDefinition(
+			"debug",
+			`#define DEBUG_VAL(id, idx, val) ([&](__typeof__(val) _v) { \\
   Serial.print("_debug_log_"); \\
   Serial.print(id); \\
   Serial.print("_"); \\
@@ -210,31 +219,37 @@ export class Arduino extends Blockly.Generator {
   Serial.print("_"); \\
   Serial.println(_v); \\
   return _v; \\
-}(val))`)
+}(val))`,
+		);
 	}
 
-	public createDebug(id: string, debug: Debugger, asStatement = false): (value: string, index?: number) => string {
+	public createDebug(
+		id: string,
+		debug: Debugger,
+		asStatement = false,
+	): (value: string, index?: number) => string {
 		if (!this.debugging) {
-			if (asStatement) return () => ""
+			if (asStatement) return () => "";
 
-			return (value) => value
+			return (value) => value;
 		}
 
 		if (!this.debuggers_[id]) {
-			const set = new Set(Object.values(this.debuggers_).map(e => e.id))
+			const set = new Set(Object.values(this.debuggers_).map((e) => e.id));
 
-			let i = 0
+			let i = 0;
 			while (set.has(i)) {
-				i++
+				i++;
 			}
 
 			this.debuggers_[id] = {
 				id: i,
-				...debug
-			}
+				...debug,
+			};
 		}
 
-		return (value, index = 0) => `DEBUG_VAL(${this.debuggers_[id].id}, ${index}, ${value})${asStatement ? ';\n' : ''}`
+		return (value, index = 0) =>
+			`DEBUG_VAL(${this.debuggers_[id].id}, ${index}, ${value})${asStatement ? ";\n" : ""}`;
 	}
 
 	public init(workspace: WorkspaceSvg) {
@@ -622,6 +637,7 @@ import * as bluetooth from "./arduino/bluetooth";
 import * as leaphy_extra from "./arduino/leaphy_extra";
 import * as leaphy_flitz from "./arduino/leaphy_flitz";
 import * as leaphy_original from "./arduino/leaphy_original";
+import * as spark from "./arduino/leaphy_spark";
 import * as ledstrip from "./arduino/ledstrip";
 import * as lists from "./arduino/lists";
 import * as logic from "./arduino/logic";
@@ -635,7 +651,6 @@ import * as sensors from "./arduino/sensors";
 import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
-import * as spark from "./arduino/leaphy_spark"
 
 arduino.default(generator);
 leaphy_common.default(generator);

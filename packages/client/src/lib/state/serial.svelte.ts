@@ -2,15 +2,15 @@ import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
 import { track } from "$state/utils";
+import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
-import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
-import {clearReadBuffer, delay} from "../programmers/utils";
+import { clearReadBuffer, delay } from "../programmers/utils";
 
 interface ActiveDebugger {
-	type: Debugger,
-	lastSignal: number,
-	values: number[]
+	type: Debugger;
+	lastSignal: number;
+	values: number[];
 }
 
 export type LeaphyPort =
@@ -37,34 +37,42 @@ export const SUPPORTED_VENDOR_IDS = [
 ];
 
 class DebugState {
-	debuggers = $state<ActiveDebugger[]>()
+	debuggers = $state<ActiveDebugger[]>();
 
 	processCommand(command: string[]) {
 		switch (command[0]) {
 			case "start": {
-				this.debuggers = (JSON.parse(command.slice(1).join("_")) as Debugger[]).map(type => ({ type, lastSignal: 0, values: new Array(type.values).fill(0) }))
-				break
+				this.debuggers = (
+					JSON.parse(command.slice(1).join("_")) as Debugger[]
+				).map((type) => ({
+					type,
+					lastSignal: 0,
+					values: new Array(type.values).fill(0),
+				}));
+				break;
 			}
 			case "log": {
-				if (!this.debuggers) break
-				if (!this.debuggers[parseInt(command[1])]) break
+				if (!this.debuggers) break;
+				if (!this.debuggers[Number.parseInt(command[1])]) break;
 
-				this.debuggers[parseInt(command[1])].values[parseInt(command[2])] = parseFloat(command[3])
-				this.debuggers[parseInt(command[1])].lastSignal = Date.now()
-				break
+				this.debuggers[Number.parseInt(command[1])].values[
+					Number.parseInt(command[2])
+				] = Number.parseFloat(command[3]);
+				this.debuggers[Number.parseInt(command[1])].lastSignal = Date.now();
+				break;
 			}
 		}
 	}
 
 	clear() {
-		this.debuggers = null
+		this.debuggers = null;
 	}
 }
 
 class LogState {
 	log = $state<LogItem[]>([]);
 	charts = $state<Record<string, { x: Date; y: number }[]>>({});
-	debugger = new DebugState()
+	debugger = new DebugState();
 
 	private buffer = "";
 	private count = 0;
@@ -99,16 +107,16 @@ class LogState {
 
 			this.point(label, Number.parseFloat(value));
 		}
-		items = items.filter(item => {
-			const commands = item.split("_")
-			if (commands[1] !== "debug") return true
+		items = items.filter((item) => {
+			const commands = item.split("_");
+			if (commands[1] !== "debug") return true;
 
 			try {
-				this.debugger.processCommand(commands.slice(2))
+				this.debugger.processCommand(commands.slice(2));
 			} catch (e) {}
 
-			return false
-		})
+			return false;
+		});
 
 		if (items.length > 0) {
 			this.log = [
@@ -369,12 +377,12 @@ class SerialState {
 	}
 
 	async reset() {
-		await this.reserve()
+		await this.reserve();
 		await this.port.close();
 		await this.port.open({ baudRate: 115200 });
 
-		this.release()
-		await this.initPort()
+		this.release();
+		await this.initPort();
 	}
 
 	release() {

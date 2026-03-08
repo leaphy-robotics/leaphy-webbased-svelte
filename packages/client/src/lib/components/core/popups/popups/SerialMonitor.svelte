@@ -1,5 +1,6 @@
 <script lang="ts">
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
@@ -19,7 +20,6 @@ import { tick } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
-import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 
 enum Mode {
 	TEXT = 0,

@@ -4,12 +4,12 @@ import * as bluetooth from "./bluetooth";
 import * as leaphyCommon from "./leaphy_common";
 import * as leaphyFlitz from "./leaphy_flitz";
 import * as leaphyOriginal from "./leaphy_original";
+import * as spark from "./leaphy_spark";
 import * as lists from "./lists";
 import * as mesh from "./mesh";
 import * as ml from "./ml";
 import * as rtc from "./rtc";
 import * as texts from "./text";
-import * as spark from "./leaphy_spark"
 
 const blocks = [
 	...lists.blocks,

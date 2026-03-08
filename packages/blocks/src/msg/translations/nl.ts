@@ -804,13 +804,14 @@ messages.LEAPHY_KEY_ARROW_DOWN = "pijltje omlaag";
 messages.LEAPHY_KEY_ARROW_RIGHT = "pijltje rechts";
 messages.LEAPHY_KEY_ARROW_LEFT = "pijltje links";
 messages.DEFAULT = "Standaard";
-messages.LEAPHY_SPARK_READ = "Lees Leaphy Spark sensor %1"
-messages.LEAPHY_SPARK_RGB = "Leaphy Spark led rood %1 groen %2 blauw %3"
+messages.LEAPHY_SPARK_READ = "Lees Leaphy Spark sensor %1";
+messages.LEAPHY_SPARK_RGB = "Leaphy Spark led rood %1 groen %2 blauw %3";
 messages.LEAPHY_SPARK_LEFT_LINE_SENSOR = "linker lijnsensor";
 messages.LEAPHY_SPARK_RIGHT_LINE_SENSOR = "rechter lijnsensor";
 messages.LEAPHY_SPARK_POTENTIOMETER = "potentiometer";
 messages.LEAPHY_SPARK_LEFT_AMBIENT_LIGHT_SENSOR = "linker omgevingslichtsensor";
-messages.LEAPHY_SPARK_RIGHT_AMBIENT_LIGHT_SENSOR = "rechter omgevingslichtsensor";
+messages.LEAPHY_SPARK_RIGHT_AMBIENT_LIGHT_SENSOR =
+	"rechter omgevingslichtsensor";
 messages.LEAPHY_SPARK_BUTTON = "knop";
 
 export default messages;

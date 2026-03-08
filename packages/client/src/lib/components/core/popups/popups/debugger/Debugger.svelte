@@ -1,77 +1,100 @@
 <script lang="ts">
-	import starling from "$assets/starling-svg.svg"
-	import Windowed from "$components/core/popups/Windowed.svelte";
-	import { onMount } from "svelte";
-	import SerialState, {Prompt} from "$state/serial.svelte"
-	import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
-	import { _ } from "svelte-i18n";
-	import Button from "$components/ui/Button.svelte"
+import starling from "$assets/starling-svg.svg";
+import Windowed from "$components/core/popups/Windowed.svelte";
+import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
+import Button from "$components/ui/Button.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 
-	let motorDebugger = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.type === 'motors'))
-	let leftSpeed = $derived(motorDebugger?.values?.[0] || 0)
-	let rightSpeed = $derived(-motorDebugger?.values?.[1] || 0)
+let motorDebugger = $derived(
+	SerialState.log.debugger.debuggers?.find((e) => e.type.type === "motors"),
+);
+let leftSpeed = $derived(motorDebugger?.values?.[0] || 0);
+let rightSpeed = $derived(-motorDebugger?.values?.[1] || 0);
 
-	let distance = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.simulation === "distance")?.values?.[0] ?? 1313)
+let distance = $derived(
+	SerialState.log.debugger.debuggers?.find(
+		(e) => e.type.simulation === "distance",
+	)?.values?.[0] ?? 1313,
+);
 
-	// Line sensor derivations (0 = black line, 1 = floor)
-	let leftLineSensor = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.simulation === "left_line_sensor")?.values?.[0] ?? 1)
-	let rightLineSensor = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.simulation === "right_line_sensor")?.values?.[0] ?? 1)
+// Line sensor derivations (0 = black line, 1 = floor)
+let leftLineSensor = $derived(
+	SerialState.log.debugger.debuggers?.find(
+		(e) => e.type.simulation === "left_line_sensor",
+	)?.values?.[0] ?? 1,
+);
+let rightLineSensor = $derived(
+	SerialState.log.debugger.debuggers?.find(
+		(e) => e.type.simulation === "right_line_sensor",
+	)?.values?.[0] ?? 1,
+);
 
-	const WHEEL_BASE = 203.392682906;
-	const AXIS_OFFSET = 31.4487804847;
-	const MAX_SPEED = 4;
-	const CM_TO_PX = (343 / 138) * 10;
+const WHEEL_BASE = 203.392682906;
+const AXIS_OFFSET = 31.4487804847;
+const MAX_SPEED = 4;
+const CM_TO_PX = (343 / 138) * 10;
 
-	let backgroundX = $state(0)
-	let backgroundY = $state(0)
-	let robotRotation = $state(0)
-	let currentCurveOffset = $state(0)
+let backgroundX = $state(0);
+let backgroundY = $state(0);
+let robotRotation = $state(0);
+let currentCurveOffset = $state(0);
 
-	let proximityFactor = $derived(Math.max(0, Math.min(1, (30 - distance) / 30)));
-	let proximityScale = $derived(distance > 30 ? 1 : 0.5 + (proximityFactor * 0.5));
-	let sonarHeight = $derived(distance * CM_TO_PX);
+let proximityFactor = $derived(Math.max(0, Math.min(1, (30 - distance) / 30)));
+let proximityScale = $derived(distance > 30 ? 1 : 0.5 + proximityFactor * 0.5);
+let sonarHeight = $derived(distance * CM_TO_PX);
 
-	async function connect() {
-		if (SerialState.port) {
-			await SerialState.reset()
-			return
-		}
-
-		await SerialState.connect(Prompt.MAYBE);
+async function connect() {
+	if (SerialState.port) {
+		await SerialState.reset();
+		return;
 	}
 
-	function differentialDriveTick(leftSpeed: number, rightSpeed: number): void {
-		const leftVelocity = (leftSpeed / 100) * MAX_SPEED;
-		const rightVelocity = (rightSpeed / 100) * MAX_SPEED;
-		const linearVelocity = (leftVelocity + rightVelocity) / 2;
-		const angularVelocity = (rightVelocity - leftVelocity) / WHEEL_BASE;
-		robotRotation += angularVelocity;
-		robotRotation = Math.atan2(Math.sin(robotRotation), Math.cos(robotRotation));
-		const dx = linearVelocity * Math.sin(robotRotation) + angularVelocity * AXIS_OFFSET * Math.cos(robotRotation);
-		const dy = -linearVelocity * Math.cos(robotRotation) + angularVelocity * AXIS_OFFSET * Math.sin(robotRotation);
-		backgroundX -= Math.cos(-robotRotation - Math.PI / 2) * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
-		backgroundY -= Math.sin(-robotRotation - Math.PI / 2) * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+	await SerialState.connect(Prompt.MAYBE);
+}
 
-		// Calculate target curve for the line prediction based on sensors
-		let targetCurve = 0;
-		if (leftLineSensor < 0.5 && rightLineSensor >= 0.5) {
-			targetCurve = -250; // Line is turning left
-		} else if (rightLineSensor < 0.5 && leftLineSensor >= 0.5) {
-			targetCurve = 250; // Line is turning right
-		} else if (leftLineSensor < 0.5 && rightLineSensor < 0.5) {
-			targetCurve = 0; // Both on line, keep straight
-		} else {
-			targetCurve = 0; // Lost the line, default straight
-		}
+function differentialDriveTick(leftSpeed: number, rightSpeed: number): void {
+	const leftVelocity = (leftSpeed / 100) * MAX_SPEED;
+	const rightVelocity = (rightSpeed / 100) * MAX_SPEED;
+	const linearVelocity = (leftVelocity + rightVelocity) / 2;
+	const angularVelocity = (rightVelocity - leftVelocity) / WHEEL_BASE;
+	robotRotation += angularVelocity;
+	robotRotation = Math.atan2(Math.sin(robotRotation), Math.cos(robotRotation));
+	const dx =
+		linearVelocity * Math.sin(robotRotation) +
+		angularVelocity * AXIS_OFFSET * Math.cos(robotRotation);
+	const dy =
+		-linearVelocity * Math.cos(robotRotation) +
+		angularVelocity * AXIS_OFFSET * Math.sin(robotRotation);
+	backgroundX -=
+		Math.cos(-robotRotation - Math.PI / 2) * Math.sqrt(dx ** 2 + dy ** 2);
+	backgroundY -=
+		Math.sin(-robotRotation - Math.PI / 2) * Math.sqrt(dx ** 2 + dy ** 2);
 
-		// Smoothly interpolate the line curve
-		currentCurveOffset += (targetCurve - currentCurveOffset) * 0.08;
+	// Calculate target curve for the line prediction based on sensors
+	let targetCurve = 0;
+	if (leftLineSensor < 0.5 && rightLineSensor >= 0.5) {
+		targetCurve = -250; // Line is turning left
+	} else if (rightLineSensor < 0.5 && leftLineSensor >= 0.5) {
+		targetCurve = 250; // Line is turning right
+	} else if (leftLineSensor < 0.5 && rightLineSensor < 0.5) {
+		targetCurve = 0; // Both on line, keep straight
+	} else {
+		targetCurve = 0; // Lost the line, default straight
 	}
 
-	onMount(() => {
-		const interval = setInterval(() => differentialDriveTick(leftSpeed, rightSpeed), 1000 / 60)
-		return () => clearInterval(interval);
-	})
+	// Smoothly interpolate the line curve
+	currentCurveOffset += (targetCurve - currentCurveOffset) * 0.08;
+}
+
+onMount(() => {
+	const interval = setInterval(
+		() => differentialDriveTick(leftSpeed, rightSpeed),
+		1000 / 60,
+	);
+	return () => clearInterval(interval);
+});
 </script>
 
 <Windowed title={$_("DEBUGGER")}>

@@ -297,8 +297,8 @@ export default [
 						inputs: {
 							RED: boolean(),
 							GREEN: boolean(),
-							BLUE: boolean()
-						}
+							BLUE: boolean(),
+						},
 					},
 					{
 						robots: [
