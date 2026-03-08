@@ -221,7 +221,7 @@ class WorkspaceState {
 				serialization.workspaces.save(BlocklyState.workspace),
 			);
 		}
-	
+
 		return this.code;
 	}
 }

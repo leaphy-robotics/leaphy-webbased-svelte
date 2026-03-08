@@ -5,6 +5,7 @@ import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import Dashboard from "$components/core/popups/popups/help/Dashboard.svelte";
 import Solver from "$components/core/popups/popups/solver/Solver.svelte";
 import Tutorials from "$components/core/popups/popups/tutorials/Tutorials.svelte";
+import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
@@ -12,6 +13,7 @@ import SideButton from "$components/ui/SideButton.svelte";
 import { inFilter } from "$domain/robots";
 import robotsGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
+import EmbedSvelte from "$state/embed.svelte";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
@@ -19,12 +21,11 @@ import {
 	faChalkboardTeacher,
 	faCode,
 	faLightbulb,
-	faSquarePollHorizontal, faTasks,
+	faSquarePollHorizontal,
+	faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
-import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
-import EmbedSvelte from "$state/embed.svelte";
 
 function openSerial() {
 	PopupState.open({

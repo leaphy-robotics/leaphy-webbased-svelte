@@ -1,14 +1,14 @@
 <script lang="ts">
 import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import AIState from "$state/ai.svelte";
+import EmbedState from "$state/embed.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import { onMount } from "svelte";
 import Popup from "./Popup.svelte";
-import EmbedState from "$state/embed.svelte";
 
 onMount(async () => {
-    EmbedState.setupEmbedApi();
+	EmbedState.setupEmbedApi();
 	await PopupState.setup();
 	await RecordingsState.setup();
 });

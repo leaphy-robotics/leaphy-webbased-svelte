@@ -13,6 +13,7 @@ import ContextItem from "$components/ui/ContextItem.svelte";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import EmbedState from "$state/embed.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
@@ -54,7 +55,6 @@ import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
 import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
-import EmbedState from "$state/embed.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
