@@ -309,5 +309,7 @@
 	"LIDAR_SENSOR_CHANNEL": "Датчик Lidar (I2C канал: {channel})",
 	"I2C_CHANNEL": "I2C канал",
 	"I2C_CHANNEL_DESCRIPTION": "Виберіть I2C канал",
-	"NONE": "Немає"
+	"NONE": "Немає",
+
+	"DEBUGGER": "налагоджувач"
 }

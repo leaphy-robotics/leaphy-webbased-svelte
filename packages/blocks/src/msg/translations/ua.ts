@@ -657,5 +657,13 @@ messages.LEAPHY_KEY_ARROW_DOWN = "стрілка вниз";
 messages.LEAPHY_KEY_ARROW_RIGHT = "стрілка праворуч";
 messages.LEAPHY_KEY_ARROW_LEFT = "стрілка ліворуч";
 messages.DEFAULT = "За замовчуванням";
+messages.LEAPHY_SPARK_READ = "Зчитати датчик Leaphy Spark %1";
+messages.LEAPHY_SPARK_RGB = "Leaphy Spark світлодіод: червоний %1 зелений %2 синій %3";
+messages.LEAPHY_SPARK_LEFT_LINE_SENSOR = "лівий датчик лінії";
+messages.LEAPHY_SPARK_RIGHT_LINE_SENSOR = "правий датчик лінії";
+messages.LEAPHY_SPARK_POTENTIOMETER = "потенціометр";
+messages.LEAPHY_SPARK_LEFT_AMBIENT_LIGHT_SENSOR = "лівий датчик зовнішнього освітлення";
+messages.LEAPHY_SPARK_RIGHT_AMBIENT_LIGHT_SENSOR = "правий датчик зовнішнього освітлення";
+messages.LEAPHY_SPARK_BUTTON = "кнопка";
 
 export default messages;

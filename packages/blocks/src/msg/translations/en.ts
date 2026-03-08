@@ -656,5 +656,13 @@ messages.LEAPHY_KEY_ARROW_DOWN = "down arrow";
 messages.LEAPHY_KEY_ARROW_RIGHT = "right arrow";
 messages.LEAPHY_KEY_ARROW_LEFT = "left arrow";
 messages.DEFAULT = "Default";
+messages.LEAPHY_SPARK_READ = "Read Leaphy Spark sensor %1"
+messages.LEAPHY_SPARK_RGB = "Leaphy Spark led red %1 green %2 blue %3"
+messages.LEAPHY_SPARK_LEFT_LINE_SENSOR = "left line sensor"
+messages.LEAPHY_SPARK_RIGHT_LINE_SENSOR = "right line sensor"
+messages.LEAPHY_SPARK_POTENTIOMETER = "potentiometer"
+messages.LEAPHY_SPARK_LEFT_AMBIENT_LIGHT_SENSOR = "left ambient light sensor"
+messages.LEAPHY_SPARK_RIGHT_AMBIENT_LIGHT_SENSOR = "right ambient light sensor"
+messages.LEAPHY_SPARK_BUTTON = "button"
 
 export default messages;

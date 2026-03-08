@@ -74,7 +74,7 @@
 	})
 </script>
 
-<Windowed title="DEBUGGER">
+<Windowed title={$_("DEBUGGER")}>
 	{#if !SerialState.port || !SerialState.log.debugger.debuggers}
 		<div class="warning">
 			<div class="desc">
