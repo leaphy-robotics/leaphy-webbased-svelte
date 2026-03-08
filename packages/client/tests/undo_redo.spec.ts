@@ -16,7 +16,7 @@ test("Undo redo - Deletion", async ({ page }) => {
 
 	// Delete the repeat forever block
 	await page.getByText("repeat forever").click();
-	await page.locator("svg").filter({ hasText: "Leaphy" }).press("Delete");
+	await page.locator("svg").filter({ hasText: "Leaphy", hasNotText: "Spark" }).press("Delete");
 	await expect(page.getByText("repeat forever")).toBeHidden();
 
 	// Test shortcuts once, but the rest of the time use undo/redo buttons to hopefully be less flakey

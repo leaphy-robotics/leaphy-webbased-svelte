@@ -31,7 +31,7 @@ test("Saving - Backpack", async ({ page }) => {
 	await page.locator(".blocklyBackpack").click();
 	await expect(page.getByText("repeat forever")).toBeVisible();
 
-	await page.getByText("repeat forever").dragTo(page.getByText("Leaphy"), {
+	await page.getByText("repeat forever").dragTo(page.getByText("Leaphy", { exact: true }), {
 		force: true,
 		targetPosition: {
 			x: 30,
