@@ -101,7 +101,7 @@ export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
 	arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 	arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
 
-	const debug = arduino.createDebug(`sonar-${trig}-${echo}`, { type: "basic", name: `Sonar trig: ${trig}, echo: ${echo}`, values: 1, icon: 'sonar', unit: 'cm' })
+	const debug = arduino.createDebug(`sonar-${trig}-${echo}`, { type: "basic", name: `Sonar trig: ${trig}, echo: ${echo}`, values: 1, icon: 'sonar', unit: 'cm', simulation: 'distance' })
 	return debug(`getDistanceSonar(${arduino.getRawPinMapping(trig)}, ${arduino.getRawPinMapping(echo)})`);
 }
 

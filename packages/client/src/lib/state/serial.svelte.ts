@@ -41,7 +41,7 @@ class DebugState {
 	processCommand(command: string[]) {
 		switch (command[0]) {
 			case "start": {
-				this.debuggers = (JSON.parse(command[1]) as Debugger[]).map(type => ({ type, lastSignal: 0, values: new Array(type.values).fill(0) }))
+				this.debuggers = (JSON.parse(command.slice(1).join("_")) as Debugger[]).map(type => ({ type, lastSignal: 0, values: new Array(type.values).fill(0) }))
 				break
 			}
 			case "log": {

@@ -19,7 +19,7 @@ import { tick } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Windowed from "../Windowed.svelte";
-import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
+import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 
 enum Mode {
 	TEXT = 0,
@@ -120,7 +120,7 @@ function insertDate() {
 			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
 		</div>
 	{/if}
-	<Debugger />
+	<SensorState />
 	{#if mode === Mode.TEXT}
 		<div class="content" bind:this={element}>
 			{#each SerialState.log.log as item (item.id)}

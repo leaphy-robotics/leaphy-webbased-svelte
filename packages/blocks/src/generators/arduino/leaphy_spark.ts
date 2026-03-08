@@ -4,12 +4,9 @@ import { Dependencies } from "./dependencies";
 export default function getCodeGenerators(arduino: Arduino) {
 	function setupTCA9354() {
 		arduino.addDependency(Dependencies.TCA9354_GPIO)
-		arduino.addInclude("TCA9534", "#include <SparkFun_TCA9534.h>")
+		arduino.addInclude("TCA9534", "#include <TCA9534.h>")
 		arduino.addDefinition("spark-digital", "TCA9534 sparkGPIO;\n")
-		arduino.addSetup("spark-digital", "if (sparkGPIO.begin(Wire, 0x20) == false) {\n" +
-			"    Serial.println(\"Check Connections. No Spark GPIO detected.\");\n" +
-			"    while (1);\n" +
-			"  }")
+		arduino.addSetup("spark-digital", "Wire.begin();\nsparkGPIO.attach(Wire);")
 	}
 
 	arduino.forBlock.leaphy_spark_led = (block) => {
@@ -22,39 +19,41 @@ export default function getCodeGenerators(arduino: Arduino) {
 		const blue =
 			arduino.valueToCode(block, "BLUE", arduino.ORDER_ATOMIC) || "0";
 
-		arduino.addSetup(`spark-led`, "sparkGPIO.pinMode(0, GPIO_OUT);\n" +
-			"sparkGPIO.pinMode(1, GPIO_OUT);\n" +
-			"sparkGPIO.pinMode(2, GPIO_OUT);")
+		arduino.addSetup(`spark-led`, "sparkGPIO.config(0, TCA9534::Config::OUT);\n" +
+			"sparkGPIO.config(1, TCA9534::Config::OUT);\n" +
+			"sparkGPIO.config(2, TCA9534::Config::OUT);")
 
-		return `sparkGPIO.digitalWrite(0, ${red});
-sparkGPIO.digitalWrite(1, ${green});
-sparkGPIO.digitalWrite(2, ${blue});`;
+		return `sparkGPIO.output(2, ${red});
+sparkGPIO.output(1, ${green});
+sparkGPIO.output(0, ${blue});`;
 	};
 
 	arduino.forBlock.leaphy_spark_read = (block) => {
 		interface SensorConfig {
 			pin: number,
+			name: string,
 			type: "digital" | "analog"
 		}
 		const spark_sensor_config: Record<string, SensorConfig> = {
-			left_line_sensor: { type: "digital", pin: 3 },
-			right_line_sensor: { type: "digital", pin: 4 },
-			button_1: { type: "digital", pin: 7 },
-			button_2: { type: "digital", pin: 6 },
-			button_3: { type: "digital", pin: 5 },
-			left_ambient: { type: "analog", pin: 1 },
-			right_ambient: { type: "analog", pin: 0 },
-			potentiometer: { type: "analog", pin: 2 },
+			left_line_sensor: { name: "Spark left line sensor", type: "digital", pin: 3 },
+			right_line_sensor: { name: "Spark right line sensor", type: "digital", pin: 4 },
+			button_1: { name: "Spark button 1", type: "digital", pin: 7 },
+			button_2: { name: "Spark button 2", type: "digital", pin: 6 },
+			button_3: { name: "Spark button 3", type: "digital", pin: 5 },
+			left_ambient: { name: "Spark left ambient light", type: "analog", pin: 1 },
+			right_ambient: { name: "Spark right ambient light", type: "analog", pin: 0 },
+			potentiometer: { name: "Spark potentiometer", type: "analog", pin: 2 },
 		}
 
 		const sensorType = block.getFieldValue("SPARK_SENSOR")
 		const sensor = spark_sensor_config[sensorType]
+		const debug = arduino.createDebug(`spark-${sensorType}`, { type: "basic", name: sensor.name, values: 1, icon: 'sensor', simulation: sensorType })
 
 		if (sensor.type === "digital") {
 			setupTCA9354()
-			arduino.addSetup(`spark-${sensorType}`, `sparkGPIO.pinMode(${sensor.pin}, GPIO_IN);`)
+			arduino.addSetup(`spark-${sensorType}`, `sparkGPIO.config(${sensor.pin}, TCA9534::Config::IN);`)
 
-			return [`sparkGPIO.digitalRead(${sensor.pin})`, arduino.ORDER_ATOMIC]
+			return [debug(`(sparkGPIO.input(${sensor.pin}) ? 1 : 0)`), arduino.ORDER_ATOMIC]
 		}
 
 		if (sensor.type === "analog") {
@@ -65,7 +64,7 @@ sparkGPIO.digitalWrite(2, ${blue});`;
 				"    Serial.println(\"Check Connections. No Spark Analog detected.\");\n" +
 				"  }")
 
-			return [`ads.readADC_SingleEnded(${sensor.pin})`, arduino.ORDER_ATOMIC]
+			return [debug(`ads.readADC_SingleEnded(${sensor.pin})`), arduino.ORDER_ATOMIC]
 		}
 
 		return ['0', arduino.ORDER_ATOMIC]

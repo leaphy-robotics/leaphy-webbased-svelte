@@ -1,236 +1,218 @@
 <script lang="ts">
-	import PopupsState, { type PopupState } from "$state/popup.svelte.js";
-	import {getContext, onMount} from "svelte";
-	import { _ } from "svelte-i18n";
-	import Windowed from "../../Windowed.svelte";
-	import SerialState from "$state/serial.svelte.js";
-	import Fa from "svelte-fa";
-	import {faRoute} from "@fortawesome/free-solid-svg-icons";
-	import RobotDirection from "$components/core/popups/popups/debugger/RobotDirection.svelte";
+	import starling from "$assets/starling-svg.svg"
+	import Windowed from "$components/core/popups/Windowed.svelte";
+	import { onMount } from "svelte";
+	import SerialState from "$state/serial.svelte"
+	import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 
-	let popupState = getContext<PopupState>("state");
+	let motorDebugger = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.type === 'motors'))
+	let leftSpeed = $derived(motorDebugger?.values?.[0] || 0)
+	let rightSpeed = $derived(-motorDebugger?.values?.[1] || 0)
 
-	let date = $state(Date.now())
-	onMount(() => {
-		setInterval(() => {
-			date = Date.now()
-		}, 1)
-	})
+	let distance = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.simulation === "distance")?.values?.[0] ?? 1313)
 
-	function motorState(left: number, right: number) {
-		if (left === 0 && right === 0) return 'Stationary'
+	// Line sensor derivations (0 = black line, 1 = floor)
+	let leftLineSensor = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.simulation === "left_line_sensor")?.values?.[0] ?? 1)
+	let rightLineSensor = $derived(SerialState.log.debugger.debuggers?.find(e => e.type.simulation === "right_line_sensor")?.values?.[0] ?? 1)
 
-		if (left === right) {
-			if (left > 0) {
-				return 'Forward'
-			}
+	const WHEEL_BASE = 203.392682906;
+	const AXIS_OFFSET = 31.4487804847;
+	const MAX_SPEED = 4;
+	const CM_TO_PX = (343 / 138) * 10;
 
-			return 'Backward'
+	let backgroundX = $state(0)
+	let backgroundY = $state(0)
+	let robotRotation = $state(0)
+	let currentCurveOffset = $state(0)
+
+	let proximityFactor = $derived(Math.max(0, Math.min(1, (30 - distance) / 30)));
+	let proximityScale = $derived(distance > 30 ? 1 : 0.5 + (proximityFactor * 0.5));
+	let sonarHeight = $derived(distance * CM_TO_PX);
+
+	function differentialDriveTick(leftSpeed: number, rightSpeed: number): void {
+		const leftVelocity = (leftSpeed / 100) * MAX_SPEED;
+		const rightVelocity = (rightSpeed / 100) * MAX_SPEED;
+		const linearVelocity = (leftVelocity + rightVelocity) / 2;
+		const angularVelocity = (rightVelocity - leftVelocity) / WHEEL_BASE;
+		robotRotation += angularVelocity;
+		robotRotation = Math.atan2(Math.sin(robotRotation), Math.cos(robotRotation));
+		const dx = linearVelocity * Math.sin(robotRotation) + angularVelocity * AXIS_OFFSET * Math.cos(robotRotation);
+		const dy = -linearVelocity * Math.cos(robotRotation) + angularVelocity * AXIS_OFFSET * Math.sin(robotRotation);
+		backgroundX -= Math.cos(-robotRotation - Math.PI / 2) * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+		backgroundY -= Math.sin(-robotRotation - Math.PI / 2) * Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+
+		// Calculate target curve for the line prediction based on sensors
+		let targetCurve = 0;
+		if (leftLineSensor < 0.5 && rightLineSensor >= 0.5) {
+			targetCurve = -250; // Line is turning left
+		} else if (rightLineSensor < 0.5 && leftLineSensor >= 0.5) {
+			targetCurve = 250; // Line is turning right
+		} else if (leftLineSensor < 0.5 && rightLineSensor < 0.5) {
+			targetCurve = 0; // Both on line, keep straight
+		} else {
+			targetCurve = 0; // Lost the line, default straight
 		}
 
-		if (left === -right) {
-			if (left > right) {
-				return 'Right'
-			}
-
-			return 'Left'
-		}
-
-
-		if (left > right) {
-			return 'Curving right'
-		}
-
-		return 'Curving left'
+		// Smoothly interpolate the line curve
+		currentCurveOffset += (targetCurve - currentCurveOffset) * 0.08;
 	}
+
+	onMount(() => {
+		const interval = setInterval(() => differentialDriveTick(leftSpeed, rightSpeed), 1000 / 60)
+		return () => clearInterval(interval);
+	})
 </script>
 
-	<div class="content">
-		{#each SerialState.log.debugger.debuggers as sensor}
-			<div class="sensor">
-				<div class="header">
-					<div class="name">{sensor.type.name}</div>
-					<div class="pulse" style:opacity={`${Math.max(sensor.lastSignal - date + 1000, 0)}%`}></div>
+<Windowed title="DEBUGGER">
+	<div class="viewport" class:near-mode={proximityFactor > 0}>
+		<div
+			class="playground"
+			style:scale={proximityScale}
+			style:translate={`0 ${proximityFactor > 0 ? sonarHeight * proximityScale / 2 : 0}px`}
+			style:transform-origin="center"
+		>
+			<div
+				class="background"
+				style:background-position-x={`${backgroundX}px`}
+				style:background-position-y={`${backgroundY}px`}
+				style:rotate={`${robotRotation}rad`}
+			></div>
+
+			<div class="robot-wrapper">
+				{#if leftLineSensor === 0 || rightLineSensor === 0}
+					<svg class="predicted-line" viewBox="0 0 800 800">
+						<defs>
+							<mask id="line-mask" maskUnits="userSpaceOnUse">
+								<rect width="800" height="800" fill="url(#mask-fade)"/>
+							</mask>
+
+							<linearGradient id="mask-fade" x1="0" y1="800" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+								<stop offset="0%" stop-color="white"/>
+								<stop offset="100%" stop-color="black"/>
+							</linearGradient>
+						</defs>
+						<path
+							d={`M 400 800 Q 400 400, ${400 + currentCurveOffset} 0`}
+							stroke="black"
+							stroke-width="90"
+							fill="none"
+							mask="url(#line-mask)"
+						/>
+					</svg>
+				{/if}
+
+				<div
+					class="sonar-ray"
+					style:height="{sonarHeight}px"
+					style:opacity={proximityFactor > 0 ? 1 : 0}
+				>
+					<div class="distance-label">{distance.toFixed(1)} cm</div>
 				</div>
-				<div class="sensor-content">
-					{#if sensor.type.type === "basic"}
-						<div class="value">
-							{sensor.values[0].toFixed(2)} {sensor.type.unit}
-						</div>
-					{/if}
-					{#if sensor.type.type === "rgb"}
-						<div class="rgb" style:--color={`rgb(${sensor.values.join(', ')})`}></div>
-						<div class="value">{sensor.values.join(', ')}</div>
-					{/if}
-					{#if sensor.type.type === "servo"}
-						<div class="servo" style:--angle={`${sensor.values[0]}deg`}>
-							<div class="servo-pointer"></div>
-						</div>
-						<div class="value">{sensor.values[0]}°</div>
-					{/if}
-					{#if sensor.type.type === "motors"}
-						<div class="motors-content">
-							<div class="motor">L: {sensor.values[0]}%</div>
-							<div class="motor">R: {sensor.values[1] * -1}%</div>
-							<div class="motor">{motorState(sensor.values[0], sensor.values[1]*-1)}</div>
-						</div>
-					{/if}
-				</div>
+				<img class="robot" src={starling} alt="Robot" />
 			</div>
-		{/each}
+		</div>
+
+		<div class="debugger">
+			<SensorState />
+		</div>
 	</div>
+</Windowed>
 
 <style>
-	.content {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 10px;
-		padding: 10px;
-		/*width: 600px;*/
+	.viewport {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 30px;
+		padding: 40px;
+		height: 700px; /* Slightly taller to accommodate the scale */
+		overflow: hidden;
+		position: relative;
 	}
 
-	.sensor {
+	.playground {
+		position: relative;
 		display: flex;
 		flex-direction: column;
-		background: var(--background-tint);
-		border-radius: 10px;
-		padding: 8px;
-		gap: 8px;
-	}
-
-	.header {
-		display: flex;
-		justify-content: space-between;
 		align-items: center;
-		font-weight: bold;
-		font-size: 16px;
+		/* Padding-top transition ensures the playground grows to fit the ray */
+		transition: 0.4s ease-out;
 	}
 
-	.pulse {
-		background: radial-gradient(circle, dodgerblue 8%, rgba(0, 0, 0, 0) 100%);
-		width: 15px;
-		height: 15px;
-		border-radius: 100%;
-		animation: pulse 2s infinite;
-		transition: .3s ease;
+	.background {
+		position: absolute;
+		/* Important: inset must cover the entire potential height of the ray */
+		inset: -2000px;
+		z-index: -1;
+		background-image:
+			linear-gradient(to right, #dcdcdc 1px, transparent 1px),
+			linear-gradient(to bottom, #dcdcdc 1px, transparent 1px);
+		background-size: 40px 40px;
 	}
 
-	.value {
-		font-size: 16px;
-		font-family: monospace;
-	}
-
-	.sensor-content {
-		flex: 1;
-		display: flex;
-		gap: 5px;
-		align-items: center;
-	}
-
-	@property --color {
-		syntax: '<color>';
-		inherits: false;
-		initial-value: black;
-	}
-
-	.rgb {
-		width: 16px;
-		height: 16px;
-		border-radius: 100%;
-		scale: 1.5;
-		margin-right: 5px;
-		--color: black;
-		background: radial-gradient(circle, var(--color) 8%, rgba(0, 0, 0, 0) 100%);
-		transition: --color .3s ease;
-	}
-
-	.servo {
-		--angle: 0deg;
-		--size: 24px;
-
-		width: var(--size);
-		height: var(--size);
+	.robot-wrapper {
 		position: relative;
-		display: inline-block;
-	}
-
-	/* Circular outline base */
-	.servo::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border: 3px solid #ddd;
-		border-radius: 50%;
-	}
-
-	/* Active arc portion (fills based on angle) */
-	.servo::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		border-radius: 50%;
-		background: conic-gradient(
-			var(--accent) 0deg,
-			var(--accent) var(--angle),
-			transparent var(--angle)
-		);
-		mask: radial-gradient(
-			circle,
-			transparent calc(var(--size) / 2 - 4px),
-			black calc(var(--size) / 2 - 4px)
-		);
-		transition: background 0.3s ease-out;
-	}
-
-	/* Servo pointer */
-	.servo-pointer {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 50%;
-		height: 4px;
-		background: #333;
-		transform-origin: left center;
-		transform: translateY(-50%) rotate(calc(var(--angle) - 90deg));
-		border-radius: 0 5px 5px 0;
-		z-index: 10;
-		transition: transform 0.3s ease-out;
-	}
-
-	/* Center dot */
-	.servo-pointer::after {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 50%;
-		transform: translate(-50%, -50%);
-		width: 8px;
-		height: 8px;
-		background: #333;
-		border-radius: 50%;
-	}
-
-	.motors-content {
 		display: flex;
-		gap: 3px;
-		font-size: 14px;
+		flex-direction: column;
+		align-items: center;
 	}
 
-	.motor {
-		background: var(--secondary);
-		padding: 3px;
-		border-radius: 5px;
+	.robot {
+		width: 300px;
+		display: block;
+		z-index: 2;
 	}
 
-	@keyframes pulse {
-		0% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.3);
-		}
-		100% {
-			transform: scale(1);
-		}
+	.predicted-line {
+		position: absolute;
+		bottom: 100%;
+		width: 800px;
+		height: 800px;
+		left: 50%;
+		transform: translateX(-50%) translateY(300px);
+		translate: 0 10px;
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	.sonar-ray {
+		position: absolute;
+		bottom: 100%;
+		width: 100px;
+		background: linear-gradient(to top, rgba(0, 149, 255, 0.9), transparent);
+		translate: 0 10px;
+		z-index: 1;
+		transition: opacity 0.4s ease-out, height 0.1s linear;
+		display: flex;
+		justify-content: center;
+	}
+
+	.sonar-ray::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		width: 100px;
+		height: 3px;
+		background: #0095ff;
+		border-radius: 2px;
+	}
+
+	.distance-label {
+		position: absolute;
+		top: -30px;
+		font-family: 'JetBrains Mono', monospace;
+		font-weight: bold;
+		font-size: 13px;
+		color: #0070c0;
+		background: rgba(255, 255, 255, 0.9);
+		padding: 2px 8px;
+		border-radius: 4px;
+		border: 1px solid #0095ff;
+		white-space: nowrap;
+	}
+
+	.debugger {
+		width: 500px;
+		z-index: 10;
 	}
 </style>

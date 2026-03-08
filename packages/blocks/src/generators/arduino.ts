@@ -13,11 +13,12 @@ import { addI2CDeclarations } from "./arduino/i2c";
 type BaseDebugger = {
 	name: string
 	values: number
+	simulation?: string
 }
 
 type BasicDebugger = BaseDebugger & {
 	type: "basic",
-	unit: string,
+	unit?: string,
 	icon: string,
 	values: 1,
 }
