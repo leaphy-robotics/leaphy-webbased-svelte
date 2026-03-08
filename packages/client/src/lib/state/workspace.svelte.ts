@@ -214,6 +214,16 @@ class WorkspaceState {
 			this.robot = Object.values(robots).find((r) => r.type === robot);
 		}
 	}
+
+	serialize() {
+		if (this.Mode === Mode.BLOCKS || this.Mode === Mode.ML) {
+			return JSON.stringify(
+				serialization.workspaces.save(BlocklyState.workspace),
+			);
+		}
+	
+		return this.code;
+	}
 }
 
 export default new WorkspaceState();

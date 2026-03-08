@@ -19,10 +19,12 @@ import {
 	faChalkboardTeacher,
 	faCode,
 	faLightbulb,
-	faSquarePollHorizontal,
+	faSquarePollHorizontal, faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
+import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
+import EmbedSvelte from "$state/embed.svelte";
 
 function openSerial() {
 	PopupState.open({
@@ -68,6 +70,10 @@ function openTutorials() {
 		},
 	});
 }
+
+function openAssignment() {
+	WorkspaceState.toggleSidePanel(EmbedSidePanel);
+}
 </script>
 
 <div class="content">
@@ -88,6 +94,9 @@ function openTutorials() {
 			{/if}
 			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [...robotsGroups.ALL, -RobotType.L_STARLING, -RobotType.L_NANO])}
 				<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />
+			{/if}
+			{#if EmbedSvelte.sidebar}
+				<SideButton icon={faTasks} action="ASSIGNMENT" onclick={openAssignment} />
 			{/if}
 		</SideBar>
         {#if WorkspaceState.SidePanel}
