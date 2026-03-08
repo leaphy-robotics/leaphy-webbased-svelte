@@ -15,6 +15,8 @@ export enum Dependencies {
 	SPARKFUN_TMP102 = "SparkFun TMP102 Breakout@1.1.2",
 	FASTLED = "FastLED@3.10.3",
 
+	SPARKFUN_VL53L5CX = "SparkFun VL53L5CX Arduino Library@1.0.3",
+
 	APDS9960_RGB = "Arduino_APDS9960@1.0.4",
 	DS3231_RTC = "DS3231@1.1.2",
 	PAINLESS_MESH = "painlessMesh@1.5.4",

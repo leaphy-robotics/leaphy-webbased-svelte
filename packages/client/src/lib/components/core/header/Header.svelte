@@ -314,6 +314,9 @@ async function connectPython() {
 
 function runPython() {
 	const io = WorkspaceState.microPythonIO;
+	if (WorkspaceState.microPythonRun) {
+		WorkspaceState.microPythonRun.signalRestart();
+	}
 	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 
@@ -434,6 +437,12 @@ function openESPProgrammerPopup() {
 								selected={$locale === "nl"}
 								name={"Nederlands"}
 								onclick={() => setLocale("nl")}
+								{open}
+							/>
+							<ContextItem
+								selected={$locale === "ua"}
+								name={"Yкраїнська"}
+								onclick={() => setLocale("ua")}
 								{open}
 							/>
 						{/snippet}

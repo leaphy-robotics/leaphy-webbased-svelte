@@ -1,6 +1,8 @@
 <script lang="ts">
 import MLState from "$state/ml.svelte";
 import WorkspaceState from "$state/workspace.svelte";
+import { _ } from "svelte-i18n";
+import Lidar from "./sensors/Lidar.svelte";
 </script>
 
 <div class="state">
@@ -10,10 +12,17 @@ import WorkspaceState from "$state/workspace.svelte";
 	</div>
 
 	<div class="list">
-		{#each MLState.sensors as sensor, index}
-			<div class="item">
-				<div class="name">{sensor.type.renderName(sensor.settings)}</div>
-				<div class="value">{(MLState.snapshot[index] || 0).toFixed(2)}</div>
+		{#each MLState.snapshot as sensor}
+			{@const name = sensor.type.renderName(sensor.settings)}
+			<div class="item" class:vertical={sensor.type.type === "lidar"}>
+				<div class="name">{$_(name.translation, { values: name.values })}</div>
+				{#if sensor.type.type === "lidar"}
+					<Lidar values={sensor.values} />
+				{:else}
+					<div class="value">
+						{(sensor.values[0] || 0).toFixed(2)}
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>
@@ -61,6 +70,12 @@ import WorkspaceState from "$state/workspace.svelte";
 		align-items: center;
 		border-bottom: 2px solid #00000025;
 		padding: 10px 20px;
+	}
+
+	.item.vertical {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
 	}
 
 	.item:first-child {

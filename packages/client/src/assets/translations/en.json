@@ -285,5 +285,29 @@
 	"ESP_PROGRAMMER_FLASHING": "Flashing...",
 	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Flashing the board...",
 	"ESP_PROGRAMMER_RESET": "Almost there!",
-	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Press the reset button to complete the process"
+	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Press the reset button to complete the process",
+
+	"PRESS_ANY_KEY": "Press any key",
+	"UNASSIGNED": "Unassigned",
+	"KEY": "Key {key}",
+	"DIGIT": "Digit {key}",
+	"ARROWUP": "Arrow up",
+	"ARROWDOWN": "Arrow down",
+	"ARROWLEFT": "Arrow left",
+	"ARROWRIGHT": "Arrow right",
+	"SPACE": "Space",
+
+	"TIME_OF_FLIGHT_SENSOR": "Time of Flight sensor",
+	"TIME_OF_FLIGHT_SENSOR_CHANNEL": "Time of Flight sensor (I2C channel: {channel})",
+	"DIGITAL_PIN": "Digital Pin {pin}",
+	"DIGITAL_PIN_NAME": "Digital Pin",
+	"ANALOG_PIN": "Analog Pin {pin}",
+	"ANALOG_PIN_NAME": "Analog Pin",
+	"ULTRASONIC_SENSOR": "Distance sensor (trig: {trig}, echo: {echo})",
+	"ULTRASONIC_SENSOR_NAME": "Distance sensor",
+	"LIDAR_SENSOR": "Lidar sensor",
+	"LIDAR_SENSOR_CHANNEL": "Lidar sensor (I2C channel: {channel})",
+	"I2C_CHANNEL": "I2C channel",
+	"I2C_CHANNEL_DESCRIPTION": "Select an I2C channel",
+	"NONE": "None"
 }

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computePosition, size } from "@floating-ui/dom";
+import { _ } from "svelte-i18n";
 
 interface Props {
 	open: boolean;
@@ -7,8 +8,16 @@ interface Props {
 	mode: "primary" | "secondary" | "background";
 	element: HTMLElement;
 	onselect?: (value: string) => void;
+	align?: "left" | "center";
 }
-const { open, options, mode, onselect, element }: Props = $props();
+const {
+	open,
+	options,
+	mode,
+	onselect,
+	element,
+	align = "center",
+}: Props = $props();
 
 let wrapper = $state<HTMLDivElement>();
 let position = $state<{ x: number; y: number }>();
@@ -38,11 +47,11 @@ $effect(() => {
 </script>
 
 {#if open}
-	<div bind:this={wrapper} class="popup" class:secondary={mode === 'secondary'} style:left={`${position?.x}px`} style:top={`${position?.y}px`}>
+	<div bind:this={wrapper} class="popup" class:left={align === 'left'} class:secondary={mode === 'secondary'} style:left={`${position?.x}px`} style:top={`${position?.y}px`}>
 		<div class="container">
 			{#each options as option (option[1])}
 				<button type="button" onclick={() => onselect(option[1])} class="option"
-				>{option[0]}</button>
+				>{$_(option[0])}</button>
 			{/each}
 		</div>
 	</div>
@@ -93,5 +102,9 @@ $effect(() => {
 
 	.secondary .option {
 		background: var(--robot);
+	}
+
+	.left .option {
+		text-align: left;
 	}
 </style>

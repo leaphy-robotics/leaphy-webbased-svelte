@@ -15,7 +15,7 @@ import { _ } from "svelte-i18n";
 
 const popupState = getContext<PopupState>("state");
 const sensorOptions = sensors.map(
-	(sensor) => [sensor.name, sensor] as [string, Sensor],
+	(sensor) => [$_(sensor.name), sensor] as [string, Sensor],
 );
 
 let sensor = $state<Sensor>(sensorOptions[0][1]);
@@ -71,6 +71,7 @@ function addSensor() {
 		settings,
 	});
 	popupState.close();
+	ml.maxStep = 0;
 }
 </script>
 
@@ -79,18 +80,18 @@ function addSensor() {
 
 	<div class="input-group">
 		<div class="label">{$_("ML_SENSOR_TYPE")}</div>
-		<Select mode="secondary" full options={sensorOptions} bind:value={sensor} />
+		<Select mode="secondary" full options={sensorOptions} bind:value={sensor} align="left" />
 	</div>
 
 	{#each parsedSensor.settings as setting}
 		<div class="input-group">
 			<div class="desc">
-				<div class="label">{setting.name}</div>
-				<div class="description">{setting.description}</div>
+				<div class="label">{$_(setting.name)}</div>
+				<div class="description">{$_(setting.description)}</div>
 			</div>
 
 			{#if setting.type === 'select'}
-				<Select mode="secondary" full options={setting.options} bind:value={settings[setting.id]} />
+				<Select mode="secondary" full options={setting.options} bind:value={settings[setting.id]} align="left" />
 			{:else if setting.type === 'text'}
 				<TextInput mode="secondary" rounded bind:value={settings[setting.id]} />
 			{/if}
