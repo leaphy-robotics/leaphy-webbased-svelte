@@ -19,7 +19,6 @@ type BaseDebugger = {
 type BasicDebugger = BaseDebugger & {
 	type: "basic",
 	unit?: string,
-	icon: string,
 	values: 1,
 }
 

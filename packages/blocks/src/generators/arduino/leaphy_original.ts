@@ -203,7 +203,14 @@ function getCodeGenerators(arduino: Arduino) {
 
 		arduino.setups_[`setup_input_${dropdown_pin}`] =
 			`pinMode(${dropdown_pin}, INPUT);`;
-		const code = `digitalRead(${dropdown_pin})`;
+
+		const debug = arduino.createDebug(`digital-input-${dropdown_pin}`, {
+			type: "basic",
+			name: `Digital input ${dropdown_pin}`,
+			values: 1
+		})
+
+		const code = debug(`digitalRead(${dropdown_pin})`);
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
@@ -232,7 +239,13 @@ function getCodeGenerators(arduino: Arduino) {
 			);
 		}
 
-		const code = `analogRead(${dropdown_pin})`;
+		const debug = arduino.createDebug(`analog-input-${dropdown_pin}`, {
+			type: "basic",
+			name: `Analog input ${dropdown_pin}`,
+			values: 1
+		})
+
+		const code = debug(`analogRead(${dropdown_pin})`);
 		return [code, arduino.ORDER_ATOMIC];
 	};
 

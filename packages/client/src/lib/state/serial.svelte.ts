@@ -91,7 +91,6 @@ class LogState {
 		this.buffer += new TextDecoder().decode(content);
 
 		let items = this.buffer.split("\n");
-		console.log(items)
 		this.buffer = items.pop();
 
 		for (const item of items) {

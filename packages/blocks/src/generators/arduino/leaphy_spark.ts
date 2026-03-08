@@ -49,7 +49,7 @@ sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});`;
 
 		const sensorType = block.getFieldValue("SPARK_SENSOR")
 		const sensor = spark_sensor_config[sensorType]
-		const debug = arduino.createDebug(`spark-${sensorType}`, { type: "basic", name: sensor.name, values: 1, icon: 'sensor', simulation: sensorType })
+		const debug = arduino.createDebug(`spark-${sensorType}`, { type: "basic", name: sensor.name, values: 1, simulation: sensorType })
 
 		if (sensor.type === "digital") {
 			setupTCA9354()
