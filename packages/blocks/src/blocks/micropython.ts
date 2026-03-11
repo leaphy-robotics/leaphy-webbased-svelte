@@ -1,19 +1,6 @@
 import type { BlockDefinition } from "blockly/core/blocks";
 
 const blocks: BlockDefinition = [
-	/*{
-        type: "raw_code_line",
-        message0:"code: %1",
-        args0: [
-            {
-                type: "field_input",
-                name: "CODE_LINE",
-                text: "print(\"Hello world!\")",
-                spellcheck: false
-            }
-        ],
-        style:"leaphy_blocks"
-    },*/
 	{
 		type: "raw_code_line",
 		tooltip: "",
