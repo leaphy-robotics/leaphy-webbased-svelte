@@ -33,7 +33,7 @@ const blocks: BlockDefinition = [
 		],
 		previousStatement: null,
 		nextStatement: null,
-		style: "leaphy_blocks",
+		style: "procedure_blocks",
 		inputsInline: true,
 	},
 ];

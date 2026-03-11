@@ -32,7 +32,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 	python.forBlock.raw_code_line = (block, generator) => {
 		const code = block.getFieldValue("CODE_INPUT");
-		return code;
+		return `${code}\n`;
 	};
 }
 
