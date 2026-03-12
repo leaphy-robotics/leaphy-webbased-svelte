@@ -15,33 +15,13 @@ interface Exports {
 	pseudo: boolean;
 }
 
-function encodeSvg(svgString: string) {
-	return `data:image/svg+xml;utf8,${svgString
-		.replace(
-			"<svg",
-			~svgString.indexOf("xmlns")
-				? "<svg"
-				: '<svg xmlns="http://www.w3.org/2000/svg"',
-		)
-		.replace(/"/g, "'")
-		.replace(/%/g, "%25")
-		.replace(/#/g, "%23")
-		.replace(/{/g, "%7B")
-		.replace(/}/g, "%7D")
-		.replace(/</g, "%3C")
-		.replace(/>/g, "%3E")
-		.replace(/\s+/g, " ")
-		.replace(/&/g, "%26")
-		.replace("|", "%7C")
-		.replace("[", "%5B")
-		.replace("]", "%5D")
-		.replace("^", "%5E")
-		.replace("`", "%60")
-		.replace(";", "%3B")
-		.replace("?", "%3F")
-		.replace(":", "%3A")
-		.replace("@", "%40")
-		.replace("=", "%3D")}`;
+function encodeSvg(svgString: string): string {
+	const svgWithNamespace = svgString.includes("xmlns")
+		? svgString
+		: svgString.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
+	const cleanedSvg = svgWithNamespace.trim().replace(/\s+/g, " ");
+
+	return `data:image/svg+xml,${encodeURIComponent(cleanedSvg)}`;
 }
 
 class EmbedState {
