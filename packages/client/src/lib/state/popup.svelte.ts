@@ -5,6 +5,7 @@ import Restore from "$components/core/popups/popups/Restore.svelte";
 import { robots } from "$domain/robots";
 import { projectDB } from "$domain/storage";
 import type { Component } from "svelte";
+import EmbedState from "./embed.svelte";
 
 export enum Anchor {
 	TopLeft = "0 0",
@@ -104,6 +105,7 @@ class PopupsState {
 	}
 
 	async setup() {
+		if (EmbedState.isEmbedded) return;
 		if (!localStorage.getItem("language")) {
 			await this.open({
 				component: LanguageSelector,
