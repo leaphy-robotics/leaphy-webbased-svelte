@@ -4,6 +4,7 @@ import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
 import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 import Dashboard from "$components/core/popups/popups/help/Dashboard.svelte";
 import Tutorials from "$components/core/popups/popups/tutorials/Tutorials.svelte";
+import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import SideBar from "$components/ui/SideBar.svelte";
@@ -11,6 +12,7 @@ import SideButton from "$components/ui/SideButton.svelte";
 import { inFilter } from "$domain/robots";
 import robotsGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
+import EmbedSvelte from "$state/embed.svelte";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
@@ -20,6 +22,7 @@ import {
 	faCode,
 	faLightbulb,
 	faSquarePollHorizontal,
+	faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import Code from "./panels/Code.svelte";
 import LibraryManager from "./panels/LibraryManager.svelte";
@@ -76,6 +79,10 @@ function openDebugger() {
 		allowInteraction: true,
 	});
 }
+
+function openAssignment() {
+	WorkspaceState.toggleSidePanel(EmbedSidePanel);
+}
 </script>
 
 <div class="content">
@@ -99,6 +106,9 @@ function openDebugger() {
 			{/if}
 			{#if WorkspaceState.Mode === Mode.BLOCKS && inFilter(WorkspaceState.robot, [...robotsGroups.ALL, -RobotType.L_STARLING, -RobotType.L_NANO])}
 				<SideButton icon={faChalkboardTeacher} action="TUTORIALS" onclick={openTutorials} />
+			{/if}
+			{#if EmbedSvelte.sidebar}
+				<SideButton icon={faTasks} action="ASSIGNMENT" onclick={openAssignment} />
 			{/if}
 		</SideBar>
         {#if WorkspaceState.SidePanel}

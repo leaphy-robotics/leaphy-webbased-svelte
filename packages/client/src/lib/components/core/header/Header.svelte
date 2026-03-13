@@ -13,6 +13,7 @@ import ContextItem from "$components/ui/ContextItem.svelte";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import EmbedState from "$state/embed.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
@@ -157,15 +158,6 @@ async function newProject() {
 	);
 }
 
-function serialize() {
-	if (WorkspaceState.Mode === Mode.BLOCKS || WorkspaceState.Mode === Mode.ML)
-		return JSON.stringify(
-			serialization.workspaces.save(BlocklyState.workspace),
-		);
-
-	return WorkspaceState.code;
-}
-
 async function saveProjectAs() {
 	const name = await PopupState.open({
 		component: SaveProject,
@@ -184,7 +176,7 @@ async function saveProjectAs() {
 	if (WorkspaceState.Mode === Mode.PYTHON) extension = "py";
 
 	const url = URL.createObjectURL(
-		new Blob([serialize()], { type: "text/plain" }),
+		new Blob([WorkspaceState.serialize()], { type: "text/plain" }),
 	);
 	const link = document.createElement("a");
 	link.href = url;
@@ -206,7 +198,7 @@ async function openProject() {
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
-	await WorkspaceState.handle.write(serialize());
+	await WorkspaceState.handle.write(WorkspaceState.serialize());
 	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }
@@ -383,7 +375,7 @@ function openESPProgrammerPopup() {
 						onclick={saveProjectAs}
 						{open}
 					/>
-					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} />
+					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} disabled={EmbedState.isEmbedded} />
 				{/snippet}
 			</Button>
             <Button name={$_("HELP")} mode={"outlined"}>
@@ -431,6 +423,7 @@ function openESPProgrammerPopup() {
 					<ContextItem
 						icon={faGlobe}
 						name={$_("LANGUAGE")}
+						disabled={EmbedState.isEmbedded}
 						{open}
 					>
 						{#snippet context()}
@@ -520,6 +513,7 @@ function openESPProgrammerPopup() {
 						mode={"outlined"}
 						icon={faPen}
 						name={$_("CODE")}
+						disabled={EmbedState.isEmbedded}
 						onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp}
 					/>
             {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
@@ -527,6 +521,7 @@ function openESPProgrammerPopup() {
                     mode={"outlined"}
                     icon={block}
                     name={$_("BLOCKS")}
+                    disabled={EmbedState.isEmbedded}
                     onclick={blocks}
                 />
             {/if}
@@ -565,6 +560,15 @@ function openESPProgrammerPopup() {
             {:else}
                 <Button name={MLState.enabled ? $_("ML_OPEN") : $_("UPLOAD")} mode={"accent"} onclick={upload} />
             {/if}
+
+			{#if EmbedState.action}
+				<Button
+					icon={faCircleCheck}
+					name={EmbedState.action}
+					mode="tint"
+					onclick={() => EmbedState.callAction()}
+				/>
+			{/if}
         {/if}
     </div>
 </div>
