@@ -309,5 +309,7 @@
 	"LIDAR_SENSOR_CHANNEL": "Lidar sensor (I2C kanaal: {channel})",
 	"I2C_CHANNEL": "I2C kanaal",
 	"I2C_CHANNEL_DESCRIPTION": "Selecteer een I2C kanaal",
-	"NONE": "Geen"
+	"NONE": "Geen",
+
+	"DEBUGGER": "Debugger"
 }

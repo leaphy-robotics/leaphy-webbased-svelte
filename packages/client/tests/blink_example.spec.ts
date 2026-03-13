@@ -12,7 +12,7 @@ test("Load Blink example and check code", async ({ page }) => {
 
 	// Check code
 	await expect(page.locator(".view-lines")).toContainText(
-		"digitalWrite(13, true); delay(1000); digitalWrite(13, false); delay(1000);", // check the important part about blink
+		"digitalWrite(13, DEBUG_VAL(0, 0, true)); delay(1000); digitalWrite(13, DEBUG_VAL(0, 0, false)); delay(1000);", // check the important part about blink
 	);
 
 	// Modify delay to 500
@@ -23,7 +23,7 @@ test("Load Blink example and check code", async ({ page }) => {
 
 	// Check that the delays have been updated accordingly
 	await expect(page.locator(".view-lines")).toContainText(
-		"delay(500); digitalWrite(13, false); delay(500);",
+		"delay(500); digitalWrite(13, DEBUG_VAL(0, 0, false)); delay(500);",
 	);
 
 	// Save the robot

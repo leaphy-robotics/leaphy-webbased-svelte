@@ -31,13 +31,15 @@ test("Saving - Backpack", async ({ page }) => {
 	await page.locator(".blocklyBackpack").click();
 	await expect(page.getByText("repeat forever")).toBeVisible();
 
-	await page.getByText("repeat forever").dragTo(page.getByText("Leaphy"), {
-		force: true,
-		targetPosition: {
-			x: 30,
-			y: 30,
-		},
-	});
+	await page
+		.getByText("repeat forever")
+		.dragTo(page.getByText("Leaphy", { exact: true }), {
+			force: true,
+			targetPosition: {
+				x: 30,
+				y: 30,
+			},
+		});
 
 	// Check that the blocks have been loaded properly
 	await page.locator(".side").first().click(); // Open code

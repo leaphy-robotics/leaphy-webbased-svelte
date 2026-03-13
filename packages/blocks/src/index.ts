@@ -7,3 +7,4 @@ import translations from "./msg/translations";
 export * as CATEGORIES from "./categories/all";
 export { translations, arduino, python, blocks, registerExtensions };
 export { Dependencies } from "./generators/arduino/dependencies";
+export type { Debugger } from "./generators/arduino";
