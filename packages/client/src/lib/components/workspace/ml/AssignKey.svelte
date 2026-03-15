@@ -8,6 +8,7 @@ interface Props {
 let { classData }: Props = $props();
 
 let binding = $state(false);
+let key = $state<string>(classData.key);
 
 function assign() {
 	binding = true;
@@ -16,6 +17,7 @@ function assign() {
 function onKey(e: KeyboardEvent) {
 	if (!binding) return;
 
+	key = e.code;
 	classData.key = e.code;
 	binding = false;
 }
@@ -38,7 +40,7 @@ function getKeyLabel(key: string): [string, Record<string, string>] | [string] {
 	return [key.toUpperCase()];
 }
 
-let label = $derived(getKeyLabel(classData.key));
+let label = $derived(getKeyLabel(key));
 let translation = $derived(label[0]);
 let values = $derived(label[1]);
 </script>
