@@ -787,6 +787,10 @@ export default [
 			{
 				blocks: [
 					{
+						type: "raw_code_line",
+						robots: [RobotType.L_MICROPYTHON],
+					},
+					{
 						type: "time_delay",
 						inputs: {
 							DELAY_TIME_MILI: number(1000),
