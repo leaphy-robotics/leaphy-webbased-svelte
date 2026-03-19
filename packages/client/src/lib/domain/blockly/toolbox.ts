@@ -787,10 +787,6 @@ export default [
 			{
 				blocks: [
 					{
-						type: "raw_code_line",
-						robots: [RobotType.L_MICROPYTHON],
-					},
-					{
 						type: "time_delay",
 						inputs: {
 							DELAY_TIME_MILI: number(1000),
@@ -1029,6 +1025,14 @@ export default [
 		style: "functions_category",
 		id: "l_functions",
 		custom: "PROCEDURE",
+		robots: [-RobotType.L_MICROPYTHON],
+	},
+	{
+		name: "%{BKY_LEAPHY_FUNCTIONS_CATEGORY}",
+		style: "functions_category",
+		id: "l_functions",
+		custom: "PYTHON_PROCEDURE",
+		robots: [RobotType.L_MICROPYTHON],
 	},
 	{
 		name: "Machine learning",
