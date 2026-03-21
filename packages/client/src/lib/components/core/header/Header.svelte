@@ -479,12 +479,14 @@ function openESPProgrammerPopup() {
 						onclick={log}
 						{open}
 					/>
-					<ContextItem
-						icon={faDownload}
-						name={$_("DOWNLOAD_DRIVERS")}
-						onclick={downloadDrivers}
-						{open}
-					/>
+					{#if navigator.platform.startsWith("Win")}
+						<ContextItem
+							icon={faDownload}
+							name={$_("DOWNLOAD_DRIVERS")}
+							onclick={downloadDrivers}
+							{open}
+						/>
+					{/if}
 					<ContextItem icon={faRobot} name={$_("ESP_PROGRAMMER")} onclick={openESPProgrammerPopup} {open} />
 				{/snippet}
 			</Button>
