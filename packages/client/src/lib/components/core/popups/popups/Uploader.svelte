@@ -197,7 +197,7 @@ async function connectUSB() {
         {:else}
             <ProgressBar {progress} />
         {/if}
-		{#if failed}
+		{#if failed && navigator.platform.startsWith("Win")}
 			<Button
 				name={$_("DOWNLOAD_DRIVERS")}
 				mode={"accent"}
