@@ -1025,6 +1025,14 @@ export default [
 		style: "functions_category",
 		id: "l_functions",
 		custom: "PROCEDURE",
+		robots: [-RobotType.L_MICROPYTHON],
+	},
+	{
+		name: "%{BKY_LEAPHY_FUNCTIONS_CATEGORY}",
+		style: "functions_category",
+		id: "l_functions",
+		custom: "PYTHON_PROCEDURE",
+		robots: [RobotType.L_MICROPYTHON],
 	},
 	{
 		name: "Machine learning",
