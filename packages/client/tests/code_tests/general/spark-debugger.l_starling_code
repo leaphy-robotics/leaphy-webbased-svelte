@@ -1,0 +1,68 @@
+#include <Adafruit_ADS1X15.h>
+#include <TCA9534.h>
+#include <Servo.h>
+
+Adafruit_ADS1115 ads;
+
+TCA9534 sparkGPIO;
+
+#define DEBUG_VAL(id, idx, val) ([&](__typeof__(val) _v) { \
+  Serial.print("_debug_log_"); \
+  Serial.print(id); \
+  Serial.print("_"); \
+  Serial.print(idx); \
+  Serial.print("_"); \
+  Serial.println(_v); \
+  return _v; \
+}(val))
+
+Servo servo_left;
+Servo servo_right;
+void leaphyProgram() {
+  while (true) {
+    if (DEBUG_VAL(0, 0, ads.readADC_SingleEnded(1)) > 400) {
+      if (DEBUG_VAL(1, 0, (sparkGPIO.input(3) ? 1 : 0)) == 0) {
+        servo_left.write(90 + 90*DEBUG_VAL(2, 0, 100*-1)/100);
+        servo_right.write(90 + 90*DEBUG_VAL(2, 1, 100*-1)/100);
+        sparkGPIO.output(2, DEBUG_VAL(3, 0, (true) ? 255 : 0));
+        sparkGPIO.output(1, DEBUG_VAL(3, 1, (false) ? 255 : 0));
+        sparkGPIO.output(0, DEBUG_VAL(3, 2, (false) ? 255 : 0));} else {
+        if (DEBUG_VAL(4, 0, (sparkGPIO.input(4) ? 1 : 0)) == 1) {
+          servo_left.write(90 + 90*DEBUG_VAL(2, 0, 100*1)/100);
+          servo_right.write(90 + 90*DEBUG_VAL(2, 1, 100*1)/100);
+          sparkGPIO.output(2, DEBUG_VAL(3, 0, (true) ? 255 : 0));
+          sparkGPIO.output(1, DEBUG_VAL(3, 1, (false) ? 255 : 0));
+          sparkGPIO.output(0, DEBUG_VAL(3, 2, (false) ? 255 : 0));} else {
+          servo_left.write(90 + 90*DEBUG_VAL(2, 0, 100*1)/100);
+          servo_right.write(90 + 90*DEBUG_VAL(2, 1, 100*-1)/100);
+        }
+      }
+    } else {
+      servo_left.write(90 + 90*DEBUG_VAL(2, 0, 0*1)/100);
+      servo_right.write(90 + 90*DEBUG_VAL(2, 1, 0*-1)/100);
+    }
+  }
+}
+
+void setup() {
+	Serial.begin(115200);
+    if (!ads.begin(0x48)) {
+    Serial.println("Check Connections. No Spark Analog detected.");
+  }
+  Wire.begin();
+  sparkGPIO.attach(Wire);
+  sparkGPIO.config(3, TCA9534::Config::IN);
+  servo_left.attach(12);
+  servo_right.attach(13);
+  sparkGPIO.config(0, TCA9534::Config::OUT);
+  sparkGPIO.config(1, TCA9534::Config::OUT);
+  sparkGPIO.config(2, TCA9534::Config::OUT);
+  sparkGPIO.config(4, TCA9534::Config::IN);
+
+  Serial.println("\n_debug_start_[{\"id\":0,\"type\":\"basic\",\"name\":\"Spark left ambient light\",\"values\":1,\"simulation\":\"left_ambient\"},{\"id\":1,\"type\":\"basic\",\"name\":\"Spark left line sensor\",\"values\":1,\"simulation\":\"left_line_sensor\"},{\"id\":2,\"type\":\"motors\",\"values\":2,\"name\":\"Leaphy Starling motors\"},{\"id\":3,\"type\":\"rgb\",\"values\":3,\"name\":\"Leaphy Spark RGB\"},{\"id\":4,\"type\":\"basic\",\"name\":\"Spark right line sensor\",\"values\":1,\"simulation\":\"right_line_sensor\"}]");
+  leaphyProgram();
+}
+
+void loop() {
+
+}

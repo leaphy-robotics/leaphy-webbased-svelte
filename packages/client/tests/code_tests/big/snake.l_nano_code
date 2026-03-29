@@ -182,7 +182,6 @@ void setup() {
 
 
   randomSeed(analogRead(0));
-  Serial.println("\n_debug_start_[]");
   leaphyProgram();
 }
 
