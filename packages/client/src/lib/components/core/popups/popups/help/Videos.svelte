@@ -45,8 +45,8 @@ function openTutorial(tutorial: Tutorial) {
     }
 
     .tutorial {
-        width: 278px;
+        width: 218px;
         flex-shrink: 0;
     }
-    
+
 </style>

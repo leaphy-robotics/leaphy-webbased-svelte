@@ -309,5 +309,13 @@
 	"LIDAR_SENSOR_CHANNEL": "Lidar sensor (I2C kanaal: {channel})",
 	"I2C_CHANNEL": "I2C kanaal",
 	"I2C_CHANNEL_DESCRIPTION": "Selecteer een I2C kanaal",
-	"NONE": "Geen"
+	"NONE": "Geen",
+
+	"DEBUGGER": "Debugger",
+	"DEBUGGER_DESCRIPTION": "Werkt je robot niet? Gebruik de debugger om te controleren of je sensoren en actuatoren werken.",
+	"DEBUGGING": "Debuggen",
+	"DEBUGGING_OFF": "Debuggen is uitgeschakeld",
+	"DEBUGGING_OFF_DESC": "Schakel debuggen in om live sensor- en actuatorwaarden te zien. Het programma wordt opnieuw geüpload.",
+	"ENABLE_DEBUGGING": "Debuggen inschakelen",
+	"DEBUG": "Open debugger"
 }

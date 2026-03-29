@@ -1,9 +1,8 @@
 <script lang="ts">
-import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import PythonMonitor from "$components/core/popups/popups/PythonMonitor.svelte";
 import SerialMonitor from "$components/core/popups/popups/SerialMonitor.svelte";
+import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 import Dashboard from "$components/core/popups/popups/help/Dashboard.svelte";
-import Solver from "$components/core/popups/popups/solver/Solver.svelte";
 import Tutorials from "$components/core/popups/popups/tutorials/Tutorials.svelte";
 import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
 import SidePanel from "$components/core/sidepanel/SidePanel.svelte";
@@ -18,6 +17,7 @@ import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import {
 	faBook,
+	faBug,
 	faChalkboardTeacher,
 	faCode,
 	faLightbulb,

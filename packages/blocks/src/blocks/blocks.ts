@@ -4,6 +4,7 @@ import * as bluetooth from "./bluetooth";
 import * as leaphyCommon from "./leaphy_common";
 import * as leaphyFlitz from "./leaphy_flitz";
 import * as leaphyOriginal from "./leaphy_original";
+import * as spark from "./leaphy_spark";
 import * as lists from "./lists";
 import * as mesh from "./mesh";
 import * as micropython from "./micropython";
@@ -23,6 +24,7 @@ const blocks = [
 	...rtc.blocks,
 	...ml.blocks,
 	...bluetooth.blocks,
+	...spark.blocks,
 	...micropython.blocks,
 ];
 
