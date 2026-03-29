@@ -168,8 +168,10 @@ onMount(() => {
 		align-items: center;
 		gap: 30px;
 		padding: 40px;
-		height: 700px; /* Slightly taller to accommodate the scale */
-		overflow: hidden;
+		height: 700px;
+		max-width: 80vw;
+		max-height: 80vh;
+		overflow: auto;
 		position: relative;
 	}
 
