@@ -313,5 +313,9 @@
 
 	"DEBUGGER": "Debugger",
 	"DEBUGGER_DESCRIPTION": "Is your robot not working? Find out what sensors or actuators are not working.",
+	"DEBUGGING": "Debugging",
+	"DEBUGGING_OFF": "Debugging is disabled",
+	"DEBUGGING_OFF_DESC": "Enable debugging to see live sensor and actuator values. The program will be re-uploaded.",
+	"ENABLE_DEBUGGING": "Enable debugging",
 	"DEBUG": "Open debugger"
 }

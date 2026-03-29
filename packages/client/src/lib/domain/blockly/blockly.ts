@@ -6,6 +6,7 @@ import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
+import DebuggingSerializer from "$domain/blockly/debugging.svelte";
 import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
@@ -63,6 +64,11 @@ Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"pseudo",
 	new PseudoSerializer(),
+);
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"debugging",
+	DebuggingSerializer,
 );
 
 registerExtensions(Blockly);

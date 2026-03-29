@@ -101,7 +101,7 @@ export class Arduino extends Blockly.Generator {
 	public robotType = "l_original";
 	public boardType = "l_nano";
 	public program: Uint8Array | null = null;
-	public debugging = true;
+	public debugging = false;
 
 	constructor() {
 		super("Arduino");

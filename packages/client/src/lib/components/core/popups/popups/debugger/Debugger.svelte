@@ -2,10 +2,19 @@
 import starling from "$assets/starling-svg.svg";
 import Windowed from "$components/core/popups/Windowed.svelte";
 import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
+import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import Button from "$components/ui/Button.svelte";
+import Switch from "$components/ui/Switch.svelte";
+import DebuggingSerializer from "$domain/blockly/debugging.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import PopupsState from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
-import { onMount } from "svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import { serialization } from "blockly";
+import { onMount, untrack } from "svelte";
 import { _ } from "svelte-i18n";
+import {track} from "$state/utils";
 
 let motorDebugger = $derived(
 	SerialState.log.debugger.debuggers?.find((e) => e.type.type === "motors"),
@@ -54,6 +63,46 @@ async function connect() {
 	await SerialState.connect(Prompt.MAYBE);
 }
 
+function uploadCode() {
+	PopupsState.open({
+		component: Uploader,
+		data: {
+			getCode: async () => {
+				if (WorkspaceState.Mode !== Mode.BLOCKS) {
+					return WorkspaceState.code;
+				}
+
+				const cs = new CompressionStream("gzip");
+				const stream = new Blob([
+					JSON.stringify(serialization.workspaces.save(BlocklyState.workspace)),
+				])
+					.stream()
+					.pipeThrough(cs);
+
+				const compressedBlob = await new Response(stream).blob();
+				const arrayBuffer = await compressedBlob.arrayBuffer();
+
+				arduino.program = new Uint8Array(arrayBuffer);
+				const code = arduino.workspaceToCode(BlocklyState.workspace);
+				arduino.program = null;
+
+				return code;
+			},
+		},
+		allowInteraction: false,
+	});
+}
+
+let firstRun = true;
+$effect(() => {
+	track(DebuggingSerializer.debugging);
+	if (firstRun) {
+		firstRun = false;
+		return;
+	}
+	untrack(uploadCode);
+});
+
 function differentialDriveTick(leftSpeed: number, rightSpeed: number): void {
 	const leftVelocity = (leftSpeed / 100) * MAX_SPEED;
 	const rightVelocity = (rightSpeed / 100) * MAX_SPEED;
@@ -98,6 +147,9 @@ onMount(() => {
 </script>
 
 <Windowed title={$_("DEBUGGER")}>
+	{#snippet actions()}
+		<Switch name={$_("DEBUGGING")} bind:checked={DebuggingSerializer.debugging} />
+	{/snippet}
 	{#if !SerialState.port || !SerialState.log.debugger.debuggers}
 		<div class="warning">
 			<div class="desc">
@@ -108,6 +160,15 @@ onMount(() => {
 		</div>
 	{/if}
 	<div class="viewport" class:near-mode={proximityFactor > 0}>
+		{#if !DebuggingSerializer.debugging}
+			<div class="debugging-off">
+				<div class="desc">
+					<div class="name">{$_("DEBUGGING_OFF")}</div>
+					<div class="description">{$_("DEBUGGING_OFF_DESC")}</div>
+				</div>
+				<Button mode="accent" name={$_("ENABLE_DEBUGGING")} onclick={() => { DebuggingSerializer.debugging = true; }} />
+			</div>
+		{/if}
 		<div
 			class="playground"
 			style:scale={proximityScale}
@@ -274,5 +335,33 @@ onMount(() => {
 	.debugger {
 		width: 500px;
 		z-index: 10;
+	}
+
+	.debugging-off {
+		position: absolute;
+		inset: 0;
+		z-index: 20;
+		background: var(--background);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 20px;
+		text-align: center;
+	}
+
+	.debugging-off .desc {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	.debugging-off .name {
+		font-size: 1.3em;
+		font-weight: bold;
+	}
+
+	.debugging-off .description {
+		opacity: 0.7;
 	}
 </style>
