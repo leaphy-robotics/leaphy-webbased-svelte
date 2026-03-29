@@ -6,7 +6,10 @@ export default function getCodeGenerators(arduino: Arduino) {
 		arduino.addDependency(Dependencies.TCA9354_GPIO);
 		arduino.addInclude("TCA9534", "#include <TCA9534.h>");
 		arduino.addDefinition("spark-digital", "TCA9534 sparkGPIO;\n");
-		arduino.addSetup("spark-digital", "Wire.begin();\n  sparkGPIO.attach(Wire);");
+		arduino.addSetup(
+			"spark-digital",
+			"Wire.begin();\n  sparkGPIO.attach(Wire);",
+		);
 	}
 
 	arduino.forBlock.leaphy_spark_led = (block) => {
@@ -21,8 +24,8 @@ export default function getCodeGenerators(arduino: Arduino) {
 		arduino.addSetup(
 			"spark-led",
 			"sparkGPIO.config(0, TCA9534::Config::OUT);\n" +
-				"sparkGPIO.config(1, TCA9534::Config::OUT);\n" +
-				"sparkGPIO.config(2, TCA9534::Config::OUT);",
+				"  sparkGPIO.config(1, TCA9534::Config::OUT);\n" +
+				"  sparkGPIO.config(2, TCA9534::Config::OUT);",
 		);
 
 		const debug = arduino.createDebug("rgb-led", {
