@@ -6,7 +6,7 @@ export default function getCodeGenerators(arduino: Arduino) {
 		arduino.addDependency(Dependencies.TCA9354_GPIO);
 		arduino.addInclude("TCA9534", "#include <TCA9534.h>");
 		arduino.addDefinition("spark-digital", "TCA9534 sparkGPIO;\n");
-		arduino.addSetup("spark-digital", "Wire.begin();\nsparkGPIO.attach(Wire);");
+		arduino.addSetup("spark-digital", "Wire.begin();\n  sparkGPIO.attach(Wire);");
 	}
 
 	arduino.forBlock.leaphy_spark_led = (block) => {
