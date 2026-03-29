@@ -72,14 +72,6 @@ function openTutorials() {
 	});
 }
 
-function openDebugger() {
-	PopupState.open({
-		component: Debugger,
-		data: {},
-		allowInteraction: true,
-	});
-}
-
 function openAssignment() {
 	WorkspaceState.toggleSidePanel(EmbedSidePanel);
 }
@@ -94,9 +86,6 @@ function openAssignment() {
 			{/if}
 			{#if WorkspaceState.Mode !== Mode.PYTHON}
 				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? openPythonTerminal : openSerial} />
-			{/if}
-			{#if WorkspaceState.Mode !== Mode.PYTHON}
-				<SideButton icon={faBug} action="DEBUGGER" onclick={openDebugger} />
 			{/if}
 			{#if WorkspaceState.Mode === Mode.ADVANCED}
 				<SideButton icon={faBook} action="LIBRARY_MANAGER" onclick={openLibraryManager} />

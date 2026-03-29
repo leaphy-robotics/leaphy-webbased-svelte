@@ -311,5 +311,7 @@
 	"I2C_CHANNEL_DESCRIPTION": "Select an I2C channel",
 	"NONE": "None",
 
-	"DEBUGGER": "Debugger"
+	"DEBUGGER": "Debugger",
+	"DEBUGGER_DESCRIPTION": "Is your robot not working? Find out what sensors or actuators are not working.",
+	"DEBUG": "Open debugger"
 }

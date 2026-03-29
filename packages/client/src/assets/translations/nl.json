@@ -311,5 +311,7 @@
 	"I2C_CHANNEL_DESCRIPTION": "Selecteer een I2C kanaal",
 	"NONE": "Geen",
 
-	"DEBUGGER": "Debugger"
+	"DEBUGGER": "Debugger",
+	"DEBUGGER_DESCRIPTION": "Werkt je robot niet? Gebruik de debugger om te controleren of je sensoren en actuatoren werken.",
+	"DEBUG": "Open debugger"
 }
