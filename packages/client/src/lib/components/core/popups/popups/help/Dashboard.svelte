@@ -1,8 +1,11 @@
 <script lang="ts">
+import Popup from "$components/core/popups/Popup.svelte";
+import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 import Button from "$components/ui/Button.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import {
-	faBook, faBug,
+	faBook,
+	faBug,
 	faMessage,
 	faProjectDiagram,
 	faRobot,
@@ -16,8 +19,6 @@ import Tutorials from "../tutorials/Tutorials.svelte";
 import Circuit from "./Circuit.svelte";
 import Container from "./Container.svelte";
 import Videos from "./Videos.svelte";
-import Popup from "$components/core/popups/Popup.svelte";
-import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 
 let popupState = getContext<PopupState>("state");
 
@@ -49,7 +50,7 @@ function openDebugger() {
 		component: Debugger,
 		data: {},
 		allowInteraction: true,
-	})
+	});
 	popupState.close();
 }
 </script>

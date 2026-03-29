@@ -1,20 +1,20 @@
 <script lang="ts">
 import starling from "$assets/starling-svg.svg";
 import Windowed from "$components/core/popups/Windowed.svelte";
-import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
+import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 import Button from "$components/ui/Button.svelte";
 import Switch from "$components/ui/Switch.svelte";
 import DebuggingSerializer from "$domain/blockly/debugging.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
+import { track } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { serialization } from "blockly";
 import { onMount, untrack } from "svelte";
 import { _ } from "svelte-i18n";
-import {track} from "$state/utils";
 
 let motorDebugger = $derived(
 	SerialState.log.debugger.debuggers?.find((e) => e.type.type === "motors"),
