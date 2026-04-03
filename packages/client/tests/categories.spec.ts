@@ -1,21 +1,27 @@
-import { expect, Page, test } from "@playwright/test";
+import { type Page, expect, test } from "@playwright/test";
 import { goToHomePage, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
-async function testCategories(page: Page, expectedCategories: [string, string][]) {
+async function testCategories(
+	page: Page,
+	expectedCategories: [string, string][],
+) {
 	for (const category of expectedCategories) {
-		const name = await page.locator(`#${category[0]}`).textContent()
-		expect(name).toContain(category[1])
+		const name = await page.locator(`#${category[0]}`).textContent();
+		expect(name).toContain(category[1]);
 	}
 }
 
 async function installExtension(page: Page, name: string) {
-	await page.locator(".addExtension").click()
-	await page.getByText("Select", { exact: true }).click()
+	await page.locator(".addExtension").click();
+	await page.getByText("Select", { exact: true }).click();
 
-	const extension = page.locator(".extension").filter({ hasText: name }).first()
-	await extension.getByText("Add Extension").click()
+	const extension = page
+		.locator(".extension")
+		.filter({ hasText: name })
+		.first();
+	await extension.getByText("Add Extension").click();
 }
 
 test("Categories - Leaphy Flitz", async ({ page }) => {
@@ -26,13 +32,13 @@ test("Categories - Leaphy Flitz", async ({ page }) => {
 		["l_situation", "Thinkflow"],
 		["l_numbers", "Numbers"],
 		["l_variables", "Variables"],
-		["l_functions", "Custom Blocks"]
-	])
-})
+		["l_functions", "Custom Blocks"],
+	]);
+});
 
 test("Categories - Leaphy Starling (with Lists)", async ({ page }) => {
-	await selectRobot(page, "Leaphy Starling")
-	await installExtension(page, "Lists")
+	await selectRobot(page, "Leaphy Starling");
+	await installExtension(page, "Lists");
 	await testCategories(page, [
 		["l_search", "Search"],
 		["l_sensors", "Sensors"],
@@ -41,13 +47,13 @@ test("Categories - Leaphy Starling (with Lists)", async ({ page }) => {
 		["l_numbers", "Numbers"],
 		["l_variables", "Variables"],
 		["l_lists", "Lists"],
-		["l_functions", "Custom Blocks"]
-	])
-})
+		["l_functions", "Custom Blocks"],
+	]);
+});
 
 test("Categories - Leaphy Original (with Operators)", async ({ page }) => {
-	await selectRobot(page, "Leaphy Original")
-	await installExtension(page, "Operators")
+	await selectRobot(page, "Leaphy Original");
+	await installExtension(page, "Operators");
 	await testCategories(page, [
 		["l_search", "Search"],
 		["l_sensors", "Sensors"],
@@ -55,6 +61,6 @@ test("Categories - Leaphy Original (with Operators)", async ({ page }) => {
 		["l_situation", "Thinkflow"],
 		["l_operators", "Operators"],
 		["l_variables", "Variables"],
-		["l_functions", "Custom Blocks"]
-	])
-})
+		["l_functions", "Custom Blocks"],
+	]);
+});
