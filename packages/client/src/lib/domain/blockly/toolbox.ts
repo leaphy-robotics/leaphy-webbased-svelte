@@ -1034,7 +1034,7 @@ export default [
 		style: "functions_category",
 		id: "l_functions",
 		custom: "PROCEDURE",
-		robots: [-RobotType.L_MICROPYTHON],
+		robots: [...robotGroups.ALL, -RobotType.L_MICROPYTHON],
 	},
 	{
 		name: "%{BKY_LEAPHY_FUNCTIONS_CATEGORY}",
