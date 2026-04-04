@@ -23,7 +23,7 @@ for (let [testName, file] of test_files) {
 
 		// All of these should be loaded in
 		await expect(page.getByText("repeat")).toBeVisible();
-		await expect(page.getByText("during")).toBeVisible();
+		await expect(page.getByText("Wait")).toBeVisible();
 		await expect(page.getByText("hello world!")).toBeVisible();
 		await expect(page.getByText("10", { exact: true })).toBeVisible();
 

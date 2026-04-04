@@ -56,6 +56,7 @@ export default [
 						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 					},
 					{ type: "i2c_use_channel" },
+					{ type: "leaphy_spark_read" },
 				],
 			},
 			{
@@ -94,8 +95,16 @@ export default [
 						robots: robotGroups.ALL,
 					},
 					{
+						type: "leaphy_dht22_read_temperature",
+						robots: [RobotType.L_MICROPYTHON],
+					},
+					{
 						type: "leaphy_gas_sensor",
 						robots: robotGroups.ALL,
+					},
+					{
+						type: "leaphy_dht22_read_humidity",
+						robots: [RobotType.L_MICROPYTHON],
 					},
 					{
 						type: "leaphy_get_air_pressure",
@@ -117,7 +126,11 @@ export default [
 					},
 					{
 						type: "leaphy_i2c_rgb_color",
-						robots: robotGroups.ALL,
+						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
+					},
+					{
+						type: "leaphy_i2c_gesture",
+						robots: [RobotType.L_MICROPYTHON],
 					},
 				],
 			},
@@ -278,6 +291,14 @@ export default [
 							-RobotType.L_FLITZ_UNO,
 							-RobotType.L_FLITZ_NANO,
 						],
+					},
+					{
+						type: "leaphy_spark_led",
+						inputs: {
+							RED: boolean(),
+							GREEN: boolean(),
+							BLUE: boolean(),
+						},
 					},
 					{
 						robots: [
@@ -757,7 +778,7 @@ export default [
 					},
 					{
 						type: "leaphy_i2c_gesture",
-						robots: [RobotType.L_FLITZ_NANO],
+						robots: [RobotType.L_FLITZ_NANO, RobotType.L_MICROPYTHON],
 					},
 					{
 						type: "leaphy_i2c_rgb_color",
@@ -1013,6 +1034,14 @@ export default [
 		style: "functions_category",
 		id: "l_functions",
 		custom: "PROCEDURE",
+		robots: [...robotGroups.ALL, -RobotType.L_MICROPYTHON],
+	},
+	{
+		name: "%{BKY_LEAPHY_FUNCTIONS_CATEGORY}",
+		style: "functions_category",
+		id: "l_functions",
+		custom: "PYTHON_PROCEDURE",
+		robots: [RobotType.L_MICROPYTHON],
 	},
 	{
 		name: "Machine learning",

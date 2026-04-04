@@ -12,32 +12,31 @@ test("User Feedback", async ({ page }) => {
 	await page.getByPlaceholder("Email").fill("test@ing");
 	await page.locator("textarea").fill("test123");
 
+	await page.route("**/feedback", (route) => {
+		route.fulfill({
+			status: 200,
+			body: JSON.stringify({
+				message: "Feedback sent",
+			}),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	});
+
 	// Wait for the user_report feedback
 	const feedbackPromise = page.waitForRequest((request) => {
-		if (!/.*\/api\/2\/envelope\/.*/.test(request.url())) {
-			return false;
-		}
-
-		let messages = request
-			.postData()
-			?.split("\n")
-			.map((line) => JSON.parse(line));
-
-		return messages !== undefined && messages[1].type === "feedback";
+		return /.*\/feedback$/.test(request.url());
 	});
 
 	await page.getByRole("button", { name: "Send" }).click();
-	let request = await feedbackPromise;
+	const request = await feedbackPromise;
 
-	let postData = request.postData();
+	const postData = request.postData();
 	expect(postData).toBeTruthy();
 
-	let messages = (postData as string)
-		.split("\n")
-		.map((line) => JSON.parse(line));
-
-	let feedback = messages[2].contexts.feedback;
+	const feedback = JSON.parse(postData as string);
 	expect(feedback.name).toBe("test");
-	expect(feedback.contact_email).toBe("test@ing");
+	expect(feedback.email).toBe("test@ing");
 	expect(feedback.message).toBe("test123");
 });

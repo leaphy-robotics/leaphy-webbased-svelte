@@ -14,9 +14,9 @@ messages.ARD_SERVO_ARM_WRITE = "Servo Arm";
 messages.ARD_SERVO_WRITE = "Servo";
 messages.ARD_SERVO_WRITE_DEG_180 = "°";
 messages.ARD_SERVO_WRITE_TO = "op";
-messages.ARD_TIME_DELAY = "duurt";
-messages.ARD_TIME_DELAY_TIP = "Wacht het gespecificeerde aantal milliseconden";
-messages.ARD_TIME_MS = "ms"; // untranslated
+messages.ARD_TIME_DELAY = "Duurt";
+messages.ARD_TIME_DELAY_TIP =
+	"Wacht het gespecificeerde aantal milli/microseconden";
 messages.ARD_WRITE_TO = "op";
 messages.CANNOT_DELETE_VARIABLE_PROCEDURE =
 	'De variabele "%1" kan niet verwijderd worden omdat die onderdeel uitmaakt van de definitie van de functie "%2"';
@@ -147,6 +147,8 @@ messages.LEAPHY_GET_DISTANCE = "Lees afstand";
 messages.LEAPHY_TOF_GET_DISTANCE = "Lees ToF";
 messages.LEAPHY_GET_AIR_PRESSURE = "Lees luchtdruk";
 messages.LEAPHY_TMP102_READ_TEMPERATURE = "Lees temperatuur";
+messages.LEAPHY_DHT22_READ_TEMPERATURE = "Lees temperatuur van DHT22 op pin";
+messages.LEAPHY_DHT22_READ_HUMIDITY = "Lees luchvochtigheid van DHT22 op pin";
 messages.LEAPHY_GET_GESTURE = "Lees gebaar";
 messages.LEAPHY_LED = "Led";
 messages.LEAPHY_LED_BASIC_BLUE = "B";
@@ -802,5 +804,14 @@ messages.LEAPHY_KEY_ARROW_DOWN = "pijltje omlaag";
 messages.LEAPHY_KEY_ARROW_RIGHT = "pijltje rechts";
 messages.LEAPHY_KEY_ARROW_LEFT = "pijltje links";
 messages.DEFAULT = "Standaard";
+messages.LEAPHY_SPARK_READ = "Lees Leaphy Spark sensor %1";
+messages.LEAPHY_SPARK_RGB = "Leaphy Spark led rood %1 groen %2 blauw %3";
+messages.LEAPHY_SPARK_LEFT_LINE_SENSOR = "linker lijnsensor";
+messages.LEAPHY_SPARK_RIGHT_LINE_SENSOR = "rechter lijnsensor";
+messages.LEAPHY_SPARK_POTENTIOMETER = "potentiometer";
+messages.LEAPHY_SPARK_LEFT_AMBIENT_LIGHT_SENSOR = "linker omgevingslichtsensor";
+messages.LEAPHY_SPARK_RIGHT_AMBIENT_LIGHT_SENSOR =
+	"rechter omgevingslichtsensor";
+messages.LEAPHY_SPARK_BUTTON = "knop";
 
 export default messages;

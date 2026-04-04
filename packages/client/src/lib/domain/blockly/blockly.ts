@@ -6,6 +6,7 @@ import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
+import DebuggingSerializer from "$domain/blockly/debugging.svelte";
 import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
@@ -25,6 +26,12 @@ import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
 import bluetooth from "$domain/blockly/bluetooth";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+import type { BlockDefinition } from "blockly/core/blocks";
+import type {
+	FlyoutDefinition,
+	FlyoutItemInfoArray,
+} from "blockly/core/utils/toolbox";
 import { _ as translate } from "svelte-i18n";
 import { get } from "svelte/store";
 import Extensions from "./extensions.svelte";
@@ -62,6 +69,11 @@ Blockly.registry.register(
 	"pseudo",
 	new PseudoSerializer(),
 );
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"debugging",
+	DebuggingSerializer,
+);
 
 registerExtensions(Blockly);
 
@@ -98,10 +110,47 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 	play.call(this, name, opt_volume);
 };
 
+export function getAllBlocks() {
+	const contents = toolbox
+		.filter((category) => category.id !== "l_search")
+		.filter(({ robots }) =>
+			robots ? inFilter(WorkspaceState.robot, robots) : true,
+		)
+		.filter((category) => Extensions.isEnabled(category.id))
+		.flatMap((category) => {
+			if (category.custom) {
+				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
+					category.custom,
+				);
+				if (!callback) return;
+
+				return callback(
+					BlocklyState.workspace,
+				) as utils.toolbox.FlyoutItemInfoArray;
+			}
+			if (!category.groups) return;
+			return category.groups.flatMap((group) =>
+				group.blocks.map((block) => ({
+					kind: "block",
+					...block,
+				})),
+			);
+		})
+		.filter((block) => block.kind === "block" && "type" in block);
+
+	// Add blocks to a map to avoid duplicates
+	const blocks = new Map<string, BlockDefinition>();
+	for (const block of contents) {
+		blocks.set(block.type, block);
+	}
+
+	return Array.from(blocks.values());
+}
+
 export function loadToolbox(
 	robot: RobotDevice,
 	dynamicCategories = false,
-): utils.toolbox.ToolboxDefinition {
+): utils.toolbox.ToolboxInfo {
 	const contents = toolbox
 		.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
 		.map((category) => {
@@ -197,7 +246,6 @@ function registerDynamicCategories(
 				label.addEventListener(
 					"click",
 					() => {
-						console.log("click");
 						if (expanded.has(i)) {
 							expanded.delete(i);
 						} else {
@@ -288,6 +336,21 @@ export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 	return true;
 }
 
+function pythonProcedureCategory(workspace: WorkspaceSvg) {
+	const blocklyCallback = workspace.getToolboxCategoryCallback("PROCEDURE");
+	if (!blocklyCallback) throw new Error("Procedure category not found");
+
+	let blockList: FlyoutDefinition = [
+		{
+			kind: "block",
+			type: "raw_code_line",
+		},
+		...(blocklyCallback(workspace) as FlyoutItemInfoArray),
+	];
+
+	return blockList;
+}
+
 export function setupWorkspace(
 	robot: RobotDevice,
 	element: HTMLDivElement,
@@ -321,6 +384,10 @@ export function setupWorkspace(
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
 	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
 	workspace.registerToolboxCategoryCallback("BLE", bluetooth);
+	workspace.registerToolboxCategoryCallback(
+		"PYTHON_PROCEDURE",
+		pythonProcedureCategory,
+	);
 	toolbox.getFlyout().autoClose = false;
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();

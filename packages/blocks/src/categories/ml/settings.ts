@@ -46,8 +46,8 @@ export function textSetting<Id extends string>(
 }
 
 export function i2cSetting<Id extends string>(id: Id) {
-	return selectSetting(id, "Channel", "Select an I2C channel", [
-		["None", -1],
+	return selectSetting(id, "I2C_CHANNEL", "I2C_CHANNEL_DESCRIPTION", [
+		["NONE", -1],
 		["0", 0],
 		["1", 1],
 		["2", 2],

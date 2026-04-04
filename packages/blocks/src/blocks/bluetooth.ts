@@ -26,6 +26,9 @@ const blocks: BlockDefinition = [
 		],
 		previousStatement: null,
 		nextStatement: null,
+
+		aiHelp: "Setup the Bluetooth module for connecting to the users laptop",
+		relevanceKey: "BLUETOOTH",
 	},
 	{
 		type: "ble_update",
@@ -33,6 +36,10 @@ const blocks: BlockDefinition = [
 		message0: "%{BKY_LEAPHY_BLE_UPDATE}",
 		previousStatement: null,
 		nextStatement: null,
+
+		aiHelp:
+			"Update the Bluetooth connection (required to always run in loop if bluetooth is used)",
+		relevanceKey: "BLUETOOTH",
 	},
 
 	{
@@ -47,6 +54,9 @@ const blocks: BlockDefinition = [
 		],
 		style: "ble_blocks",
 		output: "Boolean",
+
+		aiHelp: "Check if a key is pressed on the Bluetooth connection",
+		relevanceKey: "BLUETOOTH",
 	},
 ];
 

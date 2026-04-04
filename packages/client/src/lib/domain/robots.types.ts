@@ -7,7 +7,6 @@ export const RobotType = {
 	L_STARLING: 4,
 	L_NANO: 5,
 	L_NANO_ESP32: 6,
-	L_NANO_RP2040: 7,
 	L_UNO: 8,
 	L_MEGA: 9,
 	L_CPP: 10,

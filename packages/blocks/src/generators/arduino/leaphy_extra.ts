@@ -51,79 +51,30 @@ function getCodeGenerators(arduino: Arduino) {
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
-	arduino.forBlock.leaphy_led_set_strip = (block) => {
-		const pin =
-			arduino.valueToCode(block, "LED_SET_PIN", arduino.ORDER_ATOMIC) || "0";
-		const leds =
-			arduino.valueToCode(block, "LED_SET_LEDS", arduino.ORDER_ATOMIC) || "0";
-
-		arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
-		arduino.addInclude("led_libs", '#include "ledstrip.h"');
-		arduino.addDeclaration("leds_pins", `LEDSTRIP ledstrip(${pin}, ${leds});`);
-
-		arduino.reservePin(block, pin, arduino.PinTypes.LEDSTRIP, "Led Strip");
-		return "";
-	};
-
-	arduino.forBlock.leaphy_led_set_basic = (block) => {
-		const led =
-			arduino.valueToCode(block, "LED_SET_LED", arduino.ORDER_ATOMIC) || "0";
-		const red =
-			arduino.valueToCode(block, "LED_BASIC_RED", arduino.ORDER_ATOMIC) || "0";
-		const green =
-			arduino.valueToCode(block, "LED_BASIC_GREEN", arduino.ORDER_ATOMIC) ||
-			"0";
-		const blue =
-			arduino.valueToCode(block, "LED_BASIC_BLUE", arduino.ORDER_ATOMIC) || "0";
-		return `ledstrip.basis(${led}, ${red}, ${green}, ${blue});\n`;
-	};
-
-	arduino.forBlock.leaphy_led_set_speed = (block) => {
-		const speedValue =
-			arduino.valueToCode(block, "LED_SET_SPEEDVALUE", arduino.ORDER_ATOMIC) ||
-			"0";
-		return `_snelHeid = ${speedValue}`;
-	};
-
-	arduino.forBlock.leaphy_led_strip_demo = (block) => {
-		const dropdownType = block.getFieldValue("DEMO_TYPE");
-		const red =
-			arduino.valueToCode(block, "LED_STRIP_DEMO_RED", arduino.ORDER_ATOMIC) ||
-			"0";
-		const green =
-			arduino.valueToCode(
-				block,
-				"LED_STRIP_DEMO_GREEN",
-				arduino.ORDER_ATOMIC,
-			) || "0";
-		const blue =
-			arduino.valueToCode(block, "LED_STRIP_DEMO_BLUE", arduino.ORDER_ATOMIC) ||
-			"0";
-		return `ledstrip.runFunction(${dropdownType}, ${red}, ${green}, ${blue});\n`;
-	};
-
 	arduino.forBlock.leaphy_servo_write = (block) => {
 		const pinKey = arduino.getPinMapping(block, "SERVO_PIN");
 		const servoAngle =
 			arduino.valueToCode(block, "SERVO_ANGLE", arduino.ORDER_ATOMIC) || "90";
 		const servoName = `myServo${pinKey}`;
 
-		const servo = arduino.builder.add(`servo-${pinKey}`, Servo);
-		arduino.builder.connect(
-			arduino.murphy.port(pinKey),
-			servo.port("pulse"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${pinKey}.3V3`),
-			servo.port("vcc"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${pinKey}.GND`),
-			servo.port("gnd"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const servo = arduino.builder.add(`servo-${pinKey}`, Servo);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(pinKey),
+				servo.port("pulse"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${pinKey}.3V3`),
+				servo.port("vcc"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${pinKey}.GND`),
+				servo.port("gnd"),
+				WireColor.GND,
+			);
+		}
 
 		arduino.reservePin(block, pinKey, arduino.PinTypes.SERVO, "Servo Write");
 
@@ -133,7 +84,12 @@ function getCodeGenerators(arduino: Arduino) {
 		const setupCode = `${servoName}.attach(${pinKey});`;
 		arduino.addSetup(`servo_${pinKey}`, setupCode, true);
 
-		return `${servoName}.write(${servoAngle});\n`;
+		const debug = arduino.createDebug(`servo-${pinKey}`, {
+			type: "servo",
+			name: `Servo ${pinKey}`,
+			values: 1,
+		});
+		return `${servoName}.write(${debug(servoAngle)});\n`;
 	};
 
 	arduino.forBlock.leaphy_servo_read = (block) => {
@@ -162,7 +118,13 @@ function getCodeGenerators(arduino: Arduino) {
 		const pinSetupCode = `pinMode(${pin}, OUTPUT);`;
 		arduino.addSetup(`io_${pin}`, pinSetupCode, false);
 
-		return `digitalWrite(${pin}, ${stateOutput});\n`;
+		const debug = arduino.createDebug(`digital-output-${pin}`, {
+			type: "basic",
+			name: `Digital output ${pin}`,
+			values: 1,
+		});
+
+		return `digitalWrite(${pin}, ${debug(stateOutput)});\n`;
 	};
 
 	arduino.forBlock.leaphy_io_analogwrite = (block) => {
@@ -185,7 +147,13 @@ function getCodeGenerators(arduino: Arduino) {
 			block.setWarningText(null);
 		}
 
-		return `analogWrite(${pin}, ${stateOutput});\n`;
+		const debug = arduino.createDebug(`pwm-output-${pin}`, {
+			type: "basic",
+			name: `PWM ${pin}`,
+			values: 1,
+		});
+
+		return `analogWrite(${pin}, ${debug(stateOutput)});\n`;
 	};
 
 	arduino.forBlock.leaphy_multiplexer_digitalwrite = (block) => {

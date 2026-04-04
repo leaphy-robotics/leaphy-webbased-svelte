@@ -19,7 +19,7 @@ You can follow the following procedure to convert and add the component to our s
 Circuit components are added inside the C++ generator, first find all generators related to the component you're trying to add
 
 1. You can add the component to the schema by using `const component = arduino.builder.add(`component-${pin}`, MyComponent);` (please ensure that the first argument is always unique to the connections of the component)
-2. You can add pin connections by using `arduino.builder.connect(component1.port(pin), component.port("Out"), WireColor.DATA_1);` (example: `arduino.builder.connect(arduino.murphy.port(pin), component.port("Out"), WireColor.DATA_1);`)
+2. You can add pin connections by using `arduino.builder.connect(component1.port(pin), component.port("Out"), WireColor.DATA_1);` (example: `arduino.builder.connect(arduino.builder.murphy.port(pin), component.port("Out"), WireColor.DATA_1);`)
 3. Repeat adding pin connections for all pins on your component, adjust the wire color accordingly
 
 ### Using component: using an I2C peripheral

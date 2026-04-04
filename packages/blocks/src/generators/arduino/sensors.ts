@@ -19,58 +19,98 @@ export function getTOF(arduino: Arduino) {
 	return "getTOF()";
 }
 
+export function getLidarValue(pixel: number) {
+	return `min(1.0f, getLidar(${pixel}) / 500.0f)`;
+}
+
+export function measureLidar(arduino: Arduino) {
+	arduino.addDependency(Dependencies.SPARKFUN_VL53L5CX);
+	arduino.addInclude("leaphy_lidar", "#include <SparkFun_VL53L5CX_Library.h>");
+	arduino.addDeclaration(
+		"leaphy_lidar",
+		"SparkFun_VL53L5CX lidar;\nVL53L5CX_ResultsData lidarResults;",
+	);
+
+	const setup = arduino.addI2CSetup(
+		"lidar",
+		"lidar.begin();\n      lidar.setResolution(8*8);\n      lidar.setRangingFrequency(15);\n      lidar.startRanging();",
+	);
+	arduino.addDeclaration(
+		"leaphy_lidar_measure",
+		`void lidarMeasure() {\n    ${setup}\n    lidar.getRangingData(&lidarResults);\n}`,
+	);
+	arduino.addDeclaration(
+		"leaphy_lidar_read",
+		"int getLidar(int pixel) {\n    return lidarResults.distance_mm[pixel];\n}",
+	);
+
+	return "lidarMeasure()";
+}
+
 export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
-	const sensor = arduino.builder.add(`ultrasonic-${trig}-${echo}`, Ultrasonic);
-
-	// if the sensor is connected via the I2C addon board
-	if ((trig === "17" && echo === "16") || (trig === "A3" && echo === "A2")) {
-		arduino.builder.connect(
-			arduino.i2c.port("VCC"),
-			sensor.port("VCC"),
-			WireColor.VCC,
+	if (arduino.builder) {
+		const sensor = arduino.builder.add(
+			`ultrasonic-${trig}-${echo}`,
+			Ultrasonic,
 		);
-		arduino.builder.connect(
-			arduino.i2c.port("TRIG"),
-			sensor.port("TRIG"),
-			WireColor.TX,
-		);
-		arduino.builder.connect(
-			arduino.i2c.port("ECHO"),
-			sensor.port("ECHO"),
-			WireColor.RX,
-		);
-		arduino.builder.connect(
-			arduino.i2c.port("GND"),
-			sensor.port("GND"),
-			WireColor.GND,
-		);
-	} else {
-		arduino.builder.connect(
-			arduino.murphy.port(`${trig}.3V3`),
-			sensor.port("VCC"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${trig}`),
-			sensor.port("TRIG"),
-			WireColor.TX,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${echo}`),
-			sensor.port("ECHO"),
-			WireColor.RX,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${trig}.GND`),
-			sensor.port("GND"),
-			WireColor.GND,
-		);
+		// if the sensor is connected via the I2C addon board
+		if ((trig === "17" && echo === "16") || (trig === "A3" && echo === "A2")) {
+			arduino.builder.connect(
+				arduino.builder.i2c.port("VCC"),
+				sensor.port("VCC"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.i2c.port("TRIG"),
+				sensor.port("TRIG"),
+				WireColor.TX,
+			);
+			arduino.builder.connect(
+				arduino.builder.i2c.port("ECHO"),
+				sensor.port("ECHO"),
+				WireColor.RX,
+			);
+			arduino.builder.connect(
+				arduino.builder.i2c.port("GND"),
+				sensor.port("GND"),
+				WireColor.GND,
+			);
+		} else {
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${trig}.3V3`),
+				sensor.port("VCC"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${trig}`),
+				sensor.port("TRIG"),
+				WireColor.TX,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${echo}`),
+				sensor.port("ECHO"),
+				WireColor.RX,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${trig}.GND`),
+				sensor.port("GND"),
+				WireColor.GND,
+			);
+		}
 	}
-
 	arduino.addDependency(Dependencies.LEAPHY_EXTENSIONS);
 	arduino.addInclude("leaphy_extra", '#include "Leaphy_Extra.h"');
 
-	return `getDistanceSonar(${arduino.getRawPinMapping(trig)}, ${arduino.getRawPinMapping(echo)})`;
+	const debug = arduino.createDebug(`sonar-${trig}-${echo}`, {
+		type: "basic",
+		name: `Sonar trig: ${trig}, echo: ${echo}`,
+		values: 1,
+		unit: "cm",
+		simulation: "distance",
+	});
+	return debug(
+		`getDistanceSonar(${arduino.getRawPinMapping(trig)}, ${arduino.getRawPinMapping(echo)})`,
+	);
 }
 
 export default function getCodeGenerators(arduino: Arduino) {

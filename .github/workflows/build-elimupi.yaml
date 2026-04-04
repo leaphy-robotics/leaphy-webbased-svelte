@@ -25,7 +25,7 @@ jobs:
         working-directory: ./packages/client
         run: |
           cat << EOF > .env
-          VITE_BACKEND_URL=""
+          VITE_BACKEND_URL="/api"
           VITE_SENTRY_DSN=""
           VITE_SENTRY_SAMPLE_RATE="0.0"
           EOF

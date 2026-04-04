@@ -6,17 +6,20 @@ import defaultProgram from "$assets/default-program.json?raw";
 import leaphyLogo from "$assets/leaphy-logo.svg";
 import Circuit from "$components/core/popups/popups/Circuit.svelte";
 import Connect from "$components/core/popups/popups/Connect.svelte";
+import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
+import EmbedState from "$state/embed.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
+import { faWindows } from "@fortawesome/free-brands-svg-icons";
 import {
 	faCircleCheck,
 	faComment,
@@ -51,6 +54,7 @@ import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
+import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
@@ -154,15 +158,6 @@ async function newProject() {
 	);
 }
 
-function serialize() {
-	if (WorkspaceState.Mode === Mode.BLOCKS || WorkspaceState.Mode === Mode.ML)
-		return JSON.stringify(
-			serialization.workspaces.save(BlocklyState.workspace),
-		);
-
-	return WorkspaceState.code;
-}
-
 async function saveProjectAs() {
 	const name = await PopupState.open({
 		component: SaveProject,
@@ -181,7 +176,7 @@ async function saveProjectAs() {
 	if (WorkspaceState.Mode === Mode.PYTHON) extension = "py";
 
 	const url = URL.createObjectURL(
-		new Blob([serialize()], { type: "text/plain" }),
+		new Blob([WorkspaceState.serialize()], { type: "text/plain" }),
 	);
 	const link = document.createElement("a");
 	link.href = url;
@@ -203,7 +198,7 @@ async function openProject() {
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
-	await WorkspaceState.handle.write(serialize());
+	await WorkspaceState.handle.write(WorkspaceState.serialize());
 	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }
@@ -235,6 +230,14 @@ function log() {
 	});
 }
 
+function driverHelp() {
+	PopupState.open({
+		component: DriverInstall,
+		data: {},
+		allowInteraction: true,
+	});
+}
+
 function discord() {
 	window.open("https://discord.com/invite/Yeg7Kkrq5W", "_blank").focus();
 }
@@ -246,7 +249,7 @@ function feedback() {
 	PopupState.open({
 		component: Feedback,
 		data: {},
-		allowInteraction: true,
+		allowInteraction: false,
 	});
 }
 
@@ -311,6 +314,9 @@ async function connectPython() {
 
 function runPython() {
 	const io = WorkspaceState.microPythonIO;
+	if (WorkspaceState.microPythonRun) {
+		WorkspaceState.microPythonRun.signalRestart();
+	}
 	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 
@@ -331,6 +337,14 @@ async function submit() {
 async function openCircuitPopup() {
 	await PopupState.open({
 		component: Circuit,
+		data: {},
+		allowInteraction: true,
+	});
+}
+
+function openESPProgrammerPopup() {
+	PopupState.open({
+		component: ESPProgrammer,
 		data: {},
 		allowInteraction: true,
 	});
@@ -361,7 +375,7 @@ async function openCircuitPopup() {
 						onclick={saveProjectAs}
 						{open}
 					/>
-					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} />
+					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} disabled={EmbedState.isEmbedded} />
 				{/snippet}
 			</Button>
             <Button name={$_("HELP")} mode={"outlined"}>
@@ -373,14 +387,21 @@ async function openCircuitPopup() {
 							onclick={examples}
 							{open}
 						/>
-
-						<ContextItem
-							icon={faProjectDiagram}
-							name={$_("CIRCUIT")}
-							onclick={openCircuitPopup}
-							{open}
-						/>
+						{#if arduino.builder}
+							<ContextItem
+								icon={faProjectDiagram}
+								name={$_("CIRCUIT")}
+								onclick={openCircuitPopup}
+								{open}
+							/>
+						{/if}
 					{/if}
+					<ContextItem
+						icon={faWindows}
+						name={$_("DRIVER_INSTALL_TITLE")}
+						onclick={driverHelp}
+						{open}
+					/>
 					<ContextItem
 						icon={faQuestionCircle}
 						name={$_("HELP_FORUM")}
@@ -402,6 +423,7 @@ async function openCircuitPopup() {
 					<ContextItem
 						icon={faGlobe}
 						name={$_("LANGUAGE")}
+						disabled={EmbedState.isEmbedded}
 						{open}
 					>
 						{#snippet context()}
@@ -415,6 +437,12 @@ async function openCircuitPopup() {
 								selected={$locale === "nl"}
 								name={"Nederlands"}
 								onclick={() => setLocale("nl")}
+								{open}
+							/>
+							<ContextItem
+								selected={$locale === "ua"}
+								name={"Yкраїнська"}
+								onclick={() => setLocale("ua")}
 								{open}
 							/>
 						{/snippet}
@@ -451,12 +479,15 @@ async function openCircuitPopup() {
 						onclick={log}
 						{open}
 					/>
-					<ContextItem
-						icon={faDownload}
-						name={$_("DOWNLOAD_DRIVERS")}
-						onclick={downloadDrivers}
-						{open}
-					/>
+					{#if navigator.platform.startsWith("Win")}
+						<ContextItem
+							icon={faDownload}
+							name={$_("DOWNLOAD_DRIVERS")}
+							onclick={downloadDrivers}
+							{open}
+						/>
+					{/if}
+					<ContextItem icon={faRobot} name={$_("ESP_PROGRAMMER")} onclick={openESPProgrammerPopup} {open} />
 				{/snippet}
 			</Button>
             {#if WorkspaceState.Mode !== Mode.PYTHON}
@@ -484,6 +515,7 @@ async function openCircuitPopup() {
 						mode={"outlined"}
 						icon={faPen}
 						name={$_("CODE")}
+						disabled={EmbedState.isEmbedded}
 						onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp}
 					/>
             {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
@@ -491,6 +523,7 @@ async function openCircuitPopup() {
                     mode={"outlined"}
                     icon={block}
                     name={$_("BLOCKS")}
+                    disabled={EmbedState.isEmbedded}
                     onclick={blocks}
                 />
             {/if}
@@ -529,6 +562,15 @@ async function openCircuitPopup() {
             {:else}
                 <Button name={MLState.enabled ? $_("ML_OPEN") : $_("UPLOAD")} mode={"accent"} onclick={upload} />
             {/if}
+
+			{#if EmbedState.action}
+				<Button
+					icon={faCircleCheck}
+					name={EmbedState.action}
+					mode="tint"
+					onclick={() => EmbedState.callAction()}
+				/>
+			{/if}
         {/if}
     </div>
 </div>

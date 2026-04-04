@@ -20,44 +20,43 @@ function getCodeGenerators(arduino: Arduino) {
 		arduino.reservePin(block, "12", arduino.PinTypes.SERVO, "Servo Set");
 		arduino.reservePin(block, "13", arduino.PinTypes.SERVO, "Servo Set");
 
-		const servoLeft = arduino.builder.add("servo_left", Servo);
-		arduino.builder.connect(
-			arduino.murphy.port("D12"),
-			servoLeft.port("pulse"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D12.3V3"),
-			servoLeft.port("vcc"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D12.GND"),
-			servoLeft.port("gnd"),
-			WireColor.GND,
-		);
-
-		const servoRight = arduino.builder.add("servo_right", Servo);
-		arduino.builder.connect(
-			arduino.murphy.port("D13"),
-			servoRight.port("pulse"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D13.3V3"),
-			servoRight.port("vcc"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port("D13.GND"),
-			servoRight.port("gnd"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const servoLeft = arduino.builder.add("servo_left", Servo);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D12"),
+				servoLeft.port("pulse"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D12.3V3"),
+				servoLeft?.port("vcc"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D12.GND"),
+				servoLeft.port("gnd"),
+				WireColor.GND,
+			);
+			const servoRight = arduino.builder.add("servo_right", Servo);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D13"),
+				servoRight.port("pulse"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D13.3V3"),
+				servoRight.port("vcc"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port("D13.GND"),
+				servoRight.port("gnd"),
+				WireColor.GND,
+			);
+		}
 	}
 
 	arduino.forBlock.leaphy_original_set_led = (block) => {
-		const led = arduino.builder.add("rgb", RGBFlitz);
-
 		const red =
 			arduino.valueToCode(block, "LED_RED", arduino.ORDER_ATOMIC) || "0";
 		const green =
@@ -80,26 +79,29 @@ function getCodeGenerators(arduino: Arduino) {
 				pin_blue = 9;
 			}
 
-			arduino.builder.connect(
-				arduino.murphy.port(pin_red.toString()),
-				led.port("R"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.murphy.port(pin_green.toString()),
-				led.port("G"),
-				WireColor.DATA_2,
-			);
-			arduino.builder.connect(
-				arduino.murphy.port(pin_blue.toString()),
-				led.port("B"),
-				WireColor.DATA_3,
-			);
-			arduino.builder.connect(
-				arduino.murphy.port("D8"),
-				led.port("GND"),
-				WireColor.GND,
-			);
+			if (arduino.builder) {
+				const led = arduino.builder.add("rgb", RGBFlitz);
+				arduino.builder.connect(
+					arduino.builder.murphy.port(pin_red.toString()),
+					led.port("R"),
+					WireColor.DATA_1,
+				);
+				arduino.builder.connect(
+					arduino.builder.murphy.port(pin_green.toString()),
+					led.port("G"),
+					WireColor.DATA_2,
+				);
+				arduino.builder.connect(
+					arduino.builder.murphy.port(pin_blue.toString()),
+					led.port("B"),
+					WireColor.DATA_3,
+				);
+				arduino.builder.connect(
+					arduino.builder.murphy.port("D8"),
+					led.port("GND"),
+					WireColor.GND,
+				);
+			}
 
 			// Ground is connected to pin 8 on the nano, so it needs to be pulled LOW
 			arduino.addSetup(
@@ -113,10 +115,16 @@ function getCodeGenerators(arduino: Arduino) {
 			pin_blue = 3;
 		}
 
+		const debug = arduino.createDebug("rgb-led", {
+			type: "rgb",
+			values: 3,
+			name: "RGB Led",
+		});
+
 		return (
-			`analogWrite(${pin_red}, ${red});\n` +
-			`analogWrite(${pin_green}, ${green});\n` +
-			`analogWrite(${pin_blue}, ${blue});\n`
+			`analogWrite(${pin_red}, ${debug(red, 0)});\n` +
+			`analogWrite(${pin_green}, ${debug(green, 1)});\n` +
+			`analogWrite(${pin_blue}, ${debug(blue, 2)});\n`
 		);
 	};
 
@@ -178,53 +186,70 @@ function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.digital_read = (block) => {
 		const dropdown_pin = arduino.getPinMapping(block, "PIN");
 
-		const sensor = arduino.builder.add(`digital-${dropdown_pin}`, LineSensor);
-		arduino.builder.connect(
-			arduino.murphy.port(dropdown_pin),
-			sensor.port("Out"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.3V3`),
-			sensor.port("3V3"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.GND`),
-			sensor.port("GND"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const sensor = arduino.builder.add(`digital-${dropdown_pin}`, LineSensor);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(dropdown_pin),
+				sensor.port("Out"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.3V3`),
+				sensor.port("3V3"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.GND`),
+				sensor.port("GND"),
+				WireColor.GND,
+			);
+		}
 
 		arduino.setups_[`setup_input_${dropdown_pin}`] =
 			`pinMode(${dropdown_pin}, INPUT);`;
-		const code = `digitalRead(${dropdown_pin})`;
+
+		const debug = arduino.createDebug(`digital-input-${dropdown_pin}`, {
+			type: "basic",
+			name: `Digital input ${dropdown_pin}`,
+			values: 1,
+		});
+
+		const code = debug(`digitalRead(${dropdown_pin})`);
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
 	arduino.forBlock.analog_read = (block) => {
 		const dropdown_pin = arduino.getPinMapping(block, "PIN");
 
-		const lightSensor = arduino.builder.add(
-			`analog-${dropdown_pin}`,
-			LightSensor,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(dropdown_pin),
-			lightSensor.port("Out"),
-			WireColor.DATA_1,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.3V3`),
-			lightSensor.port("VCC"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			arduino.murphy.port(`${dropdown_pin}.GND`),
-			lightSensor.port("GND"),
-			WireColor.GND,
-		);
+		if (arduino.builder) {
+			const lightSensor = arduino.builder.add(
+				`analog-${dropdown_pin}`,
+				LightSensor,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(dropdown_pin),
+				lightSensor.port("Out"),
+				WireColor.DATA_1,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.3V3`),
+				lightSensor.port("VCC"),
+				WireColor.VCC,
+			);
+			arduino.builder.connect(
+				arduino.builder.murphy.port(`${dropdown_pin}.GND`),
+				lightSensor.port("GND"),
+				WireColor.GND,
+			);
+		}
 
-		const code = `analogRead(${dropdown_pin})`;
+		const debug = arduino.createDebug(`analog-input-${dropdown_pin}`, {
+			type: "basic",
+			name: `Analog input ${dropdown_pin}`,
+			values: 1,
+		});
+
+		const code = debug(`analogRead(${dropdown_pin})`);
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
@@ -246,7 +271,12 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "SPEED", arduino.ORDER_ATOMIC) || "100";
 		const direction = motor === "left" ? 1 : -1;
 
-		return `servo_${motor}.write(90 + 90*${speed}/100*${direction});\n`;
+		const debug = arduino.createDebug("original-servo", {
+			type: "motors",
+			values: 2,
+			name: "Leaphy Starling motors",
+		});
+		return `servo_${motor}.write(90 + 90*${debug(`${speed}*${direction}`, motor === "left" ? 0 : 1)}/100);\n`;
 	};
 
 	arduino.forBlock.leaphy_original_servo_move = (block) => {
@@ -264,9 +294,14 @@ function getCodeGenerators(arduino: Arduino) {
 		const motor_left = MOTOR_SPEEDS[direction][0];
 		const motor_right = MOTOR_SPEEDS[direction][1];
 
+		const debug = arduino.createDebug("original-servo", {
+			type: "motors",
+			values: 2,
+			name: "Leaphy Starling motors",
+		});
 		return (
-			`servo_left.write(90 + 90*${speed}/100*${motor_left});\n` +
-			`servo_right.write(90 + 90*${speed}/100*${motor_right});\n`
+			`servo_left.write(90 + 90*${debug(`${speed}*${motor_left}`, 0)}/100);\n` +
+			`servo_right.write(90 + 90*${debug(`${speed}*${motor_right}`, 1)}/100);\n`
 		);
 	};
 }

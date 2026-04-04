@@ -4,19 +4,21 @@ import { onMount } from "svelte";
 interface Props {
 	value: string;
 	mode: "primary" | "secondary";
-	rounded: boolean;
 	focus?: boolean;
 	rows: number;
 	required?: boolean;
+	large?: boolean;
+	placeholder?: string;
 }
 
 let {
 	value = $bindable(""),
 	mode,
-	rounded,
 	focus,
 	rows,
 	required = false,
+	large = false,
+	placeholder = "",
 }: Props = $props();
 
 let input: HTMLTextAreaElement;
@@ -33,7 +35,8 @@ onMount(() => {
 	{required}
 	class:primary={mode === "primary"}
 	class:secondary={mode === "secondary"}
-	class:rounded
+	class:large
+	{placeholder}
 ></textarea>
 
 <style>
@@ -45,6 +48,13 @@ onMount(() => {
 		width: 100%;
 		outline: 0;
 		font-size: 1em;
+		border-radius: 10px;
+	}
+
+	.large {
+		font-size: 1.1em;
+		padding: 10px 15px;
+		border-radius: 20px;
 	}
 
 	.primary {
@@ -55,10 +65,6 @@ onMount(() => {
 	.secondary {
 		background: var(--secondary);
 		color: var(--on-secondary);
-	}
-
-	.rounded {
-		border-radius: 10px;
 	}
 
 	.primary::placeholder {

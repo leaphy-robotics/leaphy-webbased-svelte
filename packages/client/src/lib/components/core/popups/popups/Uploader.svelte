@@ -43,7 +43,7 @@ async function compile() {
 	currentState = "COMPILATION_STARTED";
 	let res: Response;
 
-	arduino.boardType = SerialState.board?.id || WorkspaceState.robot.id;
+	arduino.boardType = SerialState.board?.id || WorkspaceState.robot.board;
 	arduino.robotType = WorkspaceState.robot.id;
 	try {
 		res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/compile/cpp`, {
@@ -197,7 +197,7 @@ async function connectUSB() {
         {:else}
             <ProgressBar {progress} />
         {/if}
-		{#if failed}
+		{#if failed && navigator.platform.startsWith("Win")}
 			<Button
 				name={$_("DOWNLOAD_DRIVERS")}
 				mode={"accent"}

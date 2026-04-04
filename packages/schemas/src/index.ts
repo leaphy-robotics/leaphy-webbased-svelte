@@ -1,5 +1,6 @@
 import ELK, { type ElkNode, type ElkPort } from "elkjs";
-import type { Component } from "./components";
+import { type Component, MurphyI2C } from "./components";
+import Murphy from "./components/murphy";
 
 interface LoadedComponent {
 	src: string;
@@ -87,8 +88,9 @@ class VisibleComponent {
 
 	port(port: string): VisiblePort {
 		if (!this.component.mappings[port]) {
-			console.warn(`Port ${port} does not exist on component ${this.id}`);
-			return { component: this.id, port: "" };
+			throw Error(
+				`Port ${port} not found on ${this.id} (${this.component.schema})`,
+			);
 		}
 
 		return {
@@ -101,6 +103,14 @@ class VisibleComponent {
 class ComponentBuilder {
 	public components: JoinedComponent[] = [];
 	public wires: Wire[] = [];
+	public murphy: VisibleComponent;
+	public i2c: VisibleComponent;
+
+	constructor() {
+		this.murphy = this.add("murphy", Murphy);
+		this.i2c = this.add("murphy-i2c", MurphyI2C);
+		this.join(this.murphy, this.i2c);
+	}
 
 	add(id: string, component: Component) {
 		const existingComponent = this.components.find(

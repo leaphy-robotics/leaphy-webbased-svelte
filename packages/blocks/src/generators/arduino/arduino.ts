@@ -9,7 +9,14 @@ function getCodeGenerators(arduino: Arduino) {
 			arduino.valueToCode(block, "DELAY_TIME_MILI", arduino.ORDER_ATOMIC) ||
 			"0";
 
-		return `delay(${delayTime});\n`;
+		switch (block.getFieldValue("UNIT")) {
+			case "ms":
+				return `delay(${delayTime});\n`;
+			case "s":
+				return `delay(${delayTime} * 1000);\n`;
+			default:
+				return `delayMicroseconds(${delayTime});\n`;
+		}
 	};
 
 	arduino.forBlock.leaphy_serial_available = () => {

@@ -2,8 +2,16 @@ import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
 import { track } from "$state/utils";
+import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
+import { clearReadBuffer, delay } from "../programmers/utils";
+
+interface ActiveDebugger {
+	type: Debugger;
+	lastSignal: number;
+	values: number[];
+}
 
 export type LeaphyPort =
 	| SerialPort
@@ -24,11 +32,47 @@ export enum Prompt {
 
 export class ConnectionFailedError {}
 
-export const SUPPORTED_VENDOR_IDS = [0x1a86, 9025, 2341, 0x0403, 0x2e8a];
+export const SUPPORTED_VENDOR_IDS = [
+	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
+];
+
+class DebugState {
+	debuggers = $state<ActiveDebugger[]>();
+
+	processCommand(command: string[]) {
+		switch (command[0]) {
+			case "start": {
+				this.debuggers = (
+					JSON.parse(command.slice(1).join("_")) as Debugger[]
+				).map((type) => ({
+					type,
+					lastSignal: 0,
+					values: new Array(type.values).fill(0),
+				}));
+				break;
+			}
+			case "log": {
+				if (!this.debuggers) break;
+				if (!this.debuggers[Number.parseInt(command[1])]) break;
+
+				this.debuggers[Number.parseInt(command[1])].values[
+					Number.parseInt(command[2])
+				] = Number.parseFloat(command[3]);
+				this.debuggers[Number.parseInt(command[1])].lastSignal = Date.now();
+				break;
+			}
+		}
+	}
+
+	clear() {
+		this.debuggers = null;
+	}
+}
 
 class LogState {
 	log = $state<LogItem[]>([]);
 	charts = $state<Record<string, { x: Date; y: number }[]>>({});
+	debugger = new DebugState();
 
 	private buffer = "";
 	private count = 0;
@@ -36,7 +80,9 @@ class LogState {
 	constructor(private serial: SerialState) {}
 
 	write(content: string) {
-		this.serial.writer.write(new TextEncoder().encode(content)).then();
+		if (this.serial.writer) {
+			this.serial.writer.write(new TextEncoder().encode(content)).then();
+		}
 	}
 
 	clear() {
@@ -52,14 +98,25 @@ class LogState {
 	enqueue(content: Uint8Array) {
 		this.buffer += new TextDecoder().decode(content);
 
-		const items = this.buffer.split("\n");
+		let items = this.buffer.split("\n");
+		this.buffer = items.pop();
+
 		for (const item of items) {
 			const [label, value] = item.split(" = ");
 			if (!label || !value || Number.isNaN(Number.parseFloat(value))) continue;
 
 			this.point(label, Number.parseFloat(value));
 		}
-		this.buffer = items.pop();
+		items = items.filter((item) => {
+			const commands = item.split("_");
+			if (commands[1] !== "debug") return true;
+
+			try {
+				this.debugger.processCommand(commands.slice(2));
+			} catch (e) {}
+
+			return false;
+		});
 
 		if (items.length > 0) {
 			this.log = [
@@ -93,8 +150,8 @@ class SerialState {
 	);
 
 	reserved = $state(false);
-	reader: ReadableStreamDefaultReader<Uint8Array>;
-	writer: WritableStreamDefaultWriter<Uint8Array>;
+	reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+	writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 
 	onReady: () => void;
 	onFailure: () => void;
@@ -145,6 +202,16 @@ class SerialState {
 			if (done) break;
 
 			this.log.enqueue(value);
+		}
+
+		// Clean up reader when stream ends
+		if (this.reader) {
+			try {
+				this.reader.releaseLock();
+			} catch (e) {
+				// Reader may have already been released
+			}
+			this.reader = undefined;
 		}
 	}
 
@@ -201,9 +268,6 @@ class SerialState {
 					case 0x0042: {
 						return robots.l_mega;
 					}
-					case 0x005e: {
-						return robots.l_nano_rp2040;
-					}
 				}
 				break;
 			}
@@ -214,6 +278,16 @@ class SerialState {
 						return robots.l_nano;
 					}
 				}
+				break;
+			}
+			// Espressif vendor ID
+			case 0x303a: {
+				switch (product) {
+					case 0x1001: {
+						return robots.l_nano_esp32;
+					}
+				}
+				break;
 			}
 		}
 
@@ -275,17 +349,40 @@ class SerialState {
 	async reserve() {
 		this.reserved = true;
 
-		await this.ready; // Prevent race condition: port.open not being complete
-
-		const serialPort = this.port;
-		if (serialPort.readable.locked) {
-			await this.reader.cancel();
-			this.reader.releaseLock();
+		if (this.reader) {
+			try {
+				await this.reader.cancel();
+			} catch (e) {
+				console.error(e);
+				// Reader may have already been released, ignore the error
+			}
+			try {
+				this.reader.releaseLock();
+			} catch (e) {
+				console.error(e);
+				// Reader may have already been released, ignore the error
+			}
+			this.reader = undefined;
 		}
 
-		if (serialPort.writable.locked) {
-			this.writer.releaseLock();
+		if (this.writer) {
+			try {
+				this.writer.releaseLock();
+			} catch (e) {
+				console.error(e);
+				// Writer may have already been released, ignore the error
+			}
+			this.writer = undefined;
 		}
+	}
+
+	async reset() {
+		await this.reserve();
+		await this.port.close();
+		await this.port.open({ baudRate: 115200 });
+
+		this.release();
+		await this.initPort();
 	}
 
 	release() {
