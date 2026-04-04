@@ -12,7 +12,6 @@ export const RobotType = {
 	L_CPP: 10,
 	L_MICROPYTHON: 11,
 };
-
 export interface Programmer {
 	upload(port: LeaphyPort, response: Record<string, string>): Promise<void>;
 }
