@@ -665,30 +665,24 @@ import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
 
-export function defineGenerators<Generator extends Arduino>(
-	generator: Generator,
-) {
-	arduino.default(generator);
-	leaphy_common.default(generator);
-	leaphy_extra.default(generator);
-	leaphy_original.default(generator);
-	leaphy_flitz.default(generator);
-	ledstrip.default(generator);
-	logic.default(generator);
-	loops.default(generator);
-	math.default(generator);
-	procedures.default(generator);
-	text.default(generator);
-	variables.default(generator);
-	lists.default(generator);
-	mesh.default(generator);
-	rtc.default(generator);
-	ml.default(generator);
-	sensors.default(generator);
-	bluetooth.default(generator);
-	spark.default(generator);
-}
-
-defineGenerators(generator);
+arduino.default(generator);
+leaphy_common.default(generator);
+leaphy_extra.default(generator);
+leaphy_original.default(generator);
+leaphy_flitz.default(generator);
+ledstrip.default(generator);
+logic.default(generator);
+loops.default(generator);
+math.default(generator);
+procedures.default(generator);
+text.default(generator);
+variables.default(generator);
+lists.default(generator);
+mesh.default(generator);
+rtc.default(generator);
+ml.default(generator);
+sensors.default(generator);
+bluetooth.default(generator);
+spark.default(generator);
 
 export default generator;
