@@ -148,11 +148,7 @@ export const robots: Robots = robotDevices.reduce((robots, robot) => {
 }, {} as Robots);
 
 export const robotListing: Robot[][] = [
-	[
-		robots.l_flitz_nano, 
-		robots.l_starling,
-		robots.l_original,
-	],
+	[robots.l_flitz_nano, robots.l_starling, robots.l_original],
 	[robots.l_nano, robots.l_uno, robots.l_mega],
 	[
 		{
@@ -185,11 +181,7 @@ export function getSelector(): Selector[] {
 			{
 				id: "leaphy",
 				name: "Leaphy",
-				robots: [
-					robots.l_flitz_nano,
-					robots.l_original,
-					robots.l_starling,
-				],
+				robots: [robots.l_flitz_nano, robots.l_original, robots.l_starling],
 			},
 			{
 				id: "arduino",
