@@ -1,7 +1,7 @@
 import { Msg } from "blockly/core";
 import { Order } from "blockly/python";
 import type { MicroPythonGenerator } from "../python";
-import {statementWrapper} from "../utils";
+import { statementWrapper } from "../utils";
 
 /**
  * Block definitions for the BKY_LEAPHY_SENSORS_CATEGORY toolbox-category.

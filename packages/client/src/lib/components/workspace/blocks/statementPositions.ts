@@ -81,14 +81,14 @@ function tokenisePath(d: string): PathToken[] {
 
 /** Top-right corner of a statement row — relative `a 4 4 0 0,1 4,4`. */
 function isRightWallEntry(t: PathToken): boolean {
-	if (t.cmd !== 'A' || t.absolute) return false;
+	if (t.cmd !== "A" || t.absolute) return false;
 	const [rx, ry, , , sweep, dx, dy] = t.args;
 	return rx === 4 && ry === 4 && sweep === 1 && dx === 4 && dy === 4;
 }
 
 /** Bottom-right corner of a statement row — relative `a 4 4 0 0,1 -4,4`. */
 function isRightWallExit(t: PathToken): boolean {
-	if (t.cmd !== 'A' || t.absolute) return false;
+	if (t.cmd !== "A" || t.absolute) return false;
 	const [rx, ry, , , sweep, dx, dy] = t.args;
 	return rx === 4 && ry === 4 && sweep === 1 && dx === -4 && dy === 4;
 }
@@ -98,18 +98,16 @@ function isRightWallExit(t: PathToken): boolean {
 /** Advance (or set) the running absolute Y given one path token. */
 function advanceY(y: number, token: PathToken): number {
 	switch (token.cmd) {
-		case 'M': // m/M  x,y
+		case "M": // m/M  x,y
 			return token.absolute ? token.args[1] : y + (token.args[1] ?? 0);
-		case 'V': // v/V  y
+		case "V": // v/V  y
 			return token.absolute ? token.args[0] : y + token.args[0];
-		case 'L': // l/L  x,y
+		case "L": // l/L  x,y
 			return token.absolute ? token.args[1] : y + (token.args[1] ?? 0);
-		case 'C': // c/C  cp1x,cp1y, cp2x,cp2y, x,y  — endpoint is args[4..5]
+		case "C": // c/C  cp1x,cp1y, cp2x,cp2y, x,y  — endpoint is args[4..5]
 			return token.absolute ? token.args[5] : y + token.args[5];
-		case 'A': // a/A  rx,ry,x-rot,large-arc,sweep, dx,dy — endpoint dy is args[6]
+		case "A": // a/A  rx,ry,x-rot,large-arc,sweep, dx,dy — endpoint dy is args[6]
 			return token.absolute ? token.args[6] : y + token.args[6];
-		case 'H': // horizontal line — no Y change
-		case 'Z': // close path — no Y change
 		default:
 			return y;
 	}

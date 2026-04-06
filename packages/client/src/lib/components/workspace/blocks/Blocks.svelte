@@ -1,5 +1,6 @@
 <script lang="ts">
 import Dropper from "$components/ui/Dropper.svelte";
+import CodeHints from "$components/workspace/blocks/CodeHints.svelte";
 import {
 	loadToolbox,
 	setLocale,
@@ -15,7 +16,6 @@ import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
 import { Events, serialization } from "blockly";
 import { onMount } from "svelte";
 import { locale } from "svelte-i18n";
-import CodeHints from "$components/workspace/blocks/CodeHints.svelte";
 
 let backgroundX = $state(0);
 

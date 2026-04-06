@@ -9,7 +9,7 @@ import {
 } from "blockly/core";
 import { Dependencies } from "./arduino/dependencies";
 import { addI2CDeclarations } from "./arduino/i2c";
-import {addLoopTrap, statementWrapper} from "./utils";
+import { addLoopTrap, statementWrapper } from "./utils";
 
 type BaseDebugger = {
 	name: string;
@@ -451,9 +451,12 @@ export class Arduino extends Blockly.Generator {
 		const allDefs =
 			includes.join("\n") + definitions.join("\n") + declarations.join("\n");
 		const setup = `void setup() {\n\t${setups.join("\n  ")}\n  ${userSetup}\n}`;
-		const loop = `void loop() {\n}`;
+		const loop = "void loop() {\n}";
 
-		return [allDefs, code, setup, loop].map(e => e.trim()).filter(e => !!e).join("\n\n") + "\n";
+		return `${[allDefs, code, setup, loop]
+			.map((e) => e.trim())
+			.filter((e) => !!e)
+			.join("\n\n")}\n`;
 	}
 
 	public statementToCode(block: Block, name: string): string {
@@ -462,7 +465,7 @@ export class Arduino extends Blockly.Generator {
 	}
 
 	public addLoopTrap(branch: string, block: Block): string {
-		return addLoopTrap(this, branch, block)
+		return addLoopTrap(this, branch, block);
 	}
 
 	public addInclude(includeTag: string, code: string) {
@@ -662,7 +665,9 @@ import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
 
-export function defineGenerators<Generator extends Arduino>(generator: Generator) {
+export function defineGenerators<Generator extends Arduino>(
+	generator: Generator,
+) {
 	arduino.default(generator);
 	leaphy_common.default(generator);
 	leaphy_extra.default(generator);
@@ -684,6 +689,6 @@ export function defineGenerators<Generator extends Arduino>(generator: Generator
 	spark.default(generator);
 }
 
-defineGenerators(generator)
+defineGenerators(generator);
 
 export default generator;

@@ -8,7 +8,7 @@ function getCodeGenerators(arduino: Arduino) {
 			Blockly.Names.NameType.PROCEDURE,
 		) as string;
 		let branch = arduino.statementToCode(block, "STACK");
-		branch = arduino.addLoopTrap(branch, block)
+		branch = arduino.addLoopTrap(branch, block);
 
 		// Get arguments with type
 		const args = [];

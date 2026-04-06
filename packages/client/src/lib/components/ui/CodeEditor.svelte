@@ -8,9 +8,14 @@ interface Props {
 	value: string;
 	language: string;
 	editable?: boolean;
-	editor?: monaco.editor.IStandaloneCodeEditor
+	editor?: monaco.editor.IStandaloneCodeEditor;
 }
-let { value = $bindable(""), editor = $bindable(), editable = true, language }: Props = $props();
+let {
+	value = $bindable(""),
+	editor = $bindable(),
+	editable = true,
+	language,
+}: Props = $props();
 
 let element: HTMLDivElement;
 onMount(() => {

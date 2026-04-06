@@ -48,7 +48,7 @@ function getCodeGenerators(arduino: Arduino) {
 		branch = arduino.addLoopTrap(branch, block);
 
 		let code = `void leaphyProgram() {\n${branch}}\n`;
-		arduino.addSetup("userSetupCode", `leaphyProgram();`, false);
+		arduino.addSetup("userSetupCode", "leaphyProgram();", false);
 		return code;
 	};
 

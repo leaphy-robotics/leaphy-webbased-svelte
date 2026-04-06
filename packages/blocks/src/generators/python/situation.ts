@@ -33,28 +33,28 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.controls_if = (block, generator) => {
 		// If/elseif/else condition.
 		let n = 0;
-		let code = '',
-			branchCode,
-			conditionCode;
+		let code = "";
+		let branchCode: string;
+		let conditionCode: string;
 		do {
 			conditionCode =
-				generator.valueToCode(block, 'IF' + n, Order.NONE) || 'False';
-			branchCode = generator.statementToCode(block, 'DO' + n) || generator.PASS;
-			code += (n === 0 ? 'if ' : 'elif ') + conditionCode + ':\n' + branchCode;
+				generator.valueToCode(block, `IF${n}`, Order.NONE) || "False";
+			branchCode = generator.statementToCode(block, `DO${n}`) || generator.PASS;
+			code += `${(n === 0 ? "if " : "elif ") + conditionCode}:\n${branchCode}`;
 			n++;
-		} while (block.getInput('IF' + n));
+		} while (block.getInput(`IF${n}`));
 
-		if (block.getInput('ELSE')) {
-			if (block.getInput('ELSE')) {
-				branchCode = generator.statementToCode(block, 'ELSE') || generator.PASS;
+		if (block.getInput("ELSE")) {
+			if (block.getInput("ELSE")) {
+				branchCode = generator.statementToCode(block, "ELSE") || generator.PASS;
 			} else {
 				branchCode = generator.PASS;
 			}
 
-			code += 'else:\n' + branchCode;
+			code += `else:\n${branchCode}`;
 		}
 		return code;
-	}
+	};
 
 	python.forBlock.controls_if_else = python.forBlock.controls_if;
 
