@@ -9,30 +9,17 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		// Currently *all* variables are included, even when they are not used.
 		const workspace = block.workspace;
 		const variableNames = Variables.allUsedVarModels(workspace).map(
-			(variableModel) => generator.getVariableName(variableModel.name),
+			(variableModel) => generator.getVariableName(variableModel.getName()),
 		);
 		const variableLines =
 			variableNames.length > 0
 				? `${generator.INDENT}global ${variableNames.join(", ")}\n`
 				: "";
 		let branch = generator.statementToCode(block, "STACK");
-		if (generator.STATEMENT_PREFIX) {
-			const id = block.id.replace(/\$/g, "$$$$");
-			branch =
-				generator.prefixLines(
-					generator.STATEMENT_PREFIX.replace(/%1/g, `'${id}'`),
-					generator.INDENT,
-				) + branch;
-		}
-		if (generator.INFINITE_LOOP_TRAP) {
-			branch =
-				generator.INFINITE_LOOP_TRAP.replace(/%1/g, `'${block.id}'`) + branch;
-		}
+		branch = generator.addLoopTrap(branch, block);
 
 		let code = `def ${funcName}():\n${variableLines}${branch}`;
-		generator.addDefinition(funcName, code);
-
-		return `${funcName}()\n`;
+		return `${code}\n`;
 	};
 
 	python.forBlock.math_change = (block, generator) => {

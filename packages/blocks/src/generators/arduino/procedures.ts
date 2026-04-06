@@ -8,17 +8,7 @@ function getCodeGenerators(arduino: Arduino) {
 			Blockly.Names.NameType.PROCEDURE,
 		) as string;
 		let branch = arduino.statementToCode(block, "STACK");
-		if (arduino.STATEMENT_PREFIX) {
-			branch =
-				arduino.prefixLines(
-					arduino.STATEMENT_PREFIX.replace(/%1/g, `'${block.id}'`),
-					arduino.INDENT,
-				) + branch;
-		}
-		if (arduino.INFINITE_LOOP_TRAP) {
-			branch =
-				arduino.INFINITE_LOOP_TRAP.replace(/%1/g, `'${block.id}'`) + branch;
-		}
+		branch = arduino.addLoopTrap(branch, block)
 
 		// Get arguments with type
 		const args = [];
@@ -49,9 +39,7 @@ function getCodeGenerators(arduino: Arduino) {
 
 		// Construct code
 		let code = `${returnType} ${funcName}(${args.join(", ")}) {\n${branch}${returnValue}}`;
-		code = arduino.scrub_(block, code);
-		arduino.addDeclaration(funcName, code, true);
-		return null;
+		return arduino.scrub_(block, code);
 	};
 
 	/**

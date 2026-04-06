@@ -15,6 +15,7 @@ import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
 import PopupState from "./popup.svelte";
+import * as monaco from "monaco-editor";
 
 export const Mode = {
 	BLOCKS: Blocks as Component,
@@ -66,6 +67,7 @@ class WorkspaceState {
 	microPythonRun = $state<IOEventTarget>();
 
 	code = $state("");
+	codeEditor = $state<monaco.editor.IStandaloneCodeEditor>()
 	saveState = $state(true);
 
 	SidePanel = $state<Component | undefined>();

@@ -44,28 +44,12 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.leaphy_start = (block) => {
-		// Define the Start procedure
-		const funcName = "leaphyProgram";
 		let branch = arduino.statementToCode(block, "STACK");
-		if (arduino.STATEMENT_PREFIX) {
-			const id = block.id.replace(/\$/g, "$$$$"); // Issue 251.
-			branch =
-				arduino.prefixLines(
-					arduino.STATEMENT_PREFIX.replace(/%1/g, `'${id}'`),
-					arduino.INDENT,
-				) + branch;
-		}
-		if (arduino.INFINITE_LOOP_TRAP) {
-			branch =
-				arduino.INFINITE_LOOP_TRAP.replace(/%1/g, `'${block.id}'`) + branch;
-		}
-		const returnType = "void";
-		let code = `${returnType} ${funcName}() {\n${branch}}`;
+		branch = arduino.addLoopTrap(branch, block);
 
-		code = arduino.scrub_(block, code);
-		arduino.addDeclaration(funcName, code, true);
-		arduino.addSetup("userSetupCode", `${funcName}();`, false);
-		return null;
+		let code = `void leaphyProgram() {\n${branch}}\n`;
+		arduino.addSetup("userSetupCode", `leaphyProgram();`, false);
+		return code;
 	};
 
 	arduino.forBlock.leaphy_get_air_pressure = () => {

@@ -3,4 +3,4 @@ import CodeEditor from "$components/ui/CodeEditor.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 </script>
 
-<CodeEditor value={WorkspaceState.code} editable={false} language="cpp" />
+<CodeEditor bind:editor={WorkspaceState.codeEditor} value={WorkspaceState.code} editable={false} language="cpp" />

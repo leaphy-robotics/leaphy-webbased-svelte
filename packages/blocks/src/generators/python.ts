@@ -1,5 +1,6 @@
 import type { Block } from "blockly";
 import { PythonGenerator, pythonGenerator } from "blockly/python";
+import {statementWrapper, addLoopTrap} from "./utils";
 
 export enum PinState {
 	UNASSIGNED = "",
@@ -41,6 +42,15 @@ export class MicroPythonGenerator extends PythonGenerator {
 		this.i2c_stack_ = [];
 		this.need_i2c_switch_ = false;
 		this.pin_state_ = {};
+	}
+
+	public statementToCode(block: Block, name: string): string {
+		const branch = super.statementToCode(block, name);
+		return statementWrapper(this, branch, block);
+	}
+
+	public addLoopTrap(branch: string, block: Block): string {
+		return addLoopTrap(this, branch, block)
 	}
 
 	public addDefinition(definitionName: string, definitionContent: string) {
@@ -195,7 +205,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 			pin_code = `${pin_code}\n`;
 			this.addDefinition("pins", pin_code);
 		}
-		return super.finish(code);
+		return super.finish(code) + "\nleaphy_program()\n";
 	}
 }
 

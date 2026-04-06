@@ -1,6 +1,7 @@
 import { Msg } from "blockly/core";
 import { Order } from "blockly/python";
 import type { MicroPythonGenerator } from "../python";
+import {statementWrapper} from "../utils";
 
 /**
  * Block definitions for the BKY_LEAPHY_SENSORS_CATEGORY toolbox-category.
@@ -21,7 +22,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const code = generator.blockToCode(statements, false);
 
 		generator.endI2cBlock();
-		return code;
+		return statementWrapper(python, code as string, block);
 	};
 
 	python.forBlock.leaphy_sonar_read = (block, generator) => {
