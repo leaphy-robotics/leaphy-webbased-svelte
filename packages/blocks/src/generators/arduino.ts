@@ -9,6 +9,7 @@ import {
 } from "blockly/core";
 import { Dependencies } from "./arduino/dependencies";
 import { addI2CDeclarations } from "./arduino/i2c";
+import { addLoopTrap, statementWrapper } from "./utils";
 
 type BaseDebugger = {
 	name: string;
@@ -449,10 +450,22 @@ export class Arduino extends Blockly.Generator {
 
 		const allDefs =
 			includes.join("\n") + definitions.join("\n") + declarations.join("\n");
-		const setup = `\n\nvoid setup() {\n\t${setups.join("\n  ")}\n  ${userSetup}\n}\n\n`;
-		const loop = `void loop() {\n  ${code.replace(/\n/g, "\n  ")}\n}`;
+		const setup = `void setup() {\n\t${setups.join("\n  ")}\n  ${userSetup}\n}`;
+		const loop = "void loop() {\n}";
 
-		return allDefs + setup + loop;
+		return `${[allDefs, code, setup, loop]
+			.map((e) => e.trim())
+			.filter((e) => !!e)
+			.join("\n\n")}\n`;
+	}
+
+	public statementToCode(block: Block, name: string): string {
+		const branch = super.statementToCode(block, name);
+		return statementWrapper(this, branch, block);
+	}
+
+	public addLoopTrap(branch: string, block: Block): string {
+		return addLoopTrap(this, branch, block);
 	}
 
 	public addInclude(includeTag: string, code: string) {

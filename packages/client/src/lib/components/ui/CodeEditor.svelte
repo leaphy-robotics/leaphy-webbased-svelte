@@ -8,11 +8,16 @@ interface Props {
 	value: string;
 	language: string;
 	editable?: boolean;
+	editor?: monaco.editor.IStandaloneCodeEditor;
 }
-let { value = $bindable(""), editable = true, language }: Props = $props();
+let {
+	value = $bindable(""),
+	editor = $bindable(),
+	editable = true,
+	language,
+}: Props = $props();
 
 let element: HTMLDivElement;
-let editor: monaco.editor.IStandaloneCodeEditor;
 onMount(() => {
 	editor = monaco.editor.create(element, {
 		theme: AppState.theme === Theme.DARK ? "vs-dark" : "vs-light",

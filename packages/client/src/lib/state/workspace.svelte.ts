@@ -10,6 +10,7 @@ import { RobotType } from "$domain/robots.types";
 import { projectDB } from "$domain/storage";
 import { findAsync, track } from "$state/utils";
 import { serialization } from "blockly";
+import type * as monaco from "monaco-editor";
 import type { Component } from "svelte";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
@@ -66,6 +67,7 @@ class WorkspaceState {
 	microPythonRun = $state<IOEventTarget>();
 
 	code = $state("");
+	codeEditor = $state<monaco.editor.IStandaloneCodeEditor>();
 	saveState = $state(true);
 
 	SidePanel = $state<Component | undefined>();
