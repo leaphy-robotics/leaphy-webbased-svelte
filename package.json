@@ -1,22 +1,22 @@
 {
-  "name": "leaphy-webbased",
-  "version": "4.0.0",
-  "description": "",
-  "scripts": {
-    "dev": "pnpm --filter @leaphy-robotics/leaphy-webbased dev",
-    "test": "pnpm biome check packages/client/src packages/client/tests packages/blocks packages/schemas && pnpm -r test",
-    "apply": "pnpm biome check --write packages/client/src packages/client/tests packages/blocks packages/schemas"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.7.0",
-  "devDependencies": {
-    "@types/node": "^22.15.3",
-    "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "standard-version": "^9.5.0"
-  }
+	"name": "leaphy-webbased",
+	"version": "4.0.0",
+	"description": "",
+	"scripts": {
+		"dev": "pnpm --filter @leaphy-robotics/leaphy-webbased dev",
+		"test": "pnpm biome check packages/client/src packages/client/tests packages/blocks packages/schemas && pnpm -r test",
+		"apply": "pnpm biome check --write packages/client/src packages/client/tests packages/blocks packages/schemas"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.7.0",
+	"devDependencies": {
+		"@types/node": "^22.15.3",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"standard-version": "^9.5.0"
+	}
 }
