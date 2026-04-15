@@ -170,7 +170,7 @@ function getCodeGenerators(arduino: Arduino) {
 		for (let pageIndex = 0; pageIndex < pageCount; pageIndex++) {
 			code += `packetBuffer[0] = ${pageIndex};\n`;
 			code += `packetBuffer[1] = ${pageCount};\n`;
-			code += `memcpy(&packetBuffer[4], &inputBuffer[${(pageIndex * MAX_PACKET_SIZE) / 4}], ${MAX_PACKET_SIZE});\n`;
+			code += `memcpy(&packetBuffer[4], &inputBuffer[${(pageIndex * MAX_PACKET_SIZE) / 4}], ${Math.min(MAX_PACKET_SIZE, (inputSize - (pageIndex * MAX_PACKET_SIZE) / 4) * 4)});\n`;
 			code += `input.writeValue(packetBuffer, ${Math.min(MAX_PACKET_SIZE, inputSize * 4) + 4});\n`;
 		}
 

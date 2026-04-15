@@ -84,7 +84,12 @@ function getCodeGenerators(arduino: Arduino) {
 		const setupCode = `${servoName}.attach(${pinKey});`;
 		arduino.addSetup(`servo_${pinKey}`, setupCode, true);
 
-		return `${servoName}.write(${servoAngle});\n`;
+		const debug = arduino.createDebug(`servo-${pinKey}`, {
+			type: "servo",
+			name: `Servo ${pinKey}`,
+			values: 1,
+		});
+		return `${servoName}.write(${debug(servoAngle)});\n`;
 	};
 
 	arduino.forBlock.leaphy_servo_read = (block) => {
@@ -113,7 +118,13 @@ function getCodeGenerators(arduino: Arduino) {
 		const pinSetupCode = `pinMode(${pin}, OUTPUT);`;
 		arduino.addSetup(`io_${pin}`, pinSetupCode, false);
 
-		return `digitalWrite(${pin}, ${stateOutput});\n`;
+		const debug = arduino.createDebug(`digital-output-${pin}`, {
+			type: "basic",
+			name: `Digital output ${pin}`,
+			values: 1,
+		});
+
+		return `digitalWrite(${pin}, ${debug(stateOutput)});\n`;
 	};
 
 	arduino.forBlock.leaphy_io_analogwrite = (block) => {
@@ -136,7 +147,13 @@ function getCodeGenerators(arduino: Arduino) {
 			block.setWarningText(null);
 		}
 
-		return `analogWrite(${pin}, ${stateOutput});\n`;
+		const debug = arduino.createDebug(`pwm-output-${pin}`, {
+			type: "basic",
+			name: `PWM ${pin}`,
+			values: 1,
+		});
+
+		return `analogWrite(${pin}, ${debug(stateOutput)});\n`;
 	};
 
 	arduino.forBlock.leaphy_multiplexer_digitalwrite = (block) => {

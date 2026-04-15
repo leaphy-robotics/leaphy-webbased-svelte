@@ -2,8 +2,16 @@ import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
 import { track } from "$state/utils";
+import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
+import { clearReadBuffer, delay } from "../programmers/utils";
+
+interface ActiveDebugger {
+	type: Debugger;
+	lastSignal: number;
+	values: number[];
+}
 
 export type LeaphyPort =
 	| SerialPort
@@ -28,9 +36,43 @@ export const SUPPORTED_VENDOR_IDS = [
 	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
 ];
 
+class DebugState {
+	debuggers = $state<ActiveDebugger[]>();
+
+	processCommand(command: string[]) {
+		switch (command[0]) {
+			case "start": {
+				this.debuggers = (
+					JSON.parse(command.slice(1).join("_")) as Debugger[]
+				).map((type) => ({
+					type,
+					lastSignal: 0,
+					values: new Array(type.values).fill(0),
+				}));
+				break;
+			}
+			case "log": {
+				if (!this.debuggers) break;
+				if (!this.debuggers[Number.parseInt(command[1])]) break;
+
+				this.debuggers[Number.parseInt(command[1])].values[
+					Number.parseInt(command[2])
+				] = Number.parseFloat(command[3]);
+				this.debuggers[Number.parseInt(command[1])].lastSignal = Date.now();
+				break;
+			}
+		}
+	}
+
+	clear() {
+		this.debuggers = null;
+	}
+}
+
 class LogState {
 	log = $state<LogItem[]>([]);
 	charts = $state<Record<string, { x: Date; y: number }[]>>({});
+	debugger = new DebugState();
 
 	private buffer = "";
 	private count = 0;
@@ -56,14 +98,25 @@ class LogState {
 	enqueue(content: Uint8Array) {
 		this.buffer += new TextDecoder().decode(content);
 
-		const items = this.buffer.split("\n");
+		let items = this.buffer.split("\n");
+		this.buffer = items.pop();
+
 		for (const item of items) {
 			const [label, value] = item.split(" = ");
 			if (!label || !value || Number.isNaN(Number.parseFloat(value))) continue;
 
 			this.point(label, Number.parseFloat(value));
 		}
-		this.buffer = items.pop();
+		items = items.filter((item) => {
+			const commands = item.split("_");
+			if (commands[1] !== "debug") return true;
+
+			try {
+				this.debugger.processCommand(commands.slice(2));
+			} catch (e) {}
+
+			return false;
+		});
 
 		if (items.length > 0) {
 			this.log = [
@@ -334,6 +387,15 @@ class SerialState {
 			}
 			this.writer = undefined;
 		}
+	}
+
+	async reset() {
+		await this.reserve();
+		await this.port.close();
+		await this.port.open({ baudRate: 115200 });
+
+		this.release();
+		await this.initPort();
 	}
 
 	release() {

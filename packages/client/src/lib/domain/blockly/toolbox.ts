@@ -56,6 +56,7 @@ export default [
 						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
 					},
 					{ type: "i2c_use_channel" },
+					{ type: "leaphy_spark_read" },
 				],
 			},
 			{
@@ -290,6 +291,14 @@ export default [
 							-RobotType.L_FLITZ_UNO,
 							-RobotType.L_FLITZ_NANO,
 						],
+					},
+					{
+						type: "leaphy_spark_led",
+						inputs: {
+							RED: boolean(),
+							GREEN: boolean(),
+							BLUE: boolean(),
+						},
 					},
 					{
 						robots: [
@@ -1025,6 +1034,14 @@ export default [
 		style: "functions_category",
 		id: "l_functions",
 		custom: "PROCEDURE",
+		robots: [...robotGroups.ALL, -RobotType.L_MICROPYTHON],
+	},
+	{
+		name: "%{BKY_LEAPHY_FUNCTIONS_CATEGORY}",
+		style: "functions_category",
+		id: "l_functions",
+		custom: "PYTHON_PROCEDURE",
+		robots: [RobotType.L_MICROPYTHON],
 	},
 	{
 		name: "Machine learning",

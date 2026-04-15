@@ -1,5 +1,6 @@
 <script lang="ts">
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 import Button from "$components/ui/Button.svelte";
 import Chart from "$components/ui/Chart.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
@@ -119,6 +120,7 @@ function insertDate() {
 			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
 		</div>
 	{/if}
+	<SensorState />
 	{#if mode === Mode.TEXT}
 		<div class="content" bind:this={element}>
 			{#each SerialState.log.log as item (item.id)}
@@ -152,7 +154,7 @@ function insertDate() {
 <style>
     .content {
         width: 800px;
-        max-height: 50vh;
+        max-height: 30vh;
         overflow-y: auto;
         background: var(--background-tint);
     }

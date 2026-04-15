@@ -1,5 +1,6 @@
 <script lang="ts">
 import Dropper from "$components/ui/Dropper.svelte";
+import CodeHints from "$components/workspace/blocks/CodeHints.svelte";
 import {
 	loadToolbox,
 	setLocale,
@@ -122,6 +123,7 @@ $effect(() => {
 	{/if}
     <div class="blockly" bind:this={element}></div>
 	<Dropper />
+	<CodeHints />
 </div>
 
 <style>

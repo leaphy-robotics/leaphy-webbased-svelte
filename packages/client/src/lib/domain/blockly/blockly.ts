@@ -6,6 +6,7 @@ import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
+import DebuggingSerializer from "$domain/blockly/debugging.svelte";
 import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
 import { type RobotDevice, inFilter } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
@@ -27,6 +28,10 @@ import bluetooth from "$domain/blockly/bluetooth";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import type { BlockDefinition } from "blockly/core/blocks";
+import type {
+	FlyoutDefinition,
+	FlyoutItemInfoArray,
+} from "blockly/core/utils/toolbox";
 import { _ as translate } from "svelte-i18n";
 import { get } from "svelte/store";
 import Extensions from "./extensions.svelte";
@@ -63,6 +68,11 @@ Blockly.registry.register(
 	Blockly.registry.Type.SERIALIZER,
 	"pseudo",
 	new PseudoSerializer(),
+);
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"debugging",
+	DebuggingSerializer,
 );
 
 registerExtensions(Blockly);
@@ -326,6 +336,21 @@ export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 	return true;
 }
 
+function pythonProcedureCategory(workspace: WorkspaceSvg) {
+	const blocklyCallback = workspace.getToolboxCategoryCallback("PROCEDURE");
+	if (!blocklyCallback) throw new Error("Procedure category not found");
+
+	let blockList: FlyoutDefinition = [
+		{
+			kind: "block",
+			type: "raw_code_line",
+		},
+		...(blocklyCallback(workspace) as FlyoutItemInfoArray),
+	];
+
+	return blockList;
+}
+
 export function setupWorkspace(
 	robot: RobotDevice,
 	element: HTMLDivElement,
@@ -359,6 +384,10 @@ export function setupWorkspace(
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
 	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
 	workspace.registerToolboxCategoryCallback("BLE", bluetooth);
+	workspace.registerToolboxCategoryCallback(
+		"PYTHON_PROCEDURE",
+		pythonProcedureCategory,
+	);
 	toolbox.getFlyout().autoClose = false;
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();

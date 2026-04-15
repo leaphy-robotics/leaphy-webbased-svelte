@@ -1,8 +1,11 @@
 <script lang="ts">
+import Popup from "$components/core/popups/Popup.svelte";
+import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
 import Button from "$components/ui/Button.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import {
 	faBook,
+	faBug,
 	faMessage,
 	faProjectDiagram,
 	faRobot,
@@ -41,8 +44,17 @@ function openTutorials() {
 	});
 	popupState.close();
 }
+
+function openDebugger() {
+	PopupsState.open({
+		component: Debugger,
+		data: {},
+		allowInteraction: true,
+	});
+	popupState.close();
+}
 </script>
-    
+
     <Windowed title={$_("HELP_TOOLS")}>
         <div class="content">
             <Container title={$_("CIRCUIT")} icon={faProjectDiagram}>
@@ -53,6 +65,10 @@ function openTutorials() {
                     <div class="description">{$_("SOLVER_DESCRIPTION")}</div>
                     <Button icon={faMessage} mode="primary" name={$_("ASK")} onclick={openSolver} />
                 </Container>
+				<Container title={$_("DEBUGGER")} icon={faBug}>
+					<div class="description">{$_("DEBUGGER_DESCRIPTION")}</div>
+					<Button icon={faRobot} mode="primary" name={$_("DEBUG")} onclick={openDebugger} />
+				</Container>
                 <Container title={$_("TUTORIALS")} icon={faBook}>
                     <div class="description">{$_("TUTORIALS_DESCRIPTION")}</div>
                     <Videos />
@@ -61,7 +77,7 @@ function openTutorials() {
             </div>
         </div>
     </Windowed>
-    
+
     <style>
         .content {
             display: grid;
@@ -72,7 +88,6 @@ function openTutorials() {
             background: var(--background-tint);
             width: 80vw;
             max-width: 1000px;
-            max-height: 600px;
         }
 
         .vertical-container {
@@ -81,4 +96,3 @@ function openTutorials() {
             gap: 10px;
         }
     </style>
-    
