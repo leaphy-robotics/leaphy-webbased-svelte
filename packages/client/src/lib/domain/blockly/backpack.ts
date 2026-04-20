@@ -1,5 +1,4 @@
 import { Backpack as BaseBackpack } from "@blockly/workspace-backpack";
-import { registerContextMenus } from "@blockly/workspace-backpack/src/backpack_helpers";
 import * as Blockly from "blockly/core";
 
 export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
@@ -23,11 +22,6 @@ export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
 		this.initFlyout();
 		this.createDom();
 		this.attachListeners();
-		// @ts-ignore
-		if (this.options.contextMenu) {
-			// @ts-ignore
-			registerContextMenus(this.options.contextMenu, this.workspace_);
-		}
 		this.initialized_ = true;
 		this.workspace_.resize();
 	}
