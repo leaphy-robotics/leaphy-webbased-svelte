@@ -14,21 +14,12 @@ onMount(async () => {
 });
 </script>
 
-<div class="popupRoot">
-    {#each PopupState.popups as state (state.id)}
-        <Popup {state} />
-    {/each}
+<div class="fixed top-1/2 left-1/2 z-[99999]">
+	{#each PopupState.popups as state (state.id)}
+		<Popup {state} />
+	{/each}
 
 	{#if AIState.visible}
 		<Explanation />
 	{/if}
 </div>
-
-<style>
-    .popupRoot {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        z-index: 99999;
-    }
-</style>

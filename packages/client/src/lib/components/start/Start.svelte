@@ -63,7 +63,7 @@ const animationOptions = {
 };
 </script>
 
-<div class="start">
+<div class="flex justify-center overflow-x-hidden" style:height="var(--full-height)">
 	{#each selectors as robots, i (i)}
 		<div
 			in:fly={{ x: "100%", ...animationOptions }}
@@ -73,12 +73,3 @@ const animationOptions = {
 		</div>
 	{/each}
 </div>
-
-<style>
-    .start {
-        display: flex;
-        justify-content: center;
-        overflow-x: hidden;
-        height: var(--full-height);
-    }
-</style>

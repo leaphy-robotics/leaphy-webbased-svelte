@@ -97,7 +97,7 @@ async function disabledSelect() {
 }
 </script>
 
-<div class="content">
+<div class="p-5 flex flex-col min-w-[400px] text-center gap-4">
 	<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
 	{#if categories.length > 1}
 		<ChipSelect options={categoriesFilter} bind:value={category} />
@@ -105,14 +105,3 @@ async function disabledSelect() {
 	<ListSelect {warning} options={values} {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={WorkspaceState.robot} />
 	<Button onclick={start} mode="primary" name={$_("CONTINUE")} center bold />
 </div>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		min-width: 400px;
-		text-align: center;
-		gap: 15px;
-	}
-</style>

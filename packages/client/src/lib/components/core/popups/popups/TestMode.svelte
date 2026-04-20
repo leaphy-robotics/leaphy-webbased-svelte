@@ -36,37 +36,37 @@ function checkEnabled(value: { done: boolean }) {
 }
 </script>
 
-<div class="content">
+<div class="p-5 flex flex-col gap-5 min-w-[400px] text-center">
 	{#if waiting}
-		<div class="header">
-			<h1>{$_("PLEASE_WAIT")}</h1>
-			<span><Circle size="20" color="#06778f" /> {$_(waitingMessage)}</span>
+		<div class="flex flex-col gap-2.5">
+			<h1 class="m-0">{$_("PLEASE_WAIT")}</h1>
+			<span class="flex justify-center gap-1.5"><Circle size="20" color="#06778f" /> {$_(waitingMessage)}</span>
 		</div>
 	{:else}
-		<div class="header">
-			<h1>{$_("TEST_MODE_ENABLED")}</h1>
-			<span>{$_("TEST_MODE_SELECT")}</span>
+		<div class="flex flex-col gap-2.5">
+			<h1 class="m-0">{$_("TEST_MODE_ENABLED")}</h1>
+			<span class="flex justify-center gap-1.5">{$_("TEST_MODE_SELECT")}</span>
 		</div>
 
 		{#if RecordingState.autoGradingResult}
-			<div class="result">
+			<div class="bg-secondary text-on-secondary rounded-full px-2.5 py-2.5">
 				{#if RecordingState.autoGradingResult.pass}
-					<h2>{$_("AUTOGRADING_PASSED")}</h2>
-					<span>{$_("AUTOGRADING_PASSED_DESC")}</span>
+					<h2 class="m-0 mb-1.5">{$_("AUTOGRADING_PASSED")}</h2>
+					<span class="flex justify-center gap-1.5">{$_("AUTOGRADING_PASSED_DESC")}</span>
 				{:else}
-					<h2>{$_("AUTOGRADING_FAILED")}</h2>
-					<span>{RecordingState.autoGradingResult.failReason}</span>
+					<h2 class="m-0 mb-1.5">{$_("AUTOGRADING_FAILED")}</h2>
+					<span class="flex justify-center gap-1.5">{RecordingState.autoGradingResult.failReason}</span>
 				{/if}
 			</div>
 		{/if}
 
-		<div class="tests">
+		<div class="flex flex-col gap-2.5">
 			{#each RecordingState.tests as test}
-				<div class="test">
-					<div class="name">{test.name}</div>
+				<div class="flex flex-col gap-1.5">
+					<div class="text-left pl-3 font-bold text-lg">{test.name}</div>
 					<ListSelect disabledText="DONE" options={test.assignments.map(assignment => ([assignment.name, assignment]))} bind:value {checkEnabled}>
 						{#snippet disabled()}
-							<div class="done">
+							<div class="text-primary-dark flex items-center gap-1">
 								<Fa icon={faCircleCheck} />
 								{$_("DONE_ASSIGNMENT")}
 							</div>
@@ -78,58 +78,3 @@ function checkEnabled(value: { done: boolean }) {
 		<Button onclick={start} disabled={!value} bold large center mode="primary" name="Start" />
 	{/if}
 </div>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-		min-width: 400px;
-		text-align: center;
-	}
-
-	h1 {
-		margin: 0;
-	}
-
-	.tests, .header {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.name {
-		text-align: left;
-		padding-left: 12px;
-		font-weight: bold;
-		font-size: 18px;
-	}
-
-	.test {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-	}
-
-	.done {
-		color: var(--primary-dark-tint);
-	}
-
-	span {
-		display: flex;
-		justify-content: center;
-		gap: 5px;
-	}
-
-	.result {
-		background: var(--secondary);
-		color: var(--on-secondary);
-		border-radius: 20px;
-		padding: 10px;
-	}
-
-	h2 {
-		margin: 0 0 5px;
-	}
-</style>

@@ -10,46 +10,16 @@ const { state }: Props = $props();
 setContext("state", state);
 </script>
 
-<div class="container" class:full={!state.allowInteraction}>
-    <div class="localRoot">
-        <div
-            class="popup"
-			class:overflow={state.allowOverflow}
+<div class="{!state.allowInteraction ? 'flex fixed left-0 top-0 w-screen h-screen bg-black/[0.12]' : ''}">
+	<div class="fixed left-1/2 top-1/2">
+		<div
+			class="absolute bg-bg rounded-xl shadow-[var(--shadow-el2)]
+				{state.allowOverflow ? 'overflow-visible' : 'overflow-hidden'}"
 			style:translate="{state.anchor}"
-            style:left={`${state.position.x}px`}
-            style:top={`${state.position.y}px`}
-        >
+			style:left={`${state.position.x}px`}
+			style:top={`${state.position.y}px`}
+		>
 			<state.component {...state.data} />
-        </div>
-    </div>
+		</div>
+	</div>
 </div>
-
-<style>
-    .popup {
-        position: absolute;
-        background: var(--background);
-        border-radius: 10px;
-        box-shadow: var(--shadow-el2);
-		overflow: hidden;
-    }
-
-	.overflow {
-		overflow: unset;
-	}
-
-    .full {
-        display: flex;
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #00000020;
-    }
-
-    .localRoot {
-        position: fixed;
-        left: 50%;
-        top: 50%;
-    }
-</style>

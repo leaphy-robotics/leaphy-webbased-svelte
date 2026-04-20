@@ -1,4 +1,5 @@
 <script lang="ts">
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
 	faCaretDown,
 	faCaretRight,
@@ -31,93 +32,46 @@ function createFolder() {
 }
 </script>
 
-<div class="tree" style:--indent={`${indent}px`}>
-    <div class="header-wrap">
-        <button class="header" onclick={interact}>
-            <Fa icon={open ? faCaretDown : faCaretRight} />
-            <div class="name">{tree.name}</div>
-        </button>
-        <div class="actions">
-            <button class="action" onclick={createFile}>
-                <Fa icon={faFile} />
-            </button>
-            <button class="action" onclick={createFolder}>
-                <Fa icon={faFolder} />
-            </button>
-        </div>
-    </div>
-    {#if open}
-        <div class="content">
-            {#each tree.contents as item (item)}
-                {#if typeof item === "string"}
-                    <button class="item" class:selected={selected?.at(0) === item} onclick={() => onselect([item])}>{item}</button>
-                {:else}
-                    <Tree
-                        tree={item}
-                        selected={selected?.at(0) === item.name ? selected.slice(1) : null}
-                        indent={indent + 25}
-                        onselect={(selection: string[]) => onselect([item.name, ...selection])}
-                        oncreate={(path: string[], type: "file"|"folder") => oncreate([item.name, ...path], type)}
-                    />
-                {/if}
-            {/each}
-        </div>
-    {/if}
+<div class="flex flex-col">
+	<div class="relative">
+		<button
+			class="flex gap-1 border-none bg-bg-tint text-on-bg w-full text-left hover:bg-secondary transition-colors"
+			style:padding-left={`${indent}px`}
+			onclick={interact}
+		>
+			<Fa icon={open ? faCaretDown : faCaretRight} />
+			<span>{tree.name}</span>
+		</button>
+		{#snippet treeAction(icon: IconDefinition, onclick: () => void)}
+			<button class="p-1 rounded-sm text-on-secondary border-none bg-transparent hover:bg-secondary transition-colors" {onclick}>
+				<Fa {icon} />
+			</button>
+		{/snippet}
+		<div class="flex absolute right-1.5 top-1/2 -translate-y-1/2 gap-1 text-xs">
+			{@render treeAction(faFile, createFile)}
+			{@render treeAction(faFolder, createFolder)}
+		</div>
+	</div>
+	{#if open}
+		<div>
+			{#each tree.contents as item (item)}
+				{#if typeof item === "string"}
+					<button
+						class="flex gap-1 border-none bg-bg-tint text-on-bg w-full text-left hover:bg-secondary transition-colors
+							{selected?.at(0) === item ? 'font-bold bg-secondary' : ''}"
+						style:padding-left={`${indent + 25}px`}
+						onclick={() => onselect([item])}
+					>{item}</button>
+				{:else}
+					<Tree
+						tree={item}
+						selected={selected?.at(0) === item.name ? selected.slice(1) : null}
+						indent={indent + 25}
+						onselect={(selection: string[]) => onselect([item.name, ...selection])}
+						oncreate={(path: string[], type: "file"|"folder") => oncreate([item.name, ...path], type)}
+					/>
+				{/if}
+			{/each}
+		</div>
+	{/if}
 </div>
-
-<style>
-    .tree {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .header-wrap {
-        position: relative;
-    }
-
-	.item {
-		all: unset;
-		padding-left: calc(var(--indent) + 25px);
-	}
-
-    .header, .item {
-        display: flex;
-        gap: 3px;
-        border: none;
-        background: var(--background-tint);
-        color: var(--on-background);
-        padding-left: var(--indent);
-        width: 100%;
-        text-align: left;
-    }
-
-    .header:hover, .item:hover {
-        background: var(--secondary);
-    }
-
-    .selected {
-        font-weight: bold;
-        background: var(--secondary);
-    }
-
-    .actions {
-        display: flex;
-        position: absolute;
-        right: 5px;
-        top: 50%;
-        translate: 0 -50%;
-        gap: 3px;
-        font-size: 10px;
-    }
-
-    .action {
-        padding: 3px;
-        border-radius: 3px;
-        color: var(--on-secondary);
-        border: none;
-        background: transparent;
-    }
-    .action:hover {
-        background: var(--secondary);
-    }
-</style>

@@ -117,31 +117,11 @@ $effect(() => {
 });
 </script>
 
-<div class="environment">
+<div class="relative">
 	{#if WorkspaceState.robot.background}
-		<img class="background" src="{WorkspaceState.robot.background}" alt="{WorkspaceState.robot.name}" style:left={`${backgroundX}px`}>
+		<img class="absolute w-full max-w-[600px] max-h-[600px] top-1/2 -translate-x-1/2 -translate-y-1/2 -z-[1]" src="{WorkspaceState.robot.background}" alt="{WorkspaceState.robot.name}" style:left={`${backgroundX}px`}>
 	{/if}
-    <div class="blockly" bind:this={element}></div>
+    <div class="h-[var(--full-height)]" bind:this={element}></div>
 	<Dropper />
 	<CodeHints />
 </div>
-
-<style>
-    .blockly {
-        height: var(--full-height);
-    }
-
-    .environment {
-        position: relative;
-    }
-
-	.background {
-		position: absolute;
-		width: 100%;
-		max-width: 600px;
-		max-height: 600px;
-		top: 50%;
-		translate: -50% -50%;
-		z-index: -1;
-	}
-</style>

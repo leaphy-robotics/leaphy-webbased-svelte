@@ -15,7 +15,6 @@ let position = $state<{ x: number; y: number }>();
 let element: HTMLDivElement;
 function click(event: MouseEvent) {
 	if (element.contains(event.target as HTMLElement)) return;
-
 	AIState.visible = false;
 }
 
@@ -52,7 +51,6 @@ $effect(() => {
 });
 
 onMount(async () => {
-	// Render block to svg
 	arduino.createSchemaBuilder();
 	arduino.forBlock[AIState.block.type](AIState.block, arduino);
 	if (arduino.builder && arduino.builder.components.length > 1) {
@@ -62,79 +60,36 @@ onMount(async () => {
 
 	BlocklyState.workspace.fireChangeListener(new Events.UiBase());
 
-	// Calculate position
 	await calculatePosition();
 });
 </script>
 
 <svelte:body onclick={click} />
-<div class="content" bind:this={element} style:top={`${position?.y}px`} style:left={`${position?.x}px`}>
-	<h2>{$_("EXPLANATION")}</h2>
+<div
+	bind:this={element}
+	class="fixed overflow-y-auto shadow-[var(--shadow-el2)] w-[400px] p-5 rounded-2xl bg-bg text-on-bg"
+	style:top={`${position?.y}px`}
+	style:left={`${position?.x}px`}
+>
+	<h2 class="mt-0">{$_("EXPLANATION")}</h2>
 
-	<canvas bind:this={circuitCanvas} style:display={showCircuit ? 'block' : 'none'} class="circuit"></canvas>
+	<canvas bind:this={circuitCanvas} class="w-full {showCircuit ? 'block' : 'hidden'}"></canvas>
 
 	{#if AIState.loading}
-		<div class="container">
-			<div class="loading"></div>
-			<div class="loading"></div>
-			<div class="loading"></div>
-			<div class="loading"></div>
+		<div class="flex flex-col gap-1.5 my-4">
+			{#each [0,1,2,3] as _}
+				<div class="h-3.5 w-full rounded" style="background: linear-gradient(100deg, rgba(255,255,255,0) 40%, rgba(255,255,255,.5) 50%, rgba(255,255,255,0) 60%) #a5a5a550; background-size: 200% 100%; animation: 1s loading ease-in-out infinite;"></div>
+			{/each}
 		</div>
 	{:else if AIState.content}
 		<SvelteMarkdown source={AIState.content} />
 	{:else}
-		<div class="container">
-			{$_("AI_RATE_LIMITED")}
-		</div>
+		<div class="flex flex-col gap-1.5 my-4">{$_("AI_RATE_LIMITED")}</div>
 	{/if}
 </div>
 
 <style>
-	.content {
-		position: fixed;
-		top: 0;
-		left: 0;
-
-		overflow-y: auto;
-		box-shadow: var(--shadow-el2);
-
-		width: 400px;
-		padding: 20px;
-		border-radius: 20px;
-
-		background: var(--background);
-		color: var(--on-background);
-	}
-
-	.circuit {
-		width: 100%;
-	}
-
-	.container {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-		margin: 16px 0;
-	}
-
-	.loading {
-		background: linear-gradient(
-			100deg,
-			rgba(255, 255, 255, 0) 40%,
-			rgba(255, 255, 255, .5) 50%,
-			rgba(255, 255, 255, 0) 60%
-		) #a5a5a550;
-		background-size: 200% 100%;
-		background-position-x: 180%;
-		animation: 1s loading ease-in-out infinite;
-
-		height: 14px;
-		width: 100%;
-	}
-
-	@keyframes loading {
-		to {
-			background-position-x: -20%;
-		}
-	}
+@keyframes loading {
+	to { background-position-x: -20%; }
+}
 </style>

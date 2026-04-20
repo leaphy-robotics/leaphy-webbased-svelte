@@ -145,19 +145,19 @@ function highlightStatement(lines: [number, number]) {
 {#if WorkspaceState.SidePanel === Code}
 	{#each hints as block}
 		{#each block as hint, index}
-		<div class="hint" onclick={() => highlightStatement(hint.lines)} style:top={`${hint.y}px`} style:left={`${hint.x}px`} style:--color={hint.color}>
-			<div class="line" style:width={`${hint.lineWidth}px`}>
+		<div
+			class="fixed text-base flex items-center -translate-y-1/2 cursor-pointer font-mono"
+			onclick={() => highlightStatement(hint.lines)}
+			style:top={`${hint.y}px`}
+			style:left={`${hint.x}px`}
+			style:color={hint.color}
+		>
+			<div class="absolute right-full px-1.5 h-full flex items-center" style:width={`${hint.lineWidth}px`}>
 				<svg width="100%" height="8" xmlns="http://www.w3.org/2000/svg">
-					<line
-						x1="0" y1="5" x2="100%" y2="4"
-						stroke={hint.color}
-						stroke-width="4"
-						stroke-linecap="round"
-						stroke-dasharray="4 10"
-					/>
+					<line x1="0" y1="5" x2="100%" y2="4" stroke={hint.color} stroke-width="4" stroke-linecap="round" stroke-dasharray="4 10" />
 				</svg>
 			</div>
-			<div class="text">
+			<div class="whitespace-nowrap text-ellipsis overflow-hidden max-w-[500px] [--webkit-text-stroke:0.3px_black]">
 				{#if hint.code === '' && WorkspaceState.robot.type === RobotType.L_MICROPYTHON && index === block.length - 1}
 					<Fa icon={faCaretSquareLeft} />
 				{/if}
@@ -167,34 +167,3 @@ function highlightStatement(lines: [number, number]) {
 		{/each}
 	{/each}
 {/if}
-
-<style>
-	.hint {
-		position: fixed;
-		font-size: 16px;
-		display: flex;
-		align-items: center;
-		translate: 0 -50%;
-		color: var(--color);
-		font-family: Menlo, Monaco, "Courier New", monospace;
-
-		cursor: pointer;
-	}
-
-	.text {
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		max-width: 500px;
-		-webkit-text-stroke: 0.3px black;
-	}
-
-	.line {
-		position: absolute;
-		right: 100%;
-		padding-left: 5px;
-		padding-right: 5px;
-
-		height: 100%;
-	}
-</style>

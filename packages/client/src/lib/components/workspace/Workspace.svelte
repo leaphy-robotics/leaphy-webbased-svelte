@@ -77,10 +77,10 @@ function openAssignment() {
 }
 </script>
 
-<div class="content">
+<div class="relative flex-1">
 	<ComponentRenderer component={WorkspaceState.Mode} />
-    <div class="container">
-        <SideBar>
+	<div class="absolute top-0 right-0 flex h-full z-[99] pointer-events-none">
+		<SideBar>
 			{#if WorkspaceState.Mode === Mode.BLOCKS}
 				<SideButton icon={faCode} action="CODE" onclick={openCode} />
 			{/if}
@@ -100,25 +100,8 @@ function openAssignment() {
 				<SideButton icon={faTasks} action="ASSIGNMENT" onclick={openAssignment} />
 			{/if}
 		</SideBar>
-        {#if WorkspaceState.SidePanel}
-            <SidePanel />
-        {/if}
-    </div>
+		{#if WorkspaceState.SidePanel}
+			<SidePanel />
+		{/if}
+	</div>
 </div>
-
-<style>
-    .container {
-        position: absolute;
-        top: 0;
-        right: 0;
-        display: flex;
-        height: 100%;
-        z-index: 99;
-        pointer-events: none;
-    }
-
-    .content {
-        position: relative;
-        flex: 1;
-    }
-</style>

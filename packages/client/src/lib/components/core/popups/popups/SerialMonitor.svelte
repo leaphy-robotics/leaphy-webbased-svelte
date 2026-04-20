@@ -31,12 +31,7 @@ let input = $state<HTMLInputElement>();
 
 let element = $state<HTMLDivElement>();
 function formatDate(date: Date) {
-	return `${date.getHours()}:${String(date.getMinutes()).padStart(
-		2,
-		"0",
-	)}:${String(date.getSeconds()).padStart(2, "0")}:${String(
-		date.getMilliseconds(),
-	).padStart(3, "0")}`;
+	return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}:${String(date.getMilliseconds()).padStart(3, "0")}`;
 }
 
 $effect(() => {
@@ -112,21 +107,21 @@ function insertDate() {
 	{/snippet}
 
 	{#if !SerialState.port}
-		<div class="warning">
-			<div class="desc">
-				<div class="name">{$_("NOT_CONNECTED")}</div>
-				<div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+		<div class="flex justify-between items-center bg-primary text-on-primary w-full px-2.5 py-1.5 pl-2.5">
+			<div>
+				<div class="text-lg font-bold">{$_("NOT_CONNECTED")}</div>
+				<div class="text-sm opacity-80">{$_("NOT_CONNECTED_DESC")}</div>
 			</div>
 			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
 		</div>
 	{/if}
 	<SensorState />
 	{#if mode === Mode.TEXT}
-		<div class="content" bind:this={element}>
+		<div class="w-[800px] max-h-[30vh] overflow-y-auto bg-bg-tint" bind:this={element}>
 			{#each SerialState.log.log as item (item.id)}
-				<div class="item">
-					<div class="date">{formatDate(item.date)}</div>
-					<div class="text">{item.content}</div>
+				<div class="flex p-1.5">
+					<div class="text-text-muted border-r border-text-muted mr-1.5 pr-1.5">{formatDate(item.date)}</div>
+					<div class="text-primary-dark font-mono">{item.content}</div>
 				</div>
 			{/each}
 		</div>
@@ -134,72 +129,13 @@ function insertDate() {
 		<Chart />
 	{/if}
 	{#if SerialState.port}
-		<div class="send">
-			<div class="suggestions">
+		<div class="flex flex-col bg-primary text-on-primary">
+			<div class="flex gap-2.5 px-2.5 pt-2.5 pb-1.5">
 				<Button mode={"accent"} name={format(new Date(), 'yyMMddiHHmmss')} icon={faClock} inline onclick={insertDate} />
 			</div>
 			<form onsubmit={send}>
-				<TextInput
-					placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")}
-					bind:value
-					bind:input
-					mode={"primary"}
-					rounded={false}
-				/>
+				<TextInput placeholder={$_("SERIAL_PROMPT_PLACEHOLDER")} bind:value bind:input mode={"primary"} rounded={false} />
 			</form>
 		</div>
 	{/if}
 </Windowed>
-
-<style>
-    .content {
-        width: 800px;
-        max-height: 30vh;
-        overflow-y: auto;
-        background: var(--background-tint);
-    }
-
-    .item {
-        display: flex;
-        padding: 5px;
-    }
-
-    .date {
-        color: var(--text-muted);
-        border-right: 1px solid var(--text-muted);
-        margin-right: 5px;
-        padding-right: 5px;
-    }
-
-    .text {
-        color: var(--primary-dark-tint);
-        font-family: "Courier New", Courier, monospace;
-    }
-
-    .warning {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: var(--primary);
-        color: var(--on-primary);
-        width: 100%;
-		padding: 5px 5px 5px 10px;
-	}
-    .name {
-        font-size: 1.1em;
-        font-weight: bold;
-    }
-
-	.send {
-		display: flex;
-		flex-direction: column;
-		background: var(--primary);
-		color: var(--on-primary);
-	}
-
-	.suggestions {
-		display: flex;
-		gap: 10px;
-		padding: 10px 10px 5px;
-	}
-</style>

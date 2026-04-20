@@ -9,17 +9,9 @@ interface Props {
 const { onclick, icon }: Props = $props();
 </script>
 
-<button class="window-btn" {onclick}>
-    <Fa {icon} />
+<button
+	class="h-9 w-9 bg-transparent border border-primary-dark rounded-md text-on-primary cursor-pointer flex items-center justify-center hover:bg-white/10 transition-colors"
+	{onclick}
+>
+	<Fa {icon} />
 </button>
-
-<style>
-    .window-btn {
-        aspect-ratio: 1/1;
-        width: 33px;
-        background: none;
-        border: 1px solid var(--primary-dark-tint);
-        border-radius: 6px;
-        color: var(--on-primary);
-    }
-</style>

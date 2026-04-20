@@ -11,44 +11,12 @@ interface Props {
 const { icon, action, onclick }: Props = $props();
 </script>
 
-<button class="side" {onclick}>
-    <div class="tooltip">{$_(action)}</div>
-    <Fa {icon} />
+<button
+	class="group relative cursor-pointer text-xl h-16 w-16 border-none rounded-full flex justify-center items-center bg-primary text-on-primary pointer-events-auto hover:brightness-110 transition-all"
+	{onclick}
+>
+	<span class="absolute right-full mr-4 bg-secondary text-on-secondary px-2.5 py-1.5 rounded-lg text-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-24">
+		{$_(action)}
+	</span>
+	<Fa {icon} />
 </button>
-
-<style>
-    .tooltip {
-        position: absolute;
-        right: 100%;
-        margin-right: 15px;
-        background: var(--secondary);
-        color: var(--on-secondary);
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 14px;
-        pointer-events: none;
-        filter: opacity(0);
-        transition: .3s ease;
-        width: 100px;
-    }
-
-    .side:hover .tooltip {
-        filter: opacity(1);
-    }
-
-    .side {
-        position: relative;
-        cursor: pointer;
-        font-size: 20px;
-        height: 66px;
-        width: 66px;
-        border: none;
-        border-radius: 80px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: var(--primary);
-        color: var(--on-primary);
-        pointer-events: auto;
-    }
-</style>

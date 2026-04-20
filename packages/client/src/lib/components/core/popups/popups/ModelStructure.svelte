@@ -110,7 +110,7 @@ onMount(() => {
 	toolbox.selectItemByPosition(0);
 	toolbox.refreshTheme();
 
-	ml.freeze = true; // Ensures Blockly doesn't decide to clear ML state
+	ml.freeze = true;
 	Blockly.serialization.workspaces.load(convertStructureToBlocks(), workspace);
 	ml.freeze = false;
 
@@ -126,37 +126,10 @@ function close() {
 }
 </script>
 
-<div class="content">
-	<div class="items">
-		<div bind:this={editor} class="editor"></div>
+<div class="flex flex-col items-center w-[1200px] h-[800px] p-5 gap-5 text-center bg-bg-tint">
+	<div class="flex w-full flex-1">
+		<div bind:this={editor} class="flex-1 rounded-2xl h-full"></div>
 		<ModelVisualizer layers={layerStructure} />
 	</div>
-
 	<Button name={$_("DONE")} mode={"accent"} onclick={close} bold={true} />
 </div>
-
-<style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		width: 1200px;
-		height: 800px;
-		padding: 20px;
-		gap: 20px;
-		text-align: center;
-		background: var(--background-tint);
-	}
-
-	.items {
-		display: flex;
-		width: 100%;
-		flex: 1;
-	}
-
-	.editor {
-		flex: 1;
-		border-radius: 15px;
-		height: 100%;
-	}
-</style>

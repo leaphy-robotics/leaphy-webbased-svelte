@@ -177,66 +177,24 @@ async function connectUSB() {
 }
 </script>
 
-<div class="content" class:error={!!failed}>
-    {#if USBRequestState.respond}
-        <h2 class="state">{$_("RECONNECT")}</h2>
-        <div class="info">{$_("RECONNECT_INFO")}</div>
-        <Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
-    {:else}
-        <h2 class="state">{$_(currentState)}</h2>
+<div class="flex flex-col p-5 gap-5 justify-center items-center min-w-[400px] max-w-[80vw] min-h-[200px] max-h-[80vh]">
+	{#if USBRequestState.respond}
+		<h2 class="m-0 font-bold">{$_("RECONNECT")}</h2>
+		<div>{$_("RECONNECT_INFO")}</div>
+		<Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
+	{:else}
+		<h2 class="m-0 font-bold {failed ? 'text-red-500' : ''}">{$_(currentState)}</h2>
 
-        {#if error}
-            <code class="error-result">{error}</code>
-        {/if}
-        {#if done}
-            <Button
-				name={$_("LEAVE_UPLOADING")}
-                mode={"primary"}
-                onclick={close}
-            />
-        {:else}
-            <ProgressBar {progress} />
-        {/if}
-		{#if failed && navigator.platform.startsWith("Win")}
-			<Button
-				name={$_("DOWNLOAD_DRIVERS")}
-				mode={"accent"}
-				onclick={() => {close(); downloadDrivers();}}
-			/>
+		{#if error}
+			<code class="bg-secondary rounded-lg px-2.5 py-2.5 overflow-auto text-red-500 w-full">{error}</code>
 		{/if}
-    {/if}
+		{#if done}
+			<Button name={$_("LEAVE_UPLOADING")} mode={"primary"} onclick={close} />
+		{:else}
+			<ProgressBar {progress} />
+		{/if}
+		{#if failed && navigator.platform.startsWith("Win")}
+			<Button name={$_("DOWNLOAD_DRIVERS")} mode={"accent"} onclick={() => {close(); downloadDrivers();}} />
+		{/if}
+	{/if}
 </div>
-
-<style>
-    h2 {
-        margin: 0;
-    }
-
-    .content {
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        gap: 20px;
-        justify-content: center;
-        align-items: center;
-        min-width: 400px;
-        max-width: 80vw;
-        min-height: 200px;
-        max-height: 80vh;
-    }
-
-    .state {
-        font-weight: bold;
-    }
-
-    .error h2 {
-        color: red;
-    }
-    .error-result {
-        background: var(--secondary);
-        border-radius: 5px;
-        padding: 10px;
-        overflow: auto;
-        color: red;
-    }
-</style>

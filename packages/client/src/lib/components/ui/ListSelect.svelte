@@ -39,14 +39,20 @@ async function onselect(option: unknown, enabled: boolean) {
 }
 </script>
 
-<div class="list">
+<div class="flex flex-col bg-secondary rounded-3xl overflow-hidden">
 	{#if warning}
-		<div class="warning item">{warning}</div>
+		<div class="flex justify-between w-full text-base border-none border-b-2 border-black/10 px-4 py-2.5 bg-warning text-on-secondary">
+			{warning}
+		</div>
 	{/if}
 	{#key reloadEnabled}
 		{#each options as option}
 			{@const enabled = checkEnabled ? checkEnabled(option[1]) : true}
-			<button onclick={() => onselect(option[1], enabled)} class="item" class:selected={value?.id === option[1].id}>
+			<button
+				onclick={() => onselect(option[1], enabled)}
+				class="flex justify-between items-center w-full text-base border-none border-b border-black/15 {render ? '' : 'h-9'} px-4 bg-transparent text-on-secondary last:border-b-0 hover:bg-black/5 transition-colors cursor-pointer
+					{value?.id === option[1].id ? 'font-bold' : ''}"
+			>
 				{#if render}
 					{@render render(option[0], option[1], value?.id === option[1].id)}
 				{:else}
@@ -57,48 +63,10 @@ async function onselect(option: unknown, enabled: boolean) {
 					{#if disabled}
 						{@render disabled()}
 					{:else}
-						<span class="disabledText">{disabledText}</span>
+						<span class="text-[#DD6929]">{disabledText}</span>
 					{/if}
 				{/if}
 			</button>
 		{/each}
 	{/key}
 </div>
-
-<style>
-	.list {
-		display: flex;
-		flex-direction: column;
-		background: var(--secondary);
-		border-radius: 21px;
-		overflow: hidden;
-	}
-
-	.item {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		font-size: 1em;
-		border: none;
-		border-bottom: 2px solid #00000025;
-		padding: 10px 15px;
-		background: none;
-		color: var(--on-secondary);
-	}
-
-	.warning {
-		background: var(--warning);
-	}
-
-	.selected {
-		font-weight: bold;
-	}
-
-	.item:last-child {
-		border-bottom: none;
-	}
-
-	.disabledText {
-		color: #DD6929;
-	}
-</style>

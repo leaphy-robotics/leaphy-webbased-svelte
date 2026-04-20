@@ -114,6 +114,7 @@ class RobotRestoreState {
 		}
 
 		await SerialState.connect(prompt);
+		await SerialState.ready;
 		this.program = this.checkProgram();
 		return this.program;
 	}

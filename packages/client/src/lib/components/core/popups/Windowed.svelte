@@ -49,40 +49,16 @@ onDestroy(() => {
 });
 </script>
 
-<div class="window">
-    <div class="top" onmousedown={ondown}>
-        <div class="title">{title}</div>
-        <div class="actions">
-            {#if actions}{@render actions()}{/if}
+<div class="flex flex-col">
+	<div
+		class="bg-primary justify-content-between items-center text-on-primary flex px-2.5 py-1.5 rounded-t-xl cursor-move select-none"
+		onmousedown={ondown}
+	>
+		<div class="text-lg flex-1">{title}</div>
+		<div class="flex gap-1.5 items-center">
+			{#if actions}{@render actions()}{/if}
 			<WindowButton icon={faClose} onclick={close} />
 		</div>
-    </div>
-    {@render children()}
+	</div>
+	{@render children()}
 </div>
-
-<style>
-    .window {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .title {
-		padding-left: 5px;
-		font-size: 18px;
-    }
-
-    .top {
-        background: var(--primary);
-        justify-content: space-between;
-        align-items: center;
-        color: var(--on-primary);
-        display: flex;
-		padding: 5px;
-		border-radius: 10px 10px 0 0;
-    }
-
-	.actions {
-		display: flex;
-		gap: 5px;
-	}
-</style>

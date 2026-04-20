@@ -62,43 +62,47 @@ function toggle(extension: string) {
 }
 </script>
 
-<div class="page">
-	<div class="header">
+<div class="w-screen h-screen bg-bg-tint flex flex-col">
+	<div class="bg-primary text-on-primary p-2.5">
 		<Button onclick={back} mode="outlined" icon={faArrowLeft} name={$_("BACK")} />
 	</div>
 
 	{#if SerialState.port || enabled}
-		<div class="grid">
+		<div class="p-2.5 flex flex-wrap gap-2.5 overflow-y-auto">
 			{#each enabledExtensions as extension}
-				{@const enabled = Extensions.isEnabled(extension.id)}
-				<div class="extension">
-					<div class="cover" style:background={getColor(extension.style)}>
-						<img src={`blockly-assets/${extension.id}.svg`} alt="">
+				{@const isEnabled = Extensions.isEnabled(extension.id)}
+				<div class="max-w-[300px] w-full rounded-xl overflow-hidden flex flex-col bg-bg border-2 border-[lightgrey]">
+					<div class="flex justify-center items-center w-full aspect-[296/183]" style:background={getColor(extension.style)}>
+						<img src={`blockly-assets/${extension.id}.svg`} alt="" class="h-16">
 					</div>
-					<div class="content">
-						<div class="name">{$_(extension.name)}</div>
-						<div class="description">{$_(extension.description)}</div>
+					<div class="flex-1 p-5 flex flex-col gap-2.5">
+						<div class="font-bold text-lg">{$_(extension.name)}</div>
+						<div class="text-sm">{$_(extension.description)}</div>
 					</div>
-					<button style:background={enabled ? 'salmon' : 'var(--accent)'} onclick={() => toggle(extension.id)}>
-						<Fa icon={enabled ? faXmark : faPlus} />
-						{enabled ? $_("REMOVE_EXTENSION") : $_("ADD_EXTENSION")}
+					<button
+						class="p-2.5 border-none text-on-primary font-bold text-sm flex items-center justify-center gap-1.5 cursor-pointer"
+						style:background={isEnabled ? 'salmon' : 'var(--accent)'}
+						onclick={() => toggle(extension.id)}
+					>
+						<Fa icon={isEnabled ? faXmark : faPlus} />
+						{isEnabled ? $_("REMOVE_EXTENSION") : $_("ADD_EXTENSION")}
 					</button>
 				</div>
 			{/each}
 
 			{#each incompatibleExtensions as extension}
-				<div class="extension incompatible">
-					<div class="cover" style:background={getColor(extension.style)}>
-						<img src={`blockly-assets/${extension.id}.svg`} alt="">
+				<div class="max-w-[300px] w-full rounded-xl overflow-hidden flex flex-col bg-bg border-2 border-[lightgrey] opacity-60">
+					<div class="flex justify-center items-center w-full aspect-[296/183] grayscale" style:background={getColor(extension.style)}>
+						<img src={`blockly-assets/${extension.id}.svg`} alt="" class="h-16">
 					</div>
-					<div class="content">
-						<div class="line">
-							<div class="name">{$_(extension.name)}</div>
-							<div class="warning"><Fa icon={faExclamationTriangle} /> {$_("INCOMPATIBLE_PROJECT")}</div>
+					<div class="flex-1 p-5 flex flex-col gap-2.5">
+						<div class="flex items-center gap-2.5">
+							<span class="font-bold text-lg">{$_(extension.name)}</span>
+							<span class="flex items-center gap-1.5 text-[salmon]"><Fa icon={faExclamationTriangle} /> {$_("INCOMPATIBLE_PROJECT")}</span>
 						</div>
-						<div class="description">{$_(extension.description)}</div>
+						<div class="text-sm">{$_(extension.description)}</div>
 					</div>
-					<button style:background={'salmon'} onclick={() => toggle(extension.id)}>
+					<button class="p-2.5 border-none text-on-primary font-bold text-sm flex items-center justify-center gap-1.5 cursor-pointer bg-[salmon]" onclick={() => toggle(extension.id)}>
 						<Fa icon={faXmark} />
 						{$_("REMOVE_EXTENSION")}
 					</button>
@@ -106,20 +110,19 @@ function toggle(extension: string) {
 			{/each}
 		</div>
 	{:else}
-		<div class="connect-wrapper">
-			<div class="form">
-				<div class="connect-text">
-					<div class="connect-icon"><Fa icon={faUsb} /></div>
-					<h2>{$_("EXTENSIONS_CONNECT_TITLE")}</h2>
+		<div class="w-full h-full flex flex-col justify-center items-center">
+			<div class="p-5 pt-8 max-w-[600px] w-full bg-bg rounded-2xl flex flex-col gap-8">
+				<div class="flex flex-col items-center text-center">
+					<div class="text-3xl pb-2.5"><Fa icon={faUsb} /></div>
+					<h2 class="m-0 mb-2">{$_("EXTENSIONS_CONNECT_TITLE")}</h2>
 					<div>{$_("EXTENSIONS_CONNECT_DESC")}</div>
 				</div>
 
-				<div class="connect-options">
+				<div class="flex flex-col gap-5">
 					<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
-
-					<div class="group">
-						<span>{$_("OR_SELECT")}</span>
-						<div class="line">
+					<div class="flex flex-col gap-2.5">
+						<span class="text-center text-on-secondary text-sm">{$_("OR_SELECT")}</span>
+						<div class="flex gap-2.5 items-center">
 							<Select mode="secondary" full options={boardOptions} bind:value={selectedBoard} />
 							<Button onclick={selectBoard} mode={"primary"} center name={$_("SELECT")} />
 						</div>
@@ -129,153 +132,3 @@ function toggle(extension: string) {
 		</div>
 	{/if}
 </div>
-
-<style>
-	.page {
-		width: 100vw;
-		height: 100vh;
-		background: var(--background-tint);
-		display: flex;
-		flex-direction: column;
-	}
-
-	.header {
-		background: var(--primary);
-		color: var(--on-primary);
-		padding: 10px;
-	}
-
-	.grid {
-		padding: 10px;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
-		overflow-y: auto;
-	}
-
-	.extension {
-		max-width: 300px;
-		width: 100%;
-		border-radius: 10px;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		background: var(--background);
-		border: 2px solid lightgrey;
-	}
-
-	.cover {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		width: 100%;
-		aspect-ratio: 296/183;
-	}
-
-	.cover img {
-		height: 60px;
-	}
-
-	.content {
-		flex: 1;
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.name {
-		font-weight: bold;
-		font-size: 18px;
-	}
-
-	button {
-		padding: 10px;
-		background: var(--accent);
-		border: none;
-		color: var(--on-primary);
-		font-weight: bold;
-		font-size: 14px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 5px;
-		cursor: pointer;
-	}
-
-	.connect-wrapper {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.connect-icon {
-		font-size: 30px;
-		padding-bottom: 10px;
-	}
-
-	.connect-text {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-	}
-
-	.form {
-		padding: 20px;
-		padding-top: 30px;
-		max-width: 600px;
-		width: 100%;
-		background: var(--background);
-		border-radius: 20px;
-
-		display: flex;
-		flex-direction: column;
-		gap: 30px;
-	}
-
-	.incompatible {
-		.cover {
-			filter: grayscale(100%);
-			opacity: 0.5;
-		}
-		.name, .description {
-			opacity: 0.5;
-		}
-	}
-
-	.line {
-		display: flex;
-		gap: 10px;
-		align-items: center;
-	}
-
-	.warning {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-		color: salmon;
-	}
-
-	.connect-options {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-	}
-
-	.group {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.connect-options span {
-		text-align: center;
-		color: var(--on-secondary);
-		font-size: 14px;
-	}
-</style>

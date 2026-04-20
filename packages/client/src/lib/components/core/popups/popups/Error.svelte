@@ -29,35 +29,14 @@ function feedback() {
 }
 </script>
 
-<div class="content">
-	<h2 class="title">
+<div class="p-5 flex flex-col min-w-[400px] text-center gap-4">
+	<h2 class="m-0 text-[salmon] flex items-center justify-center gap-2">
 		<Fa icon={faExclamationTriangle} />
 		{$_(title)}
 	</h2>
-	<div class="text">{$_(message)}</div>
-	<div class="actions">
+	<div>{$_(message)}</div>
+	<div class="flex justify-center gap-2.5 mt-2">
 		<Button name={$_("SEND_FEEDBACK")} mode="secondary" onclick={feedback} />
 		<Button name={$_("OK")} mode={"primary"} onclick={ok}/>
 	</div>
 </div>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		min-width: 400px;
-		text-align: center;
-	}
-
-	.title {
-		color: salmon;
-	}
-
-	.actions {
-		display: flex;
-		justify-content: center;
-		margin-top: 20px;
-		gap: 10px;
-	}
-</style>

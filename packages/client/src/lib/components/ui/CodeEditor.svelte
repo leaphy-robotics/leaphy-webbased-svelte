@@ -47,11 +47,4 @@ $effect(() => {
 });
 </script>
 
-<div class="editor" bind:this={element}></div>
-
-<style>
-    .editor {
-        width: 100%;
-        height: 100%;
-    }
-</style>
+<div class="w-full h-full" bind:this={element}></div>

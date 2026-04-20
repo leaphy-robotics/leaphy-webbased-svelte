@@ -14,18 +14,6 @@ $effect(() => {
 });
 </script>
 
-<div class="content">
-    <canvas bind:this={canvas}></canvas>
+<div class="w-full h-full">
+    <canvas class="w-full h-full" bind:this={canvas}></canvas>
 </div>
-
-<style>
-    .content {
-        width: 100%;
-        height: 100%;
-    }
-
-    canvas {
-        width: 100%;
-        height: 100%;
-    }
-</style>

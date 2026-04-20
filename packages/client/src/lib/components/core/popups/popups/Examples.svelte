@@ -41,47 +41,18 @@ async function loadExample(example: Example) {
 </script>
 
 <Windowed title={$_("EXAMPLES")}>
-	<div class="content">
+	<div class="w-[800px] bg-bg-tint p-3 grid grid-cols-[repeat(auto-fill,minmax(110px,1fr))] gap-3">
 		{#each visible as example}
-			<button class="example" onclick={() => loadExample(example)}>
-				<img class="icon" src={example.icon} alt="" />
-				<span class="name">{example.name}</span>
+			<button
+				class="group flex flex-col items-center gap-2 p-0 border-none bg-transparent text-on-bg cursor-pointer transition-transform hover:scale-[1.03]"
+				onclick={() => loadExample(example)}
+			>
+				<span class="flex justify-center items-center shadow-sm border border-bg-tint bg-robot aspect-square w-full rounded-lg transition-all
+					group-hover:border-2 group-hover:border-primary">
+					<img class="max-w-[80%] max-h-[80%] object-contain" src={example.icon} alt="" />
+				</span>
+				<span class="text-sm">{example.name}</span>
 			</button>
 		{/each}
 	</div>
 </Windowed>
-
-<style>
-    .content {
-        width: 800px;
-        padding: 10px;
-        gap: 10px;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    }
-
-    .example {
-        aspect-ratio: 1/1;
-        cursor: pointer;
-        border: 3px solid var(--secondary);
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        justify-content: end;
-        align-items: center;
-        gap: 5px;
-        padding: 10px;
-        transition: 0.3s ease;
-        background: none;
-        color: var(--on-background);
-    }
-    .example:hover {
-        border: 3px solid var(--primary);
-    }
-
-    .icon {
-        flex: 1;
-        max-width: 100%;
-        max-height: calc(100% - 29px);
-    }
-</style>

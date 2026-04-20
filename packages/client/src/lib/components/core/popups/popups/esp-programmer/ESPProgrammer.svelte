@@ -150,43 +150,19 @@ async function flash() {
 </script>
 
 <Windowed title={$_("ESP_PROGRAMMER")}>
-	<div class="content">
-		<h1>{$_(`ESP_PROGRAMMER_${step}`)}</h1>
+	<div class="p-5 flex flex-col items-center text-center gap-5 w-[500px]">
+		<h1 class="m-0 text-2xl font-bold">{$_(`ESP_PROGRAMMER_${step}`)}</h1>
 		<span>{$_(`ESP_PROGRAMMER_${step}_DESCRIPTION`)}</span>
 		{#if step === "RESET_TWICE"}
 			<Visualization program="RESET_TWICE" />
-			<Button
-				name={$_("CHOOSE_ROBOT")}
-				mode="primary"
-				onclick={() => selectPort()}
-			/>
+			<Button name={$_("CHOOSE_ROBOT")} mode="primary" onclick={() => selectPort()} />
 		{/if}
 		{#if step === "FLASHING"}
 			<ProgressBar {progress} />
 		{/if}
 		{#if step === "RESET"}
 			<Visualization program="RESET" />
-			<Button
-				name={$_("DONE")}
-				mode="primary"
-				onclick={() => popupState.close()}
-			/>
+			<Button name={$_("DONE")} mode="primary" onclick={() => popupState.close()} />
 		{/if}
 	</div>
 </Windowed>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		gap: 20px;
-		width: 500px;
-	}
-
-	h1 {
-		margin: 0;
-	}
-</style>

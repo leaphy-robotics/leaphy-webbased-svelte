@@ -117,13 +117,11 @@ $effect(() => {
 </script>
 
 <Windowed title={$_("SOLVER")}>
-    <div class="content" bind:this={contentElement}>
+    <div class="p-5 flex flex-col gap-4 w-[800px] max-h-[80vh] overflow-y-auto" bind:this={contentElement}>
         {#each messages as message}
             {#if message.type === "text"}
-                <div class="message">
-                    <SvelteMarkdown
-                        source={message.content}
-                    />
+                <div class="flex flex-col markdown-content">
+                    <SvelteMarkdown source={message.content} />
                 </div>
             {:else if message.type === "prompt_result"}
                 <PromptResult question={message.question} answer={message.answer} />
@@ -137,47 +135,27 @@ $effect(() => {
                 <MultipleChoice question={question} />
             {/if}
         {:else if processing}
-            <div class="processing">
+            <div class="flex bg-bg-tint p-2.5 rounded-xl items-center gap-2.5">
                 <Circle size={20} color={"var(--primary)"} />
                 <span>{$_("THINKING")}</span>
             </div>
         {:else}
-            <div class="no-question">
+            <div class="flex justify-center gap-2.5 mt-5">
                 <Button mode="secondary" onclick={close} name={$_("CLOSE")} />
             </div>
         {/if}
     </div>
 </Windowed>
 
-
 <style>
-    .processing {
-        display: flex;
-        background: var(--background-tint);
-        padding: 10px;
-        border-radius: 10px;
-        align-items: center;
-        gap: 10px;
+    :global(.markdown-content p) {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
     }
-
-    .content {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        width: 800px;
-        max-height: 80vh;
-        overflow-y: auto;
+    :global(.markdown-content p:first-child) {
+        margin-top: 0;
     }
-
-    .message {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .no-question {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
+    :global(.markdown-content p:last-child) {
+        margin-bottom: 0;
     }
 </style>

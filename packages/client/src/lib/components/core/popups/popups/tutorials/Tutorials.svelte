@@ -3,8 +3,7 @@ import Windowed from "$components/core/popups/Windowed.svelte";
 import { type TutorialItem, getTutorials } from "$education/tutorials";
 import type { Tutorial } from "$education/tutorials";
 import WorkspaceState from "$state/workspace.svelte";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { onMount } from "svelte";
 import FontAwesomeIcon from "svelte-fa";
 import { _, locale } from "svelte-i18n";
@@ -53,110 +52,37 @@ function previous() {
 <Windowed title={tutorial?.name || $_("TUTORIALS")}>
 	{#snippet actions()}
 		{#if playlist}
-			<div class="dots">
+			<div class="flex justify-center items-center pr-1.5 gap-1.5">
 				{#each playlist as item, index}
-					<div class="dot" class:active={index === playlist.indexOf(currentItem)}></div>
+					<div class="w-2.5 h-2.5 rounded-full {index === playlist.indexOf(currentItem) ? 'bg-bg' : 'bg-black/40'}"></div>
 				{/each}
 			</div>
 		{/if}
 	{/snippet}
-	
-	<div class="content">
+
+	<div>
 		{#if !video}
-			<div class="grid">
+			<div class="p-2.5 w-[600px] aspect-video overflow-y-auto gap-2.5 grid grid-cols-2 flex-1">
 				{#each getTutorials($locale, WorkspaceState.robot) as tutorial}
 					<Thumbnail name={tutorial.name} item={tutorial.item} onclick={() => setTutorial(tutorial)} />
 				{/each}
 			</div>
 		{:else}
-			<div class="container">
+			<div class="relative flex flex-col">
 				{#if playlist}
 					{#if playlist.indexOf(currentItem) > 0}
-						<button class="floatingButton left" onclick={previous}>
+						<button class="absolute top-1/2 -translate-y-1/2 -left-4 text-2xl bg-primary rounded-full w-12 h-12 flex justify-center items-center text-on-primary cursor-pointer border-none" onclick={previous}>
 							<FontAwesomeIcon icon={faArrowLeft} />
 						</button>
 					{/if}
 					{#if playlist.indexOf(currentItem) < playlist.length - 1}
-						<button class="floatingButton right" onclick={next}>
+						<button class="absolute top-1/2 -translate-y-1/2 -right-4 text-2xl bg-primary rounded-full w-12 h-12 flex justify-center items-center text-on-primary cursor-pointer border-none" onclick={next}>
 							<FontAwesomeIcon icon={faArrowRight} />
 						</button>
 					{/if}
 				{/if}
-				<iframe class="video" credentialless allowfullscreen width="100%" height="100%" src="https://www.youtube.com/embed/{video}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="video"></iframe>
+				<iframe class="w-[600px] aspect-video rounded-b-xl" credentialless allowfullscreen src="https://www.youtube.com/embed/{video}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" title="video"></iframe>
 			</div>
 		{/if}
 	</div>
 </Windowed>
-
-<style>
-
-	.grid {
-		padding: 10px;
-		width: 600px;
-		aspect-ratio: 1920 / 1080;
-		overflow-y: auto;
-		gap: 10px;
-		display: grid;
-		flex: 1;
-		grid-template-columns: repeat(2, 285px);
-	}
-
-	.video {
-		width: 600px;
-		aspect-ratio: 1920 / 1080;
-	}
-
-	.container {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.floatingButton {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		font-size: 24px;
-		background: var(--primary);
-		border-radius: 50%;
-		width: 50px;
-		height: 50px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		color: var(--on-primary);
-		cursor: pointer;
-		border: none;
-		padding: 0;
-	}
-
-	.floatingButton.left {
-		left: -15px;
-	}
-
-	.floatingButton.right {
-		right: -15px;
-	}
-
-	iframe {
-		border-radius: 0 0 10px 10px;
-	}
-
-	.dots {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding-right: 5px;
-		gap: 5px;
-	}
-
-	.dot {
-		width: 10px;
-		height: 10px;
-		background: #00000060;
-		border-radius: 50%;
-	}
-
-	.dot.active {
-		background: var(--background);
-	}
-</style>

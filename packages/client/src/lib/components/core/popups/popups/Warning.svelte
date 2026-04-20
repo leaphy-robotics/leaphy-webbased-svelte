@@ -23,30 +23,14 @@ function ok() {
 }
 </script>
 
-<div class="content">
-	<h2>{$_(title)}</h2>
-	<div class="text">{$_(message)}</div>
-	<div class="actions">
+<div class="p-5 flex flex-col min-w-[400px] text-center gap-4">
+	<h2 class="m-0">{$_(title)}</h2>
+	<div>{$_(message)}</div>
+	<div class="flex justify-between mt-2">
 		{#if showCancel}
 			<Button name={$_("CANCEL")} mode={"secondary"} onclick={cancel}/>
 		{/if}
-		<div></div>
+		<div class="flex-1"></div>
 		<Button name={$_("OK")} mode={"primary"} onclick={ok}/>
 	</div>
 </div>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		min-width: 400px;
-		text-align: center;
-	}
-
-	.actions {
-		display: flex;
-		justify-content: space-between;
-		margin-top: 20px;
-	}
-</style>

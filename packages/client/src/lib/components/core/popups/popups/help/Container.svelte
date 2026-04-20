@@ -11,32 +11,12 @@ interface Props {
 let { children, title, icon }: Props = $props();
 </script>
 
-<div class="container">
-    {#if title}
-        <div class="title">
-            <Fa icon={icon} />
-            {title}
-        </div>
-    {/if}
-    {@render children()}
+<div class="flex flex-col gap-2.5 p-2.5 bg-bg rounded-xl border border-secondary">
+	{#if title}
+		<div class="flex items-center gap-2.5 text-xl font-bold">
+			<Fa {icon} />
+			{title}
+		</div>
+	{/if}
+	{@render children()}
 </div>
-
-<style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
-        background: var(--background);
-        border-radius: 10px;
-        border: 1px solid var(--secondary);
-    }
-
-    .title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 20px;
-        font-weight: bold;
-    }
-</style>

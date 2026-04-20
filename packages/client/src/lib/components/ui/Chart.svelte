@@ -87,11 +87,4 @@ $effect(() => {
 });
 </script>
 
-<canvas bind:this={element}></canvas>
-
-<style>
-	canvas {
-		width: 785px;
-		height: 400px;
-	}
-</style>
+<canvas class="w-[785px] h-[400px]" bind:this={element}></canvas>
