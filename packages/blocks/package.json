@@ -29,7 +29,7 @@
 	},
 	"files": [
 		"dist",
-		"media"
+		"../client/src/assets/media"
 	],
 	"version": "4.0.0",
 	"description": "Leaphy custom Blockly blocks and arduino code generator",

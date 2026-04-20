@@ -16,14 +16,6 @@ export default defineConfig({
 			}),
 		}),
 		topLevelAwait(),
-		viteStaticCopy({
-			targets: [
-				{
-					src: "./node_modules/@leaphy-robotics/leaphy-blocks/media/*",
-					dest: "blockly-assets",
-				},
-			],
-		}),
 		// Upload source maps to Sentry
 		sentryVitePlugin({
 			url: "https://leaphyeasybloqs.com:8443",
