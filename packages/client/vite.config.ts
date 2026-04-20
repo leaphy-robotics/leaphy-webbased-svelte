@@ -3,7 +3,6 @@ import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { svelte, vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
-import { viteStaticCopy } from "vite-plugin-static-copy";
 import topLevelAwait from "vite-plugin-top-level-await";
 
 // https://vitejs.dev/config/
