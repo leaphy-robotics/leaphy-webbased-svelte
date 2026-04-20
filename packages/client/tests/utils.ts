@@ -20,11 +20,7 @@ export async function selectRobot(page: Page, tile: string, robot?: string) {
 	await page.getByText(tile, { exact: true }).click();
 
 	if (robot) {
-		await page
-			.locator(".container")
-			.nth(1)
-			.getByText(robot, { exact: true })
-			.click();
+		await page.getByText(robot, { exact: true }).click();
 	}
 }
 
@@ -49,8 +45,12 @@ export async function goToHomePage({ page }: PlaywrightTestArgs) {
 
 export async function openExample(page: Page, example: string | RegExp) {
 	await page.getByRole("button", { name: "Tips" }).click();
-	await page.getByRole("cell", { name: "Examples" }).click();
+	await page.getByText("Examples").click();
 	await page.getByRole("button", { name: example, exact: true }).click();
+}
+
+export async function openCode(page: Page) {
+	await page.getByRole("button", { name: "Code" }).nth(1).click();
 }
 
 // Playwright doesn't seem to support `showOpenFilePicker()` so this functions mocks it

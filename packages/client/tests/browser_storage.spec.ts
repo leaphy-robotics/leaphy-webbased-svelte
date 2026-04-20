@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, openExample, selectRobot } from "./utils";
+import { goToHomePage, openCode, openExample, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -19,7 +19,7 @@ test("Saving - Backpack", async ({ page }) => {
 
 	// Start a new project, why not?
 	await page.getByRole("button", { name: "My projects" }).click();
-	await page.getByRole("cell", { name: "New" }).click();
+	await page.getByText("New").click();
 
 	await page.reload();
 
@@ -42,13 +42,14 @@ test("Saving - Backpack", async ({ page }) => {
 		});
 
 	// Check that the blocks have been loaded properly
-	await page.locator(".side").first().click(); // Open code
+	await openCode(page);
 	await expect(page.locator(".view-lines")).toContainText("delay(1000)");
 });
 
 test("Saving - Blockly", async ({ page }) => {
 	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
+	await expect(page.getByText("repeat forever")).toBeVisible();
 
 	await page.reload();
 
@@ -60,6 +61,7 @@ test("Saving - Blockly", async ({ page }) => {
 test("Saving - Blockly - Continue working", async ({ page }) => {
 	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
+	await expect(page.getByText("repeat forever")).toBeVisible();
 
 	await page.reload();
 
@@ -110,7 +112,7 @@ test("Saving - New project", async ({ page }) => {
 
 	// Start a new project, should reset to the default
 	await page.getByRole("button", { name: "My projects" }).click();
-	await page.getByRole("cell", { name: "New" }).click();
+	await page.getByText("New").click();
 
 	// Its a new project, it should not be here!
 	await expect(page.getByText("repeat forever")).toBeHidden();

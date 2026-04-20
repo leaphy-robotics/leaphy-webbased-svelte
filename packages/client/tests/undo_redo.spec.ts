@@ -1,13 +1,15 @@
 import { expect, type Page, test } from "@playwright/test";
-import { goToHomePage, openExample, selectRobot } from "./utils";
+import { goToHomePage, openCode, openExample, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
 async function undo(page: Page) {
 	await page.locator("div:nth-child(2) > button").first().click(); // Click undo button
+	await new Promise((resolve) => setTimeout(resolve, 10));
 }
 async function redo(page: Page) {
 	await page.locator("div:nth-child(2) > button:nth-child(2)").click(); // Click redo button
+	await new Promise((resolve) => setTimeout(resolve, 10));
 }
 
 test("Undo redo - Deletion", async ({ page }) => {
@@ -39,6 +41,7 @@ test("Undo redo - Deletion", async ({ page }) => {
 		.dragTo(page.locator("g.blocklyTrash"), {
 			force: true,
 		});
+	await new Promise((resolve) => setTimeout(resolve, 10));
 	await expect(page.getByText("repeat forever")).toBeHidden();
 });
 
@@ -62,9 +65,12 @@ test("Undo redo - Variable change", async ({ page }) => {
 	await page.getByText("1000").first().click();
 	await page.getByRole("textbox").fill("123");
 	await expect(page.getByText("123", { exact: true })).toBeVisible();
-	await page.keyboard.press("Control+z");
+	await page.keyboard.press("ControlOrMeta+z");
+	await new Promise((resolve) => setTimeout(resolve, 10));
 	await expect(page.getByText("123", { exact: true })).toBeHidden();
-	await page.keyboard.press("Control+y");
+	await page.keyboard.press("ControlOrMeta+y");
+	await page.keyboard.press("ControlOrMeta+Shift+z");
+	await new Promise((resolve) => setTimeout(resolve, 10));
 	await expect(page.getByText("123", { exact: true })).toBeVisible();
 	await page.getByRole("textbox").press("Enter");
 
@@ -78,8 +84,7 @@ test("Undo redo - Variable change", async ({ page }) => {
 test("Undo redo - Dragging", async ({ page }) => {
 	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
-
-	await page.locator(".side").first().click(); // Open code
+	await openCode(page);
 
 	// Drag the repeat block somewhere to the left, disconnecting it
 	await page

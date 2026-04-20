@@ -70,8 +70,8 @@ function toggle(extension: string) {
 		<div class="p-2.5 flex flex-wrap gap-2.5 overflow-y-auto">
 			{#each enabledExtensions as extension}
 				{@const isEnabled = Extensions.isEnabled(extension.id)}
-				<div class="max-w-[300px] w-full rounded-xl overflow-hidden flex flex-col bg-bg border-2 border-[lightgrey]">
-					<div class="flex justify-center items-center w-full aspect-[296/183]" style:background={getColor(extension.style)}>
+				<div aria-label="extension" class="max-w-75 w-full rounded-xl overflow-hidden flex flex-col bg-bg border-2 border-[lightgrey]">
+					<div class="flex justify-center items-center w-full aspect-296/183" style:background={getColor(extension.style)}>
 						<img src={`blockly-assets/${extension.id}.svg`} alt="" class="h-16">
 					</div>
 					<div class="flex-1 p-5 flex flex-col gap-2.5">

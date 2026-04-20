@@ -6,10 +6,10 @@ test.beforeEach(goToHomePage);
 test("Language", async ({ page }) => {
 	await page.getByRole("button", { name: "Leaphy MicroPython" }).click();
 	await page.getByRole("button", { name: "More..." }).click();
-	await page.getByRole("cell", { name: "Language" }).click();
-	await page.getByRole("cell", { name: "Nederlands" }).click();
+	await page.getByText("Language").click();
+	await page.getByText("Nederlands").click();
 	await page.getByRole("button", { name: "Mijn projecten" }).click();
-	await page.getByRole("cell", { name: "Verander robot" }).click();
+	await page.getByText("Verander robot").click();
 	await selectRobot(page, "Leaphy Original");
 	await expect(page.getByText("Lees afstand")).toBeVisible();
 	await expect(page.getByText("Lees anapin")).toBeVisible();
