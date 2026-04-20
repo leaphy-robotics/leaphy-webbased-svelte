@@ -1,4 +1,8 @@
 <script lang="ts">
+import * as Sentry from "@sentry/browser";
+import { serialization } from "blockly";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import TextArea from "$components/ui/TextArea.svelte";
@@ -7,12 +11,7 @@ import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState from "$state/serial.svelte";
-import WorkspaceState from "$state/workspace.svelte";
-import { Mode } from "$state/workspace.svelte";
-import * as Sentry from "@sentry/browser";
-import { serialization } from "blockly";
-import { getContext } from "svelte";
-import { _ } from "svelte-i18n";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 
 let message = $state("");
 let senderName = $state("");

@@ -1,4 +1,13 @@
 <script lang="ts">
+import {
+	type ModelLayer,
+	ml,
+} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import type { Block, Workspace } from "blockly";
+import * as Blockly from "blockly";
+import type { CategoryInfo } from "blockly/core/utils/toolbox";
+import { getContext, onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import ModelVisualizer from "$components/workspace/ml/ModelVisualizer.svelte";
 import { dark, light } from "$domain/blockly/theme";
@@ -7,15 +16,6 @@ import BlocklyState from "$state/blockly.svelte";
 import MLState from "$state/ml.svelte";
 import type { PopupState } from "$state/popup.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import {
-	type ModelLayer,
-	ml,
-} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-import * as Blockly from "blockly";
-import type { Block, Workspace } from "blockly";
-import type { CategoryInfo } from "blockly/core/utils/toolbox";
-import { getContext, onMount } from "svelte";
-import { _ } from "svelte-i18n";
 
 let layerStructure = $derived([
 	MLState.sensors.length,

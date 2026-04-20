@@ -1,10 +1,14 @@
 <script lang="ts">
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { getContext, onMount } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import RobotRestore from "$components/ui/RobotRestore.svelte";
 import { robots } from "$domain/robots";
-import { type SavedContent, type SavedFile, projectDB } from "$domain/storage";
+import { projectDB, type SavedContent, type SavedFile } from "$domain/storage";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState, {
@@ -14,10 +18,6 @@ import RobotRestoreState from "$state/robotRestore.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import { track } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { getContext, onMount } from "svelte";
-import Fa from "svelte-fa";
-import { _ } from "svelte-i18n";
 
 interface Props {
 	saves: ((SavedContent | SavedFile) & { type: string; saveID: number })[];

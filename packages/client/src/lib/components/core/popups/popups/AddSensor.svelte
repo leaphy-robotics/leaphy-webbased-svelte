@@ -1,10 +1,4 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import Select from "$components/ui/Select.svelte";
-import TextInput from "$components/ui/TextInput.svelte";
-import PinSelectorField from "$domain/blockly/fields";
-import MLState from "$state/ml.svelte";
-import type { PopupState } from "$state/popup.svelte";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import {
 	type Sensor,
@@ -12,6 +6,12 @@ import {
 } from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import Select from "$components/ui/Select.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
+import PinSelectorField from "$domain/blockly/fields";
+import MLState from "$state/ml.svelte";
+import type { PopupState } from "$state/popup.svelte";
 
 const popupState = getContext<PopupState>("state");
 const sensorOptions = sensors.map(

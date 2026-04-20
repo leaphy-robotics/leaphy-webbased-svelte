@@ -1,9 +1,4 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import ProgressBar from "$components/ui/ProgressBar.svelte";
-import type { PopupState } from "$state/popup.svelte";
-import SerialState from "$state/serial.svelte";
-import WorkspaceState from "$state/workspace.svelte";
 import {
 	ESPLoader,
 	type FlashOptions,
@@ -12,13 +7,17 @@ import {
 } from "esptool-js";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
-import Windowed from "../../Windowed.svelte";
-
 import BlinkInoBin from "$assets/esp-reset/blink.ino.bin?url";
 import BlinkInoBootloaderBin from "$assets/esp-reset/blink.ino.bootloader.bin?url";
 import BlinkInoPartitionsBin from "$assets/esp-reset/blink.ino.partitions.bin?url";
 import BootApp0Bin from "$assets/esp-reset/boot_app0.bin?url";
 import NoraRecoveryBin from "$assets/esp-reset/nora_recovery.ino.bin?url";
+import Button from "$components/ui/Button.svelte";
+import ProgressBar from "$components/ui/ProgressBar.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import SerialState from "$state/serial.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+import Windowed from "../../Windowed.svelte";
 import Visualization from "./Visualization.svelte";
 
 type Step = "RESET_TWICE" | "FLASHING" | "RESET";

@@ -1,6 +1,6 @@
 <script lang="ts">
-import Terminal from "$components/workspace/python/Terminal.svelte";
 import { _ } from "svelte-i18n";
+import Terminal from "$components/workspace/python/Terminal.svelte";
 import Windowed from "../Windowed.svelte";
 </script>
 

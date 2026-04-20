@@ -1,8 +1,4 @@
 <script lang="ts">
-import AIState from "$state/ai.svelte";
-import BlocklyState from "$state/blockly.svelte";
-import type { PopupState } from "$state/popup.svelte";
-import { track } from "$state/utils";
 import { autoPlacement, computePosition, size } from "@floating-ui/dom";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { layoutComponents } from "@leaphy-robotics/schemas";
@@ -10,6 +6,10 @@ import { type Block, Events } from "blockly";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import SvelteMarkdown from "svelte-markdown";
+import AIState from "$state/ai.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import { track } from "$state/utils";
 
 let position = $state<{ x: number; y: number }>();
 let element: HTMLDivElement;

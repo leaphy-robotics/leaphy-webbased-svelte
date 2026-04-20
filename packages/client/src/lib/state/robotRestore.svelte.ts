@@ -1,6 +1,9 @@
 import { type RobotDevice, robots } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
-import SerialState, { type LeaphyPort, type Prompt } from "$state/serial.svelte";
+import SerialState, {
+	type LeaphyPort,
+	type Prompt,
+} from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 
 async function decompressGzip(gzippedData: Uint8Array) {

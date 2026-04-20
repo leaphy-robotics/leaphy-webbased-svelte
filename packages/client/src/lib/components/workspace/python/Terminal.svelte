@@ -1,8 +1,8 @@
 <script lang="ts">
-import WorkspaceState from "$state/workspace.svelte";
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
 import { onMount } from "svelte";
+import WorkspaceState from "$state/workspace.svelte";
 
 const terminal = new Terminal();
 const fitAddon = new FitAddon();

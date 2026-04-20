@@ -1,13 +1,13 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import ListSelect from "$components/ui/ListSelect.svelte";
-import type { PopupState } from "$state/popup.svelte";
-import RecordingState from "$state/recordings.svelte";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { Circle, DoubleBounce, RingLoader } from "svelte-loading-spinners";
+import Button from "$components/ui/Button.svelte";
+import ListSelect from "$components/ui/ListSelect.svelte";
+import type { PopupState } from "$state/popup.svelte";
+import RecordingState from "$state/recordings.svelte";
 
 interface Props {
 	waitingMessage?: string;

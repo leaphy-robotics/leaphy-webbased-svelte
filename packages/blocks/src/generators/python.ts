@@ -33,7 +33,7 @@ export class MicroPythonGenerator extends PythonGenerator {
 
 	private pin_state_: Record<string, PinState> = {};
 
-	public workspaceToCode(workspace?: Workspace, robotType?: string): string {
+	public workspaceToCode(workspace?: Workspace): string {
 		return super.workspaceToCode(workspace);
 	}
 

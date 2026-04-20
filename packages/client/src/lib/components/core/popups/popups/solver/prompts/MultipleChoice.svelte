@@ -1,9 +1,9 @@
 <script lang="ts">
-import ListSelect from "$components/ui/ListSelect.svelte";
-import { _ } from "svelte-i18n";
-import type { MultipleChoiceQuestion } from "../types";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Fa from "svelte-fa";
-import {faPaperPlane} from "@fortawesome/free-solid-svg-icons";
+import { _ } from "svelte-i18n";
+import ListSelect from "$components/ui/ListSelect.svelte";
+import type { MultipleChoiceQuestion } from "../types";
 
 interface Props {
 	question: MultipleChoiceQuestion;
@@ -17,7 +17,7 @@ const hasOther = $derived(question.choices.includes("%SOMETHING_ELSE%"));
 const filteredChoices = $derived(
 	question.choices
 		.filter((c) => c !== "%SOMETHING_ELSE%")
-		.map((c) => [c, { id: c }] as [string, { id: string }])
+		.map((c) => [c, { id: c }] as [string, { id: string }]),
 );
 
 let selected = $state<{ id: string } | undefined>(undefined);

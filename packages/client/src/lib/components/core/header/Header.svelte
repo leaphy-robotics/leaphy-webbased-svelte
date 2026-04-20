@@ -1,24 +1,4 @@
 <script lang="ts">
-import { _, locale } from "svelte-i18n";
-
-import block from "$assets/block.svg";
-import defaultProgram from "$assets/default-program.json?raw";
-import leaphyLogo from "$assets/leaphy-logo.svg";
-import Circuit from "$components/core/popups/popups/Circuit.svelte";
-import Connect from "$components/core/popups/popups/Connect.svelte";
-import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import Button from "$components/ui/Button.svelte";
-import ContextItem from "$components/ui/ContextItem.svelte";
-import { RobotType } from "$domain/robots.types";
-import AppState, { Screen, Theme } from "$state/app.svelte";
-import BlocklyState from "$state/blockly.svelte";
-import EmbedState from "$state/embed.svelte";
-import MLState from "$state/ml.svelte";
-import PopupState from "$state/popup.svelte";
-import RecordingsState from "$state/recordings.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte";
-import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { faWindows } from "@fortawesome/free-brands-svg-icons";
 import {
 	faCircleCheck,
@@ -45,16 +25,35 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { serialization } from "blockly";
+import { _, locale } from "svelte-i18n";
+import block from "$assets/block.svg";
+import defaultProgram from "$assets/default-program.json?raw";
+import leaphyLogo from "$assets/leaphy-logo.svg";
+import Circuit from "$components/core/popups/popups/Circuit.svelte";
+import Connect from "$components/core/popups/popups/Connect.svelte";
+import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import Button from "$components/ui/Button.svelte";
+import ContextItem from "$components/ui/ContextItem.svelte";
+import { RobotType } from "$domain/robots.types";
+import AppState, { Screen, Theme } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import EmbedState from "$state/embed.svelte";
+import MLState from "$state/ml.svelte";
+import PopupState from "$state/popup.svelte";
+import RecordingsState from "$state/recordings.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
+import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
-import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
+import UploadLog from "../popups/popups/UploadLog.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 
 async function upload() {
 	if (MLState.enabled) {

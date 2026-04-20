@@ -257,7 +257,7 @@ export default class Parser extends EventTarget {
 	}
 
 	emit(type: string, message?: any) {
-		// @ts-ignore
+		// @ts-expect-error
 		this.dispatchEvent(new Event(type, { detail: message }));
 	}
 

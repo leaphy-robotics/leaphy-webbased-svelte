@@ -1,10 +1,10 @@
 <script lang="ts">
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import KeyboardAnimation from "$components/ui/KeyboardAnimation.svelte";
 import BluetoothState from "$state/bluetooth.svelte";
 import type { PopupState } from "$state/popup.svelte";
-import { getContext } from "svelte";
-import { _ } from "svelte-i18n";
 
 let pressed = $state(new Set<string>());
 

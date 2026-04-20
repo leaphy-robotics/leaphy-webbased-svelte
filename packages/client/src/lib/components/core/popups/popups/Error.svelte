@@ -1,11 +1,11 @@
 <script lang="ts">
-import Feedback from "$components/core/popups/popups/Feedback.svelte";
-import Button from "$components/ui/Button.svelte";
-import PopupsState, { type PopupState } from "$state/popup.svelte";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+import Feedback from "$components/core/popups/popups/Feedback.svelte";
+import Button from "$components/ui/Button.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
 
 interface Props {
 	title: string;

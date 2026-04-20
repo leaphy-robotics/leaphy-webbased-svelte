@@ -1,9 +1,9 @@
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import { type RobotDevice, robots } from "$domain/robots";
-import PopupState from "$state/popup.svelte";
 import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import { type RobotDevice, robots } from "$domain/robots";
+import PopupState from "$state/popup.svelte";
 import { clearReadBuffer, delay } from "../programmers/utils";
 
 interface ActiveDebugger {
@@ -35,7 +35,11 @@ export const SUPPORTED_VENDOR_IDS = [
 	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
 ];
 
-export type ConnectionStatus = "disconnected" | "connecting" | "ready" | "failed";
+export type ConnectionStatus =
+	| "disconnected"
+	| "connecting"
+	| "ready"
+	| "failed";
 
 class DebugState {
 	debuggers = $state<ActiveDebugger[]>();
@@ -177,8 +181,6 @@ class SerialState {
 	showFeedback = false;
 
 	log = new LogState(this);
-
-	constructor() {}
 
 	async initPort() {
 		if (!this.port || this.reserved) return;

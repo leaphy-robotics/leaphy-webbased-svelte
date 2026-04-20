@@ -1,11 +1,11 @@
 <script lang="ts">
 import {
-	type IconDefinition,
 	faCaretRight,
+	type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import { type Snippet, onDestroy, onMount } from "svelte";
-import Fa from "svelte-fa";
+import { onDestroy, onMount, type Snippet } from "svelte";
 import type { Writable } from "svelte/store";
+import Fa from "svelte-fa";
 import ContextMenu from "./ContextMenu.svelte";
 
 interface Props {

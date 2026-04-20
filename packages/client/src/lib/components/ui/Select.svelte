@@ -1,8 +1,8 @@
 <script lang="ts">
-import SelectContext from "$components/ui/SelectContext.svelte";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+import SelectContext from "$components/ui/SelectContext.svelte";
 
 interface Props {
 	options: [string, any][];

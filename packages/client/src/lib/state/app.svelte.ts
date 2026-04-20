@@ -1,6 +1,6 @@
+import type { Component } from "svelte";
 import Start from "$components/start/Start.svelte";
 import Workspace from "$components/workspace/Workspace.svelte";
-import type { Component } from "svelte";
 
 export const Screen = {
 	START: Start as Component,

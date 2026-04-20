@@ -1,15 +1,15 @@
 <script lang="ts">
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
-import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-import Fa from "svelte-fa";
-import { _ } from "svelte-i18n";
 
 async function upload() {
 	if (MLState.sensors.length === 0) {

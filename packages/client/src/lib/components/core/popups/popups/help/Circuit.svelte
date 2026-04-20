@@ -1,13 +1,13 @@
 <script lang="ts">
-import PopupsState, { type PopupState } from "$state/popup.svelte";
-import { track } from "$state/utils";
-import WorkspaceState from "$state/workspace.svelte";
 import { faMagnifyingGlassPlus } from "@fortawesome/free-solid-svg-icons";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { layoutComponents } from "@leaphy-robotics/schemas";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
+import { track } from "$state/utils";
+import WorkspaceState from "$state/workspace.svelte";
 import Circuit from "../Circuit.svelte";
 
 let popupState = getContext<PopupState>("state");

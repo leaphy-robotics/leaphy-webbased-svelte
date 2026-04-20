@@ -1,18 +1,18 @@
 <script lang="ts">
-import Popup from "$components/core/popups/Popup.svelte";
-import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
-import Button from "$components/ui/Button.svelte";
-import PopupsState, { type PopupState } from "$state/popup.svelte";
 import {
 	faBook,
 	faBug,
+	faList,
 	faMessage,
 	faProjectDiagram,
 	faRobot,
 } from "@fortawesome/free-solid-svg-icons";
-import { faList } from "@fortawesome/free-solid-svg-icons";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
+import Popup from "$components/core/popups/Popup.svelte";
+import Debugger from "$components/core/popups/popups/debugger/Debugger.svelte";
+import Button from "$components/ui/Button.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
 import Windowed from "../../Windowed.svelte";
 import Solver from "../solver/Solver.svelte";
 import Tutorials from "../tutorials/Tutorials.svelte";
@@ -33,7 +33,10 @@ function openTutorials() {
 		data: {},
 		allowInteraction: true,
 		allowOverflow: true,
-		position: { x: window.innerWidth / 2 - 320, y: window.innerHeight / 2 - 210 },
+		position: {
+			x: window.innerWidth / 2 - 320,
+			y: window.innerHeight / 2 - 210,
+		},
 	});
 	popupState.close();
 }

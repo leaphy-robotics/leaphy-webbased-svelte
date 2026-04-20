@@ -1,9 +1,9 @@
 <script lang="ts">
-import { track } from "$state/utils";
-import WorkspaceState from "$state/workspace.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { layoutComponents } from "@leaphy-robotics/schemas";
 import { _ } from "svelte-i18n";
+import { track } from "$state/utils";
+import WorkspaceState from "$state/workspace.svelte";
 import Windowed from "../Windowed.svelte";
 
 let canvas = $state<HTMLCanvasElement>();

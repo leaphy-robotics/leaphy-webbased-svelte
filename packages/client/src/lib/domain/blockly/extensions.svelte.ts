@@ -1,11 +1,11 @@
+import type * as Blockly from "blockly";
+import type { ToolboxCategory } from "blockly";
+import { getMainWorkspace, type WorkspaceSvg } from "blockly";
+import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import type LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import robotGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
-import { type WorkspaceSvg, getMainWorkspace } from "blockly";
-import type * as Blockly from "blockly";
-import type { ToolboxCategory } from "blockly";
-import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 
 export const extensions = [
 	{

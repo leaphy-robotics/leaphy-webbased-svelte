@@ -1,9 +1,9 @@
 <script lang="ts">
+import { onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import Windowed from "$components/core/popups/Windowed.svelte";
 import { ModelVisualizer } from "$components/workspace/ml/visualizer/ModelVisualizer";
 import MLState from "$state/ml.svelte";
-import { onMount } from "svelte";
-import { _ } from "svelte-i18n";
 
 let visualizationContainer = $state<HTMLDivElement>();
 let controlsContainer = $state<HTMLDivElement>();

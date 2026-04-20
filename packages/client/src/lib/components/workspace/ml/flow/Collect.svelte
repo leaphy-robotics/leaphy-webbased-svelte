@@ -1,15 +1,15 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import Switch from "$components/ui/Switch.svelte";
-import AssignKey from "$components/workspace/ml/AssignKey.svelte";
-import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
-import MLState from "$state/ml.svelte";
 import { faBluetooth } from "@fortawesome/free-brands-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import type { Snippet } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import Switch from "$components/ui/Switch.svelte";
+import AssignKey from "$components/workspace/ml/AssignKey.svelte";
+import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
+import MLState from "$state/ml.svelte";
 </script>
 
 {#if !MLState.connected}

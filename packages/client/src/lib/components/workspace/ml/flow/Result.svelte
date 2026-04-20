@@ -1,12 +1,12 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import ModelVisualizer from "$components/workspace/ml/visualizer/ModelVisualizer.svelte";
-import MLState from "$state/ml.svelte";
-import PopupState from "$state/popup.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import ModelVisualizer from "$components/workspace/ml/visualizer/ModelVisualizer.svelte";
+import MLState from "$state/ml.svelte";
+import PopupState from "$state/popup.svelte";
 
 async function upload() {
 	ml.generateInference = true;

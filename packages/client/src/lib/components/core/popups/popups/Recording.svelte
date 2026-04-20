@@ -1,13 +1,13 @@
 <script lang="ts">
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { getContext } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import Select from "$components/ui/Select.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import type { PopupState } from "$state/popup.svelte";
 import RecordingState from "$state/recordings.svelte";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
-import { getContext } from "svelte";
-import Fa from "svelte-fa";
-import { _ } from "svelte-i18n";
 
 const popupState = getContext<PopupState>("state");
 let name = $state(

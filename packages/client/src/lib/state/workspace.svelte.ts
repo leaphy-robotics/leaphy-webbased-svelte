@@ -1,3 +1,6 @@
+import { serialization } from "blockly";
+import type * as monaco from "monaco-editor";
+import type { Component } from "svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
@@ -9,9 +12,6 @@ import { type RobotDevice, robots } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import { projectDB } from "$domain/storage";
 import { findAsync, track } from "$state/utils";
-import { serialization } from "blockly";
-import type * as monaco from "monaco-editor";
-import type { Component } from "svelte";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
@@ -95,7 +95,10 @@ class WorkspaceUIState {
 class WorkspacePersistenceState {
 	handleSave = $state<number>();
 
-	constructor(private ui: WorkspaceUIState, private robotRef: () => RobotDevice) {}
+	constructor(
+		private ui: WorkspaceUIState,
+		private robotRef: () => RobotDevice,
+	) {}
 
 	async updateFileHandle() {
 		await projectDB.saves.update(this.handleSave, {
@@ -118,7 +121,9 @@ class WorkspacePersistenceState {
 		const existingSave = await projectDB.tempSaves
 			.where("mode")
 			.equals(mode)
-			.and((save) => (mode === "BLOCKS" ? save.robot === this.robotRef().id : true))
+			.and((save) =>
+				mode === "BLOCKS" ? save.robot === this.robotRef().id : true,
+			)
 			.first();
 
 		if (existingSave) {
@@ -224,30 +229,56 @@ class WorkspaceState {
 	}
 
 	// --- UI slice delegates ---
-	get code() { return this._ui.code; }
-	set code(v) { this._ui.code = v; }
+	get code() {
+		return this._ui.code;
+	}
+	set code(v) {
+		this._ui.code = v;
+	}
 
-	get codeEditor() { return this._ui.codeEditor; }
-	set codeEditor(v) { this._ui.codeEditor = v; }
+	get codeEditor() {
+		return this._ui.codeEditor;
+	}
+	set codeEditor(v) {
+		this._ui.codeEditor = v;
+	}
 
-	get saveState() { return this._ui.saveState; }
-	set saveState(v) { this._ui.saveState = v; }
+	get saveState() {
+		return this._ui.saveState;
+	}
+	set saveState(v) {
+		this._ui.saveState = v;
+	}
 
-	get SidePanel() { return this._ui.SidePanel; }
-	set SidePanel(v) { this._ui.SidePanel = v; }
+	get SidePanel() {
+		return this._ui.SidePanel;
+	}
+	set SidePanel(v) {
+		this._ui.SidePanel = v;
+	}
 
-	get Mode() { return this._ui.Mode; }
-	set Mode(v) { this._ui.Mode = v; }
+	get Mode() {
+		return this._ui.Mode;
+	}
+	set Mode(v) {
+		this._ui.Mode = v;
+	}
 
-	get mode() { return this._ui.mode; }
+	get mode() {
+		return this._ui.mode;
+	}
 
 	toggleSidePanel(panel: Component) {
 		this._ui.toggleSidePanel(panel);
 	}
 
 	// --- Persistence slice delegates ---
-	get handleSave() { return this._persistence.handleSave; }
-	set handleSave(v) { this._persistence.handleSave = v; }
+	get handleSave() {
+		return this._persistence.handleSave;
+	}
+	set handleSave(v) {
+		this._persistence.handleSave = v;
+	}
 
 	async updateFileHandle() {
 		return this._persistence.updateFileHandle();
@@ -262,8 +293,12 @@ class WorkspaceState {
 	}
 
 	// --- File slice delegates ---
-	get handle() { return this._file.handle; }
-	set handle(v) { this._file.handle = v; }
+	get handle() {
+		return this._file.handle;
+	}
+	set handle(v) {
+		this._file.handle = v;
+	}
 
 	async openFileHandle(file: FileSystemFileHandle) {
 		return this._file.openFileHandle(file);

@@ -1,9 +1,9 @@
+import base64 from "base64-js";
 import PythonUploader from "$components/core/popups/popups/PythonUploader.svelte";
 import type { RobotDevice } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
-import SerialState from "$state/serial.svelte";
 import type { LeaphyPort } from "$state/serial.svelte";
-import base64 from "base64-js";
+import SerialState from "$state/serial.svelte";
 import { delay } from "../programmers/utils";
 import { Commands } from "./commands";
 import { FileSystem } from "./filesystem";

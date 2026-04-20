@@ -1,9 +1,9 @@
 <script lang="ts">
+import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { getContext, onDestroy, onMount, type Snippet } from "svelte";
+import Fa from "svelte-fa";
 import WindowButton from "$components/ui/WindowButton.svelte";
 import type { PopupState } from "$state/popup.svelte";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
-import { type Snippet, getContext, onDestroy, onMount } from "svelte";
-import Fa from "svelte-fa";
 
 interface Props {
 	title: string;

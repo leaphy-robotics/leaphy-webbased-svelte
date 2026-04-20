@@ -1,8 +1,4 @@
 <script>
-import Button from "$components/ui/Button.svelte";
-import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
-import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
-import MLState, { steps } from "$state/ml.svelte.js";
 import {
 	faArrowLeft,
 	faArrowRight,
@@ -10,6 +6,10 @@ import {
 	faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
+import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
+import MLState, { steps } from "$state/ml.svelte.js";
 </script>
 
 <div class="flex justify-center items-center text-center absolute top-0 h-[var(--full-height)] w-screen">

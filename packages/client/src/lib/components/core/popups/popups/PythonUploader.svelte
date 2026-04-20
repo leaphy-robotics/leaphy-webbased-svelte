@@ -1,6 +1,6 @@
 <script lang="ts">
+import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
-
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
@@ -9,7 +9,6 @@ import type { PopupState } from "$state/popup.svelte";
 import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { getContext, onMount } from "svelte";
 import type MicroPythonIO from "../../../../micropython";
 
 interface Props {

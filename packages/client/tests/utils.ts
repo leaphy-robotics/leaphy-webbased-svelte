@@ -93,7 +93,7 @@ export async function mockShowOpenFilePicker(
 	let createOnWritePromise = async (timeout = 1000) => {
 		let onWriteResolve:
 			| ((writtenChunks: FileSystemWriteChunkType[]) => void)
-			| undefined = undefined;
+			| undefined;
 
 		await page.exposeFunction(
 			"onWriteOpenedFile",

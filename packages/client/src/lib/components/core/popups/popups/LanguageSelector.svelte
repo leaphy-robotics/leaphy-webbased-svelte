@@ -1,11 +1,11 @@
 <script lang="ts">
+import { getContext } from "svelte";
+import { locale } from "svelte-i18n";
 import leaphyLogo from "$assets/leaphy-logo-color.svg";
 import english from "$assets/translations/en.svg";
 import dutch from "$assets/translations/nl.svg";
 import ukrainian from "$assets/translations/ua.svg";
 import type { PopupState } from "$state/popup.svelte";
-import { getContext } from "svelte";
-import { locale } from "svelte-i18n";
 
 const popupState = getContext<PopupState>("state");
 function select(language: string) {

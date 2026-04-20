@@ -64,7 +64,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 	python.forBlock.controls_if_else = python.forBlock.controls_if;
 
-	python.forBlock.raw_code_line = (block, generator) => {
+	python.forBlock.raw_code_line = (block) => {
 		const code = block.getFieldValue("CODE_INPUT");
 		return `${code}\n`;
 	};

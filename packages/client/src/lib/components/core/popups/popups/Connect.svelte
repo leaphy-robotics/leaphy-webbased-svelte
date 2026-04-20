@@ -1,19 +1,19 @@
 <script lang="ts">
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import * as Blockly from "blockly";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import defaultProgram from "$assets/default-program.json?raw";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import ChipSelect from "$components/ui/ChipSelect.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import { isCompatible } from "$domain/blockly/blockly";
-import { type RobotDevice, type Selector, getSelector } from "$domain/robots";
+import { getSelector, type RobotDevice, type Selector } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import * as Blockly from "blockly";
-import { getContext } from "svelte";
-import { _ } from "svelte-i18n";
 
 interface Props {
 	connectOverride: boolean;

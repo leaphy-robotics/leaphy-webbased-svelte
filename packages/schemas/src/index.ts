@@ -478,5 +478,5 @@ async function layoutComponents(
 	});
 }
 
-export { ComponentBuilder, layoutComponents, WireColor };
 export * from "./components";
+export { ComponentBuilder, layoutComponents, WireColor };

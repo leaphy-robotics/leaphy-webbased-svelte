@@ -1,12 +1,12 @@
 <script lang="ts">
-import RobotRestoreState from "$state/robotRestore.svelte";
-import { Prompt } from "$state/serial.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import { onMount } from "svelte";
 import type { Snippet } from "svelte";
+import { onMount } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import { Circle } from "svelte-loading-spinners";
+import RobotRestoreState from "$state/robotRestore.svelte";
+import { Prompt } from "$state/serial.svelte";
 
 interface Props {
 	selected: boolean;

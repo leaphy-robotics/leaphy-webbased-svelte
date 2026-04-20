@@ -1,6 +1,6 @@
 <script lang="ts">
-import visualization from "$assets/esp-reset/visualization.svg?raw";
 import { onDestroy, onMount } from "svelte";
+import visualization from "$assets/esp-reset/visualization.svg?raw";
 
 interface Props {
 	program: "RESET_TWICE" | "RESET";

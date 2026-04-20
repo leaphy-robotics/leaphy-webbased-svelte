@@ -1,10 +1,9 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-
 import Library from "$components/ui/Library.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import AppState from "$state/app.svelte";
-import { onMount } from "svelte";
 
 let filter = $state("");
 onMount(() => {

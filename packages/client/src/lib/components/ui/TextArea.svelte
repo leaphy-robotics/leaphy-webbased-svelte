@@ -28,7 +28,8 @@ onMount(() => {
 
 const modeClasses = {
 	primary: "bg-primary text-on-primary placeholder:text-text-muted",
-	secondary: "bg-secondary text-on-secondary placeholder:text-on-secondary-muted",
+	secondary:
+		"bg-secondary text-on-secondary placeholder:text-on-secondary-muted",
 };
 </script>
 

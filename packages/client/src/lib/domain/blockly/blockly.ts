@@ -1,39 +1,39 @@
-import type { Workspace, utils } from "blockly";
+import type { utils, Workspace } from "blockly";
 import * as Blockly from "blockly";
-import { ContextMenuRegistry, type WorkspaceSvg, serialization } from "blockly";
+import { ContextMenuRegistry, serialization, type WorkspaceSvg } from "blockly";
 import "@blockly/field-bitmap";
+import { BackpackChange } from "@blockly/workspace-backpack";
+import {
+	blocks,
+	CATEGORIES,
+	registerExtensions,
+	translations,
+} from "@leaphy-robotics/leaphy-blocks";
 import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import DebuggingSerializer from "$domain/blockly/debugging.svelte";
-import { PseudoSerializer, explainBlockOption } from "$domain/blockly/pseudo";
-import { type RobotDevice, inFilter } from "$domain/robots";
+import { explainBlockOption, PseudoSerializer } from "$domain/blockly/pseudo";
+import { inFilter, type RobotDevice } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
-import { BackpackChange } from "@blockly/workspace-backpack";
-import {
-	CATEGORIES,
-	blocks,
-	registerExtensions,
-	translations,
-} from "@leaphy-robotics/leaphy-blocks";
 import { Backpack } from "./backpack";
 import { LeaphyCategory } from "./category-ui/category";
 import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
-import bluetooth from "$domain/blockly/bluetooth";
-import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
-import WorkspaceState from "$state/workspace.svelte";
 import type { BlockDefinition } from "blockly/core/blocks";
 import type {
 	FlyoutDefinition,
 	FlyoutItemInfoArray,
 } from "blockly/core/utils/toolbox";
-import { _ as translate } from "svelte-i18n";
 import { get } from "svelte/store";
+import { _ as translate } from "svelte-i18n";
+import bluetooth from "$domain/blockly/bluetooth";
+import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import Extensions from "./extensions.svelte";
 
 Blockly.defineBlocksWithJsonArray(blocks);
@@ -122,13 +122,13 @@ export function getAllBlocks() {
 				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
 					category.custom,
 				);
-				if (!callback) return;
+				if (!callback) return null;
 
 				return callback(
 					BlocklyState.workspace,
 				) as utils.toolbox.FlyoutItemInfoArray;
 			}
-			if (!category.groups) return;
+			if (!category.groups) return null;
 			return category.groups.flatMap((group) =>
 				group.blocks.map((block) => ({
 					kind: "block",
@@ -147,10 +147,7 @@ export function getAllBlocks() {
 	return Array.from(blocks.values());
 }
 
-export function loadToolbox(
-	robot: RobotDevice,
-	dynamicCategories = false,
-): utils.toolbox.ToolboxInfo {
+export function loadToolbox(robot: RobotDevice): utils.toolbox.ToolboxInfo {
 	const contents = toolbox
 		.filter(({ robots }) => (robots ? inFilter(robot, robots) : true))
 		.map((category) => {
@@ -172,10 +169,6 @@ export function loadToolbox(
 		kind: "categoryToolbox",
 		contents,
 	};
-}
-
-function getCategoryContents(robot: RobotDevice, category: any) {
-	return;
 }
 
 function registerDynamicCategories(

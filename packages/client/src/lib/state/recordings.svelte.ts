@@ -1,3 +1,6 @@
+import { serialization } from "blockly";
+import { record } from "rrweb";
+import { io, type Socket } from "socket.io-client";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Recording from "$components/core/popups/popups/Recording.svelte";
 import TestMode from "$components/core/popups/popups/TestMode.svelte";
@@ -6,9 +9,6 @@ import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { serialization } from "blockly";
-import { record } from "rrweb";
-import { type Socket, io } from "socket.io-client";
 
 type SuggestNames =
 	| { suggestNames: false; names: null }

@@ -1,5 +1,5 @@
-import { promises as fs, existsSync as fileExists } from "node:fs";
-import { type Page, expect, test } from "@playwright/test";
+import { existsSync as fileExists, promises as fs } from "node:fs";
+import { expect, type Page, test } from "@playwright/test";
 import {
 	getDownloadContents,
 	goToHomePage,

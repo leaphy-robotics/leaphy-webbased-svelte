@@ -1,10 +1,10 @@
 import {
 	BlockSvg,
+	getMainWorkspace,
 	Msg,
 	type Toolbox,
 	type ToolboxCategory,
 	type WorkspaceSvg,
-	getMainWorkspace,
 } from "blockly/core";
 import type { BlockDefinition } from "blockly/core/blocks";
 import type {

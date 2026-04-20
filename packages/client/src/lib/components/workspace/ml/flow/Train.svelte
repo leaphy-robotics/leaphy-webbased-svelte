@@ -1,4 +1,5 @@
 <script lang="ts">
+import { _ } from "svelte-i18n";
 import ModelStructure from "$components/core/popups/popups/ModelStructure.svelte";
 import Progress from "$components/core/popups/popups/Progress.svelte";
 import Button from "$components/ui/Button.svelte";
@@ -6,7 +7,6 @@ import TextInput from "$components/ui/TextInput.svelte";
 import DistributionGraph from "$components/workspace/ml/DistributionGraph.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
-import { _ } from "svelte-i18n";
 
 function train() {
 	PopupState.open({

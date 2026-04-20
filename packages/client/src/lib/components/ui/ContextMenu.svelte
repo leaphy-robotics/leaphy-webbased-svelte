@@ -1,6 +1,6 @@
 <script lang="ts">
-import { type Placement, computePosition, offset } from "@floating-ui/dom";
-import { type Snippet, onDestroy, onMount } from "svelte";
+import { computePosition, offset, type Placement } from "@floating-ui/dom";
+import { onDestroy, onMount, type Snippet } from "svelte";
 import type { Writable } from "svelte/store";
 
 const VERTICAL_PAD = 4; // py-1 = 4px
@@ -12,7 +12,13 @@ interface Props {
 	open: Writable<boolean>;
 	shiftUp?: boolean;
 }
-let { source, content, anchor = "bottom-start", open, shiftUp = false }: Props = $props();
+let {
+	source,
+	content,
+	anchor = "bottom-start",
+	open,
+	shiftUp = false,
+}: Props = $props();
 
 let element: HTMLDivElement;
 let opening = true;
@@ -27,7 +33,12 @@ onMount(async () => {
 	position = await computePosition(source, element, {
 		strategy: "fixed",
 		placement: anchor,
-		middleware: [offset({ mainAxis: shiftUp ? 0 : 6, crossAxis: shiftUp ? -VERTICAL_PAD : 0 })],
+		middleware: [
+			offset({
+				mainAxis: shiftUp ? 0 : 6,
+				crossAxis: shiftUp ? -VERTICAL_PAD : 0,
+			}),
+		],
 	});
 
 	document.body.addEventListener("click", close);

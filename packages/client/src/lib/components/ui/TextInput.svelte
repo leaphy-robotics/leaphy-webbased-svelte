@@ -1,6 +1,6 @@
 <script lang="ts">
-import SelectContext from "$components/ui/SelectContext.svelte";
 import { onMount, tick } from "svelte";
+import SelectContext from "$components/ui/SelectContext.svelte";
 
 interface Props {
 	placeholder?: string;
@@ -49,7 +49,8 @@ function onclick(event: MouseEvent) {
 
 const modeClasses = {
 	primary: "bg-primary text-on-primary placeholder:text-text-muted",
-	secondary: "bg-secondary text-on-secondary placeholder:text-on-secondary-muted",
+	secondary:
+		"bg-secondary text-on-secondary placeholder:text-on-secondary-muted",
 	background: "bg-bg text-on-bg",
 };
 </script>

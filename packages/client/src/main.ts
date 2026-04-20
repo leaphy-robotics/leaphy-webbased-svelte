@@ -4,6 +4,8 @@ import "./app.css";
 import { mount } from "svelte";
 import { addMessages, init } from "svelte-i18n";
 import "$domain/robots";
+
+import { Buffer } from "buffer";
 import App from "./App.svelte";
 import enTranslations from "./assets/translations/en.json";
 import nlTranslations from "./assets/translations/nl.json";
@@ -11,7 +13,6 @@ import uaTranslations from "./assets/translations/ua.json";
 import initMatomo from "./lib/matomo";
 import initSentry from "./lib/sentry";
 
-import { Buffer } from "buffer";
 window.Buffer = Buffer;
 
 initSentry();

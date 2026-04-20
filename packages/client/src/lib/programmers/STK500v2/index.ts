@@ -1,7 +1,7 @@
+import hex from "intel-hex";
 import type { Programmer } from "$domain/robots.types";
 import type { LeaphyPort } from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import hex from "intel-hex";
 import { clearReadBuffer, delay } from "../utils";
 import constants from "./constants";
 import Parser, { concat } from "./parser";

@@ -1,6 +1,6 @@
 <script lang="ts">
-import SerialState from "$state/serial.svelte.js";
 import { onMount } from "svelte";
+import SerialState from "$state/serial.svelte.js";
 
 let date = $state(Date.now());
 onMount(() => {

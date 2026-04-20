@@ -1,7 +1,7 @@
+import base64 from "base64-js";
 import type { Programmer } from "$domain/robots.types";
 import SerialState, { type LeaphyPort } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
-import base64 from "base64-js";
 import { delay } from "../utils";
 import { dfu } from "./dfu";
 

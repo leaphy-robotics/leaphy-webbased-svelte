@@ -1,4 +1,8 @@
 <script lang="ts">
+import { flip } from "svelte/animate";
+import { cubicOut } from "svelte/easing";
+import { fly } from "svelte/transition";
+import { _ } from "svelte-i18n";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import { type Robot, robotListing, robots } from "$domain/robots";
@@ -8,10 +12,6 @@ import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { getModeID, Mode } from "$state/workspace.svelte";
-import { _ } from "svelte-i18n";
-import { flip } from "svelte/animate";
-import { cubicOut } from "svelte/easing";
-import { fly } from "svelte/transition";
 
 async function connect() {
 	try {

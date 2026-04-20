@@ -1,9 +1,9 @@
 <script lang="ts">
+import { getContext, onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import type { PopupState } from "$state/popup.svelte";
-import { getContext, onMount } from "svelte";
-import { _ } from "svelte-i18n";
 
 interface Item {
 	title: string;

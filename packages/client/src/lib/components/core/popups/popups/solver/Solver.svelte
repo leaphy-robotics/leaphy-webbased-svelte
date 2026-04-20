@@ -1,16 +1,15 @@
 <script lang="ts">
-import Windowed from "$components/core/popups/Windowed.svelte";
-import Button from "$components/ui/Button.svelte";
-import type { PopupState } from "$state/popup.svelte";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import { onMount } from "svelte";
-import { getContext } from "svelte";
+import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { Circle } from "svelte-loading-spinners";
 import SvelteMarkdown from "svelte-markdown";
-import Schema from "./Schema.svelte";
+import Windowed from "$components/core/popups/Windowed.svelte";
+import Button from "$components/ui/Button.svelte";
+import type { PopupState } from "$state/popup.svelte";
 import MultipleChoice from "./prompts/MultipleChoice.svelte";
 import PromptResult from "./prompts/PromptResult.svelte";
+import Schema from "./Schema.svelte";
 import { getHelpRequest } from "./system";
 import type { Packet, Question, SolverMessage } from "./types";
 

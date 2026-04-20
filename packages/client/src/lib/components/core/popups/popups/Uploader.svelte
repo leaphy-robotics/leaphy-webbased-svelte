@@ -1,6 +1,7 @@
 <script lang="ts">
+import { arduino, Dependencies } from "@leaphy-robotics/leaphy-blocks";
+import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
-
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
@@ -14,8 +15,6 @@ import SerialState, {
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { Dependencies, arduino } from "@leaphy-robotics/leaphy-blocks";
-import { getContext, onMount } from "svelte";
 import { downloadDrivers } from "../../../../drivers";
 
 interface Props {

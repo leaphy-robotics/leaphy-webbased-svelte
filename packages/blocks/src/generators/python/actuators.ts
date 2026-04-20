@@ -63,7 +63,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		return null;
 	};
 
-	python.forBlock.leaphy_display_clear = (block, generator) => {
+	python.forBlock.leaphy_display_clear = (_block, generator) => {
 		const i2c_channel = generator.currentI2cChannel()?.toString() || "BC";
 
 		addOledSupport(generator, i2c_channel);
@@ -95,7 +95,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		return `SMALL_OLED_${i2c_channel}.text(${to_write}, 0, ${row_no * 8})\n`;
 	};
 
-	python.forBlock.leaphy_display_display = (block, generator) => {
+	python.forBlock.leaphy_display_display = (_block, generator) => {
 		const i2c_channel = generator.currentI2cChannel()?.toString() || "BC";
 
 		addOledSupport(generator, i2c_channel);
@@ -129,7 +129,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 
 		generator.addDefinition(
 			MotorVariableName,
-			`${MotorVariableName} = DCMotor(direction_pin=\"${direction_pin}\", pwm_pin=\"${pwm_pin}\")`,
+			`${MotorVariableName} = DCMotor(direction_pin="${direction_pin}", pwm_pin="${pwm_pin}")`,
 		);
 
 		return MotorVariableName;

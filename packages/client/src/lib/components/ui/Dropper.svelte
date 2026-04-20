@@ -1,10 +1,10 @@
 <script lang="ts">
-import AIState from "$state/ai.svelte";
-import BlocklyState from "$state/blockly.svelte";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 import type * as Blockly from "blockly";
 import { onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
+import AIState from "$state/ai.svelte";
+import BlocklyState from "$state/blockly.svelte";
 
 function getBlockForPosition(event: PointerEvent) {
 	return BlocklyState.workspace

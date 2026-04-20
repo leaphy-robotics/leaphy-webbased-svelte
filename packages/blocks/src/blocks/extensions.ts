@@ -234,7 +234,9 @@ export default function registerExtensions(blockly: typeof Blockly) {
 			this.sourceBlock_?.getRootBlock()?.compose?.(this.sourceBlock_);
 
 			super.onItemSelected_(menu, menuItem);
-			this.refreshListeners.forEach((listener) => listener());
+			this.refreshListeners.forEach((listener) => {
+				listener();
+			});
 		}
 
 		selectedStructure() {

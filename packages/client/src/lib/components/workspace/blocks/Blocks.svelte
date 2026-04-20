@@ -1,4 +1,8 @@
 <script lang="ts">
+import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
+import { Events, serialization } from "blockly";
+import { onMount } from "svelte";
+import { locale } from "svelte-i18n";
 import Dropper from "$components/ui/Dropper.svelte";
 import CodeHints from "$components/workspace/blocks/CodeHints.svelte";
 import {
@@ -12,10 +16,6 @@ import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import SerialState from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
-import { Events, serialization } from "blockly";
-import { onMount } from "svelte";
-import { locale } from "svelte-i18n";
 
 let backgroundX = $state(0);
 

@@ -1,12 +1,12 @@
 <script lang="ts">
-import Windowed from "$components/core/popups/Windowed.svelte";
-import { type TutorialItem, getTutorials } from "$education/tutorials";
-import type { Tutorial } from "$education/tutorials";
-import WorkspaceState from "$state/workspace.svelte";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { onMount } from "svelte";
 import FontAwesomeIcon from "svelte-fa";
 import { _, locale } from "svelte-i18n";
+import Windowed from "$components/core/popups/Windowed.svelte";
+import type { Tutorial } from "$education/tutorials";
+import { getTutorials, type TutorialItem } from "$education/tutorials";
+import WorkspaceState from "$state/workspace.svelte";
 import Thumbnail from "./Thumbnail.svelte";
 
 let tutorial = $state<Tutorial | null>(null);

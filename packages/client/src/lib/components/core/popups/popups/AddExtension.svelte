@@ -1,13 +1,4 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import Select from "$components/ui/Select.svelte";
-import { extensions } from "$domain/blockly/extensions.svelte.js";
-import Extensions from "$domain/blockly/extensions.svelte.js";
-import { inFilter, robots } from "$domain/robots";
-import type { RobotDevice } from "$domain/robots";
-import { RobotType } from "$domain/robots.types";
-import type { PopupState } from "$state/popup.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte";
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
 import {
 	faArrowLeft,
@@ -15,11 +6,19 @@ import {
 	faPlus,
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { type WorkspaceSvg, getMainWorkspace } from "blockly";
 import * as Blockly from "blockly";
+import { getMainWorkspace, type WorkspaceSvg } from "blockly";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import Select from "$components/ui/Select.svelte";
+import Extensions, { extensions } from "$domain/blockly/extensions.svelte.js";
+import type { RobotDevice } from "$domain/robots";
+import { inFilter, robots } from "$domain/robots";
+import { RobotType } from "$domain/robots.types";
+import type { PopupState } from "$state/popup.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
 
 const boardOptions: [string, string][] = [
 	["Arduino Uno", robots.l_uno.id],

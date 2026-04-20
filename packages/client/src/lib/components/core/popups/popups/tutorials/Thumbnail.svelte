@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { TutorialItem } from "$education/tutorials";
 import { faList, faPlay, faVideo } from "@fortawesome/free-solid-svg-icons";
 import FontAwesomeIcon from "svelte-fa";
+import type { TutorialItem } from "$education/tutorials";
 
 interface Props {
 	name: string;

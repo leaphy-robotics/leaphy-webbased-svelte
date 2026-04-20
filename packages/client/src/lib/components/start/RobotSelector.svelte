@@ -1,9 +1,9 @@
 <script lang="ts">
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import type { Robot } from "$domain/robots";
 import SerialState, { Prompt } from "$state/serial.svelte";
-import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import { _ } from "svelte-i18n";
 
 interface Props {
 	robots: Robot[][];

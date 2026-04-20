@@ -1,14 +1,14 @@
 <script lang="ts">
+import { faCaretSquareLeft } from "@fortawesome/free-solid-svg-icons";
+import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
+import * as monaco from "monaco-editor";
+import Fa from "svelte-fa";
 import { findStatementPositions } from "$components/workspace/blocks/statementPositions";
 import Code from "$components/workspace/panels/Code.svelte";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
 import SerialState from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { faCaretSquareLeft } from "@fortawesome/free-solid-svg-icons";
-import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
-import * as monaco from "monaco-editor";
-import Fa from "svelte-fa";
 
 const SPACING = 10;
 
@@ -106,7 +106,7 @@ $effect(() => {
 					let code = statement.trimStart();
 
 					const position = statementPositions[index];
-					if (!position) return;
+					if (!position) return null;
 
 					const offset =
 						(statement.length - code.length) * SPACING + SPACING * 3;

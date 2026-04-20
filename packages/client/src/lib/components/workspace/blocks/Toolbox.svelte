@@ -1,4 +1,6 @@
 <script lang="ts">
+import { utils, type WorkspaceSvg } from "blockly";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 import addExtensionIcon from "$assets/add-extension.svg";
 import AddExtension from "$components/core/popups/popups/AddExtension.svelte";
 import Extensions from "$domain/blockly/extensions.svelte.js";
@@ -6,8 +8,6 @@ import robotsGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { type WorkspaceSvg, utils } from "blockly";
-import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 
 interface Item {
 	toolboxitemid: string;
