@@ -118,6 +118,10 @@ td {
 	background-color: transparent !important;
 }
 
+svg[display="none"] {
+	display: none;
+}
+
 .blocklyFlyoutLabel .blocklyFlyoutLabelBackground {
 	width: 400% !important;
 	transform: translateX(-16px) translateY(-8px);
