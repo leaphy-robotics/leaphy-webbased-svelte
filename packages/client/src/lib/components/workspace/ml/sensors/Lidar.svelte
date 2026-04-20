@@ -30,14 +30,4 @@ $effect(() => {
 });
 </script>
 
-<canvas width={8} height={8} bind:this={canvas}></canvas>
-
-<style>
-    canvas {
-        width: 100%;
-		aspect-ratio: 1 / 1;
-		image-rendering: pixelated;
-		border-radius: 8px;
-		overflow: hidden;
-    }
-</style>
+<canvas class="w-full aspect-square [image-rendering:pixelated] rounded-lg overflow-hidden" width={8} height={8} bind:this={canvas}></canvas>

@@ -1,8 +1,8 @@
 <script lang="ts">
-import AppState, { Theme } from "$state/app.svelte";
-import { track } from "$state/utils";
 import * as monaco from "monaco-editor";
 import { onMount } from "svelte";
+import AppState, { Theme } from "$state/app.svelte";
+import { track } from "$state/utils";
 
 interface Props {
 	value: string;
@@ -47,11 +47,4 @@ $effect(() => {
 });
 </script>
 
-<div class="editor" bind:this={element}></div>
-
-<style>
-    .editor {
-        width: 100%;
-        height: 100%;
-    }
-</style>
+<div class="w-full h-full" bind:this={element}></div>

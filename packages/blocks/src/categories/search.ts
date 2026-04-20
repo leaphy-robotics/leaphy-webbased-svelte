@@ -1,10 +1,10 @@
 import {
 	BlockSvg,
+	getMainWorkspace,
 	Msg,
 	type Toolbox,
 	type ToolboxCategory,
 	type WorkspaceSvg,
-	getMainWorkspace,
 } from "blockly/core";
 import type { BlockDefinition } from "blockly/core/blocks";
 import type {
@@ -22,13 +22,13 @@ input.placeholder = "🔎 Start typing to search...";
 input.style.position = "fixed";
 input.style.left = "80px";
 input.style.top = "65px";
-input.style.zIndex = "99999";
+input.style.zIndex = "20";
 input.classList.add("search-input");
 Object.assign(input.style, {
 	position: "fixed",
 	left: "80px",
 	top: "65px",
-	zIndex: "99999",
+	zIndex: "20",
 	margin: "10px",
 	padding: "8px",
 	background: "var(--secondary)",

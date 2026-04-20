@@ -1,9 +1,9 @@
 <script lang="ts">
+import { getContext, onMount } from "svelte";
+import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import type { PopupState } from "$state/popup.svelte";
-import { getContext, onMount } from "svelte";
-import { _ } from "svelte-i18n";
 
 interface Item {
 	title: string;
@@ -28,41 +28,14 @@ onMount(async () => {
 });
 </script>
 
-<div class="content">
+<div class="flex flex-col p-5 gap-5 justify-center items-center min-w-[400px] max-w-[80vw] min-h-[200px] max-h-[80vh]">
 	{#if item}
-		<h2 class="state">{$_(item.title)}</h2>
+		<h2 class="m-0 font-bold">{$_(item.title)}</h2>
 
 		{#if done}
-			<Button
-				name={$_("LEAVE_UPLOADING")}
-				mode={"primary"}
-				onclick={popupState.close}
-			/>
+			<Button name={$_("LEAVE_UPLOADING")} mode={"primary"} onclick={popupState.close} />
 		{:else}
 			<ProgressBar progress={item.progress} />
 		{/if}
 	{/if}
 </div>
-
-<style>
-	h2 {
-		margin: 0;
-	}
-
-	.content {
-		display: flex;
-		flex-direction: column;
-		padding: 20px;
-		gap: 20px;
-		justify-content: center;
-		align-items: center;
-		min-width: 400px;
-		max-width: 80vw;
-		min-height: 200px;
-		max-height: 80vh;
-	}
-
-	.state {
-		font-weight: bold;
-	}
-</style>

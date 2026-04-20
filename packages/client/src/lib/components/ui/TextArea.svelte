@@ -25,53 +25,21 @@ let input: HTMLTextAreaElement;
 onMount(() => {
 	if (focus) input.focus();
 });
+
+const modeClasses = {
+	primary: "bg-primary text-on-primary placeholder:text-text-muted",
+	secondary:
+		"bg-secondary text-on-secondary placeholder:text-on-secondary-muted",
+};
 </script>
 
 <textarea
 	bind:this={input}
-	class="textarea"
 	bind:value
-	rows={rows}
+	{rows}
 	{required}
-	class:primary={mode === "primary"}
-	class:secondary={mode === "secondary"}
-	class:large
 	{placeholder}
+	class="font-[inherit] border-none w-full outline-none
+		{modeClasses[mode]}
+		{large ? 'text-lg px-4 py-2.5 rounded-full' : 'px-2.5 py-1.5 rounded-xl'}"
 ></textarea>
-
-<style>
-	.textarea {
-		font-family: inherit;
-		border: none;
-		padding: 5px 10px;
-		margin: 0;
-		width: 100%;
-		outline: 0;
-		font-size: 1em;
-		border-radius: 10px;
-	}
-
-	.large {
-		font-size: 1.1em;
-		padding: 10px 15px;
-		border-radius: 20px;
-	}
-
-	.primary {
-		background: var(--primary);
-		color: var(--on-primary);
-	}
-
-	.secondary {
-		background: var(--secondary);
-		color: var(--on-secondary);
-	}
-
-	.primary::placeholder {
-		color: var(--text-muted);
-	}
-
-	.secondary::placeholder {
-		color: var(--on-secondary-muted);
-	}
-</style>

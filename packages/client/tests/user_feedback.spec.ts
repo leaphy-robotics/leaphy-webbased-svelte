@@ -7,7 +7,7 @@ test("User Feedback", async ({ page }) => {
 	await selectRobot(page, "Leaphy Starling");
 
 	await page.getByRole("button", { name: "Tips" }).click();
-	await page.getByRole("cell", { name: "Suggestion / Feedback" }).click();
+	await page.getByText("Suggestion / Feedback").click();
 	await page.getByPlaceholder("Your name...").fill("test");
 	await page.getByPlaceholder("Email").fill("test@ing");
 	await page.locator("textarea").fill("test123");

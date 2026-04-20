@@ -1,11 +1,11 @@
 <script lang="ts">
+import { getContext } from "svelte";
+import { locale } from "svelte-i18n";
 import leaphyLogo from "$assets/leaphy-logo-color.svg";
 import english from "$assets/translations/en.svg";
 import dutch from "$assets/translations/nl.svg";
 import ukrainian from "$assets/translations/ua.svg";
 import type { PopupState } from "$state/popup.svelte";
-import { getContext } from "svelte";
-import { locale } from "svelte-i18n";
 
 const popupState = getContext<PopupState>("state");
 function select(language: string) {
@@ -15,65 +15,18 @@ function select(language: string) {
 }
 </script>
 
-<div class="content">
-    <img class="logo" src={leaphyLogo} alt="Leaphy" />
-    <div class="languages">
-        <button class="language" onclick={() => select("en")}>
-            <img class="icon" src={english} alt="English" />
-            <div class="name">English</div>
-        </button>
-        <button class="language" onclick={() => select("nl")}>
-            <img class="icon" src={dutch} alt="Nederlands" />
-            <div class="name">Nederlands</div>
-        </button>
-        <button class="language" onclick={() => select("ua")}>
-            <img class="icon" src={ukrainian} alt="Ukrainian" />
-            <div class="name">Yкраїнський</div>
-        </button>
-    </div>
+{#snippet languageButton(src: string, alt: string, label: string, code: string)}
+	<button class="flex items-center border border-primary-dark rounded-2xl gap-2.5 p-1.5 cursor-pointer bg-transparent text-base text-on-bg hover:bg-bg-tint transition-colors" onclick={() => select(code)}>
+		<img class="w-12 rounded-xl" {src} {alt} />
+		<div class="flex justify-center items-center flex-1">{label}</div>
+	</button>
+{/snippet}
+
+<div class="flex flex-col w-[450px] gap-12 px-20 py-12">
+	<img class="h-8" src={leaphyLogo} alt="Leaphy" />
+	<div class="flex flex-col gap-5">
+		{@render languageButton(english, "English", "English", "en")}
+		{@render languageButton(dutch, "Nederlands", "Nederlands", "nl")}
+		{@render languageButton(ukrainian, "Ukrainian", "Yкраїнський", "ua")}
+	</div>
 </div>
-
-<style>
-    .content {
-        display: flex;
-        flex-direction: column;
-        width: 450px;
-        gap: 50px;
-        padding: 50px 80px;
-    }
-
-    .logo {
-        height: 30px;
-    }
-
-    .languages {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .language {
-        display: flex;
-        align-items: center;
-        border: 1px solid var(--primary-dark-tint);
-        border-radius: 15px;
-        gap: 10px;
-        padding: 6px;
-        cursor: pointer;
-        background: none;
-        font-size: 1em;
-        color: var(--on-background);
-    }
-
-    .icon {
-        width: 50px;
-        border-radius: 10px;
-    }
-
-    .name {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-    }
-</style>

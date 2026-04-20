@@ -1,14 +1,13 @@
 import * as consumers from "node:stream/consumers";
 import { expect, test } from "@playwright/test";
-import { goToHomePage, openExample, selectRobot } from "./utils";
+import { goToHomePage, openCode, openExample, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
 
 test("Load Blink example and check code", async ({ page }) => {
 	await selectRobot(page, "Leaphy Original");
 	await openExample(page, "Blink");
-
-	await page.locator(".side").first().click(); // Open code
+	await openCode(page);
 
 	// Check code
 	await expect(page.locator(".view-lines")).toContainText(

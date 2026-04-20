@@ -1,24 +1,4 @@
 <script lang="ts">
-import { _, locale } from "svelte-i18n";
-
-import block from "$assets/block.svg";
-import defaultProgram from "$assets/default-program.json?raw";
-import leaphyLogo from "$assets/leaphy-logo.svg";
-import Circuit from "$components/core/popups/popups/Circuit.svelte";
-import Connect from "$components/core/popups/popups/Connect.svelte";
-import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import Button from "$components/ui/Button.svelte";
-import ContextItem from "$components/ui/ContextItem.svelte";
-import { RobotType } from "$domain/robots.types";
-import AppState, { Screen, Theme } from "$state/app.svelte";
-import BlocklyState from "$state/blockly.svelte";
-import EmbedState from "$state/embed.svelte";
-import MLState from "$state/ml.svelte";
-import PopupState from "$state/popup.svelte";
-import RecordingsState from "$state/recordings.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte";
-import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { faWindows } from "@fortawesome/free-brands-svg-icons";
 import {
 	faCircleCheck,
@@ -45,16 +25,35 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { serialization } from "blockly";
+import { _, locale } from "svelte-i18n";
+import block from "$assets/block.svg";
+import defaultProgram from "$assets/default-program.json?raw";
+import leaphyLogo from "$assets/leaphy-logo.svg";
+import Circuit from "$components/core/popups/popups/Circuit.svelte";
+import Connect from "$components/core/popups/popups/Connect.svelte";
+import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import Button from "$components/ui/Button.svelte";
+import ContextItem from "$components/ui/ContextItem.svelte";
+import { RobotType } from "$domain/robots.types";
+import AppState, { Screen, Theme } from "$state/app.svelte";
+import BlocklyState from "$state/blockly.svelte";
+import EmbedState from "$state/embed.svelte";
+import MLState from "$state/ml.svelte";
+import PopupState from "$state/popup.svelte";
+import RecordingsState from "$state/recordings.svelte";
+import SerialState, { Prompt } from "$state/serial.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
 import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
+import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
-import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/Uploader.svelte";
+import UploadLog from "../popups/popups/UploadLog.svelte";
 import Warning from "../popups/popups/Warning.svelte";
-import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 
 async function upload() {
 	if (MLState.enabled) {
@@ -103,14 +102,12 @@ async function upload() {
 
 				const cs = new CompressionStream("gzip");
 
-				// Convert string to stream
 				const stream = new Blob([
 					JSON.stringify(serialization.workspaces.save(BlocklyState.workspace)),
 				])
 					.stream()
 					.pipeThrough(cs);
 
-				// Read the compressed data
 				const compressedBlob = await new Response(stream).blob();
 				const arrayBuffer = await compressedBlob.arrayBuffer();
 
@@ -351,246 +348,98 @@ function openESPProgrammerPopup() {
 }
 </script>
 
-<div class="header">
-    <div class="comp">
-        <img class="logo" src={leaphyLogo} alt="Leaphy" />
-        {#if AppState.Screen === Screen.WORKSPACE}
-            <Button
-                name={$_("PROJECT")}
-                mode={"outlined"}
-            >
+<header class="flex justify-between items-center bg-primary px-2.5 h-16">
+	<div class="flex items-center gap-2.5">
+		<img class="h-5 mr-2.5" src={leaphyLogo} alt="Leaphy" />
+		{#if AppState.Screen === Screen.WORKSPACE}
+			<Button name={$_("PROJECT")} mode={"outlined"}>
 				{#snippet context(open)}
 					<ContextItem icon={faFile} name={$_("NEW")} onclick={newProject} {open} />
 					<ContextItem icon={faFolder} name={$_("OPEN")} onclick={openProject} {open} />
-					<ContextItem
-						icon={faFloppyDisk}
-						name={$_("SAVE")}
-						onclick={saveProject}
-						disabled={!WorkspaceState.handle}
-						{open}
-					/>
-					<ContextItem
-						icon={faFloppyDisk}
-						name={$_("SAVEAS")}
-						onclick={saveProjectAs}
-						{open}
-					/>
+					<ContextItem icon={faFloppyDisk} name={$_("SAVE")} onclick={saveProject} disabled={!WorkspaceState.handle} {open} />
+					<ContextItem icon={faFloppyDisk} name={$_("SAVEAS")} onclick={saveProjectAs} {open} />
 					<ContextItem icon={faRobot} name={$_("CHANGE_ROBOT")} onclick={changeRobot} {open} disabled={EmbedState.isEmbedded} />
 				{/snippet}
 			</Button>
-            <Button name={$_("HELP")} mode={"outlined"}>
+			<Button name={$_("HELP")} mode={"outlined"}>
 				{#snippet context(open)}
 					{#if WorkspaceState.Mode === Mode.BLOCKS}
-						<ContextItem
-							icon={faGraduationCap}
-							name={$_("EXAMPLES")}
-							onclick={examples}
-							{open}
-						/>
+						<ContextItem icon={faGraduationCap} name={$_("EXAMPLES")} onclick={examples} {open} />
 						{#if arduino.builder}
-							<ContextItem
-								icon={faProjectDiagram}
-								name={$_("CIRCUIT")}
-								onclick={openCircuitPopup}
-								{open}
-							/>
+							<ContextItem icon={faProjectDiagram} name={$_("CIRCUIT")} onclick={openCircuitPopup} {open} />
 						{/if}
 					{/if}
-					<ContextItem
-						icon={faWindows}
-						name={$_("DRIVER_INSTALL_TITLE")}
-						onclick={driverHelp}
-						{open}
-					/>
-					<ContextItem
-						icon={faQuestionCircle}
-						name={$_("HELP_FORUM")}
-						onclick={discord}
-						{open}
-					/>
+					<ContextItem icon={faWindows} name={$_("DRIVER_INSTALL_TITLE")} onclick={driverHelp} {open} />
+					<ContextItem icon={faQuestionCircle} name={$_("HELP_FORUM")} onclick={discord} {open} />
 					<ContextItem icon={faEnvelope} name="{$_('EMAIL')} (helpdesk@leaphy.org)" onclick={email} {open} />
 					<ContextItem icon={faComment} name={$_("FEEDBACK")} onclick={feedback} {open} />
 				{/snippet}
 			</Button>
-            <Button name={$_("MORE")} mode={"outlined"}>
+			<Button name={$_("MORE")} mode={"outlined"}>
 				{#snippet context(open)}
-					<ContextItem
-						icon={faQuestionCircle}
-						name={$_("MORE_ABOUT")}
-						onclick={about}
-						{open}
-					/>
-					<ContextItem
-						icon={faGlobe}
-						name={$_("LANGUAGE")}
-						disabled={EmbedState.isEmbedded}
-						{open}
-					>
+					<ContextItem icon={faQuestionCircle} name={$_("MORE_ABOUT")} onclick={about} {open} />
+					<ContextItem icon={faGlobe} name={$_("LANGUAGE")} disabled={EmbedState.isEmbedded} {open}>
 						{#snippet context()}
-							<ContextItem
-								selected={$locale === "en"}
-								name={"English"}
-								onclick={() => setLocale("en")}
-								{open}
-							/>
-							<ContextItem
-								selected={$locale === "nl"}
-								name={"Nederlands"}
-								onclick={() => setLocale("nl")}
-								{open}
-							/>
-							<ContextItem
-								selected={$locale === "ua"}
-								name={"Yкраїнська"}
-								onclick={() => setLocale("ua")}
-								{open}
-							/>
+							<ContextItem selected={$locale === "en"} name={"English"} onclick={() => setLocale("en")} {open} />
+							<ContextItem selected={$locale === "nl"} name={"Nederlands"} onclick={() => setLocale("nl")} {open} />
+							<ContextItem selected={$locale === "ua"} name={"Yкраїнська"} onclick={() => setLocale("ua")} {open} />
 						{/snippet}
 					</ContextItem>
-					<ContextItem
-						icon={AppState.theme === Theme.LIGHT ? faLightbulb : faMoon}
-						name={$_("THEME")}
-						{open}
-					>
+					<ContextItem icon={AppState.theme === Theme.LIGHT ? faLightbulb : faMoon} name={$_("THEME")} {open}>
 						{#snippet context(open)}
-							<ContextItem
-								selected={AppState.theme === Theme.LIGHT}
-								name={$_("LIGHT_THEME")}
-								onclick={() => AppState.theme = Theme.LIGHT}
-								{open}
-							/>
-							<ContextItem
-								selected={AppState.theme === Theme.DARK}
-								name={$_("DARK_THEME")}
-								onclick={() => AppState.theme = Theme.DARK}
-								{open}
-							/>
+							<ContextItem selected={AppState.theme === Theme.LIGHT} name={$_("LIGHT_THEME")} onclick={() => AppState.theme = Theme.LIGHT} {open} />
+							<ContextItem selected={AppState.theme === Theme.DARK} name={$_("DARK_THEME")} onclick={() => AppState.theme = Theme.DARK} {open} />
 						{/snippet}
 					</ContextItem>
-					<ContextItem
-						icon={BlocklyState.audio ? faVolumeXmark : faVolumeHigh}
-						name={$_(BlocklyState.audio ? "SOUND_OFF" : "SOUND_ON")}
-						onclick={() => BlocklyState.audio = !BlocklyState.audio}
-						{open}
-					/>
-					<ContextItem
-						icon={faSquarePollHorizontal}
-						name={$_("VIEW_LOG")}
-						onclick={log}
-						{open}
-					/>
+					<ContextItem icon={BlocklyState.audio ? faVolumeXmark : faVolumeHigh} name={$_(BlocklyState.audio ? "SOUND_OFF" : "SOUND_ON")} onclick={() => BlocklyState.audio = !BlocklyState.audio} {open} />
+					<ContextItem icon={faSquarePollHorizontal} name={$_("VIEW_LOG")} onclick={log} {open} />
 					{#if navigator.platform.startsWith("Win")}
-						<ContextItem
-							icon={faDownload}
-							name={$_("DOWNLOAD_DRIVERS")}
-							onclick={downloadDrivers}
-							{open}
-						/>
+						<ContextItem icon={faDownload} name={$_("DOWNLOAD_DRIVERS")} onclick={downloadDrivers} {open} />
 					{/if}
 					<ContextItem icon={faRobot} name={$_("ESP_PROGRAMMER")} onclick={openESPProgrammerPopup} {open} />
 				{/snippet}
 			</Button>
-            {#if WorkspaceState.Mode !== Mode.PYTHON}
-                <Button
-                    name={$_("CHOOSE_ROBOT")}
-                    mode={"outlined"}
-                    onclick={connect}
-                />
-            {/if}
-        {/if}
-    </div>
+			{#if WorkspaceState.Mode !== Mode.PYTHON}
+				<Button name={$_("CHOOSE_ROBOT")} mode={"outlined"} onclick={connect} />
+			{/if}
+		{/if}
+	</div>
 
-    <div class="comp">
-        {#if AppState.Screen === Screen.WORKSPACE && WorkspaceState.Mode === Mode.BLOCKS}
-            <Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!BlocklyState.canUndo} />
-            <Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!BlocklyState.canRedo} />
-        {/if}
-    </div>
+	<div class="flex items-center gap-2.5">
+		{#if AppState.Screen === Screen.WORKSPACE && WorkspaceState.Mode === Mode.BLOCKS}
+			<Button mode={"outlined"} icon={faUndo} onclick={undo} disabled={!BlocklyState.canUndo} />
+			<Button mode={"outlined"} icon={faRedo} onclick={redo} disabled={!BlocklyState.canRedo} />
+		{/if}
+	</div>
 
-    <div class="comp">
-        {#if AppState.Screen === Screen.WORKSPACE}
-            {#if WorkspaceState.Mode === Mode.BLOCKS}
-
-					<Button
-						mode={"outlined"}
-						icon={faPen}
-						name={$_("CODE")}
-						disabled={EmbedState.isEmbedded}
-						onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp}
-					/>
-            {:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
-                <Button
-                    mode={"outlined"}
-                    icon={block}
-                    name={$_("BLOCKS")}
-                    disabled={EmbedState.isEmbedded}
-                    onclick={blocks}
-                />
-            {/if}
-
-            <Button
-                icon={faSave}
-                name={$_("SAVE")}
-                mode={"outlined"}
-                onclick={saveDynamic}
-            />
-			{#if RecordingsState.project?.testMode && RecordingsState.selectedAssignment}
-				<Button
-					icon={faCircleCheck}
-					name={$_("SUBMIT")}
-					mode="tint"
-					onclick={submit}
-				/>
+	<div class="flex items-center gap-2.5">
+		{#if AppState.Screen === Screen.WORKSPACE}
+			{#if WorkspaceState.Mode === Mode.BLOCKS}
+				<Button mode={"outlined"} icon={faPen} name={$_("CODE")} disabled={EmbedState.isEmbedded} onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? python : cpp} />
+			{:else if WorkspaceState.Mode === Mode.ADVANCED || WorkspaceState.Mode === Mode.PYTHON}
+				<Button mode={"outlined"} icon={block} name={$_("BLOCKS")} disabled={EmbedState.isEmbedded} onclick={blocks} />
 			{/if}
 
-            {#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_MICROPYTHON)}
-                {#if WorkspaceState.microPythonIO}
-                    <Button
-                        name={$_("RUN_CODE")}
-                        mode={"accent"}
-                        onclick={runPython}
-                    />
-                {:else}
-                    <Button
-                        name={$_("CONNECT_PYTHON_ROBOT")}
-                        mode={"accent"}
-                        onclick={connectPython}
-                    />
-                {/if}
+			<Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
+			{#if RecordingsState.project?.testMode && RecordingsState.selectedAssignment}
+				<Button icon={faCircleCheck} name={$_("SUBMIT")} mode="tint" onclick={submit} />
+			{/if}
+
+			{#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_MICROPYTHON)}
+				{#if WorkspaceState.microPythonIO}
+					<Button name={$_("RUN_CODE")} mode={"accent"} onclick={runPython} />
+				{:else}
+					<Button name={$_("CONNECT_PYTHON_ROBOT")} mode={"accent"} onclick={connectPython} />
+				{/if}
 			{:else if WorkspaceState.Mode === Mode.ML}
 				<Button name={$_("ML_CLOSE")} mode={"accent"} onclick={upload} />
-            {:else}
-                <Button name={MLState.enabled ? $_("ML_OPEN") : $_("UPLOAD")} mode={"accent"} onclick={upload} />
-            {/if}
+			{:else}
+				<Button name={MLState.enabled ? $_("ML_OPEN") : $_("UPLOAD")} mode={"accent"} onclick={upload} />
+			{/if}
 
 			{#if EmbedState.action}
-				<Button
-					icon={faCircleCheck}
-					name={EmbedState.action}
-					mode="tint"
-					onclick={() => EmbedState.callAction()}
-				/>
+				<Button icon={faCircleCheck} name={EmbedState.action} mode="tint" onclick={() => EmbedState.callAction()} />
 			{/if}
-        {/if}
-    </div>
-</div>
-
-<style>
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: var(--primary);
-        padding: 10px;
-        height: 64px;
-    }
-    .comp {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    .logo {
-        height: 18px;
-        margin-right: 10px;
-    }
-</style>
+		{/if}
+	</div>
+</header>

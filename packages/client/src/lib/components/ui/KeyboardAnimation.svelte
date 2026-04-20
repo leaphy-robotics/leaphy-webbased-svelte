@@ -129,27 +129,30 @@ function getKeyWidth(code: string | null): string {
 </script>
 
 {#snippet key(keyCode: string)}
-<div
-    class="key"
-    class:pressed={isPressed(keyCode)}
-    class:space={keyCode === "Space"}
-    style="width: {getKeyWidth(keyCode)}"
->
-    {getKeyLabel(keyCode)}
-</div>
+	<div
+		class="key relative flex items-center justify-center h-10 px-3 border-2 border-text-muted border-b-4 border-b-black/30 rounded-md text-xs font-semibold transition-all duration-100 select-none cursor-default shadow-[0_2px_0_rgba(0,0,0,0.2),0_4px_4px_rgba(0,0,0,0.1)] before:content-[''] before:absolute before:inset-0 before:rounded before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none
+ 		{isPressed(keyCode) ? 'bg-accent text-on-accent !border-accent border-b-2 translate-y-0.5 shadow-[0_1px_0_rgba(0,0,0,0.2),0_2px_2px_rgba(0,0,0,0.1)]' : 'bg-bg text-on-bg'}
+			{keyCode === 'Space' ? 'min-w-[300px]' : ''}"
+		style="width: {getKeyWidth(keyCode)}"
+	>
+		{getKeyLabel(keyCode)}
+	</div>
 {/snippet}
 
-<div class="keyboard">
-	<div class="main-keys">
+<div class="flex flex-row gap-5 items-start p-5 bg-bg-tint rounded-xl border border-text-muted max-w-fit mx-auto">
+	<div class="flex flex-col gap-2">
 		{#each displayKeys as row}
-			<div class="row">
+			<div class="flex gap-1.5 justify-center items-center">
 				{#each row as keyCode}
 					{#if keyCode === null}
-						<div class="key blank" style="width: {getKeyWidth(null)}"></div>
+						<div class="h-10 w-10 bg-bg border-2 border-text-muted rounded-md"></div>
 					{:else if Array.isArray(keyCode)}
-                        <div class="key-group">
+                        <div class="flex flex-col items-center h-10">
                             {#each keyCode as code}
-                                {@render key(code)}
+                                <div
+                                    class="key relative flex flex-1 items-center justify-center w-10 px-3 border-2 border-text-muted border-b-4 border-b-black/30 rounded-md text-xs font-semibold transition-all duration-100 select-none cursor-default shadow-[0_2px_0_rgba(0,0,0,0.2),0_4px_4px_rgba(0,0,0,0.1)] before:content-[''] before:absolute before:inset-0 before:rounded before:bg-gradient-to-b before:from-white/10 before:to-transparent before:pointer-events-none
+                                        {isPressed(code) ? 'bg-accent text-on-accent !border-accent border-b-2 translate-y-0.5' : 'bg-bg text-on-bg'}"
+                                >{getKeyLabel(code)}</div>
                             {/each}
                         </div>
 					{:else}
@@ -160,110 +163,3 @@ function getKeyWidth(code: string | null): string {
 		{/each}
 	</div>
 </div>
-
-<style>
-	.keyboard {
-		display: flex;
-		flex-direction: row;
-		gap: 20px;
-		align-items: flex-start;
-		padding: 20px;
-		background: var(--background-tint);
-		border-radius: 12px;
-		border: 1px solid var(--text-muted);
-		max-width: fit-content;
-		margin: 0 auto;
-	}
-
-	.main-keys {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.arrow-keys {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-		align-items: center;
-	}
-
-	.row {
-		display: flex;
-		gap: 6px;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.key {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: 40px;
-		padding: 0 12px;
-		background: var(--background);
-		border: 2px solid var(--text-muted);
-		border-bottom: 4px solid rgba(0, 0, 0, 0.3);
-		border-radius: 6px;
-		font-size: 12px;
-		font-weight: 600;
-		color: var(--on-background);
-		transition: all 0.1s ease;
-		user-select: none;
-		cursor: default;
-		box-shadow: 
-			0 2px 0 rgba(0, 0, 0, 0.2),
-			0 4px 4px rgba(0, 0, 0, 0.1);
-	}
-
-	.key::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		border-radius: 4px;
-		background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
-		pointer-events: none;
-	}
-
-	.key.pressed {
-		background: var(--accent);
-		color: var(--on-accent);
-		border-color: var(--accent);
-		border-bottom: 2px solid rgba(0, 0, 0, 0.4);
-		transform: translateY(2px);
-		box-shadow: 
-			0 1px 0 rgba(0, 0, 0, 0.2),
-			0 2px 2px rgba(0, 0, 0, 0.1);
-	}
-
-	.key.pressed::before {
-		background: linear-gradient(to bottom, rgba(255, 255, 255, 0.15), transparent);
-	}
-
-	.key.space {
-		min-width: 300px;
-	}
-
-	.key.blank {
-		background: var(--background);
-		border-color: var(--text-muted);
-		cursor: default;
-	}
-
-    .key-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 40px;
-    }
-
-    .key-group .key {
-        height: unset;
-        flex: 1;
-        font-size: 10px;
-    }
-</style>

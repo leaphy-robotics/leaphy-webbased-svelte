@@ -1,3 +1,6 @@
+import { serialization } from "blockly";
+import type * as monaco from "monaco-editor";
+import type { Component } from "svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Advanced from "$components/workspace/advanced/Advanced.svelte";
 import Blocks from "$components/workspace/blocks/Blocks.svelte";
@@ -9,9 +12,6 @@ import { type RobotDevice, robots } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import { projectDB } from "$domain/storage";
 import { findAsync, track } from "$state/utils";
-import { serialization } from "blockly";
-import type * as monaco from "monaco-editor";
-import type { Component } from "svelte";
 import type MicroPythonIO from "../micropython";
 import type { IOEventTarget } from "../micropython";
 import BlocklyState from "./blockly.svelte";
@@ -56,16 +56,8 @@ const extensionMap = {
 	l_micropython: RobotType.L_MICROPYTHON,
 };
 
-class WorkspaceState {
-	uploadLog = $state<string[]>([]);
-
-	handle = $state<Handle | undefined>();
-	handleSave = $state<number>();
-
-	robot = $state<RobotDevice>();
-	microPythonIO = $state<MicroPythonIO>();
-	microPythonRun = $state<IOEventTarget>();
-
+/** Owns UI-only state: current mode, side panel, code buffer, and code editor instance. */
+class WorkspaceUIState {
 	code = $state("");
 	codeEditor = $state<monaco.editor.IStandaloneCodeEditor>();
 	saveState = $state(true);
@@ -74,7 +66,6 @@ class WorkspaceState {
 	Mode = $state<Component>(Mode.BLOCKS);
 
 	constructor() {
-		window.addEventListener("beforeunload", this.tempSave.bind(this));
 		$effect.root(() => {
 			$effect(() => {
 				track(this.Mode);
@@ -98,14 +89,82 @@ class WorkspaceState {
 	toggleSidePanel(panel: Component) {
 		this.SidePanel = this.SidePanel === panel ? undefined : panel;
 	}
+}
+
+/** Owns persistence: IndexedDB tempSaves, named saves, and block loading. */
+class WorkspacePersistenceState {
+	handleSave = $state<number>();
+
+	constructor(
+		private ui: WorkspaceUIState,
+		private robotRef: () => RobotDevice,
+	) {}
 
 	async updateFileHandle() {
 		await projectDB.saves.update(this.handleSave, {
-			mode: this.mode,
-			robot: this.robot.id,
+			mode: this.ui.mode,
+			robot: this.robotRef().id,
 			date: Date.now(),
 		});
 	}
+
+	async tempSave() {
+		let mode = this.ui.mode;
+		let content = this.ui.code;
+
+		if (mode === "BLOCKS") {
+			content = JSON.stringify(
+				serialization.workspaces.save(BlocklyState.workspace),
+			);
+		}
+
+		const existingSave = await projectDB.tempSaves
+			.where("mode")
+			.equals(mode)
+			.and((save) =>
+				mode === "BLOCKS" ? save.robot === this.robotRef().id : true,
+			)
+			.first();
+
+		if (existingSave) {
+			projectDB.tempSaves.update(existingSave.id, {
+				content,
+				fileSave: this.handleSave,
+				date: Date.now(),
+				robot: this.robotRef().id,
+			});
+		} else {
+			projectDB.tempSaves.add({
+				mode,
+				content,
+				fileSave: this.handleSave,
+				date: Date.now(),
+				robot: this.robotRef().id,
+			});
+		}
+	}
+
+	async loadBlocks(robotId: string) {
+		const fetchedSave = await projectDB.tempSaves
+			.where("mode")
+			.equals("BLOCKS")
+			.and((save) => save.robot === robotId)
+			.first();
+
+		return fetchedSave.content || null;
+	}
+}
+
+/** Owns file system access: FileSystemFileHandle, open, and serialize. */
+class WorkspaceFileState {
+	handle = $state<Handle | undefined>();
+
+	constructor(
+		private ui: WorkspaceUIState,
+		private persistence: WorkspacePersistenceState,
+		private robotRef: () => RobotDevice,
+		private openFn: (name: string, content: string) => void,
+	) {}
 
 	async openFileHandle(file: FileSystemFileHandle) {
 		this.handle = new FileHandle(file);
@@ -118,85 +177,154 @@ class WorkspaceState {
 
 		try {
 			if (!existingSave) {
-				this.handleSave = await projectDB.saves.add({
-					mode: this.mode,
-					robot: this.robot.id,
+				this.persistence.handleSave = await projectDB.saves.add({
+					mode: this.ui.mode,
+					robot: this.robotRef().id,
 					date: Date.now(),
 					fileHandle: file,
 				});
 			} else {
-				this.handleSave = existingSave.id;
-				await this.updateFileHandle();
+				this.persistence.handleSave = existingSave.id;
+				await this.persistence.updateFileHandle();
 			}
 		} catch {
 			// this will fail in tests because of the fake filesystemfilehandle
 		}
 
-		this.open(file.name, await content.text());
+		this.openFn(file.name, await content.text());
 	}
 
-	async tempSave() {
-		let mode = this.mode;
-		let content = this.code;
-
-		if (mode === "BLOCKS") {
-			content = JSON.stringify(
+	serialize() {
+		if (this.ui.Mode === Mode.BLOCKS || this.ui.Mode === Mode.ML) {
+			return JSON.stringify(
 				serialization.workspaces.save(BlocklyState.workspace),
 			);
 		}
 
-		const existingSave = await projectDB.tempSaves
-			.where("mode")
-			.equals(mode)
-			.and((save) => (mode === "BLOCKS" ? save.robot === this.robot.id : true))
-			.first();
+		return this.ui.code;
+	}
+}
 
-		if (existingSave) {
-			projectDB.tempSaves.update(existingSave.id, {
-				content,
-				fileSave: this.handleSave,
-				date: Date.now(),
-				robot: this.robot.id,
-			});
-		} else {
-			projectDB.tempSaves.add({
-				mode,
-				content,
-				fileSave: this.handleSave,
-				date: Date.now(),
-				robot: this.robot.id,
-			});
-		}
+class WorkspaceState {
+	uploadLog = $state<string[]>([]);
+
+	robot = $state<RobotDevice>();
+	microPythonIO = $state<MicroPythonIO>();
+	microPythonRun = $state<IOEventTarget>();
+
+	private _ui = new WorkspaceUIState();
+	private _persistence = new WorkspacePersistenceState(
+		this._ui,
+		() => this.robot,
+	);
+	private _file = new WorkspaceFileState(
+		this._ui,
+		this._persistence,
+		() => this.robot,
+		this.open.bind(this),
+	);
+
+	constructor() {
+		window.addEventListener("beforeunload", this.tempSave.bind(this));
+	}
+
+	// --- UI slice delegates ---
+	get code() {
+		return this._ui.code;
+	}
+	set code(v) {
+		this._ui.code = v;
+	}
+
+	get codeEditor() {
+		return this._ui.codeEditor;
+	}
+	set codeEditor(v) {
+		this._ui.codeEditor = v;
+	}
+
+	get saveState() {
+		return this._ui.saveState;
+	}
+	set saveState(v) {
+		this._ui.saveState = v;
+	}
+
+	get SidePanel() {
+		return this._ui.SidePanel;
+	}
+	set SidePanel(v) {
+		this._ui.SidePanel = v;
+	}
+
+	get Mode() {
+		return this._ui.Mode;
+	}
+	set Mode(v) {
+		this._ui.Mode = v;
+	}
+
+	get mode() {
+		return this._ui.mode;
+	}
+
+	toggleSidePanel(panel: Component) {
+		this._ui.toggleSidePanel(panel);
+	}
+
+	// --- Persistence slice delegates ---
+	get handleSave() {
+		return this._persistence.handleSave;
+	}
+	set handleSave(v) {
+		this._persistence.handleSave = v;
+	}
+
+	async updateFileHandle() {
+		return this._persistence.updateFileHandle();
+	}
+
+	async tempSave() {
+		return this._persistence.tempSave();
 	}
 
 	async loadBlocks() {
-		const robot = this.robot;
-
-		const fetchedSave = await projectDB.tempSaves
-			.where("mode")
-			.equals("BLOCKS")
-			.and((save) => save.robot === robot.id)
-			.first();
-
-		return fetchedSave.content || null;
+		return this._persistence.loadBlocks(this.robot.id);
 	}
 
+	// --- File slice delegates ---
+	get handle() {
+		return this._file.handle;
+	}
+	set handle(v) {
+		this._file.handle = v;
+	}
+
+	async openFileHandle(file: FileSystemFileHandle) {
+		return this._file.openFileHandle(file);
+	}
+
+	serialize() {
+		return this._file.serialize();
+	}
+
+	// --- open() lives on the facade as it touches both UI and robot state ---
 	open(name: string, content: string) {
 		if (name.endsWith(".ino")) {
-			this.Mode = Mode.ADVANCED;
-			this.code = content;
+			this._ui.Mode = Mode.ADVANCED;
+			this._ui.code = content;
 		} else if (name.endsWith(".py")) {
-			this.Mode = Mode.PYTHON;
+			this._ui.Mode = Mode.PYTHON;
 			this.robot = robots.l_nano_esp32;
-			this.code = content;
+			this._ui.code = content;
 		} else {
-			if (this.Mode === Mode.BLOCKS && BlocklyState.workspace) {
+			if (this._ui.Mode === Mode.BLOCKS && BlocklyState.workspace) {
 				if (!loadWorkspaceFromString(content, BlocklyState.workspace)) {
 					return;
 				}
 			} else {
 				BlocklyState.restore = JSON.parse(content);
-				this.Mode = Mode.BLOCKS;
+				this._ui.Mode = Mode.BLOCKS;
 			}
 
 			const extension = name.split(".").at(-1);
@@ -215,16 +343,6 @@ class WorkspaceState {
 
 			this.robot = Object.values(robots).find((r) => r.type === robot);
 		}
-	}
-
-	serialize() {
-		if (this.Mode === Mode.BLOCKS || this.Mode === Mode.ML) {
-			return JSON.stringify(
-				serialization.workspaces.save(BlocklyState.workspace),
-			);
-		}
-
-		return this.code;
 	}
 }
 

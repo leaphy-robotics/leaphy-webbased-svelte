@@ -1,8 +1,8 @@
-import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
-import { pseudo } from "$domain/blockly/pseudo";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { layoutComponents } from "@leaphy-robotics/schemas";
 import { locale } from "svelte-i18n";
+import EmbedSidePanel from "$components/core/sidepanel/EmbedSidePanel.svelte";
+import { pseudo } from "$domain/blockly/pseudo";
 import AppState, { Screen } from "./app.svelte";
 import BlocklyState from "./blockly.svelte";
 import { track } from "./utils";

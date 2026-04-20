@@ -1,10 +1,9 @@
 <script lang="ts">
+import { onMount } from "svelte";
 import { _ } from "svelte-i18n";
-
 import Library from "$components/ui/Library.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
 import AppState from "$state/app.svelte";
-import { onMount } from "svelte";
 
 let filter = $state("");
 onMount(() => {
@@ -18,37 +17,11 @@ const visible = $derived(
 );
 </script>
 
-<div class="content">
-    <div class="header">
-        <TextInput
-            mode={"primary"}
-            rounded={true}
-            placeholder={$_("SEARCH_PLACEHOLDER")}
-            bind:value={filter}
-        />
-    </div>
-    <div class="libraries">
+<div class="flex flex-col gap-2.5 bg-bg-tint w-full p-2.5">
+    <TextInput mode={"primary"} rounded={true} placeholder={$_("SEARCH_PLACEHOLDER")} bind:value={filter} />
+    <div class="flex flex-col overflow-y-auto gap-2.5">
         {#each visible as library (library.name)}
             <Library {library} />
         {/each}
     </div>
 </div>
-
-<style>
-    .content {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        background: var(--background-tint);
-        color: var(--on-background-tint);
-        width: 100%;
-        padding: 10px;
-    }
-
-    .libraries {
-        display: flex;
-        flex-direction: column;
-        overflow-y: auto;
-        gap: 10px;
-    }
-</style>

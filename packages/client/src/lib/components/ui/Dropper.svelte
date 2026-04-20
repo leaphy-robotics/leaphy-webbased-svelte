@@ -1,10 +1,10 @@
 <script lang="ts">
-import AIState from "$state/ai.svelte";
-import BlocklyState from "$state/blockly.svelte";
 import { faMagicWandSparkles } from "@fortawesome/free-solid-svg-icons";
 import type * as Blockly from "blockly";
 import { onDestroy, onMount } from "svelte";
 import Fa from "svelte-fa";
+import AIState from "$state/ai.svelte";
+import BlocklyState from "$state/blockly.svelte";
 
 function getBlockForPosition(event: PointerEvent) {
 	return BlocklyState.workspace
@@ -60,35 +60,13 @@ onDestroy(() => {
 });
 </script>
 
-<button class="dropper" class:selecting {onclick}>
+<button
+	class="fixed bottom-9 right-[116px] text-5xl cursor-pointer bg-transparent border-none p-0
+		{selecting ? 'text-[rgba(84,93,149,0.5)]' : 'text-[rgba(136,136,136,0.5)]'}"
+	{onclick}
+>
 	<Fa icon="{faMagicWandSparkles}" />
 </button>
 {#if selecting}
-	<div class="noInteract"></div>
+	<div class="fixed left-0 top-0 w-screen h-screen z-[9999999999] cursor-crosshair"></div>
 {/if}
-
-<style>
-	.dropper {
-		all: unset;
-		position: fixed;
-		bottom: 35px;
-		right: 116px;
-		color: rgba(136, 136, 136, 0.5);
-		font-size: 45px;
-		cursor: pointer;
-	}
-
-	.selecting {
-		color: rgba(84, 93, 149, 0.5);
-	}
-
-	.noInteract {
-		position: fixed;
-		left: 0;
-		top: 0;
-		width: 100vw;
-		height: 100vh;
-		z-index: 9999999999;
-		cursor: crosshair;
-	}
-</style>

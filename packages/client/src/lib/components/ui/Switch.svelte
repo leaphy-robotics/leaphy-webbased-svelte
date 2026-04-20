@@ -10,45 +10,17 @@ function toggle() {
 }
 </script>
 
-<div class="line">
-	<button type="button" class="switch" onclick={toggle} aria-label="switch">
-		<span class="bubble" class:checked></span>
+<div class="flex gap-2.5 items-center text-sm">
+	<button
+		type="button"
+		class="relative w-11 h-6 rounded-full border-2 border-bg bg-bg outline-none cursor-pointer"
+		onclick={toggle}
+		aria-label="switch"
+	>
+		<span
+			class="absolute top-0 left-0 w-5 h-5 rounded-full transition-all duration-300 ease-in-out
+				{checked ? 'translate-x-full bg-accent' : 'translate-x-0 bg-primary'}"
+		></span>
 	</button>
-	<span class="name">{name}</span>
+	<span>{name}</span>
 </div>
-
-<style>
-	.line {
-		display: flex;
-		gap: 10px;
-		align-items: center;
-		font-size: 0.9em;
-	}
-
-	.switch {
-		position: relative;
-		background: var(--background);
-		width: 43px;
-		height: 23px;
-		border-radius: 23px;
-		border: 2px solid var(--background);
-		outline: 0;
-		cursor: pointer;
-	}
-
-	.bubble {
-		position: absolute;
-		transition: 0.3s ease;
-		width: 20px;
-		height: 20px;
-		left: 0;
-		top: 0;
-		background: var(--primary);
-		border-radius: 80px;
-	}
-
-	.bubble.checked {
-		translate: 100%;
-		background: var(--accent);
-	}
-</style>

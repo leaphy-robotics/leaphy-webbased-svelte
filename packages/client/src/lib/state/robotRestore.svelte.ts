@@ -1,6 +1,9 @@
 import { type RobotDevice, robots } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
-import SerialState, { type Prompt } from "$state/serial.svelte";
+import SerialState, {
+	type LeaphyPort,
+	type Prompt,
+} from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 
 async function decompressGzip(gzippedData: Uint8Array) {
@@ -84,28 +87,28 @@ class RobotRestoreState {
 	private async checkProgram() {
 		if (!SerialState.port) return;
 
-		await SerialState.reserve();
+		return SerialState.withPort(async (port) => {
+			const reader = port.readable.getReader();
+			const writer = port.writable.getWriter();
 
-		const port = SerialState.port;
-		const reader = port.readable.getReader();
-		const writer = port.writable.getWriter();
+			try {
+				await port.setSignals({ dataTerminalReady: false });
+				await new Promise((resolve) => setTimeout(resolve, 250));
+				await port.setSignals({ dataTerminalReady: true });
 
-		await port.setSignals({ dataTerminalReady: false });
-		await new Promise((resolve) => setTimeout(resolve, 250));
-		await port.setSignals({ dataTerminalReady: true });
+				const requestAbortController = this.sendProgramRequest(writer);
+				const program = await Promise.race([
+					this.receiveProgram(reader, requestAbortController),
+					new Promise<undefined>((resolve) => setTimeout(resolve, 6000)),
+				]);
+				requestAbortController.abort();
 
-		const requestAbortController = this.sendProgramRequest(writer);
-		const program = await Promise.race([
-			this.receiveProgram(reader, requestAbortController),
-			new Promise<undefined>((resolve) => setTimeout(resolve, 6000)),
-		]);
-		requestAbortController.abort();
-
-		reader.releaseLock();
-		writer.releaseLock();
-		SerialState.release();
-
-		return program;
+				return program;
+			} finally {
+				reader.releaseLock();
+				writer.releaseLock();
+			}
+		});
 	}
 
 	async getProgram(prompt: Prompt) {
@@ -113,7 +116,14 @@ class RobotRestoreState {
 			return this.program;
 		}
 
-		await SerialState.connect(prompt);
+		try {
+			await SerialState.connect(prompt);
+		} catch {
+			// No port available (e.g. Prompt.NEVER with no paired device) — silently ignore
+			return undefined;
+		}
+
+		// Set this.program before awaiting so concurrent calls hit the guard
 		this.program = this.checkProgram();
 		return this.program;
 	}

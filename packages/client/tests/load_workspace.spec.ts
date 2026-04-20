@@ -1,5 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { goToHomePage, mockShowOpenFilePicker, selectRobot } from "./utils";
+import {
+	goToHomePage,
+	mockShowOpenFilePicker,
+	openCode,
+	selectRobot,
+} from "./utils";
 
 test.beforeEach(goToHomePage);
 
@@ -19,7 +24,7 @@ for (let [testName, file] of test_files) {
 			`./tests/saved_workspaces/${file}`,
 		);
 
-		await page.getByRole("cell", { name: "Open" }).click();
+		await page.getByText("Open").click();
 
 		// All of these should be loaded in
 		await expect(page.getByText("repeat")).toBeVisible();
@@ -28,7 +33,7 @@ for (let [testName, file] of test_files) {
 		await expect(page.getByText("10", { exact: true })).toBeVisible();
 
 		// The code should have also been updated
-		await page.locator(".side").first().click();
+		await openCode(page);
 
 		await expect(page.locator(".view-lines")).toContainText("test = 10");
 		await expect(page.locator(".view-lines")).toContainText("delay(1000)");
@@ -38,7 +43,7 @@ for (let [testName, file] of test_files) {
 		await page.getByRole("button", { name: "My projects" }).click();
 
 		let onWritePromise = createOnWritePromise();
-		await page.getByRole("cell", { name: "Save", exact: true }).click();
+		await page.getByText("Save", { exact: true }).first().click();
 		let writtenChunks = await onWritePromise;
 		expect(JSON.stringify(writtenChunks)).toContain("hello world"); // This is very hacky, but it works
 	});

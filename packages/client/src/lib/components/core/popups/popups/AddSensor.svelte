@@ -1,10 +1,4 @@
 <script lang="ts">
-import Button from "$components/ui/Button.svelte";
-import Select from "$components/ui/Select.svelte";
-import TextInput from "$components/ui/TextInput.svelte";
-import PinSelectorField from "$domain/blockly/fields";
-import MLState from "$state/ml.svelte";
-import type { PopupState } from "$state/popup.svelte";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import {
 	type Sensor,
@@ -12,6 +6,12 @@ import {
 } from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
+import Button from "$components/ui/Button.svelte";
+import Select from "$components/ui/Select.svelte";
+import TextInput from "$components/ui/TextInput.svelte";
+import PinSelectorField from "$domain/blockly/fields";
+import MLState from "$state/ml.svelte";
+import type { PopupState } from "$state/popup.svelte";
 
 const popupState = getContext<PopupState>("state");
 const sensorOptions = sensors.map(
@@ -75,21 +75,20 @@ function addSensor() {
 }
 </script>
 
-<div class="content">
-	<h1>{$_("ML_ADD_SENSOR_TITLE")}</h1>
+<div class="flex flex-col w-[500px] p-5 text-center gap-8">
+	<h1 class="m-0">{$_("ML_ADD_SENSOR_TITLE")}</h1>
 
-	<div class="input-group">
-		<div class="label">{$_("ML_SENSOR_TYPE")}</div>
+	<div class="flex flex-col gap-1.5 text-left">
+		<div class="font-bold">{$_("ML_SENSOR_TYPE")}</div>
 		<Select mode="secondary" full options={sensorOptions} bind:value={sensor} align="left" />
 	</div>
 
 	{#each parsedSensor.settings as setting}
-		<div class="input-group">
-			<div class="desc">
-				<div class="label">{$_(setting.name)}</div>
-				<div class="description">{$_(setting.description)}</div>
+		<div class="flex flex-col gap-1.5 text-left">
+			<div class="flex flex-col">
+				<div class="font-bold">{$_(setting.name)}</div>
+				<div class="text-sm text-on-secondary-muted">{$_(setting.description)}</div>
 			</div>
-
 			{#if setting.type === 'select'}
 				<Select mode="secondary" full options={setting.options} bind:value={settings[setting.id]} align="left" />
 			{:else if setting.type === 'text'}
@@ -98,41 +97,8 @@ function addSensor() {
 		</div>
 	{/each}
 
-	<div class="buttons">
+	<div class="flex justify-center gap-2.5">
 		<Button onclick={cancel} mode="secondary" name={$_("CANCEL")} large center />
 		<Button onclick={addSensor} mode="primary" name={$_("ML_ADD_SENSOR")} large center bold />
 	</div>
 </div>
-
-<style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		width: 500px;
-		padding: 20px;
-		text-align: center;
-		gap: 30px;
-	}
-
-	.input-group {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-		text-align: left;
-	}
-
-	.label {
-		font-weight: bold;
-	}
-
-	.desc {
-		display: flex;
-		flex-direction: column;
-	}
-
-	.buttons {
-		display: flex;
-		justify-content: center;
-		gap: 10px;
-	}
-</style>

@@ -66,7 +66,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		return null;
 	};
 
-	python.forBlock.leaphy_tof_get_distance = (block, generator) => {
+	python.forBlock.leaphy_tof_get_distance = (_block, generator) => {
 		const active_channel = generator.currentI2cChannel() || "BC";
 		const variable_name = generator.getVariableName(`TOF_${active_channel}`);
 		generator.addI2cSupport(false);
@@ -80,7 +80,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		return [`${variable_name}.get_distance()`, Order.FUNCTION_CALL];
 	};
 
-	python.forBlock.leaphy_i2c_gesture = (block, generator) => {
+	python.forBlock.leaphy_i2c_gesture = (_block, generator) => {
 		const active_channel = generator.currentI2cChannel() || "BC";
 		const variable_name = generator.getVariableName(`ADPS_${active_channel}`);
 		generator.addI2cSupport(false);

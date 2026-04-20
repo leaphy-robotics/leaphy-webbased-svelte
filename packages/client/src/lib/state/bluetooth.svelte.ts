@@ -1,11 +1,11 @@
+import {
+	decodeUUIDToString,
+	SERVICE_UUID,
+} from "@leaphy-robotics/leaphy-blocks/src/generators/arduino/bluetooth";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
 import { track } from "$state/utils";
-import {
-	SERVICE_UUID,
-	decodeUUIDToString,
-} from "@leaphy-robotics/leaphy-blocks/src/generators/arduino/bluetooth";
 
 interface QueueItem {
 	characteristic: BluetoothRemoteGATTCharacteristic;

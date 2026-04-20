@@ -46,13 +46,4 @@ let values = $derived(label[1]);
 </script>
 
 <svelte:document onkeyup={onKey} onmousedown={abort} />
-<button onclick={assign} class="key" class:active={binding}>{binding ? $_("PRESS_ANY_KEY") : $_(translation, { values })}</button>
-
-<style>
-	.key {
-		background: var(--background);
-		border: none;
-		padding: 5px;
-		border-radius: 5px;
-	}
-</style>
+<button onclick={assign} class="bg-bg border-none p-1.5 rounded-md cursor-pointer {binding ? 'opacity-70' : ''}">{binding ? $_("PRESS_ANY_KEY") : $_(translation, { values })}</button>

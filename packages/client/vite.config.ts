@@ -1,6 +1,7 @@
 import path from "node:path";
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { svelte, vitePreprocess } from "@sveltejs/vite-plugin-svelte";
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import topLevelAwait from "vite-plugin-top-level-await";
@@ -8,6 +9,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
+		tailwindcss(),
 		svelte({
 			preprocess: vitePreprocess({
 				script: true,

@@ -1,7 +1,7 @@
-import { pseudo } from "$domain/blockly/pseudo";
 import type { BlockSvg } from "blockly";
-import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
+import { locale } from "svelte-i18n";
+import { pseudo } from "$domain/blockly/pseudo";
 
 class AIState {
 	loading = $state(true);

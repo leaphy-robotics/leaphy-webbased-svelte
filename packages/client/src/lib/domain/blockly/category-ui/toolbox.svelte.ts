@@ -1,7 +1,7 @@
-import ToolboxComponent from "$components/workspace/blocks/Toolbox.svelte";
-import * as Blockly from "blockly";
 import type { ISelectableToolboxItem } from "blockly";
+import * as Blockly from "blockly";
 import { mount } from "svelte";
+import ToolboxComponent from "$components/workspace/blocks/Toolbox.svelte";
 
 export default class LeaphyToolbox extends Blockly.Toolbox {
 	component: ReturnType<typeof mount>;

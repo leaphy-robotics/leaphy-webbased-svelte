@@ -1,10 +1,10 @@
+import type { WorkspaceSvg } from "blockly";
+// @ts-expect-error
+import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
 import Bluetooth from "$components/core/popups/popups/Bluetooth.svelte";
 import { text } from "$domain/blockly/toolbox";
 import BluetoothState from "$state/bluetooth.svelte";
 import PopupState from "$state/popup.svelte";
-import type { WorkspaceSvg } from "blockly";
-// @ts-ignore
-import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
 
 export default function bluetooth(workspace: WorkspaceSvg) {
 	const blockList: FlyoutDefinition = [

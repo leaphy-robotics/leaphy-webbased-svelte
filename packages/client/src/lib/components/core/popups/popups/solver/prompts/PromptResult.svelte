@@ -86,10 +86,10 @@ onMount(() => {
 });
 </script>
 
-<div class="result-container" bind:this={containerElement}>
-    <div class="connector">
+<div class="relative pl-10 my-5" bind:this={containerElement}>
+    <div class="absolute left-0 top-0 w-8 h-full pointer-events-none">
         {#if pathData}
-            <svg class="connector-svg" viewBox="0 0 30 {containerHeight}" preserveAspectRatio="none">
+            <svg class="w-full h-full" viewBox="0 0 30 {containerHeight}" preserveAspectRatio="none">
                 <path
                     d={pathData}
                     stroke="var(--primary)"
@@ -101,47 +101,8 @@ onMount(() => {
             </svg>
         {/if}
     </div>
-    <div class="content">
-        <div class="question" bind:this={questionElement}>{question}</div>
-        <div class="answer" bind:this={answerElement}>{answer}</div>
+    <div class="flex flex-col gap-5">
+        <div class="font-bold text-on-bg" bind:this={questionElement}>{question}</div>
+        <div class="text-on-bg opacity-80" bind:this={answerElement}>{answer}</div>
     </div>
 </div>
-
-<style>
-    .result-container {
-        position: relative;
-        padding-left: 40px;
-        margin: 20px 0;
-    }
-
-    .content {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .question {
-        font-weight: 500;
-        font-weight: bold;
-        color: var(--on-background);
-    }
-
-    .answer {
-        color: var(--on-background);
-        opacity: 0.8;
-    }
-
-    .connector {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 30px;
-        height: 100%;
-        pointer-events: none;
-    }
-
-    .connector-svg {
-        width: 100%;
-        height: 100%;
-    }
-</style>

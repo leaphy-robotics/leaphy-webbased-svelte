@@ -108,37 +108,16 @@ async function create(path: string[], type: "file" | "folder") {
 }
 </script>
 
-<div class="environment">
-    <div class="editor">
+<div class="flex flex-col h-[var(--full-height)] relative">
+    <div class="flex flex-1">
         {#if tree}
-            <div class="files">
+            <div class="min-w-[300px] relative pt-1.5">
                 <Tree {tree} {selected} indent={10} onselect={select} oncreate={create} />
             </div>
         {/if}
-        <div class="code">
+        <div class="flex-1">
             <CodeEditor bind:value={WorkspaceState.code} language="python" />
         </div>
     </div>
     <Terminal />
 </div>
-
-<style>
-    .environment {
-        display: flex;
-        flex-direction: column;
-        height: var(--full-height);
-        position: relative;
-    }
-    .editor {
-        display: flex;
-        flex: 1;
-    }
-    .files {
-        min-width: 300px;
-        position: relative;
-        padding-top: 5px;
-    }
-    .code {
-        flex: 1;
-    }
-</style>

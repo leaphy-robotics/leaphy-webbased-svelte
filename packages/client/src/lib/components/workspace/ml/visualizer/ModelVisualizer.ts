@@ -327,7 +327,9 @@ export class ModelVisualizer {
 	public async runAnimation(): Promise<void> {
 		// Reset styles
 		this.renderedLayers.forEach((layer) => {
-			layer.nodes.forEach((node) => node.setAttribute("fill", "#DDD"));
+			layer.nodes.forEach((node) => {
+				node.setAttribute("fill", "#DDD");
+			});
 			layer.connections.flat().forEach((conn) => {
 				conn.setAttribute("stroke", "#AAA");
 				conn.setAttribute("stroke-width", "1");

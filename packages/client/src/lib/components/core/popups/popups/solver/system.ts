@@ -1,9 +1,9 @@
+import { get } from "svelte/store";
+import { locale } from "svelte-i18n";
 import { pseudo } from "$domain/blockly/pseudo";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { locale } from "svelte-i18n";
-import { get } from "svelte/store";
 import { getBlocksMessage } from "./blocks";
 
 function getUserLevel() {

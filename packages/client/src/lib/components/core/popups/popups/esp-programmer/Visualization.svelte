@@ -1,6 +1,6 @@
 <script lang="ts">
-import visualization from "$assets/esp-reset/visualization.svg?raw";
 import { onDestroy, onMount } from "svelte";
+import visualization from "$assets/esp-reset/visualization.svg?raw";
 
 interface Props {
 	program: "RESET_TWICE" | "RESET";
@@ -151,17 +151,6 @@ onMount(() => {
 });
 </script>
 
-<div class="visualization" bind:this={contentWrapper}>
+<div class="w-full [&>svg]:w-full [&>svg]:h-full" bind:this={contentWrapper}>
     {@html visualization}
 </div>
-
-<style>
-    .visualization {
-        width: 100%;
-    }
-
-    .visualization :global(svg) {
-        width: 100%;
-        height: 100%;
-    }
-</style>

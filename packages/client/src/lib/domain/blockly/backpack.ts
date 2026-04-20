@@ -1,5 +1,4 @@
 import { Backpack as BaseBackpack } from "@blockly/workspace-backpack";
-import { registerContextMenus } from "@blockly/workspace-backpack/src/backpack_helpers";
 import * as Blockly from "blockly/core";
 
 export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
@@ -23,16 +22,11 @@ export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
 		this.initFlyout();
 		this.createDom();
 		this.attachListeners();
-		// @ts-ignore
-		if (this.options.contextMenu) {
-			// @ts-ignore
-			registerContextMenus(this.options.contextMenu, this.workspace_);
-		}
 		this.initialized_ = true;
 		this.workspace_.resize();
 	}
 
-	wouldDelete(element: Blockly.IDraggable, couldConnect: boolean): boolean {
+	wouldDelete(element: Blockly.IDraggable): boolean {
 		if (element instanceof Blockly.BlockSvg) {
 			if (element.type === "leaphy_start") {
 				return false;
@@ -80,14 +74,11 @@ export class Backpack extends BaseBackpack implements Blockly.IDeleteArea {
 			return;
 		}
 
-		// @ts-ignore
+		// @ts-expect-error
 		this.addItem(this.blockToJsonString(block));
 	}
 
-	override position(
-		metrics: Blockly.MetricsManager.UiMetrics,
-		savedPositions: Blockly.utils.Rect[],
-	) {
+	override position(metrics: Blockly.MetricsManager.UiMetrics) {
 		const toolbox = this.workspace_.getToolbox();
 
 		this.left_ =

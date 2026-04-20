@@ -1,10 +1,9 @@
-import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import { type RobotDevice, robots } from "$domain/robots";
-import PopupState from "$state/popup.svelte";
-import { track } from "$state/utils";
 import type { Debugger } from "@leaphy-robotics/leaphy-blocks";
 import MockedFTDISerialPort from "@leaphy-robotics/webusb-ftdi";
 import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import { type RobotDevice, robots } from "$domain/robots";
+import PopupState from "$state/popup.svelte";
 import { clearReadBuffer, delay } from "../programmers/utils";
 
 interface ActiveDebugger {
@@ -35,6 +34,12 @@ export class ConnectionFailedError {}
 export const SUPPORTED_VENDOR_IDS = [
 	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
 ];
+
+export type ConnectionStatus =
+	| "disconnected"
+	| "connecting"
+	| "ready"
+	| "failed";
 
 class DebugState {
 	debuggers = $state<ActiveDebugger[]>();
@@ -91,7 +96,6 @@ class LogState {
 	}
 
 	getID() {
-		if (this.count > 100) this.count = 0;
 		return `${this.count++}`;
 	}
 
@@ -139,34 +143,44 @@ class LogState {
 	}
 }
 
+export function waitForReady(serial: SerialState): Promise<void> {
+	return new Promise((resolve, reject) => {
+		const stop = $effect.root(() => {
+			$effect(() => {
+				if (serial.status === "ready") {
+					stop();
+					resolve();
+				}
+				if (serial.status === "failed") {
+					stop();
+					reject(new Error("Connection failed"));
+				}
+			});
+		});
+	});
+}
+
 class SerialState {
 	port = $state<LeaphyPort>();
 	board = $state<RobotDevice | null>();
-	ready = $state(
-		new Promise<void>((resolve, reject) => {
-			this.onReady = resolve;
-			this.onFailure = reject;
-		}),
-	);
+
+	status = $state<ConnectionStatus>("disconnected");
+
+	get isReady() {
+		return this.status === "ready";
+	}
+
+	get ready(): Promise<void> {
+		return waitForReady(this);
+	}
 
 	reserved = $state(false);
 	reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
 	writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 
-	onReady: () => void;
-	onFailure: () => void;
 	showFeedback = false;
 
 	log = new LogState(this);
-
-	constructor() {
-		$effect.root(() => {
-			$effect(() => {
-				track(this.port);
-				this.initPort().then();
-			});
-		});
-	}
 
 	async initPort() {
 		if (!this.port || this.reserved) return;
@@ -187,7 +201,7 @@ class SerialState {
 					});
 				}
 
-				this.onFailure();
+				this.status = "failed";
 				throw e;
 			}
 		}
@@ -195,9 +209,14 @@ class SerialState {
 
 		this.writer = this.port.writable.getWriter();
 		this.reader = this.port.readable.getReader();
-		this.onReady();
+		this.status = "ready";
 
-		while (this.port.readable && this.port.writable) {
+		// Run the read loop in the background so connect() can return immediately
+		this.runReadLoop();
+	}
+
+	private async runReadLoop() {
+		while (this.port?.readable && this.port?.writable) {
 			const { done, value } = await this.reader.read();
 			if (done) break;
 
@@ -303,13 +322,13 @@ class SerialState {
 	}
 
 	async connect(prompt: Prompt) {
-		this.ready = new Promise<void>((resolve, reject) => {
-			this.onReady = resolve;
-			this.onFailure = reject;
-		});
+		this.status = "connecting";
 
 		const port = await this.requestPort(prompt);
-		if (this.port === port) return this.onReady();
+		if (this.port === port) {
+			this.status = "ready";
+			return port;
+		}
 
 		this.port = this.getLeaphyPort(port);
 		if ("addEventListener" in this.port) {
@@ -317,50 +336,49 @@ class SerialState {
 				this.reserved = false;
 				this.port = undefined;
 				this.board = undefined;
-				this.onFailure();
+				this.status = "disconnected";
 			});
 		}
 
 		this.board = this.detectBoard(port);
 
+		await this.initPort();
+
 		return port;
 	}
 
-	reconnect() {
+	reconnect(): Promise<SerialPort> {
 		return new Promise((resolve, reject) => {
-			let attempts = 0;
-			const interval = setInterval(async () => {
-				if (++attempts > 200) {
-					clearInterval(interval);
-					reject("Failed to reconnect");
-				}
+			const timeout = setTimeout(() => {
+				navigator.serial.removeEventListener("connect", handler);
+				reject(new Error("Reconnect timed out"));
+			}, 10_000);
 
-				try {
-					const port = await this.connect(Prompt.NEVER);
-					if (port) {
-						clearInterval(interval);
-						resolve(port);
-					}
-				} catch (e) {}
-			}, 50);
+			const handler = async (event: Event) => {
+				navigator.serial.removeEventListener("connect", handler);
+				clearTimeout(timeout);
+				resolve(event.target as SerialPort);
+			};
+
+			navigator.serial.addEventListener("connect", handler);
 		});
 	}
 
 	async reserve() {
+		if (this.reserved) throw new Error("Port already reserved");
 		this.reserved = true;
 
 		if (this.reader) {
 			try {
 				await this.reader.cancel();
+				// cancel() releases the lock automatically; no need to call releaseLock()
 			} catch (e) {
-				console.error(e);
-				// Reader may have already been released, ignore the error
-			}
-			try {
-				this.reader.releaseLock();
-			} catch (e) {
-				console.error(e);
-				// Reader may have already been released, ignore the error
+				// Reader may have already been released; try releaseLock() as a fallback
+				try {
+					this.reader.releaseLock();
+				} catch {
+					// Already released, ignore
+				}
 			}
 			this.reader = undefined;
 		}
@@ -373,6 +391,17 @@ class SerialState {
 				// Writer may have already been released, ignore the error
 			}
 			this.writer = undefined;
+		}
+	}
+
+	async withPort<T>(fn: (port: LeaphyPort) => Promise<T>): Promise<T> {
+		await this.reserve();
+		try {
+			return await fn(this.port);
+		} finally {
+			this.release();
+			// Restart the read loop so the serial monitor keeps receiving data
+			this.initPort().catch(() => {});
 		}
 	}
 

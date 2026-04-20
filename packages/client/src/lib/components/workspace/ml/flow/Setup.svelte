@@ -1,15 +1,15 @@
 <script lang="ts">
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 import AddSensor from "$components/core/popups/popups/AddSensor.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
-import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import { faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-import Fa from "svelte-fa";
-import { _ } from "svelte-i18n";
 
 async function upload() {
 	if (MLState.sensors.length === 0) {
@@ -55,108 +55,27 @@ function deleteSensor(id: string) {
 }
 </script>
 
-<div class="content-area">
-	<div class="header">
-		<h1>{$_("ML_PREPARE_TITLE")}</h1>
+<div class="flex flex-col items-center justify-center gap-8">
+	<div class="flex flex-col gap-5">
+		<h1 class="m-0">{$_("ML_PREPARE_TITLE")}</h1>
 		<span>{$_("ML_PREPARE_DESC")}</span>
 	</div>
 
-	<div class="sensors">
+	<div class="flex flex-col bg-secondary w-full rounded-2xl overflow-hidden">
 		{#if MLState.sensors.length === 0}
-			<div class="sensor">
-				<div class="name">{$_("ML_NO_SENSORS")}</div>
+			<div class="relative flex justify-between border-b-2 border-black/15 last:border-b-0 text-left">
+				<div class="p-4">{$_("ML_NO_SENSORS")}</div>
 			</div>
 		{/if}
 		{#each MLState.sensors as sensor}
 			{@const name = sensor.type.renderName(sensor.settings)}
-			<div class="sensor">
-				<div class="name">
-					{$_(name.translation, { values: name.values })}
-				</div>
-				<button onclick={() => deleteSensor(sensor.id)} class="delete"><Fa icon={faXmark} /></button>
+			<div class="relative flex justify-between border-b-2 border-black/15 last:border-b-0 text-left">
+				<div class="p-4">{$_(name.translation, { values: name.values })}</div>
+				<button onclick={() => deleteSensor(sensor.id)} class="bg-transparent border-none outline-none text-[salmon] text-xl aspect-square absolute top-0 right-0 bottom-0 flex items-center justify-center cursor-pointer"><Fa icon={faXmark} /></button>
 			</div>
 		{/each}
 
-		<button class="add" onclick={addSensor}><Fa icon={faPlus} /> {$_("ML_ADD_SENSOR")}</button>
+		<button class="flex justify-center items-center gap-1.5 border-none outline-none bg-primary text-on-primary font-bold p-4 cursor-pointer text-base" onclick={addSensor}><Fa icon={faPlus} /> {$_("ML_ADD_SENSOR")}</button>
 	</div>
 	<Button onclick={upload} large bold mode="primary" icon={faUsb} name={$_("UPLOAD")} />
 </div>
-
-<style>
-	h1 {
-		margin: 0;
-	}
-
-	.content-area {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 30px;
-	}
-
-	.header {
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-	}
-
-	.sensors {
-		display: flex;
-		flex-direction: column;
-		background: var(--secondary);
-		width: 100%;
-		border-radius: 20px;
-		overflow: hidden;
-	}
-
-	.sensor {
-		position: relative;
-		display: flex;
-		justify-content: space-between;
-		border-bottom: 2px solid #00000025;
-		text-align: left;
-	}
-
-	.name {
-		padding: 15px;
-	}
-
-	.sensor:last-of-type {
-		border-bottom: none;
-	}
-
-	.add {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-
-		gap: 5px;
-		border: none;
-		outline: 0;
-		background: var(--primary);
-		color: var(--on-primary);
-		font-weight: bold;
-		padding: 15px;
-		cursor: pointer;
-		font-size: 1em;
-	}
-
-	.delete {
-		background: none;
-		border: none;
-		outline: 0;
-		color: salmon;
-		font-size: 1.3em;
-		aspect-ratio: 1/1;
-
-		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-</style>

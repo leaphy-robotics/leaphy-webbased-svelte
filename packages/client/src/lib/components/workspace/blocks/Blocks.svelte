@@ -1,4 +1,8 @@
 <script lang="ts">
+import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
+import { Events, serialization } from "blockly";
+import { onMount } from "svelte";
+import { locale } from "svelte-i18n";
 import Dropper from "$components/ui/Dropper.svelte";
 import CodeHints from "$components/workspace/blocks/CodeHints.svelte";
 import {
@@ -12,10 +16,6 @@ import AppState, { Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import SerialState from "$state/serial.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { arduino, python } from "@leaphy-robotics/leaphy-blocks";
-import { Events, serialization } from "blockly";
-import { onMount } from "svelte";
-import { locale } from "svelte-i18n";
 
 let backgroundX = $state(0);
 
@@ -117,31 +117,11 @@ $effect(() => {
 });
 </script>
 
-<div class="environment">
+<div class="relative">
 	{#if WorkspaceState.robot.background}
-		<img class="background" src="{WorkspaceState.robot.background}" alt="{WorkspaceState.robot.name}" style:left={`${backgroundX}px`}>
+		<img class="absolute w-full max-w-[600px] max-h-[600px] top-1/2 -translate-x-1/2 -translate-y-1/2 -z-[1]" src="{WorkspaceState.robot.background}" alt="{WorkspaceState.robot.name}" style:left={`${backgroundX}px`}>
 	{/if}
-    <div class="blockly" bind:this={element}></div>
+    <div class="h-[var(--full-height)]" bind:this={element}></div>
 	<Dropper />
 	<CodeHints />
 </div>
-
-<style>
-    .blockly {
-        height: var(--full-height);
-    }
-
-    .environment {
-        position: relative;
-    }
-
-	.background {
-		position: absolute;
-		width: 100%;
-		max-width: 600px;
-		max-height: 600px;
-		top: 50%;
-		translate: -50% -50%;
-		z-index: -1;
-	}
-</style>

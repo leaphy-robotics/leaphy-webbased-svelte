@@ -1,8 +1,8 @@
-import AIState from "$state/ai.svelte";
-import { type Block, ContextMenuRegistry, type Workspace } from "blockly";
 import type { serialization } from "blockly";
-import { _ } from "svelte-i18n";
+import { type Block, ContextMenuRegistry, type Workspace } from "blockly";
 import { get } from "svelte/store";
+import { _ } from "svelte-i18n";
+import AIState from "$state/ai.svelte";
 
 export function serializeBlock(
 	block: Block,

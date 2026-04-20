@@ -37,66 +37,22 @@ function getNodeColor(layerIndex: number) {
 }
 </script>
 
-<div class="ml-model-container">
-	<svg
-		width={svgWidth}
-		height={svgHeight}
-		viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-		class="model-svg"
-	>
-		<!-- Draw connections between layers -->
+<div class="p-4 bg-[#f9fafb] rounded-l-lg flex justify-center items-center overflow-x-auto w-[300px]">
+	<svg width={svgWidth} height={svgHeight} viewBox={`0 0 ${svgWidth} ${svgHeight}`} class="block">
 		{#each layers as currentLayerNodes, i}
 			{#if i < layers.length - 1}
 				{@const nextLayerNodes = layers[i + 1]}
 				{#each Array(currentLayerNodes) as _, j}
 					{#each Array(nextLayerNodes) as __, k}
-						<line
-							x1={i * layerSpacing + nodeRadius + 25}
-							y1={getNodeY(currentLayerNodes, j) + nodeRadius + 25}
-							x2={(i + 1) * layerSpacing + nodeRadius + 25}
-							y2={getNodeY(nextLayerNodes, k) + nodeRadius + 25}
-							stroke={lineColor}
-							stroke-width={strokeWidth}
-						/>
+						<line x1={i * layerSpacing + nodeRadius + 25} y1={getNodeY(currentLayerNodes, j) + nodeRadius + 25} x2={(i + 1) * layerSpacing + nodeRadius + 25} y2={getNodeY(nextLayerNodes, k) + nodeRadius + 25} stroke={lineColor} stroke-width={strokeWidth} />
 					{/each}
 				{/each}
 			{/if}
 		{/each}
-
-		<!-- Draw nodes for each layer -->
 		{#each layers as numNodes, i}
 			{#each Array(numNodes) as _, j}
-				<circle
-					cx={i * layerSpacing + nodeRadius + 25}
-					cy={getNodeY(numNodes, j) + nodeRadius + 25}
-					r={nodeRadius}
-					fill={getNodeColor(i)}
-					stroke="#333"
-					stroke-width="1"
-				/>
+				<circle cx={i * layerSpacing + nodeRadius + 25} cy={getNodeY(numNodes, j) + nodeRadius + 25} r={nodeRadius} fill={getNodeColor(i)} stroke="#333" stroke-width="1" />
 			{/each}
 		{/each}
 	</svg>
 </div>
-
-<style>
-	.ml-model-container {
-		padding: 1rem;
-		background-color: #f9fafb;
-		border-radius: 0.5rem 0 0 0.5rem;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		overflow-x: auto;
-		width: 300px;
-	}
-
-	.model-svg {
-		display: block;
-	}
-
-	.placeholder-text {
-		color: #4b5563;
-		font-family: sans-serif;
-	}
-</style>

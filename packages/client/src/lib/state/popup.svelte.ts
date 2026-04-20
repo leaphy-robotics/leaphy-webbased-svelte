@@ -1,10 +1,10 @@
+import type { Component } from "svelte";
 import BrowserNotSupported from "$components/core/popups/popups/BrowserNotSupported.svelte";
 import Credits from "$components/core/popups/popups/Credits.svelte";
 import LanguageSelector from "$components/core/popups/popups/LanguageSelector.svelte";
 import Restore from "$components/core/popups/popups/Restore.svelte";
 import { robots } from "$domain/robots";
 import { projectDB } from "$domain/storage";
-import type { Component } from "svelte";
 import EmbedState from "./embed.svelte";
 
 export enum Anchor {

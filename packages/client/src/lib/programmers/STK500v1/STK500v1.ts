@@ -1,8 +1,8 @@
 import type { Buffer } from "buffer";
+import { parse } from "intel-hex";
 import type { Programmer } from "$domain/robots.types";
 import type { LeaphyPort } from "$state/serial.svelte.js";
 import WorkspaceState from "$state/workspace.svelte.js";
-import { parse } from "intel-hex";
 import {
 	clearReadBuffer,
 	convertArrayToHex,

@@ -1,8 +1,8 @@
 <script lang="ts">
-import WorkspaceState from "$state/workspace.svelte";
 import { FitAddon } from "@xterm/addon-fit";
 import { Terminal } from "@xterm/xterm";
 import { onMount } from "svelte";
+import WorkspaceState from "$state/workspace.svelte";
 
 const terminal = new Terminal();
 const fitAddon = new FitAddon();
@@ -155,16 +155,6 @@ $effect(() => {
 });
 </script>
 
-<div class="container">
-    <div class="terminal" bind:this={element}></div>
+<div class="p-2.5 bg-black">
+    <div class="h-[300px]" bind:this={element}></div>
 </div>
-
-<style>
-    .container {
-        padding: 10px;
-        background: #000;
-    }
-    .terminal {
-        height: 300px;
-    }
-</style>

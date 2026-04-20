@@ -1,10 +1,14 @@
 <script lang="ts">
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { getContext, onMount } from "svelte";
+import Fa from "svelte-fa";
+import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import RobotRestore from "$components/ui/RobotRestore.svelte";
 import { robots } from "$domain/robots";
-import { type SavedContent, type SavedFile, projectDB } from "$domain/storage";
+import { projectDB, type SavedContent, type SavedFile } from "$domain/storage";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState, {
@@ -14,10 +18,6 @@ import RobotRestoreState from "$state/robotRestore.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import { track } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { getContext, onMount } from "svelte";
-import Fa from "svelte-fa";
-import { _ } from "svelte-i18n";
 
 interface Props {
 	saves: ((SavedContent | SavedFile) & { type: string; saveID: number })[];
@@ -127,27 +127,27 @@ $effect(() => {
 });
 </script>
 
-<div class="content">
-	<div class="header">
-		<h1>{$_("CONTINUE_WORKING")}</h1>
-		<span>{$_("CONTINUE_WORKING_DESC")}</span>
+<div class="p-5 flex flex-col gap-5 min-w-[500px] text-center">
+	<div class="flex flex-col gap-2.5">
+		<h1 class="m-0">{$_("CONTINUE_WORKING")}</h1>
+		<span class="flex justify-center gap-1.5">{$_("CONTINUE_WORKING_DESC")}</span>
 	</div>
 
 	<RobotRestore selected={value === 'robot'} onselect={() => value = 'robot'} />
 
-	<div class="test">
+	<div class="flex flex-col gap-1.5">
 		<ListSelect options={saveOptions} bind:value>
 			{#snippet render(name, save)}
 				{@const robot = robots[save.robot]}
-				<div class="save">
-					<div class="left">
-						<img src={robot.icon} alt={robot.name} class="icon">
-						<div class="detail">
-							<div class="name">{name}</div>
-							<div class="type">{'content' in save ? $_("TEMP_SAVE") : $_("LOCAL_SAVE")}</div>
+				<div class="flex justify-between w-full items-center text-left py-2">
+					<div class="flex gap-2.5 items-center">
+						<img src={robot.icon} alt={robot.name} class="h-10 w-10 object-contain">
+						<div class="flex flex-col gap-1.5">
+							<div class="text-normal">{name}</div>
+							<div class="text-sm text-on-secondary-muted">{'content' in save ? $_("TEMP_SAVE") : $_("LOCAL_SAVE")}</div>
 						</div>
 					</div>
-					<div onclick={(e) => deleteSave(e, save)} class="right">
+					<div onclick={(e) => deleteSave(e, save)} class="text-2xl text-[salmon] p-1.5 cursor-pointer">
 						<Fa icon={faXmark} />
 					</div>
 				</div>
@@ -155,87 +155,8 @@ $effect(() => {
 		</ListSelect>
 	</div>
 
-	<div class="buttons">
+	<div class="flex justify-center gap-2.5">
 		<Button onclick={cancel} mode="secondary" large center name={$_("CANCEL")} />
 		<Button onclick={open} disabled={!value} large center mode="primary" name={$_("CONTINUE_WORKING")} />
 	</div>
 </div>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-		min-width: 500px;
-		text-align: center;
-	}
-
-	h1 {
-		margin: 0;
-	}
-
-	.header {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	.test {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-	}
-
-	span {
-		display: flex;
-		justify-content: center;
-		gap: 5px;
-	}
-
-	.save {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		align-items: center;
-		text-align: left;
-	}
-
-	.left {
-		display: flex;
-		gap: 10px;
-		align-items: center;
-	}
-
-	.right {
-		font-size: 24px;
-		color: salmon;
-		padding: 5px;
-		cursor: pointer;
-	}
-
-	.icon {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 40px;
-		width: 40px;
-		object-fit: contain;
-	}
-
-	.detail {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-	}
-
-	.name {
-		font-size: 18px;
-	}
-
-	.buttons {
-		display: flex;
-		justify-content: center;
-		gap: 10px;
-	}
-</style>

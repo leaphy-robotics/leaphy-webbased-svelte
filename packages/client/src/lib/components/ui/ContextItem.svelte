@@ -1,11 +1,11 @@
 <script lang="ts">
 import {
-	type IconDefinition,
 	faCaretRight,
+	type IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import { type Snippet, onDestroy, onMount } from "svelte";
-import Fa from "svelte-fa";
+import { onDestroy, onMount, type Snippet } from "svelte";
 import type { Writable } from "svelte/store";
+import Fa from "svelte-fa";
 import ContextMenu from "./ContextMenu.svelte";
 
 interface Props {
@@ -32,20 +32,17 @@ let contextShowing = $state(false);
 
 function interact() {
 	if (!onclick) return;
-
 	open.set(false);
 	onclick();
 }
 
 function hover() {
 	if (!context) return;
-
 	contextShowing = true;
 }
 
 function blur(event: MouseEvent) {
 	if (element.contains(event.target as HTMLElement)) return;
-
 	contextShowing = false;
 }
 
@@ -57,58 +54,22 @@ onDestroy(() => {
 });
 </script>
 
-<tbody bind:this={element}>
-    {#if contextShowing}
-        <ContextMenu anchor="right-start" source={element} content={context} {open} />
-    {/if}
+<div bind:this={element} class="w-full">
+	{#if contextShowing}
+		<ContextMenu anchor="right-start" source={element} content={context} {open} shiftUp />
+	{/if}
 
-    <tr
-        class="item"
-        onclick={interact}
-        onmousemove={hover}
-        class:disabled
-        class:selected
-    >
-        <td class="icon">
-            {#if icon}<Fa {icon} />{/if}
-        </td>
-        <td class="name">
-            {name}
-            {#if context}<Fa icon={faCaretRight} />{/if}
-        </td>
-    </tr>
-</tbody>
-
-<style>
-    .item {
-        background: var(--background);
-        height: 38px;
-        cursor: pointer;
-    }
-    .item:hover {
-        background: var(--background-tint);
-    }
-
-    .icon {
-        padding: 10px 10px 10px 20px;
-        color: var(--primary-dark-tint);
-        text-align: center;
-    }
-
-    .name {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 30px 0 0;
-        height: 38px;
-    }
-
-    .disabled {
-        background: var(--background) !important;
-        opacity: 0.5;
-    }
-
-    .selected {
-        color: var(--primary-dark-tint);
-    }
-</style>
+	<div
+		class="h-10 flex items-center cursor-pointer bg-bg hover:bg-bg-tint
+			{disabled ? 'opacity-50 !bg-bg' : ''}
+			{selected ? 'text-primary-dark' : ''}"
+		onclick={interact}
+		onmousemove={hover}
+	>
+		<div class="w-14 flex justify-center items-center text-primary-dark shrink-0">{#if icon}<Fa {icon} />{/if}</div>
+		<div class="flex flex-1 justify-between items-center pr-12 gap-8">
+			{name}
+			{#if context}<Fa icon={faCaretRight} />{/if}
+		</div>
+	</div>
+</div>

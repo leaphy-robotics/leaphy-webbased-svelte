@@ -1,4 +1,4 @@
-import { type Page, expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { goToHomePage, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
@@ -14,11 +14,11 @@ async function testCategories(
 }
 
 async function installExtension(page: Page, name: string) {
-	await page.locator(".addExtension").click();
+	await page.locator(".blocklyToolboxCategoryGroup button").click();
 	await page.getByText("Select", { exact: true }).click();
 
 	const extension = page
-		.locator(".extension")
+		.locator("div[aria-label='extension']")
 		.filter({ hasText: name })
 		.first();
 	await extension.getByText("Add Extension").click();

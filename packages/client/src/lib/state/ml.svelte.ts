@@ -1,3 +1,16 @@
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import {
+	type Class,
+	type DataFrame,
+	type Dataset,
+	ml,
+} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import type { Sensor } from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
+import type { LayersModel, Tensor } from "@tensorflow/tfjs";
+import * as tf from "@tensorflow/tfjs";
+import type { Component } from "svelte";
+import { get } from "svelte/store";
+import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import Collect from "$components/workspace/ml/flow/Collect.svelte";
@@ -9,19 +22,6 @@ import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import {
-	type Class,
-	type DataFrame,
-	type Dataset,
-	ml,
-} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-import type { Sensor } from "@leaphy-robotics/leaphy-blocks/src/categories/ml/sensors";
-import * as tf from "@tensorflow/tfjs";
-import type { LayersModel, Tensor } from "@tensorflow/tfjs";
-import type { Component } from "svelte";
-import { _ } from "svelte-i18n";
-import { get } from "svelte/store";
 import PopupState from "./popup.svelte";
 
 export const Step = {

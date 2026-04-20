@@ -7,10 +7,10 @@ import {
 	measureLidar,
 } from "../../generators/arduino/sensors";
 import {
-	type Setting,
-	type SettingsToObject,
 	i2cSetting,
 	pinSetting,
+	type Setting,
+	type SettingsToObject,
 } from "./settings";
 
 type SetNode = (node: number, value: string) => string;
@@ -107,7 +107,7 @@ class AnalogSensor extends Sensor {
 	settings = [pinSetting("pin", "analog", "Pin", "Select the pin to use")];
 
 	getValues(
-		arduino: Arduino,
+		_arduino: Arduino,
 		setNode: SetNode,
 		settings: SettingsToObject<typeof this.settings>,
 	) {

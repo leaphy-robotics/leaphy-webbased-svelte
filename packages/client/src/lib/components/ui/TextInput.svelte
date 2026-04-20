@@ -1,6 +1,6 @@
 <script lang="ts">
-import SelectContext from "$components/ui/SelectContext.svelte";
 import { onMount, tick } from "svelte";
+import SelectContext from "$components/ui/SelectContext.svelte";
 
 interface Props {
 	placeholder?: string;
@@ -46,25 +46,29 @@ function onclick(event: MouseEvent) {
 	if (container.contains(event.target as Node)) return;
 	selected = false;
 }
+
+const modeClasses = {
+	primary: "bg-primary text-on-primary placeholder:text-text-muted",
+	secondary:
+		"bg-secondary text-on-secondary placeholder:text-on-secondary-muted",
+	background: "bg-bg text-on-bg",
+};
 </script>
 
 <svelte:body {onclick} />
-<div bind:this={container} class="container">
+<div bind:this={container} class="relative">
 	<input
 		bind:this={input}
-		class="input"
 		{type}
 		{placeholder}
 		bind:value
-		class:primary={mode === "primary"}
-		class:secondary={mode === "secondary"}
-		class:background={mode === "background"}
-		class:disableBottomRoundings={selected && relevantSuggestions.length > 0}
-		class:rounded
-		class:large
-
 		onfocus={() => selected = true}
 		{required}
+		class="border-none w-full outline-none font-[inherit] h-9
+			{modeClasses[mode]}
+			{large ? 'text-lg px-4' : 'px-2.5'}
+			{rounded ? 'rounded-full' : 'rounded-none'}
+			{selected && relevantSuggestions.length > 0 ? 'rounded-bl-none rounded-br-none' : ''}"
 	/>
 	{#if relevantSuggestions.length > 0}
 		<SelectContext
@@ -79,54 +83,3 @@ function onclick(event: MouseEvent) {
 		/>
 	{/if}
 </div>
-
-<style>
-	.container {
-		position: relative;
-	}
-	.input {
-		border: none;
-		padding: 5px 10px;
-		margin: 0;
-		width: 100%;
-		outline: 0;
-		font-size: 1em;
-	}
-
-	.large {
-		font-size: 1.1em;
-		padding: 10px 15px;
-	}
-
-	.primary {
-		background: var(--primary);
-		color: var(--on-primary);
-	}
-
-	.secondary {
-		background: var(--secondary);
-		color: var(--on-secondary);
-	}
-
-	.background {
-		background: var(--background);
-		color: var(--on-background);
-	}
-
-	.rounded {
-		border-radius: 20px;
-	}
-
-	.primary::placeholder {
-		color: var(--text-muted);
-	}
-
-	.secondary::placeholder {
-		color: var(--on-secondary-muted);
-	}
-
-	.disableBottomRoundings {
-		border-bottom-left-radius: 0;
-		border-bottom-right-radius: 0;
-	}
-</style>

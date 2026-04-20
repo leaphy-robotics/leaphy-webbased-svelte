@@ -44,67 +44,31 @@ $effect(() => {
 		position = { x, y };
 	});
 });
+
+const optionClasses = {
+	primary: "bg-primary text-on-primary",
+	secondary: "bg-robot text-on-secondary",
+	background: "bg-primary text-on-primary",
+};
 </script>
 
 {#if open}
-	<div bind:this={wrapper} class="popup" class:left={align === 'left'} class:secondary={mode === 'secondary'} style:left={`${position?.x}px`} style:top={`${position?.y}px`}>
-		<div class="container">
+	<div
+		bind:this={wrapper}
+		class="fixed w-full overflow-hidden overflow-y-auto rounded-b-2xl z-[99] shadow-[var(--shadow-el1)]"
+		style:left={`${position?.x}px`}
+		style:top={`${position?.y}px`}
+	>
+		<div class="overflow-y-auto max-h-48 flex flex-col">
 			{#each options as option (option[1])}
-				<button type="button" onclick={() => onselect(option[1])} class="option"
+				<button
+					type="button"
+					onclick={() => onselect(option[1])}
+					class="border-none px-4 py-2.5 w-full text-ellipsis
+						{align === 'left' ? 'text-left' : 'text-center'}
+						{optionClasses[mode]}"
 				>{$_(option[0])}</button>
 			{/each}
 		</div>
 	</div>
 {/if}
-
-<style>
-	.option {
-		position: relative;
-		background: var(--primary-dark-tint);
-		color: var(--on-primary);
-		border: none;
-		padding: 10px 15px;
-		border-radius: 20px;
-	}
-
-	.secondary .option {
-		background: var(--secondary);
-		color: var(--on-secondary);
-	}
-
-	.popup {
-		position: fixed;
-		width: 100%;
-		overflow-y: auto;
-		z-index: 99;
-		border-radius: 20px;
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-		overflow: hidden;
-		overflow-y: auto;
-		box-shadow: var(--shadow-el1);
-	}
-
-	.container {
-		overflow-y: auto;
-		max-height: 200px;
-
-		display: flex;
-		flex-direction: column;
-	}
-
-	.option {
-		background: var(--primary);
-		border-radius: 0;
-		text-overflow: ellipsis;
-		width: 100%;
-	}
-
-	.secondary .option {
-		background: var(--robot);
-	}
-
-	.left .option {
-		text-align: left;
-	}
-</style>

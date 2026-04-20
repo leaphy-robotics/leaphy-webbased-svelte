@@ -1,4 +1,8 @@
 <script lang="ts">
+import * as Sentry from "@sentry/browser";
+import { serialization } from "blockly";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import TextArea from "$components/ui/TextArea.svelte";
@@ -7,12 +11,7 @@ import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState from "$state/serial.svelte";
-import WorkspaceState from "$state/workspace.svelte";
-import { Mode } from "$state/workspace.svelte";
-import * as Sentry from "@sentry/browser";
-import { serialization } from "blockly";
-import { getContext } from "svelte";
-import { _ } from "svelte-i18n";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 
 let message = $state("");
 let senderName = $state("");
@@ -71,182 +70,39 @@ function onsubmit(event: SubmitEvent) {
 }
 </script>
 
-<form class="content" {onsubmit}>
-	<div class="header">
-		<h1>{$_("FEEDBACK")}</h1>
-		<span>{$_("FEEDBACK_INTRODUCTION")}</span>
-	</div>
-	<div class="input">
-		<TextInput
-			placeholder={$_("NAME")}
-			bind:value={senderName}
-			mode="secondary"
-			focus={true}
-			required
-			rounded={true}>
-		</TextInput>
+<form class="p-4 flex flex-col gap-3.5 min-w-[400px] text-center" {onsubmit}>
+	<div class="flex flex-col gap-1.5 text-left">
+		<h1 class="m-0 text-xl">{$_("FEEDBACK")}</h1>
+		<span class="text-sm leading-snug">{$_("FEEDBACK_INTRODUCTION")}</span>
 	</div>
 
-	<div class="input">
-		<TextInput
-			placeholder={$_("EMAIL")}
-			bind:value={senderEmail}
-			mode="secondary"
-			type="email"
-			required
-			rounded={true}>
-		</TextInput>
-	</div>
+	<TextInput placeholder={$_("NAME")} bind:value={senderName} mode="secondary" focus={true} required rounded={true} />
+	<TextInput placeholder={$_("EMAIL")} bind:value={senderEmail} mode="secondary" type="email" required rounded={true} />
+	<TextArea placeholder={$_("MESSAGE")} bind:value={message} mode={"secondary"} required rows={6} />
 
-	<TextArea
-		placeholder={$_("MESSAGE")}
-		bind:value={message}
-		mode={"secondary"}
-		required
-		rows={6}
-	/>
-
-	<div class="attachments">
-		<span class="label">{$_("ATTACHMENTS")}</span>
-		<div class="attachments-list">
-			<label class="attachment" for="upload-logs">
-				<input type="checkbox" id="upload-logs" bind:checked={uploadLogs} />
-				<span class="checkbox-custom"></span>
-				<span class="attachment-label">{$_("UPLOAD_LOGS")}</span>
+	<div class="flex flex-col gap-1 text-left">
+		<span class="font-semibold text-sm">{$_("ATTACHMENTS")}</span>
+		<div class="flex gap-1.5">
+			<label class="flex flex-1 items-center gap-2 px-2.5 py-2.5 bg-secondary rounded-xl cursor-pointer transition-all relative">
+				<input type="checkbox" class="absolute opacity-0 w-0 h-0" id="upload-logs" bind:checked={uploadLogs} />
+				<span class="relative w-5 h-5 min-w-5 border-2 border-on-secondary-muted rounded-md bg-transparent flex items-center justify-center transition-all {uploadLogs ? 'bg-primary border-primary' : ''}">
+					{#if uploadLogs}<span class="text-on-primary text-xs font-bold">✓</span>{/if}
+				</span>
+				<span class="text-sm text-on-secondary select-none flex-1">{$_("UPLOAD_LOGS")}</span>
 			</label>
-			<label class="attachment" for="workspace">
-				<input type="checkbox" id="workspace" bind:checked={workspace} />
-				<span class="checkbox-custom"></span>
-				<span class="attachment-label">{$_("WORKSPACE")}</span>
+			<label class="flex flex-1 items-center gap-2 px-2.5 py-2.5 bg-secondary rounded-xl cursor-pointer transition-all relative">
+				<input type="checkbox" class="absolute opacity-0 w-0 h-0" id="workspace" bind:checked={workspace} />
+				<span class="relative w-5 h-5 min-w-5 border-2 border-on-secondary-muted rounded-md bg-transparent flex items-center justify-center transition-all {workspace ? 'bg-primary border-primary' : ''}">
+					{#if workspace}<span class="text-on-primary text-xs font-bold">✓</span>{/if}
+				</span>
+				<span class="text-sm text-on-secondary select-none flex-1">{$_("WORKSPACE")}</span>
 			</label>
 		</div>
-		<span class="info-text">{$_("FEEDBACK_INFO")}</span>
+		<span class="text-xs text-on-secondary-muted leading-tight mt-0.5">{$_("FEEDBACK_INFO")}</span>
 	</div>
 
-	<div class="buttons">
+	<div class="flex justify-center gap-2 mt-0.5">
 		<Button large onclick={cancel} mode={"secondary"} name={$_("CANCEL")}/>
 		<Button large type="submit" mode={"primary"} name={$_("SEND")}/>
 	</div>
 </form>
-
-<style>
-	.header {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-	}
-
-	.header span {
-		font-size: 0.9em;
-		line-height: 1.4;
-	}
-
-	.content {
-		padding: 16px;
-		display: flex;
-		flex-direction: column;
-		gap: 14px;
-		min-width: 400px;
-		text-align: center;
-	}
-
-	h1 {
-		margin: 0;
-		font-size: 1.3em;
-	}
-
-	.buttons {
-		display: flex;
-		justify-content: center;
-		gap: 8px;
-		margin-top: 2px;
-	}
-
-	.attachments {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		text-align: left;
-	}
-
-	.attachments .label {
-		font-weight: 600;
-		font-size: 0.9em;
-		color: var(--on-background);
-		margin-bottom: 2px;
-	}
-
-	.attachments-list {
-		display: flex;
-		gap: 5px;
-	}
-
-	.attachment {
-		display: flex;
-		align-items: center;
-		flex: 1;
-		gap: 8px;
-		padding: 8px 10px;
-		background: var(--secondary);
-		border-radius: 10px;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		position: relative;
-	}
-
-	.attachment input[type="checkbox"] {
-		position: absolute;
-		opacity: 0;
-		width: 0;
-		height: 0;
-	}
-
-	.checkbox-custom {
-		position: relative;
-		width: 20px;
-		height: 20px;
-		min-width: 20px;
-		border: 2px solid var(--on-secondary-muted);
-		border-radius: 6px;
-		background: transparent;
-		transition: all 0.2s ease;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.attachment input[type="checkbox"]:checked + .checkbox-custom {
-		background: var(--primary);
-		border-color: var(--primary);
-	}
-
-	.attachment input[type="checkbox"]:checked + .checkbox-custom::after {
-		content: "";
-		position: absolute;
-		width: 5px;
-		height: 10px;
-		border: solid var(--on-primary);
-		border-width: 0 2px 2px 0;
-		transform: rotate(45deg);
-		top: 2px;
-	}
-
-	.attachment input[type="checkbox"]:focus-visible + .checkbox-custom {
-		outline: 2px solid var(--primary);
-		outline-offset: 2px;
-	}
-
-	.attachment-label {
-		font-size: 0.95em;
-		color: var(--on-secondary);
-		user-select: none;
-		flex: 1;
-	}
-
-	.info-text {
-		font-size: 0.8em;
-		color: var(--on-secondary-muted);
-		line-height: 1.3;
-		margin-top: 2px;
-	}
-</style>

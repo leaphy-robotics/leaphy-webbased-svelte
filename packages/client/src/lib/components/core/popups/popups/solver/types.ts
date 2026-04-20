@@ -65,18 +65,18 @@ type Packet =
 	| DonePacket;
 
 export type {
-	BaseQuestion,
-	MultipleChoiceQuestion,
-	Question,
 	BaseMessage,
-	TextMessage,
-	PromptResultMessage,
-	SchemaMessage,
-	Message as SolverMessage,
 	BasePacket,
-	MultipleChoicePacket,
+	BaseQuestion,
 	CircuitSchemaPacket,
-	TextPacket,
 	DonePacket,
+	Message as SolverMessage,
+	MultipleChoicePacket,
+	MultipleChoiceQuestion,
 	Packet,
+	PromptResultMessage,
+	Question,
+	SchemaMessage,
+	TextMessage,
+	TextPacket,
 };

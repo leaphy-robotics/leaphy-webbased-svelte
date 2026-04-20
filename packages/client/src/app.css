@@ -1,19 +1,20 @@
+@import "tailwindcss";
+
 * {
 	box-sizing: border-box;
 }
 
 body {
-	--shadow-el1: 0 5px 5px -3px #0003, 0 8px 10px 1px #00000024, 0 3px 14px 2px
-		#0000001f;
+	--shadow-el1:
+		0 5px 5px -3px #0003, 0 8px 10px 1px #00000024, 0 3px 14px 2px #0000001f;
 	--shadow-el2:
 		0px 11px 15px -7px rgba(0, 0, 0, 0.2),
 		0px 24px 38px 3px rgba(0, 0, 0, 0.14),
 		0px 9px 46px 8px rgba(0, 0, 0, 0.12);
 
 	--full-height: calc(100vh - 64px);
-}
 
-body[data-color-scheme="light"] {
+	/* Light mode defaults — applied immediately before JS sets data-color-scheme */
 	--background: #fff;
 	--robot: #fff;
 	--on-background: #000;
@@ -29,6 +30,7 @@ body[data-color-scheme="light"] {
 	--text-muted: #d3d3d3;
 	--warning: #ffcc00;
 }
+
 body[data-color-scheme="dark"] {
 	--background: #24242b;
 	--robot: #303039;
@@ -46,12 +48,50 @@ body[data-color-scheme="dark"] {
 	--warning: #ffcc00;
 }
 
+@theme inline {
+	--color-primary: var(--primary);
+	--color-primary-dark: var(--primary-dark-tint);
+	--color-on-primary: var(--on-primary);
+	--color-secondary: var(--secondary);
+	--color-on-secondary: var(--on-secondary);
+	--color-on-secondary-muted: var(--on-secondary-muted);
+	--color-accent: var(--accent);
+	--color-on-accent: var(--on-accent);
+	--color-bg: var(--background);
+	--color-bg-tint: var(--background-tint);
+	--color-on-bg: var(--on-background);
+	--color-text-muted: var(--text-muted);
+	--color-warning: var(--warning);
+	--color-robot: var(--robot);
+
+	--shadow-card: var(--shadow-el1);
+	--shadow-modal: var(--shadow-el2);
+
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 16px;
+	--radius-pill: 9999px;
+}
+
 body {
 	margin: 0;
 	background: var(--background-tint);
 	color: var(--on-background);
 	font-family: sans-serif;
 	overflow: hidden;
+}
+
+h1 {
+	font-size: 1.875rem;
+	font-weight: bold;
+}
+h2 {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+h3 {
+	font-size: 1.25rem;
+	font-weight: bold;
 }
 
 .blocklyToolboxCategory {
@@ -78,8 +118,12 @@ td {
 	background-color: transparent !important;
 }
 
+svg[display="none"] {
+	display: none;
+}
+
 .blocklyFlyoutLabel .blocklyFlyoutLabelBackground {
-	width: 400% !important; /* 400% instead of 100% to ensure that the label is full width at any zoom level */
+	width: 400% !important;
 	transform: translateX(-16px) translateY(-8px);
 	height: 34px !important;
 }

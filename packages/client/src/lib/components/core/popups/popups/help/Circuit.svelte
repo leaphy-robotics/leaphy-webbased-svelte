@@ -1,13 +1,13 @@
 <script lang="ts">
-import PopupsState, { type PopupState } from "$state/popup.svelte";
-import { track } from "$state/utils";
-import WorkspaceState from "$state/workspace.svelte";
 import { faMagnifyingGlassPlus } from "@fortawesome/free-solid-svg-icons";
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import { layoutComponents } from "@leaphy-robotics/schemas";
 import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
+import { track } from "$state/utils";
+import WorkspaceState from "$state/workspace.svelte";
 import Circuit from "../Circuit.svelte";
 
 let popupState = getContext<PopupState>("state");
@@ -22,80 +22,20 @@ $effect(() => {
 });
 
 function zoomIn() {
-	PopupsState.open({
-		component: Circuit,
-		data: {},
-		allowInteraction: true,
-	});
+	PopupsState.open({ component: Circuit, data: {}, allowInteraction: true });
 	popupState.close();
 }
 </script>
 
-<div class="container">
-    <div class="content" onclick={zoomIn}>
-        <img src={image} alt="Circuit" />
-        <div class="overlay">
-            <div class="overlay-content">
-                <div class="overlay-content-icon">
-                    <Fa icon={faMagnifyingGlassPlus} />
-                </div>
-                <div class="overlay-content-text">Click to zoom in</div>
-            </div>
-        </div>
-    </div>
-    <div class="description">{$_("CIRCUIT_DESCRIPTION")}</div>
+<div class="flex flex-col gap-2.5 flex-1">
+	<div class="group relative flex-1 cursor-pointer" onclick={zoomIn}>
+		<img class="w-full h-full object-contain" src={image} alt="Circuit" />
+		<div class="absolute inset-0 bg-black/40 flex justify-center items-center flex-col text-center text-xl font-bold z-10 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+			<div class="flex flex-col items-center gap-2.5">
+				<div class="text-4xl"><Fa icon={faMagnifyingGlassPlus} /></div>
+				<div>Click to zoom in</div>
+			</div>
+		</div>
+	</div>
+	<div class="text-sm">{$_("CIRCUIT_DESCRIPTION")}</div>
 </div>
-
-<style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        flex: 1;
-    }
-
-    .content {
-        position: relative;
-        flex: 1;
-        cursor: pointer;
-    }
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-    }
-
-    .overlay {
-        position: absolute;
-        inset: 0;
-        background: #00000060;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        z-index: 1;
-        color: #fff;
-        border-radius: 10px;
-        opacity: 0;
-        transition: opacity 0.2s ease-in-out;
-    }
-
-    .content:hover .overlay {
-        opacity: 1;
-    }
-
-    .overlay-content {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .overlay-content-icon {
-        font-size: 40px;
-    }
-</style>

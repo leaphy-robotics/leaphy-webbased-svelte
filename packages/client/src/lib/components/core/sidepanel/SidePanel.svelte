@@ -1,7 +1,7 @@
 <script lang="ts">
+import { onDestroy, onMount } from "svelte";
 import ComponentRenderer from "$components/ui/ComponentRenderer.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { onDestroy, onMount } from "svelte";
 
 let width = $state(300);
 
@@ -33,28 +33,10 @@ onDestroy(() => {
 });
 </script>
 
-<div class="panel" style:width={`${width}px`}>
-    <div class="dragger" onmousedown={mousedown}></div>
-    <ComponentRenderer component={WorkspaceState.SidePanel} />
+<div class="flex pointer-events-auto" style:width={`${width}px`}>
+	<div
+		class="relative border-l-2 border-text-muted h-full cursor-w-resize before:content-[''] before:absolute before:w-5 before:h-full before:-left-2.5 before:top-0"
+		onmousedown={mousedown}
+	></div>
+	<ComponentRenderer component={WorkspaceState.SidePanel} />
 </div>
-
-<style>
-    .panel {
-        display: flex;
-        pointer-events: auto;
-    }
-    .dragger {
-        position: relative;
-        border-left: 3px solid var(--text-muted);
-        height: 100%;
-        cursor: w-resize;
-    }
-    .dragger::before {
-        content: "";
-        position: absolute;
-        width: 20px;
-        height: 100%;
-        left: -10px;
-        top: 0;
-    }
-</style>

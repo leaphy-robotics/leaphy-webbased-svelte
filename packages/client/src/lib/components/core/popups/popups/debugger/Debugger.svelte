@@ -1,8 +1,12 @@
 <script lang="ts">
+import { arduino } from "@leaphy-robotics/leaphy-blocks";
+import { serialization } from "blockly";
+import { onMount, untrack } from "svelte";
+import { _ } from "svelte-i18n";
 import starling from "$assets/starling-svg.svg";
-import Windowed from "$components/core/popups/Windowed.svelte";
-import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
+import Uploader from "$components/core/popups/popups/Uploader.svelte";
+import Windowed from "$components/core/popups/Windowed.svelte";
 import Button from "$components/ui/Button.svelte";
 import Switch from "$components/ui/Switch.svelte";
 import DebuggingSerializer from "$domain/blockly/debugging.svelte";
@@ -11,10 +15,6 @@ import PopupsState from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import { track } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { arduino } from "@leaphy-robotics/leaphy-blocks";
-import { serialization } from "blockly";
-import { onMount, untrack } from "svelte";
-import { _ } from "svelte-i18n";
 
 let motorDebugger = $derived(
 	SerialState.log.debugger.debuggers?.find((e) => e.type.type === "motors"),
@@ -28,7 +28,6 @@ let distance = $derived(
 	)?.values?.[0] ?? 1313,
 );
 
-// Line sensor derivations (0 = black line, 1 = floor)
 let leftLineSensor = $derived(
 	SerialState.log.debugger.debuggers?.find(
 		(e) => e.type.simulation === "left_line_sensor",
@@ -121,19 +120,17 @@ function differentialDriveTick(leftSpeed: number, rightSpeed: number): void {
 	backgroundY -=
 		Math.sin(-robotRotation - Math.PI / 2) * Math.sqrt(dx ** 2 + dy ** 2);
 
-	// Calculate target curve for the line prediction based on sensors
 	let targetCurve = 0;
 	if (leftLineSensor < 0.5 && rightLineSensor >= 0.5) {
-		targetCurve = -250; // Line is turning left
+		targetCurve = -250;
 	} else if (rightLineSensor < 0.5 && leftLineSensor >= 0.5) {
-		targetCurve = 250; // Line is turning right
+		targetCurve = 250;
 	} else if (leftLineSensor < 0.5 && rightLineSensor < 0.5) {
-		targetCurve = 0; // Both on line, keep straight
+		targetCurve = 0;
 	} else {
-		targetCurve = 0; // Lost the line, default straight
+		targetCurve = 0;
 	}
 
-	// Smoothly interpolate the line curve
 	currentCurveOffset += (targetCurve - currentCurveOffset) * 0.08;
 }
 
@@ -151,10 +148,10 @@ onMount(() => {
 		<Switch name={$_("DEBUGGING")} bind:checked={DebuggingSerializer.debugging} />
 	{/snippet}
 	{#if !SerialState.port || !SerialState.log.debugger.debuggers}
-		<div class="warning">
-			<div class="desc">
-				<div class="name">{$_("NOT_CONNECTED")}</div>
-				<div class="description">{$_("NOT_CONNECTED_DESC")}</div>
+		<div class="flex justify-between items-center bg-primary text-on-primary w-full px-2.5 py-1.5 pl-2.5">
+			<div>
+				<div class="text-lg font-bold">{$_("NOT_CONNECTED")}</div>
+				<div class="text-sm opacity-80">{$_("NOT_CONNECTED_DESC")}</div>
 			</div>
 			<Button mode={"accent"} name={$_("CHOOSE_ROBOT")} onclick={connect} />
 		</div>
@@ -162,9 +159,9 @@ onMount(() => {
 	<div class="viewport" class:near-mode={proximityFactor > 0}>
 		{#if !DebuggingSerializer.debugging}
 			<div class="debugging-off">
-				<div class="desc">
-					<div class="name">{$_("DEBUGGING_OFF")}</div>
-					<div class="description">{$_("DEBUGGING_OFF_DESC")}</div>
+				<div class="flex flex-col gap-1.5">
+					<div class="text-xl font-bold">{$_("DEBUGGING_OFF")}</div>
+					<div class="opacity-70">{$_("DEBUGGING_OFF_DESC")}</div>
 				</div>
 				<Button mode="accent" name={$_("ENABLE_DEBUGGING")} onclick={() => { DebuggingSerializer.debugging = true; }} />
 			</div>
@@ -189,7 +186,6 @@ onMount(() => {
 							<mask id="line-mask" maskUnits="userSpaceOnUse">
 								<rect width="800" height="800" fill="url(#mask-fade)"/>
 							</mask>
-
 							<linearGradient id="mask-fade" x1="0" y1="800" x2="0" y2="0" gradientUnits="userSpaceOnUse">
 								<stop offset="0%" stop-color="white"/>
 								<stop offset="100%" stop-color="black"/>
@@ -212,11 +208,11 @@ onMount(() => {
 				>
 					<div class="distance-label">{distance.toFixed(1)} cm</div>
 				</div>
-				<img class="robot" src={starling} alt="Robot" />
+				<img class="w-[300px] block z-[2]" src={starling} alt="Robot" />
 			</div>
 		</div>
 
-		<div class="debugger">
+		<div class="flex-1 min-w-0 z-10 overflow-y-auto overflow-x-hidden h-full">
 			<SensorState />
 		</div>
 	</div>
@@ -229,26 +225,10 @@ onMount(() => {
 		align-items: center;
 		gap: 30px;
 		padding: 40px;
-		height: 700px;
-		max-width: 80vw;
-		max-height: 80vh;
-		overflow: auto;
+		width: min(1000px, 90vw);
+		height: min(600px, 70vh);
+		overflow: hidden;
 		position: relative;
-	}
-
-	.warning {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		background: var(--primary);
-		color: var(--on-primary);
-		width: 100%;
-		padding: 5px 5px 5px 10px;
-	}
-
-	.name {
-		font-size: 1.1em;
-		font-weight: bold;
 	}
 
 	.playground {
@@ -256,13 +236,11 @@ onMount(() => {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		/* Padding-top transition ensures the playground grows to fit the ray */
 		transition: 0.4s ease-out;
 	}
 
 	.background {
 		position: absolute;
-		/* Important: inset must cover the entire potential height of the ray */
 		inset: -2000px;
 		z-index: -1;
 		background-image:
@@ -276,12 +254,6 @@ onMount(() => {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-	}
-
-	.robot {
-		width: 300px;
-		display: block;
-		z-index: 2;
 	}
 
 	.predicted-line {
@@ -332,11 +304,6 @@ onMount(() => {
 		white-space: nowrap;
 	}
 
-	.debugger {
-		width: 500px;
-		z-index: 10;
-	}
-
 	.debugging-off {
 		position: absolute;
 		inset: 0;
@@ -348,20 +315,5 @@ onMount(() => {
 		align-items: center;
 		gap: 20px;
 		text-align: center;
-	}
-
-	.debugging-off .desc {
-		display: flex;
-		flex-direction: column;
-		gap: 6px;
-	}
-
-	.debugging-off .name {
-		font-size: 1.3em;
-		font-weight: bold;
-	}
-
-	.debugging-off .description {
-		opacity: 0.7;
 	}
 </style>

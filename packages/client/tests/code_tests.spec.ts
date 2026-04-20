@@ -1,5 +1,5 @@
-import { promises as fs, existsSync as fileExists } from "node:fs";
-import { type Page, expect, test } from "@playwright/test";
+import { existsSync as fileExists, promises as fs } from "node:fs";
+import { expect, type Page, test } from "@playwright/test";
 import {
 	getDownloadContents,
 	goToHomePage,
@@ -74,10 +74,10 @@ async function testCode(generatedCode: string, workspace_file: string) {
 }
 
 async function downloadCode(page: Page): Promise<string> {
-	await page.locator(".header").getByRole("button", { name: "Code" }).click();
+	await page.getByRole("button", { name: "Code" }).first().click();
 	await page.getByRole("button", { name: "My projects" }).click();
 
-	await page.getByRole("cell", { name: "Save As" }).click();
+	await page.getByText("Save As").click();
 
 	await page
 		.getByRole("textbox", { name: "Give your download a name" })
@@ -110,7 +110,7 @@ async function testCppExtension(page: Page, extension: string) {
 
 		await mockShowOpenFilePicker(page, workspace_file);
 
-		await page.getByRole("cell", { name: "Open" }).click();
+		await page.getByText("Open").click();
 
 		// To figure out what libraries are used, compile the project and capture the request
 		const uploadPromise = page.waitForRequest((request) => {
@@ -188,7 +188,7 @@ test("Code blocks - Micropython", async ({ page }) => {
 
 		await mockShowOpenFilePicker(page, workspace_file);
 
-		await page.getByRole("cell", { name: "Open" }).click();
+		await page.getByText("Open").click();
 
 		let downloadedCode = await downloadCode(page);
 

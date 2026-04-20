@@ -1,12 +1,12 @@
 <script lang="ts">
-import { type Tutorial, getTutorials } from "$education/tutorials";
-import PopupsState, { Anchor } from "$state/popup.svelte";
-import type { PopupState } from "$state/popup.svelte";
-import WorkspaceState from "$state/workspace.svelte";
 import { faList, faPlay, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { getContext } from "svelte";
 import FontAwesomeIcon from "svelte-fa";
 import { _, locale } from "svelte-i18n";
+import { getTutorials, type Tutorial } from "$education/tutorials";
+import type { PopupState } from "$state/popup.svelte";
+import PopupsState, { Anchor } from "$state/popup.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import Thumbnail from "../tutorials/Thumbnail.svelte";
 import Tutorials from "../tutorials/Tutorials.svelte";
 
@@ -27,26 +27,10 @@ function openTutorial(tutorial: Tutorial) {
 }
 </script>
 
-<div class="tutorials">
-    {#each getTutorials($locale, WorkspaceState.robot) as tutorial}
-        <div class="tutorial">
-            <Thumbnail name={tutorial.name} item={tutorial.item} onclick={() => openTutorial(tutorial)} />
-        </div>
-    {/each}
+<div class="flex flex-nowrap gap-2.5 overflow-x-auto w-[378px]">
+	{#each getTutorials($locale, WorkspaceState.robot) as tutorial}
+		<div class="w-[218px] shrink-0">
+			<Thumbnail name={tutorial.name} item={tutorial.item} onclick={() => openTutorial(tutorial)} />
+		</div>
+	{/each}
 </div>
-
-<style>
-    .tutorials {
-        display: flex;
-        flex-wrap: nowrap;
-        gap: 10px;
-        overflow-x: auto;
-        width: 378px;
-    }
-
-    .tutorial {
-        width: 218px;
-        flex-shrink: 0;
-    }
-
-</style>

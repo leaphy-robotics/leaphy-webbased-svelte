@@ -1,4 +1,6 @@
 <script lang="ts">
+import { utils, type WorkspaceSvg } from "blockly";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 import addExtensionIcon from "$assets/add-extension.svg";
 import AddExtension from "$components/core/popups/popups/AddExtension.svelte";
 import Extensions from "$domain/blockly/extensions.svelte.js";
@@ -6,8 +8,6 @@ import robotsGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import { type WorkspaceSvg, utils } from "blockly";
-import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 
 interface Item {
 	toolboxitemid: string;
@@ -40,17 +40,22 @@ const enabledCategories = $derived(
 );
 </script>
 
-<div class="toolbox">
+<div class="flex flex-col justify-between bg-[rgb(43,43,55)] gap-1.5 h-full w-20 overflow-x-visible">
 	<OverlayScrollbarsComponent defer options={{ scrollbars: { theme: 'os-theme-light', autoHide: 'leave' } }}>
-		<div class="categories">
+		<div class="flex flex-col overflow-x-hidden gap-1.5 flex-1">
 			<div id="focusable"></div>
 			{#each enabledCategories as item}
-				<div class="category" id={item.toolboxitemid} style:border-color={getColor(item.categorystyle)} style:background={selected === item.toolboxitemid ? getColor(item.categorystyle) : undefined}>
-					<div class="content">
-						<div class="container">
-							<img class="icon" src={`blockly-assets/${item.toolboxitemid}.svg`} alt="">
+				<div
+					class="h-18 w-20 p-1.5 border-l-8 border-solid hover:bg-white/20"
+					id={item.toolboxitemid}
+					style:border-color={getColor(item.categorystyle)}
+					style:background={selected === item.toolboxitemid ? getColor(item.categorystyle) : undefined}
+				>
+					<div class="flex flex-col items-center gap-1 pointer-events-none h-full">
+						<div class="flex-1 flex justify-center items-center">
+							<img class="object-contain w-5 h-5" src={`blockly-assets/${item.toolboxitemid}.svg`} alt="">
 						</div>
-						<div class="name">{utils.parsing.replaceMessageReferences(item.name)}</div>
+						<div class="shrink-0 text-xs font-bold text-center">{utils.parsing.replaceMessageReferences(item.name)}</div>
 					</div>
 				</div>
 			{/each}
@@ -58,84 +63,8 @@ const enabledCategories = $derived(
 	</OverlayScrollbarsComponent>
 
 	{#if !([RobotType.L_MICROPYTHON, ...robotsGroups.L_FLITZ_ALL].includes(WorkspaceState.robot.type))}
-		<button onclick={addExtension} class="addExtension">
-			<img class="icon" src={addExtensionIcon} alt="">
+		<button onclick={addExtension} class="cursor-pointer p-4 flex justify-center bg-primary border-none">
+			<img class="object-contain w-7 h-7" src={addExtensionIcon} alt="">
 		</button>
 	{/if}
 </div>
-
-<style>
-	.toolbox {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-
-		background: rgb(43, 43, 55);
-		gap: 5px;
-		height: 100%;
-		width: 80px;
-		overflow-x: visible;
-	}
-
-	.categories {
-		display: flex;
-		flex-direction: column;
-		overflow-x: hidden;
-		gap: 5px;
-		flex: 1;
-	}
-
-	.category {
-		height: 72px;
-		width: 80px;
-		padding: 5px;
-		border-left: 8px solid;
-	}
-
-	.category:hover {
-		background: rgba(255, 255, 255, .2);
-	}
-
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 4px;
-		pointer-events: none;
-		height: 100%;
-	}
-
-	.container {
-		flex: 1;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
-	.icon {
-		object-fit: contain; /* Keeps icon proportions */
-		width: 20px;
-		height: 20px;
-	}
-
-	.name {
-		flex-shrink: 0; /* Prevents text from being compressed */
-		font-size: 12px;
-		font-weight: bold;
-		text-align: center;
-	}
-
-	.addExtension {
-		cursor: pointer;
-		padding: 16px;
-		display: flex;
-		justify-content: center;
-		background: var(--primary);
-		border: none;
-	}
-
-	.addExtension .icon {
-		width: 28px;
-		height: 28px;
-	}
-</style>

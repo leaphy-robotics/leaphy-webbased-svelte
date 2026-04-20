@@ -25,40 +25,16 @@ function interact() {
 }
 </script>
 
-<div class="library">
-    <div class="library-header">
-        <div class="name">{library.name}</div>
-        <div class="attribution">{$_("ATTRIBUTION")} {library.author}</div>
+<div class="flex flex-col gap-2">
+    <div>
+        <span class="font-bold">{library.name}</span>
+        <span> {$_("ATTRIBUTION")} {library.author}</span>
     </div>
-    <div class="description">{library.paragraph}</div>
-    <div class="installer">
-        {#if !isInstalled}<Select
-                options={library.versions.map((e) => [e, e])}
-                bind:value={version}
-            />{/if}
-        <Button
-            mode={"primary"}
-            name={$_(isInstalled ? "UNINSTALL_LIBRARY" : "INSTALL_LIBRARY")}
-            onclick={interact}
-        />
+    <div class="whitespace-pre-line">{library.paragraph}</div>
+    <div class="flex gap-2.5">
+        {#if !isInstalled}
+            <Select options={library.versions.map((e) => [e, e])} bind:value={version} />
+        {/if}
+        <Button mode={"primary"} name={$_(isInstalled ? "UNINSTALL_LIBRARY" : "INSTALL_LIBRARY")} onclick={interact} />
     </div>
 </div>
-
-<style>
-    .name {
-        display: inline-block;
-        font-weight: bold;
-    }
-    .attribution {
-        display: inline-block;
-    }
-
-    .description {
-        white-space: pre-line;
-    }
-
-    .installer {
-        display: flex;
-        gap: 10px;
-    }
-</style>

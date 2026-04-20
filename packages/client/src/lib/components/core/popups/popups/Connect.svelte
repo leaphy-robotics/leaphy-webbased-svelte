@@ -1,19 +1,19 @@
 <script lang="ts">
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
+import * as Blockly from "blockly";
+import { getContext } from "svelte";
+import { _ } from "svelte-i18n";
 import defaultProgram from "$assets/default-program.json?raw";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import ChipSelect from "$components/ui/ChipSelect.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
 import { isCompatible } from "$domain/blockly/blockly";
-import { type RobotDevice, type Selector, getSelector } from "$domain/robots";
+import { getSelector, type RobotDevice, type Selector } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import * as Blockly from "blockly";
-import { getContext } from "svelte";
-import { _ } from "svelte-i18n";
 
 interface Props {
 	connectOverride: boolean;
@@ -97,7 +97,7 @@ async function disabledSelect() {
 }
 </script>
 
-<div class="content">
+<div class="p-5 flex flex-col min-w-[400px] text-center gap-4">
 	<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
 	{#if categories.length > 1}
 		<ChipSelect options={categoriesFilter} bind:value={category} />
@@ -105,14 +105,3 @@ async function disabledSelect() {
 	<ListSelect {warning} options={values} {checkEnabled} disabledText={$_("INCOMPATIBLE_PROJECT")} {disabledSelect} bind:value={WorkspaceState.robot} />
 	<Button onclick={start} mode="primary" name={$_("CONTINUE")} center bold />
 </div>
-
-<style>
-	.content {
-		padding: 20px;
-		display: flex;
-		flex-direction: column;
-		min-width: 400px;
-		text-align: center;
-		gap: 15px;
-	}
-</style>

@@ -3,19 +3,19 @@ import {
 	Chart,
 	Colors,
 	Legend,
+	LinearScale,
 	LineController,
 	LineElement,
-	LinearScale,
 	PointElement,
 	TimeScale,
 } from "chart.js";
 import { onMount } from "svelte";
 import "chartjs-adapter-date-fns";
-import SerialState from "$state/serial.svelte";
 import { Tooltip } from "chart.js";
 import { enUS, nl } from "date-fns/locale";
-import { locale } from "svelte-i18n";
 import { get } from "svelte/store";
+import { locale } from "svelte-i18n";
+import SerialState from "$state/serial.svelte";
 
 Chart.register(
 	TimeScale,
@@ -87,11 +87,4 @@ $effect(() => {
 });
 </script>
 
-<canvas bind:this={element}></canvas>
-
-<style>
-	canvas {
-		width: 785px;
-		height: 400px;
-	}
-</style>
+<canvas class="w-[785px] h-[400px]" bind:this={element}></canvas>
