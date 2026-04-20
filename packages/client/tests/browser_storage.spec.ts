@@ -77,7 +77,10 @@ test("Saving - Blockly - Continue working", async ({ page }) => {
 test("Saving - C++", async ({ page }) => {
 	await selectRobot(page, "Leaphy C++");
 	await page.getByText("setup").click();
-	await page.getByRole("textbox", { name: "Editor content" }).fill("testing");
+
+	const editor = page.getByRole("textbox", { name: "Editor content" });
+	await editor.waitFor({ state: "visible" });
+	await editor.fill("testing");
 
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();
@@ -93,7 +96,10 @@ test("Saving - C++", async ({ page }) => {
 test("Saving - C++ - Continue working", async ({ page }) => {
 	await selectRobot(page, "Leaphy C++");
 	await page.getByText("setup").click();
-	await page.getByRole("textbox", { name: "Editor content" }).fill("testing");
+
+	const editor = page.getByRole("textbox", { name: "Editor content" });
+	await editor.waitFor({ state: "visible" });
+	await editor.fill("testing");
 
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();
