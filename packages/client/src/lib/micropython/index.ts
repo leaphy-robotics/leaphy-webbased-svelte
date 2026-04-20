@@ -103,44 +103,51 @@ export default class MicroPythonIO {
 
 	async enterREPLMode() {
 		await SerialState.ready;
-		await SerialState.reserve();
 
-		this.port = SerialState.port;
-		this.reader = this.port.readable.getReader();
-		this.writer = this.port.writable.getWriter();
+		return SerialState.withPort(async (port) => {
+			this.port = port;
+			this.reader = this.port.readable.getReader();
+			this.writer = this.port.writable.getWriter();
 
-		await new Promise((resolve) => setTimeout(resolve, 500));
-		// cancel running program (if any), soft reboot, enter raw REPL.
-		await this.writer.write(new Uint8Array([3, 4, 1]));
+			try {
+				await new Promise((resolve) => setTimeout(resolve, 500));
+				// cancel running program (if any), soft reboot, enter raw REPL.
+				await this.writer.write(new Uint8Array([3, 4, 1]));
 
-		const microPythonInstalled = await Promise.race([
-			new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 2000)),
-			(async () => {
-				while (true) {
-					const { value, done } = await this.reader.read();
+				const microPythonInstalled = await Promise.race([
+					new Promise<boolean>((resolve) =>
+						setTimeout(() => resolve(false), 2000),
+					),
+					(async () => {
+						while (true) {
+							const { value, done } = await this.reader.read();
 
-					if (done) {
-						return false;
-					}
-					if (value.at(-1) !== 62) {
-						continue;
-					}
+							if (done) {
+								return false;
+							}
+							if (value.at(-1) !== 62) {
+								continue;
+							}
 
-					return true;
+							return true;
+						}
+					})(),
+				]);
+
+				if (!microPythonInstalled) {
+					throw new Error("Connection with Micropython failed.");
 				}
-			})(),
-		]);
 
-		if (!microPythonInstalled) {
-			this.reader.releaseLock();
-			this.writer.releaseLock();
-
-			SerialState.release();
-			throw new Error("Connection with Micropython failed.");
-		}
-
-		await this.commands.loadCommands();
-		return true;
+				await this.commands.loadCommands();
+				return true;
+			} catch (e) {
+				this.reader.releaseLock();
+				this.writer.releaseLock();
+				this.reader = undefined;
+				this.writer = undefined;
+				throw e;
+			}
+		});
 	}
 
 	runCode(code: string) {

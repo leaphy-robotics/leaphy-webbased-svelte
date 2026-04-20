@@ -33,13 +33,13 @@ class UploadError extends Error {
 
 async function upload(res: Record<string, string>) {
 	try {
-		await SerialState.reserve();
-		await WorkspaceState.robot.programmer.upload(SerialState.port, res);
+		await SerialState.withPort(async (port) => {
+			await WorkspaceState.robot.programmer.upload(port, res);
+		});
 	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
 	}
-	SerialState.release();
 }
 
 onMount(async () => {

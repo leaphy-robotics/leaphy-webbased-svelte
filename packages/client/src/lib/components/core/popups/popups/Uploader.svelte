@@ -78,16 +78,19 @@ async function compile() {
 }
 
 async function upload(res: Record<string, string>) {
-	try {
-		try {
-			currentState = "WAITING_FOR_PORT";
-			await SerialState.ready;
-			progress += 100 / 4;
+	currentState = "WAITING_FOR_PORT";
+	await SerialState.ready;
+	progress += 100 / 4;
 
-			currentState = "UPDATE_STARTED";
-			await SerialState.reserve();
-		} catch (e) {
-			console.log(e);
+	currentState = "UPDATE_STARTED";
+	try {
+		await SerialState.withPort(async (port) => {
+			const programmer =
+				SerialState.board?.programmer || WorkspaceState.robot.programmer;
+			await programmer.upload(port, res);
+		});
+	} catch (e) {
+		if (e instanceof Error && e.message === "Port already reserved") {
 			popupState.close();
 			return PopupsState.open({
 				component: ErrorPopup,
@@ -98,15 +101,8 @@ async function upload(res: Record<string, string>) {
 				allowInteraction: false,
 			});
 		}
-
-		const programmer =
-			SerialState.board?.programmer || WorkspaceState.robot.programmer;
-		await programmer.upload(SerialState.port, res);
-	} catch (e) {
 		console.log(e);
 		throw new UploadError("UPDATE_FAILED", e);
-	} finally {
-		SerialState.release();
 	}
 }
 

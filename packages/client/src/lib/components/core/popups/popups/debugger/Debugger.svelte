@@ -212,7 +212,7 @@ onMount(() => {
 			</div>
 		</div>
 
-		<div class="w-[500px] z-10">
+		<div class="flex-1 min-w-0 z-10 overflow-y-auto overflow-x-hidden h-full">
 			<SensorState />
 		</div>
 	</div>
@@ -225,10 +225,9 @@ onMount(() => {
 		align-items: center;
 		gap: 30px;
 		padding: 40px;
-		height: 700px;
-		max-width: 80vw;
-		max-height: 80vh;
-		overflow: auto;
+		width: min(1000px, 90vw);
+		height: min(600px, 70vh);
+		overflow: hidden;
 		position: relative;
 	}
 

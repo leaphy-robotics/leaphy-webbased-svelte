@@ -46,71 +46,74 @@ async function fetchAsBinaryString(url: string): Promise<string> {
 
 async function selectPort() {
 	await SerialState.reserve();
-
-	// First request will fail, but it will create the correct port
-	const firstPort =
-		(await navigator.serial.requestPort({
-			filters: [
-				{ usbProductId: 112, usbVendorId: 9025 },
-				{ usbProductId: 0x1001, usbVendorId: 0x303a },
-			],
-		})) || null;
-
-	if (firstPort.getInfo().usbVendorId === 9025) {
-		try {
-			await firstPort.close();
-		} catch (e) {
-			console.error(e);
-		}
-		const firstTransport = new Transport(firstPort, true);
-		const firstLoader = new ESPLoader({
-			transport: firstTransport,
-			baudrate: 921600,
-			romBaudrate: 921600,
-			terminal: {
-				clean: () => {},
-				writeLine: (line: string) => {
-					WorkspaceState.uploadLog.push(line);
-				},
-				write: (data: string) => {
-					WorkspaceState.uploadLog.push(data);
-				},
-			},
-			debugLogging: true,
-		});
-		try {
-			await firstLoader.main();
-		} catch (e) {
-			console.error(e);
-		}
-
-		port =
+	try {
+		// First request will fail, but it will create the correct port
+		const firstPort =
 			(await navigator.serial.requestPort({
-				filters: [{ usbProductId: 4097, usbVendorId: 12346 }],
+				filters: [
+					{ usbProductId: 112, usbVendorId: 9025 },
+					{ usbProductId: 0x1001, usbVendorId: 0x303a },
+				],
 			})) || null;
-	} else {
-		port = firstPort;
-	}
 
-	if (port) {
-		transport = new Transport(port, true);
-		loader = new ESPLoader({
-			transport,
-			baudrate: 921600,
-			romBaudrate: 921600,
-			terminal: {
-				clean: () => {},
-				writeLine: (line: string) => {
-					WorkspaceState.uploadLog.push(line);
+		if (firstPort.getInfo().usbVendorId === 9025) {
+			try {
+				await firstPort.close();
+			} catch (e) {
+				console.error(e);
+			}
+			const firstTransport = new Transport(firstPort, true);
+			const firstLoader = new ESPLoader({
+				transport: firstTransport,
+				baudrate: 921600,
+				romBaudrate: 921600,
+				terminal: {
+					clean: () => {},
+					writeLine: (line: string) => {
+						WorkspaceState.uploadLog.push(line);
+					},
+					write: (data: string) => {
+						WorkspaceState.uploadLog.push(data);
+					},
 				},
-				write: (data: string) => {
-					WorkspaceState.uploadLog.push(data);
+				debugLogging: true,
+			});
+			try {
+				await firstLoader.main();
+			} catch (e) {
+				console.error(e);
+			}
+
+			port =
+				(await navigator.serial.requestPort({
+					filters: [{ usbProductId: 4097, usbVendorId: 12346 }],
+				})) || null;
+		} else {
+			port = firstPort;
+		}
+
+		if (port) {
+			transport = new Transport(port, true);
+			loader = new ESPLoader({
+				transport,
+				baudrate: 921600,
+				romBaudrate: 921600,
+				terminal: {
+					clean: () => {},
+					writeLine: (line: string) => {
+						WorkspaceState.uploadLog.push(line);
+					},
+					write: (data: string) => {
+						WorkspaceState.uploadLog.push(data);
+					},
 				},
-			},
-			debugLogging: true,
-		});
-		await loader.main();
-		await flash();
+				debugLogging: true,
+			});
+			await loader.main();
+			await flash();
+		}
+	} finally {
+		SerialState.release();
 	}
 }
 

@@ -19,9 +19,9 @@ function motorState(left: number, right: number) {
 </script>
 
 {#if SerialState.log.debugger.debuggers?.length}
-	<div class="grid grid-cols-2 gap-2.5 p-2.5">
+	<div class="grid grid-cols-2 gap-2.5 p-2.5 content-center h-full w-full">
 		{#each SerialState.log.debugger.debuggers as sensor}
-			<div class="flex flex-col bg-bg-tint rounded-xl p-2 gap-2">
+			<div class="flex flex-col bg-bg-tint rounded-xl p-2 gap-2 w-full">
 				<div class="flex justify-between items-center font-bold text-base">
 					<div>{sensor.type.name}</div>
 					<div class="pulse" style:opacity={`${Math.max(sensor.lastSignal - date + 1000, 0)}%`}></div>
