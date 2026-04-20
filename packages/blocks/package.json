@@ -27,10 +27,7 @@
 	"bugs": {
 		"url": "https://github.com/leaphy-robotics/leaphy-blocks/issues"
 	},
-	"files": [
-		"dist",
-		"../client/src/assets/media"
-	],
+	"files": ["dist"],
 	"version": "4.0.0",
 	"description": "Leaphy custom Blockly blocks and arduino code generator",
 	"name": "@leaphy-robotics/leaphy-blocks"
