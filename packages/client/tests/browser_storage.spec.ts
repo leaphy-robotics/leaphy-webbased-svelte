@@ -78,9 +78,13 @@ test("Saving - C++", async ({ page }) => {
 	await selectRobot(page, "Leaphy C++");
 	await page.getByText("setup").click();
 
-	const editor = page.getByRole("textbox", { name: "Editor content" });
-	await editor.waitFor({ state: "visible" });
-	await editor.fill("testing");
+	const editorContent = page.locator(".view-lines");
+	await editorContent.waitFor({ state: "visible" });
+	await editorContent.click();
+
+	await page.keyboard.press("Control+A");
+	await page.keyboard.press("Delete");
+	await page.keyboard.type("testing");
 
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();
@@ -97,9 +101,13 @@ test("Saving - C++ - Continue working", async ({ page }) => {
 	await selectRobot(page, "Leaphy C++");
 	await page.getByText("setup").click();
 
-	const editor = page.getByRole("textbox", { name: "Editor content" });
-	await editor.waitFor({ state: "visible" });
-	await editor.fill("testing");
+	const editorContent = page.locator(".view-lines");
+	await editorContent.waitFor({ state: "visible" });
+	await editorContent.click();
+
+	await page.keyboard.press("Control+A");
+	await page.keyboard.press("Delete");
+	await page.keyboard.type("testing");
 
 	await expect(page.getByText("setup")).toBeHidden();
 	await expect(page.getByText("testing")).toBeVisible();
