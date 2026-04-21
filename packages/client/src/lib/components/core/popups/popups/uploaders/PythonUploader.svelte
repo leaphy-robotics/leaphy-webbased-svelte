@@ -1,15 +1,15 @@
 <script lang="ts">
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import RobotSelector from "$components/start/RobotSelector.svelte";
+import { getRobotState } from "$components/core/popups/popups/uploaders/animationMapping";
+import StarlingRobot from "$components/core/popups/popups/uploaders/StarlingRobot.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import { type RobotDevice, robots } from "$domain/robots";
-import type { PopupState } from "$state/popup.svelte";
+import type { PopupState } from "$state/popup.svelte.js";
 import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState from "$state/workspace.svelte";
-import type MicroPythonIO from "../../../../micropython";
+import type MicroPythonIO from "../../../../../micropython";
 
 interface Props {
 	io: MicroPythonIO;
@@ -65,6 +65,8 @@ onMount(async () => {
 	}
 });
 
+const robotState = $derived(getRobotState(!!error, done, currentState));
+
 function close() {
 	popupState.close();
 }
@@ -89,6 +91,7 @@ async function connectUSB() {
 		<div>{$_("RECONNECT_INFO")}</div>
 		<Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
 	{:else}
+		<StarlingRobot state={robotState} />
 		<h2 class="m-0 font-bold {error ? 'text-red-500' : ''}">{$_(currentState)}</h2>
 
 		{#if error}

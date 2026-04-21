@@ -3,6 +3,8 @@ import { arduino, Dependencies } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import { getRobotState } from "$components/core/popups/popups/uploaders/animationMapping";
+import StarlingRobot from "$components/core/popups/popups/uploaders/StarlingRobot.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
@@ -15,7 +17,7 @@ import SerialState, {
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { downloadDrivers } from "../../../../drivers";
+import { downloadDrivers } from "../../../../../drivers";
 
 interface Props {
 	getCode?: () => Promise<string> | string;
@@ -154,6 +156,8 @@ onMount(async () => {
 	}
 });
 
+const robotState = $derived(getRobotState(failed, done, currentState));
+
 function close() {
 	popupState.close();
 }
@@ -178,6 +182,7 @@ async function connectUSB() {
 		<div>{$_("RECONNECT_INFO")}</div>
 		<Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
 	{:else}
+		<StarlingRobot state={robotState} />
 		<h2 class="m-0 font-bold {failed ? 'text-red-500' : ''}">{$_(currentState)}</h2>
 
 		{#if error}

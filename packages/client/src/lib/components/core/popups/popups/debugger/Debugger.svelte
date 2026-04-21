@@ -5,7 +5,7 @@ import { onMount, untrack } from "svelte";
 import { _ } from "svelte-i18n";
 import starling from "$assets/starling-svg.svg";
 import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
-import Uploader from "$components/core/popups/popups/Uploader.svelte";
+import Uploader from "$components/core/popups/popups/uploaders/Uploader.svelte";
 import Windowed from "$components/core/popups/Windowed.svelte";
 import Button from "$components/ui/Button.svelte";
 import Switch from "$components/ui/Switch.svelte";
