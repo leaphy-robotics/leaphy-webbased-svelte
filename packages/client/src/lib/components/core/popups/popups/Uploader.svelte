@@ -3,6 +3,7 @@ import { arduino, Dependencies } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
+import StarlingRobot from "$components/core/popups/popups/StarlingRobot.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
@@ -154,6 +155,20 @@ onMount(async () => {
 	}
 });
 
+const robotState = $derived.by<
+	"idle" | "compiling" | "uploading" | "done" | "error"
+>(() => {
+	if (failed) return "error";
+	if (done) return "done";
+	if (currentState === "COMPILATION_STARTED") return "compiling";
+	if (
+		currentState === "UPDATE_STARTED" ||
+		currentState === "WAITING_FOR_PORT"
+	)
+		return "uploading";
+	return "idle";
+});
+
 function close() {
 	popupState.close();
 }
@@ -178,6 +193,7 @@ async function connectUSB() {
 		<div>{$_("RECONNECT_INFO")}</div>
 		<Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
 	{:else}
+		<StarlingRobot state={robotState} />
 		<h2 class="m-0 font-bold {failed ? 'text-red-500' : ''}">{$_(currentState)}</h2>
 
 		{#if error}

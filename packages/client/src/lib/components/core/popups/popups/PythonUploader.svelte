@@ -1,6 +1,7 @@
 <script lang="ts">
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
+import StarlingRobot from "$components/core/popups/popups/StarlingRobot.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
@@ -65,6 +66,15 @@ onMount(async () => {
 	}
 });
 
+const robotState = $derived.by<
+	"idle" | "compiling" | "uploading" | "done" | "error"
+>(() => {
+	if (error) return "error";
+	if (done) return "done";
+	if (currentState === "INSTALLING_LIBRARIES") return "uploading";
+	return "idle";
+});
+
 function close() {
 	popupState.close();
 }
@@ -89,6 +99,7 @@ async function connectUSB() {
 		<div>{$_("RECONNECT_INFO")}</div>
 		<Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
 	{:else}
+		<StarlingRobot state={robotState} />
 		<h2 class="m-0 font-bold {error ? 'text-red-500' : ''}">{$_(currentState)}</h2>
 
 		{#if error}
