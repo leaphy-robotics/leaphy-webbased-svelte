@@ -7,18 +7,16 @@ import { getRobotState } from "$components/core/popups/popups/uploaders/animatio
 import StarlingRobot from "$components/core/popups/popups/uploaders/StarlingRobot.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import ExtensionState, {
-	extensions,
-} from "$domain/blockly/extensions.svelte.js";
+import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
 import { inFilter } from "$domain/robots";
-import AppState from "$state/app.svelte.js";
-import PopupsState, { type PopupState } from "$state/popup.svelte.js";
+import AppState from "$state/app.svelte";
+import PopupsState, { type PopupState } from "$state/popup.svelte";
 import SerialState, {
 	Prompt,
 	SUPPORTED_VENDOR_IDS,
-} from "$state/serial.svelte.js";
-import USBRequestState from "$state/upload.svelte.js";
-import WorkspaceState, { Mode } from "$state/workspace.svelte.js";
+} from "$state/serial.svelte";
+import USBRequestState from "$state/upload.svelte";
+import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../../../drivers";
 
 interface Props {

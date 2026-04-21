@@ -3,14 +3,12 @@ import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import { getRobotState } from "$components/core/popups/popups/uploaders/animationMapping";
 import StarlingRobot from "$components/core/popups/popups/uploaders/StarlingRobot.svelte";
-import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import { type RobotDevice, robots } from "$domain/robots";
 import type { PopupState } from "$state/popup.svelte.js";
-import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte.js";
-import USBRequestState from "$state/upload.svelte.js";
-import WorkspaceState from "$state/workspace.svelte.js";
+import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte";
+import USBRequestState from "$state/upload.svelte";
+import WorkspaceState from "$state/workspace.svelte";
 import type MicroPythonIO from "../../../../../micropython";
 
 interface Props {
