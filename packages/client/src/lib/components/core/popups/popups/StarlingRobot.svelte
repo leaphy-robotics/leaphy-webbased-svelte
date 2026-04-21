@@ -11,11 +11,16 @@ const broken = $derived(state === "error");
 const happy = $derived(state === "done");
 </script>
 
-<div class="robot-wrap" class:broken class:happy class:beaming>
+<div
+	class="robot-wrap w-[240px] h-[200px] flex items-center justify-center"
+	class:broken
+	class:happy
+	class:beaming
+>
 	<svg
 		viewBox="0 0 240 200"
 		xmlns="http://www.w3.org/2000/svg"
-		class="robot"
+		class="w-full h-full overflow-visible"
 		aria-hidden="true"
 	>
 		<!-- Code beam (shown while compiling/uploading) -->
@@ -99,19 +104,6 @@ const happy = $derived(state === "done");
 </div>
 
 <style>
-	.robot-wrap {
-		width: 240px;
-		height: 200px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-	.robot {
-		width: 100%;
-		height: 100%;
-		overflow: visible;
-	}
-
 	/* ---------- Idle: gentle bob ---------- */
 	.body {
 		transform-origin: 120px 150px;
