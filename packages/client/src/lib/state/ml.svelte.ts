@@ -12,7 +12,6 @@ import type { Component } from "svelte";
 import { get } from "svelte/store";
 import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import Uploader from "$components/core/popups/popups/Uploader.svelte";
 import Collect from "$components/workspace/ml/flow/Collect.svelte";
 import Result from "$components/workspace/ml/flow/Result.svelte";
 import Setup from "$components/workspace/ml/flow/Setup.svelte";
@@ -22,6 +21,7 @@ import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
 import WorkspaceState from "$state/workspace.svelte";
+import Uploader from "../components/core/popups/popups/uploaders/Uploader.svelte";
 import PopupState from "./popup.svelte";
 
 export const Step = {

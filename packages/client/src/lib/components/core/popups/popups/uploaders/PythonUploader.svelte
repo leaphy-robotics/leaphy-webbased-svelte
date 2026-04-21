@@ -1,16 +1,17 @@
 <script lang="ts">
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
-import StarlingRobot from "$components/core/popups/popups/StarlingRobot.svelte";
+import { getRobotState } from "$components/core/popups/popups/uploaders/animationMapping";
+import StarlingRobot from "$components/core/popups/popups/uploaders/StarlingRobot.svelte";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
-import type { PopupState } from "$state/popup.svelte";
-import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte";
-import USBRequestState from "$state/upload.svelte";
-import WorkspaceState from "$state/workspace.svelte";
-import type MicroPythonIO from "../../../../micropython";
+import type { PopupState } from "$state/popup.svelte.js";
+import SerialState, { SUPPORTED_VENDOR_IDS } from "$state/serial.svelte.js";
+import USBRequestState from "$state/upload.svelte.js";
+import WorkspaceState from "$state/workspace.svelte.js";
+import type MicroPythonIO from "../../../../../micropython";
 
 interface Props {
 	io: MicroPythonIO;
@@ -66,14 +67,7 @@ onMount(async () => {
 	}
 });
 
-const robotState = $derived.by<
-	"idle" | "compiling" | "uploading" | "done" | "error"
->(() => {
-	if (error) return "error";
-	if (done) return "done";
-	if (currentState === "INSTALLING_LIBRARIES") return "uploading";
-	return "idle";
-});
+const robotState = $derived(getRobotState(!!error, done, currentState));
 
 function close() {
 	popupState.close();

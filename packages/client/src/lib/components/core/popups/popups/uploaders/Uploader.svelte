@@ -3,20 +3,23 @@ import { arduino, Dependencies } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
-import StarlingRobot from "$components/core/popups/popups/StarlingRobot.svelte";
+import { getRobotState } from "$components/core/popups/popups/uploaders/animationMapping";
+import StarlingRobot from "$components/core/popups/popups/uploaders/StarlingRobot.svelte";
 import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
-import ExtensionState, { extensions } from "$domain/blockly/extensions.svelte";
+import ExtensionState, {
+	extensions,
+} from "$domain/blockly/extensions.svelte.js";
 import { inFilter } from "$domain/robots";
-import AppState from "$state/app.svelte";
-import PopupsState, { type PopupState } from "$state/popup.svelte";
+import AppState from "$state/app.svelte.js";
+import PopupsState, { type PopupState } from "$state/popup.svelte.js";
 import SerialState, {
 	Prompt,
 	SUPPORTED_VENDOR_IDS,
-} from "$state/serial.svelte";
-import USBRequestState from "$state/upload.svelte";
-import WorkspaceState, { Mode } from "$state/workspace.svelte";
-import { downloadDrivers } from "../../../../drivers";
+} from "$state/serial.svelte.js";
+import USBRequestState from "$state/upload.svelte.js";
+import WorkspaceState, { Mode } from "$state/workspace.svelte.js";
+import { downloadDrivers } from "../../../../../drivers";
 
 interface Props {
 	getCode?: () => Promise<string> | string;
@@ -155,16 +158,7 @@ onMount(async () => {
 	}
 });
 
-const robotState = $derived.by<
-	"idle" | "compiling" | "uploading" | "done" | "error"
->(() => {
-	if (failed) return "error";
-	if (done) return "done";
-	if (currentState === "COMPILATION_STARTED") return "compiling";
-	if (currentState === "UPDATE_STARTED" || currentState === "WAITING_FOR_PORT")
-		return "uploading";
-	return "idle";
-});
+const robotState = $derived(getRobotState(failed, done, currentState));
 
 function close() {
 	popupState.close();

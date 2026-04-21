@@ -51,8 +51,8 @@ import Examples from "../popups/popups/Examples.svelte";
 import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
-import Uploader from "../popups/popups/Uploader.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
+import Uploader from "../popups/popups/uploaders/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
 
 async function upload() {
