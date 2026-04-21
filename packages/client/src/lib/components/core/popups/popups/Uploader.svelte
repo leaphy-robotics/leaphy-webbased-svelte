@@ -161,10 +161,7 @@ const robotState = $derived.by<
 	if (failed) return "error";
 	if (done) return "done";
 	if (currentState === "COMPILATION_STARTED") return "compiling";
-	if (
-		currentState === "UPDATE_STARTED" ||
-		currentState === "WAITING_FOR_PORT"
-	)
+	if (currentState === "UPDATE_STARTED" || currentState === "WAITING_FOR_PORT")
 		return "uploading";
 	return "idle";
 });
