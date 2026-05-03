@@ -31,17 +31,12 @@ export interface RobotDevice extends BaseRobot {
 	board: string;
 }
 
-interface RobotListingVariants extends BaseRobot {
-	variants: Robot[][];
-}
-
-interface RobotListingMode extends BaseRobot {
+interface RobotListing extends BaseRobot {
 	robot: RobotDevice;
 	defaultProgram?: string;
 	mode?: (typeof Mode)[keyof typeof Mode];
 }
 
-export type RobotListing = RobotListingVariants | RobotListingMode;
 export type Robot = RobotListing | RobotDevice;
 
 export enum PinMapping {

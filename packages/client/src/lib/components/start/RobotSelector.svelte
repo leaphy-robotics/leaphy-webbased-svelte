@@ -1,32 +1,19 @@
 <script lang="ts">
-import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import { _ } from "svelte-i18n";
-import Button from "$components/ui/Button.svelte";
 import type { Robot } from "$domain/robots";
-import SerialState, { Prompt } from "$state/serial.svelte";
+import SerialState from "$state/serial.svelte";
 
 interface Props {
 	robots: Robot[][];
 	onselect: (robot: Robot) => void;
 	compact?: boolean;
 	selected?: Robot;
-	secondary?: boolean;
 }
 
-const {
-	robots,
-	onselect,
-	compact = false,
-	selected,
-	secondary,
-}: Props = $props();
+const { robots, onselect, compact = false, selected }: Props = $props();
 </script>
 
-<div class="flex flex-col justify-center items-center h-full {compact ? '' : 'w-[50vw]'} {secondary ? 'bg-bg' : ''}">
+<div class="flex flex-col justify-center items-center h-full {compact ? '' : 'w-[50vw]'}">
 	<div class="flex flex-col gap-[3vh]">
-		{#if secondary}
-			<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="tint" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
-		{/if}
 		{#each robots as row}
 			<div class="flex justify-center gap-6">
 				{#each row as robot}
