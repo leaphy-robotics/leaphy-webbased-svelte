@@ -1,7 +1,4 @@
 <script lang="ts">
-import { flip } from "svelte/animate";
-import { cubicOut } from "svelte/easing";
-import { fly } from "svelte/transition";
 import RobotSelector from "$components/start/RobotSelector.svelte";
 import { type Robot, robotListing, robots } from "$domain/robots";
 import { projectDB } from "$domain/storage";
@@ -40,19 +37,11 @@ async function onselect(type: Robot) {
 	WorkspaceState.saveState = true;
 	AppState.Screen = Screen.WORKSPACE;
 }
-
-const animationOptions = {
-	easing: cubicOut,
-	duration: 300,
-};
 </script>
 
 <div class="flex justify-center overflow-x-hidden" style:height="var(--full-height)">
 	{#each selectors as robots, i (i)}
-		<div
-			in:fly={{ x: "100%", ...animationOptions }}
-			animate:flip={animationOptions}
-		>
+		<div>
 			<RobotSelector {onselect} {robots} {selected} />
 		</div>
 	{/each}
