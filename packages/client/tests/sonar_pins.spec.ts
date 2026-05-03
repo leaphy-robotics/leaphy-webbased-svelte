@@ -1,5 +1,4 @@
 import { expect, test } from "@playwright/test";
-import { timeout } from "@xterm/xterm/src/vs/base/common/async";
 import { goToHomePage, selectRobot } from "./utils";
 
 test.beforeEach(goToHomePage);
@@ -16,6 +15,6 @@ test("SonarPins", async ({ page }) => {
 		.first()
 		.locator(".blocklyEditableField");
 
-	expect(values.nth(0)).toHaveText("Default", { timeout: 10000 });
-	expect(values.nth(1)).toHaveText("Default", { timeout: 10000 });
+	await expect(values.nth(0)).toHaveText("Default", { timeout: 10000 });
+	await expect(values.nth(1)).toHaveText("Default", { timeout: 10000 });
 });
