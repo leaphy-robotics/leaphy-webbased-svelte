@@ -5,10 +5,6 @@ import icon from "./distance.svg";
 export default {
 	name: "Show distance",
 	sketch: () => import("./distance.json"),
-	boards: [
-		...robotsGroups.ALL,
-		-RobotType.L_FLITZ_NANO,
-		-RobotType.L_FLITZ_UNO,
-	],
+	boards: [...robotsGroups.ALL, -RobotType.L_FLITZ_NANO],
 	icon,
 };

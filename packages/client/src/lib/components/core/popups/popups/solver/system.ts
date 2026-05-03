@@ -8,7 +8,6 @@ import { getBlocksMessage } from "./blocks";
 
 function getUserLevel() {
 	switch (WorkspaceState.robot.type) {
-		case RobotType.L_FLITZ_UNO:
 		case RobotType.L_FLITZ_NANO:
 			return "beginner";
 		case RobotType.L_STARLING:
