@@ -7,7 +7,7 @@ import { type Robot, robotListing, robots } from "$domain/robots";
 import { projectDB } from "$domain/storage";
 import AppState, { Screen } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
-import SerialState, { Prompt } from "$state/serial.svelte";
+import SerialState from "$state/serial.svelte";
 import WorkspaceState, { getModeID, Mode } from "$state/workspace.svelte";
 
 let selectors = $state<Robot[][][]>([robotListing]);
