@@ -40,7 +40,6 @@ export function getModeID(mode: Component) {
 }
 
 const extensionMap = {
-	l_flitz_uno: RobotType.L_FLITZ_UNO,
 	l_flitz_nano: RobotType.L_FLITZ_NANO,
 	l_starling: RobotType.L_STARLING,
 	l_starling_nano: RobotType.L_STARLING,

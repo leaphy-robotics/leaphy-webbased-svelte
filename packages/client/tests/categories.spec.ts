@@ -25,7 +25,7 @@ async function installExtension(page: Page, name: string) {
 }
 
 test("Categories - Leaphy Flitz", async ({ page }) => {
-	await selectRobot(page, "Leaphy Flitz", "Flitz Nano");
+	await selectRobot(page, "Leaphy Flitz");
 	await testCategories(page, [
 		["l_search", "Search"],
 		["l_flitz_nano", "Leaphy Flitz"],

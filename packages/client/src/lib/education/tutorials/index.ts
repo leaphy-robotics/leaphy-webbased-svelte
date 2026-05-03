@@ -177,7 +177,7 @@ const dutchTutorials: Tutorial[] = [
 	},
 	{
 		name: "Programmeren Leaphy Flitz",
-		robots: [RobotType.L_FLITZ_UNO, RobotType.L_FLITZ_NANO],
+		robots: [RobotType.L_FLITZ_NANO],
 		item: [
 			{
 				name: "Flitz kleuren programmeren",
