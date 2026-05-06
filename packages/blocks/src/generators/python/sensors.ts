@@ -83,7 +83,6 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 	python.forBlock.leaphy_i2c_gesture = (_block, generator) => {
 		const active_channel = generator.currentI2cChannel() || "BC";
 		const variable_name = generator.getVariableName(`ADPS_${active_channel}`);
-		generator.addI2cSupport(false);
 		generator.addImport("leaphymicropython.sensors.adps9960", "Adps9960");
 		generator.addImport("leaphymicropython.sensors.adps9960", "GESTURE_NONE");
 		generator.addDefinition(
@@ -96,7 +95,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		);
 		generator.addDefinition(
 			`channel${active_channel}gesture`,
-			`def gesture_${active_channel}():\n  if ${variable_name}.gesture_available():\n    last_gesture_${active_channel} = ${variable_name}.read_gesture()\n  return last_gesture_${active_channel}\n`,
+			`def gesture_${active_channel}():\n  global last_gesture_${active_channel}\n  if ${variable_name}.gesture_available():\n    last_gesture_${active_channel} = ${variable_name}.read_gesture()\n  return last_gesture_${active_channel}\n`,
 		);
 		return [`gesture_${active_channel}()`, Order.ATOMIC];
 	};
@@ -105,7 +104,6 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		const active_channel = generator.currentI2cChannel() || "BC";
 		const variable_name = generator.getVariableName(`ADPS_${active_channel}`);
 		const color_type = block.getFieldValue("COLOR_TYPE");
-		generator.addI2cSupport(false);
 		generator.addImport("leaphymicropython.sensors.adps9960", "Adps9960");
 		generator.addDefinition(
 			`channel${active_channel}obj`,
@@ -117,7 +115,7 @@ function getCodeGenerators(python: MicroPythonGenerator) {
 		);
 		generator.addDefinition(
 			`channel${active_channel}color`,
-			`def color_${active_channel}(channel):\n  if ${variable_name}.color_available():\n    last_color_${active_channel} = ${variable_name}.read_color()\n  return last_color_${active_channel}[channel]`,
+			`def color_${active_channel}(channel):\n  global last_color_${active_channel}\n  if ${variable_name}.color_available():\n    last_color_${active_channel} = ${variable_name}.read_color()\n  return last_color_${active_channel}[channel]`,
 		);
 		return [`color_${active_channel}(${color_type})`, Order.ATOMIC];
 	};
