@@ -40,7 +40,7 @@
 		"@leaphy-robotics/leaphy-blocks": "workspace:*",
 		"@leaphy-robotics/schemas": "workspace:*",
 		"@leaphy-robotics/webusb-ftdi": "1.0.3",
-		"@sentry/browser": "^10.49.0",
+		"@sentry/browser": "^10.59.0",
 		"@sentry/svelte": "^10.59.0",
 		"@tensorflow/tfjs": "^4.22.0",
 		"@types/w3c-web-usb": "^1.0.14",
