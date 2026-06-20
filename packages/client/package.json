@@ -60,7 +60,7 @@
 		"monaco-editor": "^0.55.1",
 		"overlayscrollbars": "^2.15.1",
 		"overlayscrollbars-svelte": "^0.5.5",
-		"rrweb": "2.0.0-alpha.4",
+		"rrweb": "2.0.1",
 		"socket.io-client": "^4.8.3",
 		"svelte-fa": "^4.0.4",
 		"svelte-i18n": "^4.0.1",
