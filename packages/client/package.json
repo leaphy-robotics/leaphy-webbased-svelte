@@ -58,7 +58,7 @@
 		"intel-hex": "^0.2.0",
 		"jszip": "^3.10.1",
 		"monaco-editor": "^0.55.1",
-		"overlayscrollbars": "^2.15.1",
+		"overlayscrollbars": "^2.16.0",
 		"overlayscrollbars-svelte": "^0.5.5",
 		"rrweb": "2.0.0-alpha.4",
 		"socket.io-client": "^4.8.3",
