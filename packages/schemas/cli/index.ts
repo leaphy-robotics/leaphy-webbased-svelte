@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import * as readline from "node:readline";
-import StreamZip from "node-stream-zip";
 import { DOMParser } from "@xmldom/xmldom";
+import StreamZip from "node-stream-zip";
 
 const rl = readline.createInterface({
 	input: process.stdin,
