@@ -120,14 +120,6 @@ export default [
 						robots: robotGroups.ALL,
 					},
 					{
-						type: "leaphy_rgb_color_raw",
-						robots: robotGroups.ALL,
-					},
-					{
-						type: "leaphy_i2c_rgb_color",
-						robots: [...robotGroups.ALL, RobotType.L_MICROPYTHON],
-					},
-					{
 						type: "leaphy_i2c_gesture",
 						robots: [RobotType.L_MICROPYTHON],
 					},
@@ -652,7 +644,7 @@ export default [
 						robots: [RobotType.L_FLITZ_NANO, RobotType.L_MICROPYTHON],
 					},
 					{
-						type: "leaphy_i2c_rgb_color",
+						type: "leaphy_rgb_color",
 						robots: [RobotType.L_FLITZ_NANO],
 					},
 				],

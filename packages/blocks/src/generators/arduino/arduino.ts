@@ -127,20 +127,6 @@ function getCodeGenerators(arduino: Arduino) {
 		return [code, arduino.ORDER_ATOMIC];
 	};
 
-	arduino.forBlock.leaphy_i2c_rgb_color = (block) => {
-		const setup = arduino.addI2CSetup("apds9960", "APDS.begin();\n");
-
-		const rgb_declaration = `int r[8], g[8], b[8], a[8];\nint getAPDS9960Color(int colorType) {\n    ${setup}    uint8_t channel = i2cGetChannel();\n    if (APDS.colorAvailable()) {\n        APDS.readColor(r[channel], g[channel], b[channel], a[channel]);\n    }\n    switch(colorType) {\n      case 0:\n        return r[channel];\n      case 1:\n        return g[channel];\n      case 2:\n        return b[channel];\n      case 3:\n        return a[channel];\n    }\n}\n`;
-		const colorType = block.getFieldValue("COLOR_TYPE");
-
-		arduino.addDependency(Dependencies.APDS9960_RGB);
-		arduino.addInclude("apds9960", "#include <Arduino_APDS9960.h>");
-		arduino.addDeclaration("apds9960_rgb", rgb_declaration);
-
-		const code = `getAPDS9960Color(${colorType})`;
-		return [code, arduino.ORDER_ATOMIC];
-	};
-
 	arduino.forBlock.leaphy_i2c_gesture = () => {
 		const setup = arduino.addI2CSetup("apds9960", "APDS.begin();\n");
 		const gesture_declaration = `int gesture[8];\nint getAPDS9960Gesture() {\n    ${setup}    uint8_t channel = i2cGetChannel();\n    if (APDS.gestureAvailable()) {\n        gesture[channel] = APDS.readGesture();\n    }\n    return gesture[channel];\n}\n`;
