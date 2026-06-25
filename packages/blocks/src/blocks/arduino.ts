@@ -7,22 +7,9 @@ const displayPinNumbers = [
 ];
 
 const rgbColor = [
-	["%{BKY_LEAPHY_RGB_COLOR_RED}", "0"],
-	["%{BKY_LEAPHY_RGB_COLOR_GREEN}", "1"],
-	["%{BKY_LEAPHY_RGB_COLOR_BLUE}", "2"],
-];
-
-const rgbColorRaw = [
-	["%{BKY_LEAPHY_RGB_RAW_COLOR_RED}", "0"],
-	["%{BKY_LEAPHY_RGB_RAW_COLOR_GREEN}", "1"],
-	["%{BKY_LEAPHY_RGB_RAW_COLOR_BLUE}", "2"],
-];
-
-const apds9960RgbColor = [
 	["%{BKY_COLOUR_RGB_RED}", "0"],
 	["%{BKY_COLOUR_RGB_GREEN}", "1"],
 	["%{BKY_COLOUR_RGB_BLUE}", "2"],
-	["%{BKY_COLOUR_RGB_AMBIENT}", "3"],
 ];
 
 const ledstripDemoOptions = [
@@ -221,7 +208,7 @@ const blocks: BlockDefinition = [
 	},
 	{
 		type: "leaphy_rgb_color",
-		message0: "%1",
+		message0: "%%{BKY_LEAPHY_RGB_READ_SENSOR} %1",
 		args0: [
 			{
 				type: "field_dropdown",
@@ -234,23 +221,6 @@ const blocks: BlockDefinition = [
 		helpUrl: "",
 
 		aiHelp: "Read the RGB color from the TCS34725 sensor",
-		relevanceKey: "RGB_COLOR",
-	},
-	{
-		type: "leaphy_rgb_color_raw",
-		message0: "%1",
-		args0: [
-			{
-				type: "field_dropdown",
-				name: "COLOR_TYPE_RAW",
-				options: rgbColorRaw,
-			},
-		],
-		style: "leaphy_blocks",
-		output: "Number",
-		helpUrl: "",
-
-		aiHelp: "Read the raw RGB color from the TCS34725 sensor",
 		relevanceKey: "RGB_COLOR",
 	},
 	{
@@ -288,54 +258,6 @@ const blocks: BlockDefinition = [
 		aiHelp:
 			"Read the gyroscope value from the LSM6DS3TRC gyroscope on a selected axis",
 		relevanceKey: "ACCELEROMETER",
-	},
-	{
-		type: "leaphy_rgb_raw_color_red",
-		message0: "%%{BKY_LEAPHY_RGB_RAW_COLOR_RED}",
-		style: "leaphy_blocks",
-		output: "Number",
-		helpUrl: "",
-
-		aiHelp: "Read the raw red color value from the TCS34725 sensor",
-		relevanceKey: "RGB_COLOR",
-	},
-	{
-		type: "leaphy_rgb_raw_color_green",
-		message0: "%%{BKY_LEAPHY_RGB_RAW_COLOR_GREEN}",
-		style: "leaphy_blocks",
-		output: "Number",
-		helpUrl: "",
-
-		aiHelp: "Read the raw green color value from the TCS34725 sensor",
-		relevanceKey: "RGB_COLOR",
-	},
-	{
-		type: "leaphy_rgb_raw_color_blue",
-		message0: "%%{BKY_LEAPHY_RGB_RAW_COLOR_BLUE}",
-		style: "leaphy_blocks",
-		output: "Number",
-		helpUrl: "",
-
-		aiHelp: "Read the raw blue color value from the TCS34725 sensor",
-		relevanceKey: "RGB_COLOR",
-	},
-	{
-		type: "leaphy_i2c_rgb_color",
-		message0: "%%{BKY_LEAPHY_RGB_READ_SENSOR} %1",
-		args0: [
-			{
-				type: "field_dropdown",
-				name: "COLOR_TYPE",
-				options: apds9960RgbColor,
-			},
-		],
-		style: "leaphy_blocks",
-		output: "Number",
-		helpUrl:
-			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Ambient%20light%20sensor",
-
-		aiHelp: "Read the RGB color from the APDS9960 sensor",
-		relevanceKey: "RGB_I2C_COLOR",
 	},
 	{
 		type: "leaphy_i2c_gesture",
