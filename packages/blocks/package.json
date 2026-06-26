@@ -7,18 +7,18 @@
 	},
 	"dependencies": {
 		"@leaphy-robotics/schemas": "workspace:*",
-		"blockly": "^12.5.1"
+		"blockly": "^13.0.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^8.0.1",
 		"@babel/preset-env": "^8.0.2",
 		"@eslint/js": "^10.0.1",
 		"babel-loader": "^10.1.1",
-		"eslint": "^10.2.1",
+		"eslint": "^10.5.0",
 		"prettier": "3.8.4",
 		"tsup": "^8.5.1",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.58.2"
+		"typescript-eslint": "^8.61.1"
 	},
 	"repository": {
 		"type": "git",
