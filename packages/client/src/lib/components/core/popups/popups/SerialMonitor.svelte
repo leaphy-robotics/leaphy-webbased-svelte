@@ -8,7 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { format } from "date-fns";
 import { tick } from "svelte";
-import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import SensorState from "$components/core/popups/popups/debugger/SensorState.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
@@ -21,10 +20,10 @@ import SerialState, { Prompt } from "$state/serial.svelte";
 import { track } from "$state/utils";
 import Windowed from "../Windowed.svelte";
 
-enum Mode {
-	TEXT = 0,
-	CHART = 1,
-}
+const Mode = {
+	TEXT: 0,
+	CHART: 1,
+};
 
 let mode = $state(Mode.TEXT);
 let input = $state<HTMLInputElement>();

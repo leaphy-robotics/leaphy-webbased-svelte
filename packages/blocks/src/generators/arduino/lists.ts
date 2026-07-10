@@ -1,8 +1,10 @@
 import { type List, listManager } from "../../categories/lists";
 import type { Arduino } from "../arduino";
+import { Dependencies } from "./dependencies";
 
 function getCodeGenerators(arduino: Arduino) {
 	arduino.forBlock.lists_add = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
@@ -12,6 +14,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_delete = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const index =
 			arduino.valueToCode(block, "INDEX", arduino.ORDER_ATOMIC) || "0";
@@ -21,6 +24,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_clear = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 
 		const name = list.name.replaceAll(" ", "_");
@@ -28,6 +32,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_insert = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
@@ -39,6 +44,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_get = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const index =
 			arduino.valueToCode(block, "INDEX", arduino.ORDER_ATOMIC) || "0";
@@ -48,6 +54,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_replace = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 		const value =
 			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
@@ -59,6 +66,7 @@ function getCodeGenerators(arduino: Arduino) {
 	};
 
 	arduino.forBlock.lists_length = (block) => {
+		arduino.addDependency(Dependencies.LIST);
 		const list = listManager.getItem(block.getFieldValue("LIST")) as List;
 
 		const name = list.name.replaceAll(" ", "_");
