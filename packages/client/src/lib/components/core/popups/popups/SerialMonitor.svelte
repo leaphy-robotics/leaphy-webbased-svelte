@@ -23,7 +23,7 @@ import Windowed from "../Windowed.svelte";
 const Mode = {
 	TEXT: 0,
 	CHART: 1,
-}
+};
 
 let mode = $state(Mode.TEXT);
 let input = $state<HTMLInputElement>();
