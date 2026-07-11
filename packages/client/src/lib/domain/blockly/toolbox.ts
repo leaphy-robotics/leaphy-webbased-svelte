@@ -457,6 +457,35 @@ export default [
 				],
 			},
 			{
+				label: "LCD_DISPLAY_SECTION",
+				defaultExpanded: false,
+				blocks: [
+					{
+						type: "leaphy_lcd_clear",
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+					},
+					{
+						type: "leaphy_lcd_print_line",
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+						inputs: {
+							VALUE: text("text"),
+						},
+					},
+					{
+						type: "leaphy_lcd_print_value",
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+						inputs: {
+							NAME: text("text"),
+							VALUE: number(0),
+						},
+					},
+					{
+						type: "leaphy_lcd_set_backlight",
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+					},
+				],
+			},
+			{
 				label: "MATRIX_DISPLAY_SECTION",
 				defaultExpanded: false,
 				blocks: [

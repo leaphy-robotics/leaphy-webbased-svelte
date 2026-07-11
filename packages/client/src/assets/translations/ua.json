@@ -266,6 +266,7 @@
 	"LED_STRIP_SECTION": "LED-стрічка",
 	"STANDARD_DISPLAY_SECTION": "Стандартний дисплей",
 	"LARGE_DISPLAY_SECTION": "Великий дисплей",
+	"LCD_DISPLAY_SECTION": "LCD дисплей",
 	"MATRIX_DISPLAY_SECTION": "Матричний дисплей",
 	"SEGMENT_DISPLAY_SECTION": "Сегментний дисплей",
 	"AUDIO_SECTION": "Аудіо",
