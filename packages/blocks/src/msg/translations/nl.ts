@@ -136,6 +136,11 @@ messages.LEAPHY_DISPLAY_LARGE_DISPLAY = "Toon op groot display";
 messages.LEAPHY_DISPLAY_LARGE_PRINT = "Stel groot display in - Rg.";
 messages.LEAPHY_DISPLAY_LARGE_SET_TEXT_SIZE =
 	"Zet tekstgrootte van groot display op";
+messages.LEAPHY_LCD_CLEAR = "Maak LCD leeg";
+messages.LEAPHY_LCD_PRINT = "Stel LCD in - Rg.";
+messages.LEAPHY_LCD_SET_BACKLIGHT = "Zet LCD achtergrondlicht";
+messages.LEAPHY_LCD_BACKLIGHT_ON = "aan";
+messages.LEAPHY_LCD_BACKLIGHT_OFF = "uit";
 messages.LEAPHY_EXTRA_CATEGORY = "Leaphy Extra"; // untranslated
 messages.LEAPHY_FLITZ_CATEGORY = "Leaphy Flitz"; // untranslated
 messages.LEAPHY_FLITZ_LED = "Neuslamp -";

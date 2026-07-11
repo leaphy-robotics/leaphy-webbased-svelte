@@ -266,6 +266,7 @@
 	"LED_STRIP_SECTION": "Led strip",
 	"STANDARD_DISPLAY_SECTION": "Standaard scherm",
 	"LARGE_DISPLAY_SECTION": "Groot scherm",
+	"LCD_DISPLAY_SECTION": "LCD scherm",
 	"MATRIX_DISPLAY_SECTION": "Matrix scherm",
 	"SEGMENT_DISPLAY_SECTION": "Segment scherm",
 	"AUDIO_SECTION": "Geluid",
