@@ -96,7 +96,7 @@ sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});`;
 
 		if (sensor.type === "analog") {
 			arduino.addDependency(Dependencies.ADS1X15_ADS);
-			arduino.addInclude("ADS1X15", "#include <Adafruit_ADS1X15.h>");
+			arduino.addInclude("s", "#include <Adafruit_ADS1X15.h>");
 			arduino.addDefinition("spark-analog", "Adafruit_ADS1115 ads;\n");
 			arduino.addSetup(
 				"spark-analog",
