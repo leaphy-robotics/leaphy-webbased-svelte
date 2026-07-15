@@ -4,12 +4,15 @@ import SelectContext from "$components/ui/SelectContext.svelte";
 
 interface Props {
 	placeholder?: string;
-	value: string;
+	value: string | number;
 	mode: "primary" | "secondary" | "background";
 	rounded: boolean;
 	focus?: boolean;
 	required?: boolean;
 	type?: string;
+	min?: number;
+	max?: number;
+	step?: number;
 	input?: HTMLInputElement;
 	suggestions?: string[];
 	large?: boolean;
@@ -17,12 +20,15 @@ interface Props {
 
 let {
 	placeholder,
-	value = $bindable(""),
+	value = $bindable(),
 	mode,
 	rounded,
 	focus,
 	required,
 	type = "text",
+	min,
+	max,
+	step,
 	input = $bindable(),
 	suggestions = [],
 	large = false,
@@ -34,9 +40,9 @@ onMount(() => {
 	if (focus) input.focus();
 });
 
-function getSuggestions(value: string) {
+function getSuggestions(value: string | number) {
 	return suggestions.filter((suggestion) =>
-		suggestion.toUpperCase().includes(value.toUpperCase()),
+		suggestion.toUpperCase().includes(String(value).toUpperCase()),
 	);
 }
 
@@ -60,6 +66,9 @@ const modeClasses = {
 	<input
 		bind:this={input}
 		{type}
+		{min}
+		{max}
+		{step}
 		{placeholder}
 		bind:value
 		onfocus={() => selected = true}

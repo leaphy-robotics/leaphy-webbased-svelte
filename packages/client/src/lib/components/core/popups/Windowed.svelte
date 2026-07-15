@@ -9,10 +9,11 @@ interface Props {
 	title: string;
 	children: Snippet;
 	actions?: Snippet;
+	onclose?: () => void | Promise<void>;
 }
 
 const popupState = getContext<PopupState>("state");
-const { children, actions, title }: Props = $props();
+const { children, actions, title, onclose }: Props = $props();
 
 let x: number;
 let y: number;
@@ -35,8 +36,12 @@ function onup() {
 	moving = false;
 }
 
-function close() {
-	popupState.close();
+async function close() {
+	try {
+		await onclose?.();
+	} finally {
+		popupState.close();
+	}
 }
 
 onMount(() => {

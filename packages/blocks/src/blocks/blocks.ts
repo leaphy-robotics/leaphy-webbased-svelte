@@ -10,6 +10,7 @@ import * as mesh from "./mesh";
 import * as micropython from "./micropython";
 import * as ml from "./ml";
 import * as rtc from "./rtc";
+import * as teachable from "./teachable";
 import * as texts from "./text";
 
 const blocks = [
@@ -23,6 +24,7 @@ const blocks = [
 	...mesh.blocks,
 	...rtc.blocks,
 	...ml.blocks,
+	...teachable.blocks,
 	...bluetooth.blocks,
 	...spark.blocks,
 	...micropython.blocks,
