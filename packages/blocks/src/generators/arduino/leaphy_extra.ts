@@ -260,6 +260,61 @@ function getCodeGenerators(arduino: Arduino) {
 
 	createDisplayBlocks("leaphy_display", false);
 	createDisplayBlocks("leaphy_display_large", true);
+
+	const addLCDSetupCode = () => {
+		const lcdSetup = "lcd.begin(16, 2);\n      lcd.setBacklight(255);\n";
+		const setup = arduino.addI2CSetup("lcd", lcdSetup);
+
+		arduino.addDependency(Dependencies.LIQUIDCRYSTAL_PCF8574);
+		arduino.addInclude("include_lcd", "#include <LiquidCrystal_PCF8574.h>");
+		arduino.addInclude("define_lcd", "LiquidCrystal_PCF8574 lcd(0x27);");
+		return setup;
+	};
+
+	const addLCDPrintLine = () => {
+		arduino.addDeclaration(
+			"lcd_print_line",
+			"void lcdPrintLine(uint8_t row, String value) {\n" +
+				"    lcd.setCursor(0, row);\n" +
+				"    lcd.print(value);\n" +
+				"    for (int i = value.length(); i < 16; i++) lcd.print(' ');\n" +
+				"}\n",
+		);
+	};
+
+	arduino.forBlock.leaphy_lcd_clear = () => {
+		const setup = addLCDSetupCode();
+		return `${setup}lcd.clear();\n`;
+	};
+
+	arduino.forBlock.leaphy_lcd_print_line = (block) => {
+		const setup = addLCDSetupCode();
+		addLCDPrintLine();
+
+		const value =
+			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
+		const row = block.getFieldValue("DISPLAY_ROW");
+		return `${setup}lcdPrintLine(${row}, String(${value}));\n`;
+	};
+
+	arduino.forBlock.leaphy_lcd_print_value = (block) => {
+		const setup = addLCDSetupCode();
+		addLCDPrintLine();
+
+		const name =
+			arduino.valueToCode(block, "NAME", arduino.ORDER_ATOMIC) || "0";
+		const value =
+			arduino.valueToCode(block, "VALUE", arduino.ORDER_ATOMIC) || "0";
+		const row = block.getFieldValue("DISPLAY_ROW");
+		return `${setup}lcdPrintLine(${row}, String(${name}) + " = " + String(${value}));\n`;
+	};
+
+	arduino.forBlock.leaphy_lcd_set_backlight = (block) => {
+		const setup = addLCDSetupCode();
+
+		const backlight = block.getFieldValue("BACKLIGHT");
+		return `${setup}lcd.setBacklight(${backlight === "ON" ? "255" : "0"});\n`;
+	};
 }
 
 export default getCodeGenerators;

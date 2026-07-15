@@ -266,6 +266,7 @@
 	"LED_STRIP_SECTION": "Led strip",
 	"STANDARD_DISPLAY_SECTION": "Standard display",
 	"LARGE_DISPLAY_SECTION": "Large display",
+	"LCD_DISPLAY_SECTION": "LCD display",
 	"MATRIX_DISPLAY_SECTION": "Matrix display",
 	"SEGMENT_DISPLAY_SECTION": "Segment display",
 	"AUDIO_SECTION": "Audio",

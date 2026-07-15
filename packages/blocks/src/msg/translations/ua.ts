@@ -130,6 +130,11 @@ messages.LEAPHY_DISPLAY_LARGE_DISPLAY = "Показати на великому 
 messages.LEAPHY_DISPLAY_LARGE_PRINT = "Великий дисплей - Вст. рядок";
 messages.LEAPHY_DISPLAY_LARGE_SET_TEXT_SIZE =
 	"Встановити розмір тексту великого дисплея";
+messages.LEAPHY_LCD_CLEAR = "Очистити LCD";
+messages.LEAPHY_LCD_PRINT = "LCD - Вст. рядок";
+messages.LEAPHY_LCD_SET_BACKLIGHT = "Підсвітка LCD";
+messages.LEAPHY_LCD_BACKLIGHT_ON = "увімк";
+messages.LEAPHY_LCD_BACKLIGHT_OFF = "вимк";
 messages.LEAPHY_EXTRA_CATEGORY = "Leaphy Extra";
 messages.LEAPHY_FLITZ_CATEGORY = "Leaphy Flitz";
 messages.LEAPHY_FLITZ_LED = "Підсвітка носа - ";

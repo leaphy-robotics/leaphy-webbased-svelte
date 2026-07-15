@@ -341,6 +341,89 @@ const blocks: BlockDefinition = [
 		6,
 	),
 	{
+		type: "leaphy_lcd_clear",
+		message0: "%{BKY_LEAPHY_LCD_CLEAR}",
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		helpUrl: "",
+
+		aiHelp: "Clear the I2C LCD display",
+		relevanceKey: "LEAPHY_LCD_DISPLAY",
+	},
+	{
+		type: "leaphy_lcd_print_line",
+		message0: "%{BKY_LEAPHY_LCD_PRINT} %1 %2 %3",
+		args0: [
+			{ type: "input_dummy" },
+			{
+				type: "field_dropdown",
+				name: "DISPLAY_ROW",
+				options: [
+					["1", "0"],
+					["2", "1"],
+				],
+			},
+			{ type: "input_value", name: "VALUE" },
+		],
+		inputsInline: true,
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		helpUrl: "",
+
+		aiHelp: "Print the value to the I2C LCD display on a selected row",
+		relevanceKey: "LEAPHY_LCD_DISPLAY",
+	},
+	{
+		type: "leaphy_lcd_print_value",
+		message0: "%{BKY_LEAPHY_LCD_PRINT} %1 %2 %3 = %4 %5",
+		args0: [
+			{ type: "input_dummy" },
+			{
+				type: "field_dropdown",
+				name: "DISPLAY_ROW",
+				options: [
+					["1", "0"],
+					["2", "1"],
+				],
+			},
+			{ type: "input_value", name: "NAME" },
+			{ type: "input_dummy" },
+			{ type: "input_value", name: "VALUE" },
+		],
+		inputsInline: true,
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		helpUrl: "",
+
+		aiHelp:
+			"Print the value with name to the I2C LCD display on a selected row",
+		relevanceKey: "LEAPHY_LCD_DISPLAY",
+	},
+	{
+		type: "leaphy_lcd_set_backlight",
+		message0: "%{BKY_LEAPHY_LCD_SET_BACKLIGHT} %1",
+		args0: [
+			{
+				type: "field_dropdown",
+				name: "BACKLIGHT",
+				options: [
+					["%{BKY_LEAPHY_LCD_BACKLIGHT_ON}", "ON"],
+					["%{BKY_LEAPHY_LCD_BACKLIGHT_OFF}", "OFF"],
+				],
+			},
+		],
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		helpUrl: "",
+
+		aiHelp: "Turn the backlight of the I2C LCD display on or off",
+		relevanceKey: "LEAPHY_LCD_DISPLAY",
+	},
+	{
 		type: "leaphy_gas_sensor",
 		message0: "%%{BKY_LEAPHY_CHOOSE_GAS} %1",
 		args0: [
