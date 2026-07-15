@@ -18,13 +18,13 @@ import {
 	NUM_FRAMES,
 	NUM_MEL,
 	normalizeFeatures,
-} from "@teachable/dsp-ts";
+} from "../src/dsp";
 import {
 	chirp,
 	goldenSignals,
 	sine,
 	whiteNoise,
-} from "@teachable/dsp-ts/signals";
+} from "../src/dsp/signals";
 import { describe, expect, it } from "vitest";
 
 describe("framing", () => {

@@ -1,6 +1,6 @@
-# `@teachable/audio-trainer`
+# `@leaphy-robotics/teachable-machine`
 
-UI-independent TypeScript APIs for collecting audio features from an Arduino
+TypeScript APIs for collecting audio features from an Arduino
 Nano ESP32, augmenting log-mel spectrograms, training the 120→N classifier
 head with TensorFlow.js, and exporting weights for the companion
 **TeachableAudio** Arduino library.
