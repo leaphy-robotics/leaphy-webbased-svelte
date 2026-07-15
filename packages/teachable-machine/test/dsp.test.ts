@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import {
 	buildMelFilterbank,
 	CLIP_SAMPLES,
@@ -19,13 +20,7 @@ import {
 	NUM_MEL,
 	normalizeFeatures,
 } from "../src/dsp";
-import {
-	chirp,
-	goldenSignals,
-	sine,
-	whiteNoise,
-} from "../src/dsp/signals";
-import { describe, expect, it } from "vitest";
+import { chirp, goldenSignals, sine, whiteNoise } from "../src/dsp/signals";
 
 describe("framing", () => {
 	it("spec constants produce exactly 49 frames covering the clip", () => {
