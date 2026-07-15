@@ -17,8 +17,8 @@ export function classColors(
 	backgroundIndex: number,
 ): [number, number, number][] {
 	let color = 0;
-	return Array.from({ length: count }, (_, i) =>
-		i === backgroundIndex ? [0, 0, 0] : PALETTE[color++ % PALETTE.length],
+	return Array.from({ length: count }, (_, index) =>
+		index === backgroundIndex ? [0, 0, 0] : PALETTE[color++ % PALETTE.length],
 	);
 }
 
@@ -42,7 +42,6 @@ export interface HeaderOptions {
 	colors?: [number, number, number][];
 }
 
-/** Generate model_weights.h consumed directly by the Arduino library examples. */
 export function generateModelHeader(
 	model: Pick<TrainedHead, "weights" | "bias">,
 	options: HeaderOptions,
@@ -54,19 +53,19 @@ export function generateModelHeader(
 	)
 		throw new Error("model/class shape mismatch");
 	const colors = options.colors ?? classColors(count, options.backgroundIndex);
-	const rows: string[] = [];
-	for (let c = 0; c < count; c++) {
-		rows.push(
-			`  { ${Array.from(model.weights.subarray(c * EMBEDDING_DIM, (c + 1) * EMBEDDING_DIM), literal).join(", ")} }`,
-		);
-	}
+	const rows = Array.from({ length: count }, (_, classIndex) => {
+		const start = classIndex * EMBEDDING_DIM;
+		const weights = model.weights.subarray(start, start + EMBEDDING_DIM);
+		return `  { ${Array.from(weights, literal).join(", ")} }`;
+	});
+
 	return `#ifndef MODEL_WEIGHTS_H
 #define MODEL_WEIGHTS_H
 #define NUM_CLASSES ${count}
 #define BACKGROUND_CLASS_INDEX ${options.backgroundIndex}
 static const float DETECTION_THRESHOLD = ${literal(options.threshold ?? 0.8)};
 static const char *const CLASS_NAMES[NUM_CLASSES] = { ${options.classNames.map(cString).join(", ")} };
-static const unsigned char CLASS_COLORS[NUM_CLASSES][3] = { ${colors.map((c) => `{${c.join(", ")}}`).join(", ")} };
+static const unsigned char CLASS_COLORS[NUM_CLASSES][3] = { ${colors.map((classColor) => `{${classColor.join(", ")}}`).join(", ")} };
 static const float HEAD_BIAS[NUM_CLASSES] = { ${Array.from(model.bias, literal).join(", ")} };
 static const float HEAD_WEIGHTS[NUM_CLASSES][${EMBEDDING_DIM}] = {
 ${rows.join(",\n")}

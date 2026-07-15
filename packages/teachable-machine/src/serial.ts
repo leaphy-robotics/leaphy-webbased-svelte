@@ -9,10 +9,12 @@ interface SerialReader {
 	cancel(): Promise<void>;
 	releaseLock(): void;
 }
+
 interface SerialWriter {
 	write(value: Uint8Array): Promise<void>;
 	releaseLock(): void;
 }
+
 export interface SerialPortLike {
 	readable: { getReader(): SerialReader } | null;
 	writable: { getWriter(): SerialWriter } | null;
@@ -24,6 +26,7 @@ export interface NanoSample {
 	embedding: Float32Array;
 	logMel: Float32Array;
 }
+
 export interface RecordEvents {
 	onCountdown?: (seconds: number) => void;
 	onRecordingStart?: (seconds: number) => void;
@@ -31,7 +34,6 @@ export interface RecordEvents {
 	onSample?: (sample: NanoSample, index: number, total: number) => void;
 }
 
-/** UI-independent Web Serial client for the TeachableAudio training example. */
 export class NanoTrainerClient {
 	private reader: SerialReader | null = null;
 	private readPromise: Promise<void> | null = null;
@@ -42,19 +44,6 @@ export class NanoTrainerClient {
 
 	constructor(private port: SerialPortLike) {}
 
-	static async requestPort(): Promise<NanoTrainerClient> {
-		const serial = (
-			navigator as Navigator & {
-				serial?: { requestPort(): Promise<SerialPortLike> };
-			}
-		).serial;
-		if (!serial)
-			throw new Error(
-				"Web Serial requires desktop Chrome/Edge on HTTPS or localhost",
-			);
-		return new NanoTrainerClient(await serial.requestPort());
-	}
-
 	async connect(timeoutMs = 6000): Promise<void> {
 		await this.port.open({ baudRate: 115200 });
 		this.compatiblePromise = new Promise<void>((resolve, reject) => {
@@ -63,13 +52,18 @@ export class NanoTrainerClient {
 		});
 		this.readPromise = this.readLoop();
 		window.setTimeout(() => void this.write("PING"), 1200);
-		const timeout = new Promise<never>((_, reject) =>
-			window.setTimeout(
+		let timer: ReturnType<typeof setTimeout> | undefined;
+		const timeout = new Promise<never>((_, reject) => {
+			timer = setTimeout(
 				() => reject(new Error("Nano trainer handshake timed out")),
 				timeoutMs,
-			),
-		);
-		await Promise.race([this.compatiblePromise, timeout]);
+			);
+		});
+		try {
+			await Promise.race([this.compatiblePromise, timeout]);
+		} finally {
+			clearTimeout(timer);
+		}
 	}
 
 	async disconnect(): Promise<void> {
@@ -92,44 +86,61 @@ export class NanoTrainerClient {
 			const spectra = new Map<number, Float32Array>();
 			const samples: NanoSample[] = [];
 			let countdownTimer: ReturnType<typeof setInterval> | undefined;
-			const unsubscribe = this.onMessage((message) => {
-				if (message.type === "preparing") {
-					let remaining = Math.ceil(message.delayMs / 1000);
-					events.onCountdown?.(remaining);
-					countdownTimer = setInterval(() => {
-						remaining--;
-						if (remaining > 0) events.onCountdown?.(remaining);
-						else if (countdownTimer) clearInterval(countdownTimer);
-					}, 1000);
-				} else if (message.type === "recordingBatch") {
-					if (countdownTimer) clearInterval(countdownTimer);
-					events.onRecordingStart?.(message.total);
-				} else if (message.type === "captured") {
-					events.onCaptured?.(message.total);
-				} else if (message.type === "spectrogram") {
-					spectra.set(message.sample, message.logMel);
-				} else if (message.type === "feature") {
-					const logMel = spectra.get(message.sample);
-					if (!logMel) {
-						unsubscribe();
-						reject(new Error(`missing spectrogram ${message.sample}`));
-						return;
-					}
-					const sample = { embedding: message.embedding, logMel };
-					samples[message.sample - 1] = sample;
-					events.onSample?.(sample, message.sample - 1, message.total);
-				} else if (message.type === "done") {
-					unsubscribe();
-					resolve(samples);
-				} else if (message.type === "error") {
-					unsubscribe();
-					reject(new Error(message.message));
-				}
-			});
-			void this.write(`RECORD ${count}`).catch((error) => {
+			let unsubscribe = () => {};
+			const stopCountdown = () => {
+				clearInterval(countdownTimer);
+				countdownTimer = undefined;
+			};
+			const fail = (error: unknown) => {
+				stopCountdown();
 				unsubscribe();
 				reject(error);
+			};
+
+			unsubscribe = this.onMessage((message) => {
+				switch (message.type) {
+					case "preparing": {
+						stopCountdown();
+						let remaining = Math.ceil(message.delayMs / 1000);
+						events.onCountdown?.(remaining);
+						countdownTimer = setInterval(() => {
+							remaining--;
+							if (remaining > 0) events.onCountdown?.(remaining);
+							else stopCountdown();
+						}, 1000);
+						return;
+					}
+					case "recordingBatch":
+						stopCountdown();
+						events.onRecordingStart?.(message.total);
+						return;
+					case "captured":
+						events.onCaptured?.(message.total);
+						return;
+					case "spectrogram":
+						spectra.set(message.sample, message.logMel);
+						return;
+					case "feature": {
+						const logMel = spectra.get(message.sample);
+						if (!logMel) {
+							fail(new Error(`missing spectrogram ${message.sample}`));
+							return;
+						}
+						const sample = { embedding: message.embedding, logMel };
+						samples[message.sample - 1] = sample;
+						events.onSample?.(sample, message.sample - 1, message.total);
+						return;
+					}
+					case "done":
+						stopCountdown();
+						unsubscribe();
+						resolve(samples);
+						return;
+					case "error":
+						fail(new Error(message.message));
+				}
 			});
+			void this.write(`RECORD ${count}`).catch(fail);
 		});
 	}
 
@@ -171,22 +182,27 @@ export class NanoTrainerClient {
 				for (const line of lines) {
 					if (!line.trim()) continue;
 					const message = parseTrainerLine(line);
-					if (message.type === "hello") {
-						if (message.version === TRAINER_PROTOCOL_VERSION)
-							this.resolveCompatible?.();
-						else
-							this.rejectCompatible?.(
-								new Error(
-									`expected trainer protocol ${TRAINER_PROTOCOL_VERSION}, got ${message.version}`,
-								),
-							);
-					}
-					for (const listener of this.listeners) listener(message);
+					this.handleMessage(message);
 				}
 			}
 		} finally {
 			this.reader.releaseLock();
 			this.reader = null;
 		}
+	}
+
+	private handleMessage(message: TrainerMessage): void {
+		if (message.type === "hello") {
+			if (message.version === TRAINER_PROTOCOL_VERSION) {
+				this.resolveCompatible?.();
+			} else {
+				this.rejectCompatible?.(
+					new Error(
+						`expected trainer protocol ${TRAINER_PROTOCOL_VERSION}, got ${message.version}`,
+					),
+				);
+			}
+		}
+		for (const listener of this.listeners) listener(message);
 	}
 }

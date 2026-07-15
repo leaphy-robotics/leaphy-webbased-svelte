@@ -3,7 +3,7 @@ export {
 	buildAugmentedDataset,
 	layerNoise,
 } from "./augment";
-export { headInfer } from "./dsp";
+export { TrainedAudioModel } from "./model";
 export {
 	classColors,
 	generateModelHeader,
@@ -14,5 +14,5 @@ export {
 	TRAINER_PROTOCOL_VERSION,
 	type TrainerMessage,
 } from "./protocol";
-export { type TrainOptions, trainAudioModel, trainHead } from "./train";
+export { type TrainOptions, trainAudioModel } from "./train";
 export type { TrainedHead, TrainingSample } from "./types";

@@ -14,18 +14,18 @@ const STOPS: [number, number, number][] = [
 
 function viridis(value: number): [number, number, number] {
 	if (!Number.isFinite(value)) value = 0.5;
-	const x = Math.min(1, Math.max(0, value)) * (STOPS.length - 1);
-	const index = Math.min(STOPS.length - 2, Math.floor(x));
-	const fraction = x - index;
-	return STOPS[index].map((channel, i) =>
-		Math.round(channel + (STOPS[index + 1][i] - channel) * fraction),
+	const position = Math.min(1, Math.max(0, value)) * (STOPS.length - 1);
+	const index = Math.min(STOPS.length - 2, Math.floor(position));
+	const fraction = position - index;
+	return STOPS[index].map((channel, channelIndex) =>
+		Math.round(channel + (STOPS[index + 1][channelIndex] - channel) * fraction),
 	) as [number, number, number];
 }
 
 export function spectrogramIntensity(logMel: Float32Array): Float32Array {
-	const finite = Array.from(logMel)
+	const finite = [...logMel]
 		.filter(Number.isFinite)
-		.sort((a, b) => a - b);
+		.sort((left, right) => left - right);
 	const out = new Float32Array(logMel.length);
 	if (!finite.length) {
 		out.fill(0.5);
@@ -38,12 +38,14 @@ export function spectrogramIntensity(logMel: Float32Array): Float32Array {
 		out.fill(0.5);
 		return out;
 	}
-	for (let i = 0; i < logMel.length; i++)
-		out[i] = Number.isFinite(logMel[i]) ? (logMel[i] - low) / span : 0;
+	for (let featureIndex = 0; featureIndex < logMel.length; featureIndex++) {
+		out[featureIndex] = Number.isFinite(logMel[featureIndex])
+			? (logMel[featureIndex] - low) / span
+			: 0;
+	}
 	return out;
 }
 
-/** The library's only rendering helper; all other APIs are UI-independent. */
 export function renderSpectrogram(
 	canvas: HTMLCanvasElement,
 	logMel: Float32Array,
@@ -54,14 +56,18 @@ export function renderSpectrogram(
 	if (!context) return;
 	const intensity = spectrogramIntensity(logMel);
 	const image = context.createImageData(NUM_FRAMES, NUM_MEL);
-	for (let t = 0; t < NUM_FRAMES; t++)
-		for (let m = 0; m < NUM_MEL; m++) {
-			const [r, g, b] = viridis(intensity[t * NUM_MEL + m]);
-			const offset = ((NUM_MEL - 1 - m) * NUM_FRAMES + t) * 4;
-			image.data[offset] = r;
-			image.data[offset + 1] = g;
-			image.data[offset + 2] = b;
+	for (let frameIndex = 0; frameIndex < NUM_FRAMES; frameIndex++) {
+		for (let filterIndex = 0; filterIndex < NUM_MEL; filterIndex++) {
+			const [red, green, blue] = viridis(
+				intensity[frameIndex * NUM_MEL + filterIndex],
+			);
+			const offset =
+				((NUM_MEL - 1 - filterIndex) * NUM_FRAMES + frameIndex) * 4;
+			image.data[offset] = red;
+			image.data[offset + 1] = green;
+			image.data[offset + 2] = blue;
 			image.data[offset + 3] = 255;
 		}
+	}
 	context.putImageData(image, 0, 0);
 }

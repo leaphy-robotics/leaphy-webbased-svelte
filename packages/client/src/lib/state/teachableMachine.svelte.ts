@@ -1,8 +1,7 @@
 import { arduino } from "@leaphy-robotics/leaphy-blocks";
 import {
 	generateModelHeader,
-	headInfer,
-	type TrainedHead,
+	TrainedAudioModel,
 	type TrainingSample,
 	trainAudioModel,
 } from "@leaphy-robotics/teachable-machine";
@@ -141,7 +140,7 @@ class TeachableMachineState implements ISerializer {
 		variationsPerSample: 4,
 		noiseLayering: false,
 	});
-	model = $state<TrainedHead | null>(null);
+	model = $state<TrainedAudioModel | null>(null);
 
 	deviceStatus = $state<DeviceStatus>("disconnected");
 	deviceError = $state<string | null>(null);
@@ -398,18 +397,14 @@ class TeachableMachineState implements ISerializer {
 
 	async startListening(): Promise<void> {
 		if (!this.client || !this.model || this.listening) return;
+		const model = this.model;
 		this.deviceError = null;
 		this.activations = new Array(this.classes.length).fill(0);
 		try {
 			this.stopLive = await this.client.startLive((embedding) => {
-				this.activations = Array.from(
-					headInfer(
-						embedding,
-						this.model.weights,
-						this.model.bias,
-						this.classes.length,
-					),
-				);
+				if (this.model === model) {
+					this.activations = Array.from(model.predict(embedding));
+				}
 			});
 			this.listening = true;
 		} catch (error) {
@@ -498,7 +493,7 @@ class TeachableMachineState implements ISerializer {
 			const model = saved.model;
 			this.setModel(
 				model
-					? {
+					? TrainedAudioModel.fromWeights({
 							weights: decodeFloats(
 								model.weights,
 								this.classes.length * EMBEDDING_SIZE,
@@ -507,7 +502,7 @@ class TeachableMachineState implements ISerializer {
 							finalAccuracy: finiteNumber(model.finalAccuracy, 0),
 							realSamples: finiteNumber(model.realSamples, 0),
 							generatedSamples: finiteNumber(model.generatedSamples, 0),
-						}
+						})
 					: null,
 			);
 		} catch (error) {
@@ -545,7 +540,8 @@ class TeachableMachineState implements ISerializer {
 		void this.stopListening().catch(() => undefined);
 	}
 
-	private setModel(model: TrainedHead | null): void {
+	private setModel(model: TrainedAudioModel | null): void {
+		if (this.model !== model) this.model?.dispose();
 		this.model = model;
 		this.updateModelHeaders();
 	}

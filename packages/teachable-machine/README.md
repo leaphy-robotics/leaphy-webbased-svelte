@@ -11,9 +11,9 @@ Flash the companion library's `TrainingRecorder` example, then run this from
 a user-initiated browser event on HTTPS or localhost:
 
 ```ts
-import { NanoTrainerClient } from '@teachable/audio-trainer/serial';
+import { NanoTrainerClient } from '@leaphy-robotics/teachable-machine/serial';
 
-const nano = await NanoTrainerClient.requestPort();
+const nano = await new NanoTrainerClient(port);
 await nano.connect();
 
 const yes = await nano.record(8, {
@@ -29,7 +29,7 @@ Each item contains the Nano-computed 120-value `embedding` and its raw 49×40
 ## Train with augmentation
 
 ```ts
-import { trainAudioModel, generateModelHeader } from '@teachable/audio-trainer';
+import { trainAudioModel, generateModelHeader } from '@leaphy-robotics/teachable-machine';
 
 const samples = [
   ...yes.map((sample) => ({ ...sample, label: 0 })),
@@ -58,18 +58,15 @@ embedding. Original samples always use the embedding computed on the Nano.
 ## Render a spectrogram
 
 ```ts
-import { renderSpectrogram } from '@teachable/audio-trainer/spectrogram';
+import { renderSpectrogram } from '@leaphy-robotics/teachable-machine/spectrogram';
 renderSpectrogram(document.querySelector('canvas')!, sample.logMel);
 ```
 
 ## Live preview
 
 ```ts
-import { headInfer } from '@teachable/dsp-ts';
-
 const stop = await nano.startLive((embedding) => {
-  const probabilities = headInfer(embedding, model.weights, model.bias, 3);
-  console.log(probabilities);
+  console.log(model.predict(embedding));
 });
 
 await stop();
