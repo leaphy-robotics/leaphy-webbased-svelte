@@ -1,7 +1,18 @@
-import { parseTrainerLine, TRAINER_PROTOCOL_VERSION, type TrainerMessage } from './protocol';
+import {
+	parseTrainerLine,
+	TRAINER_PROTOCOL_VERSION,
+	type TrainerMessage,
+} from "./protocol";
 
-interface SerialReader { read(): Promise<{ value?: Uint8Array; done: boolean }>; cancel(): Promise<void>; releaseLock(): void }
-interface SerialWriter { write(value: Uint8Array): Promise<void>; releaseLock(): void }
+interface SerialReader {
+	read(): Promise<{ value?: Uint8Array; done: boolean }>;
+	cancel(): Promise<void>;
+	releaseLock(): void;
+}
+interface SerialWriter {
+	write(value: Uint8Array): Promise<void>;
+	releaseLock(): void;
+}
 export interface SerialPortLike {
 	readable: { getReader(): SerialReader } | null;
 	writable: { getWriter(): SerialWriter } | null;
@@ -9,7 +20,10 @@ export interface SerialPortLike {
 	close(): Promise<void>;
 }
 
-export interface NanoSample { embedding: Float32Array; logMel: Float32Array }
+export interface NanoSample {
+	embedding: Float32Array;
+	logMel: Float32Array;
+}
 export interface RecordEvents {
 	onCountdown?: (seconds: number) => void;
 	onRecordingStart?: (seconds: number) => void;
@@ -29,8 +43,15 @@ export class NanoTrainerClient {
 	constructor(private port: SerialPortLike) {}
 
 	static async requestPort(): Promise<NanoTrainerClient> {
-		const serial = (navigator as Navigator & { serial?: { requestPort(): Promise<SerialPortLike> } }).serial;
-		if (!serial) throw new Error('Web Serial requires desktop Chrome/Edge on HTTPS or localhost');
+		const serial = (
+			navigator as Navigator & {
+				serial?: { requestPort(): Promise<SerialPortLike> };
+			}
+		).serial;
+		if (!serial)
+			throw new Error(
+				"Web Serial requires desktop Chrome/Edge on HTTPS or localhost",
+			);
 		return new NanoTrainerClient(await serial.requestPort());
 	}
 
@@ -41,8 +62,13 @@ export class NanoTrainerClient {
 			this.rejectCompatible = reject;
 		});
 		this.readPromise = this.readLoop();
-		window.setTimeout(() => void this.write('PING'), 1200);
-		const timeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error('Nano trainer handshake timed out')), timeoutMs));
+		window.setTimeout(() => void this.write("PING"), 1200);
+		const timeout = new Promise<never>((_, reject) =>
+			window.setTimeout(
+				() => reject(new Error("Nano trainer handshake timed out")),
+				timeoutMs,
+			),
+		);
 		await Promise.race([this.compatiblePromise, timeout]);
 	}
 
@@ -57,14 +83,17 @@ export class NanoTrainerClient {
 		return () => this.listeners.delete(listener);
 	}
 
-	async record(count: number, events: RecordEvents = {}): Promise<NanoSample[]> {
+	async record(
+		count: number,
+		events: RecordEvents = {},
+	): Promise<NanoSample[]> {
 		count = Math.max(1, Math.min(12, Math.round(count)));
 		return new Promise<NanoSample[]>((resolve, reject) => {
 			const spectra = new Map<number, Float32Array>();
 			const samples: NanoSample[] = [];
 			let countdownTimer: ReturnType<typeof setInterval> | undefined;
 			const unsubscribe = this.onMessage((message) => {
-				if (message.type === 'preparing') {
+				if (message.type === "preparing") {
 					let remaining = Math.ceil(message.delayMs / 1000);
 					events.onCountdown?.(remaining);
 					countdownTimer = setInterval(() => {
@@ -72,64 +101,85 @@ export class NanoTrainerClient {
 						if (remaining > 0) events.onCountdown?.(remaining);
 						else if (countdownTimer) clearInterval(countdownTimer);
 					}, 1000);
-				} else if (message.type === 'recordingBatch') {
+				} else if (message.type === "recordingBatch") {
 					if (countdownTimer) clearInterval(countdownTimer);
 					events.onRecordingStart?.(message.total);
-				} else if (message.type === 'captured') {
+				} else if (message.type === "captured") {
 					events.onCaptured?.(message.total);
-				} else if (message.type === 'spectrogram') {
+				} else if (message.type === "spectrogram") {
 					spectra.set(message.sample, message.logMel);
-				} else if (message.type === 'feature') {
+				} else if (message.type === "feature") {
 					const logMel = spectra.get(message.sample);
-					if (!logMel) { unsubscribe(); reject(new Error(`missing spectrogram ${message.sample}`)); return; }
+					if (!logMel) {
+						unsubscribe();
+						reject(new Error(`missing spectrogram ${message.sample}`));
+						return;
+					}
 					const sample = { embedding: message.embedding, logMel };
 					samples[message.sample - 1] = sample;
 					events.onSample?.(sample, message.sample - 1, message.total);
-				} else if (message.type === 'done') {
+				} else if (message.type === "done") {
 					unsubscribe();
 					resolve(samples);
-				} else if (message.type === 'error') {
+				} else if (message.type === "error") {
 					unsubscribe();
 					reject(new Error(message.message));
 				}
 			});
-			void this.write(`RECORD ${count}`).catch((error) => { unsubscribe(); reject(error); });
+			void this.write(`RECORD ${count}`).catch((error) => {
+				unsubscribe();
+				reject(error);
+			});
 		});
 	}
 
-	async startLive(onEmbedding: (embedding: Float32Array) => void): Promise<() => Promise<void>> {
+	async startLive(
+		onEmbedding: (embedding: Float32Array) => void,
+	): Promise<() => Promise<void>> {
 		const unsubscribe = this.onMessage((message) => {
-			if (message.type === 'liveFeature') onEmbedding(message.embedding);
+			if (message.type === "liveFeature") onEmbedding(message.embedding);
 		});
-		await this.write('LIVE_START');
-		return async () => { await this.write('LIVE_STOP'); unsubscribe(); };
+		await this.write("LIVE_START");
+		return async () => {
+			await this.write("LIVE_STOP");
+			unsubscribe();
+		};
 	}
 
 	private async write(line: string): Promise<void> {
-		if (!this.port.writable) throw new Error('serial port is not writable');
+		if (!this.port.writable) throw new Error("serial port is not writable");
 		const writer = this.port.writable.getWriter();
-		try { await writer.write(new TextEncoder().encode(`${line}\n`)); }
-		finally { writer.releaseLock(); }
+		try {
+			await writer.write(new TextEncoder().encode(`${line}\n`));
+		} finally {
+			writer.releaseLock();
+		}
 	}
 
 	private async readLoop(): Promise<void> {
-		if (!this.port.readable) throw new Error('serial port is not readable');
+		if (!this.port.readable) throw new Error("serial port is not readable");
 		this.reader = this.port.readable.getReader();
 		const decoder = new TextDecoder();
-		let pending = '';
+		let pending = "";
 		try {
 			while (true) {
 				const { value, done } = await this.reader.read();
 				if (done) break;
 				pending += decoder.decode(value, { stream: true });
 				const lines = pending.split(/\r?\n/);
-				pending = lines.pop() ?? '';
+				pending = lines.pop() ?? "";
 				for (const line of lines) {
 					if (!line.trim()) continue;
 					const message = parseTrainerLine(line);
-					if (message.type === 'hello') {
-						if (message.version === TRAINER_PROTOCOL_VERSION) this.resolveCompatible?.();
-						else this.rejectCompatible?.(new Error(`expected trainer protocol ${TRAINER_PROTOCOL_VERSION}, got ${message.version}`));
+					if (message.type === "hello") {
+						if (message.version === TRAINER_PROTOCOL_VERSION)
+							this.resolveCompatible?.();
+						else
+							this.rejectCompatible?.(
+								new Error(
+									`expected trainer protocol ${TRAINER_PROTOCOL_VERSION}, got ${message.version}`,
+								),
+							);
 					}
 					for (const listener of this.listeners) listener(message);
 				}

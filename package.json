@@ -4,8 +4,8 @@
   "description": "",
   "scripts": {
     "dev": "pnpm --filter @leaphy-robotics/leaphy-webbased dev",
-    "test": "pnpm biome check packages/client/src packages/client/tests packages/blocks packages/schemas packages/trainer-ts && pnpm -r test",
-    "apply": "pnpm biome check --write packages/client/src packages/client/tests packages/blocks packages/schemas packages/trainer-ts"
+    "test": "pnpm biome check packages/client/src packages/client/tests packages/blocks packages/schemas packages/teachable-machine && pnpm -r test",
+    "apply": "pnpm biome check --write packages/client/src packages/client/tests packages/blocks packages/schemas packages/teachable-machine"
   },
   "keywords": [],
   "author": "",

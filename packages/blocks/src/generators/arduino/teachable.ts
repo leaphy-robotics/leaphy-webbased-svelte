@@ -16,7 +16,7 @@ function getCodeGenerators(arduino: Arduino) {
 			"TeachableAudio::AudioFrontend teachableAudio;\n" +
 				"float teachableAudioEmbedding[EMBEDDING_DIM];\n" +
 				"float teachableAudioProbabilities[NUM_CLASSES];\n" +
-				"int teachableAudioPrediction = BACKGROUND_CLASS_INDEX;"
+				"int teachableAudioPrediction = BACKGROUND_CLASS_INDEX;",
 		);
 		arduino.addSetup("teachable_audio", "teachableAudio.beginAnalog(A0);");
 	}

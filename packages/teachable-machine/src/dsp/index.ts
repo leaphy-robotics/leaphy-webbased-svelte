@@ -85,8 +85,12 @@ export function fft512(re: Float32Array, im: Float32Array): void {
 		for (; j & bit; bit >>= 1) j ^= bit;
 		j ^= bit;
 		if (i < j) {
-			let t = re[i]; re[i] = re[j]; re[j] = t;
-			t = im[i]; im[i] = im[j]; im[j] = t;
+			let t = re[i];
+			re[i] = re[j];
+			re[j] = t;
+			t = im[i];
+			im[i] = im[j];
+			im[j] = t;
 		}
 	}
 	for (let len = 2; len <= n; len <<= 1) {
@@ -118,7 +122,7 @@ export function hzToMel(hz: number): number {
 }
 
 export function melToHz(mel: number): number {
-	return 700 * (Math.pow(10, mel / 2595) - 1);
+	return 700 * (10 ** (mel / 2595) - 1);
 }
 
 export interface MelFilterbank {
@@ -159,7 +163,8 @@ export function buildMelFilterbank(): MelFilterbank {
 			const f = k * binHz;
 			let weight = 0;
 			if (f > left && f < center) weight = (f - left) / (center - left);
-			else if (f >= center && f < right) weight = (right - f) / (right - center);
+			else if (f >= center && f < right)
+				weight = (right - f) / (right - center);
 			if (weight > 0) {
 				if (start < 0) start = k;
 				w.push(weight);
@@ -300,7 +305,7 @@ export function headInfer(
 	emb: Float32Array,
 	weights: Float32Array,
 	bias: Float32Array,
-	numClasses: number
+	numClasses: number,
 ): Float32Array {
 	const logits = new Float32Array(numClasses);
 	for (let c = 0; c < numClasses; c++) {

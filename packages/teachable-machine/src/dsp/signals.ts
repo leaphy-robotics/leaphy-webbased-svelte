@@ -5,7 +5,7 @@
  * exact same bytes.
  */
 
-import { CLIP_SAMPLES, SAMPLE_RATE } from './index';
+import { CLIP_SAMPLES, SAMPLE_RATE } from "./index";
 
 /** mulberry32 — tiny deterministic PRNG, uniform in [0, 1). */
 export function mulberry32(seed: number): () => number {
@@ -60,10 +60,10 @@ export interface GoldenSignal {
 /** The five canonical golden signals, in fixed order. */
 export function goldenSignals(): GoldenSignal[] {
 	return [
-		{ name: 'silence', pcm: silence() },
-		{ name: 'sine_440', pcm: sine(440) },
-		{ name: 'sine_1000', pcm: sine(1000) },
-		{ name: 'noise_seed1234', pcm: whiteNoise(1234) },
-		{ name: 'chirp_100_7000', pcm: chirp(100, 7000) },
+		{ name: "silence", pcm: silence() },
+		{ name: "sine_440", pcm: sine(440) },
+		{ name: "sine_1000", pcm: sine(1000) },
+		{ name: "noise_seed1234", pcm: whiteNoise(1234) },
+		{ name: "chirp_100_7000", pcm: chirp(100, 7000) },
 	];
 }
