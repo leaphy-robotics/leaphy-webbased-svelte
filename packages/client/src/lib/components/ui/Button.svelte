@@ -18,6 +18,8 @@ interface Props {
 	center?: boolean;
 	large?: boolean;
 	iconAlign?: "left" | "right";
+	grow?: boolean;
+	ariaLabel?: string;
 }
 
 const {
@@ -33,6 +35,8 @@ const {
 	center = false,
 	large = false,
 	iconAlign = "left",
+	grow = false,
+	ariaLabel,
 }: Props = $props();
 
 let btn: HTMLButtonElement = $state();
@@ -62,12 +66,14 @@ const modeClasses = {
 	{onclick}
 	{disabled}
 	{type}
+	aria-label={ariaLabel ?? name}
 	class="inline-flex items-center gap-1.5 cursor-pointer rounded-full text-sm
 		{modeClasses[mode]}
 		{inline ? 'h-7 px-2.5' : 'h-9 px-4'}
 		{center ? 'justify-center' : ''}
 		{bold ? 'font-bold text-base!' : ''}
 		{large ? 'text-base!' : ''}
+		{grow ? 'flex-1 justify-center' : ''}
 		disabled:opacity-50 disabled:cursor-default transition-opacity"
 >
 	{#if iconAlign === "left"}

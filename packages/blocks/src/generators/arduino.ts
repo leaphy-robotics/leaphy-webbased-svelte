@@ -103,6 +103,7 @@ export class Arduino extends Blockly.Generator {
 	public boardType = "l_nano";
 	public program: Uint8Array | null = null;
 	public debugging = false;
+	public teachableMachineModelHeaders: string | null = null;
 
 	constructor() {
 		super("Arduino");
@@ -661,6 +662,7 @@ import * as ml from "./arduino/ml";
 import * as procedures from "./arduino/procedures";
 import * as rtc from "./arduino/rtc";
 import * as sensors from "./arduino/sensors";
+import * as teachable from "./arduino/teachable";
 import * as text from "./arduino/text";
 import * as leaphy_common from "./arduino/variable_blocks";
 import * as variables from "./arduino/variables";
@@ -681,6 +683,7 @@ lists.default(generator);
 mesh.default(generator);
 rtc.default(generator);
 ml.default(generator);
+teachable.default(generator);
 sensors.default(generator);
 bluetooth.default(generator);
 spark.default(generator);

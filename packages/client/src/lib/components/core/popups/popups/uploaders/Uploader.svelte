@@ -22,9 +22,10 @@ import { downloadDrivers } from "../../../../../drivers";
 interface Props {
 	getCode?: () => Promise<string> | string;
 	program?: Record<string, string>;
+	useReservedPort?: boolean;
 }
 const popupState = getContext<PopupState>("state");
-const { getCode, program }: Props = $props();
+const { getCode, program, useReservedPort = false }: Props = $props();
 let progress = $state(0);
 let currentState = $state("CONNECTING");
 let error = $state<string | null>(null);
@@ -80,16 +81,25 @@ async function compile() {
 
 async function upload(res: Record<string, string>) {
 	currentState = "WAITING_FOR_PORT";
-	await SerialState.ready;
+	if (!useReservedPort) await SerialState.ready;
 	progress += 100 / 4;
 
 	currentState = "UPDATE_STARTED";
 	try {
-		await SerialState.withPort(async (port) => {
+		const uploadToPort = async (port: NonNullable<typeof SerialState.port>) => {
 			const programmer =
 				SerialState.board?.programmer || WorkspaceState.robot.programmer;
 			await programmer.upload(port, res);
-		});
+		};
+		if (useReservedPort) {
+			if (!SerialState.port) throw new Error("Serial port was disconnected");
+			if (!SerialState.port.readable || !SerialState.port.writable) {
+				await SerialState.port.open({ baudRate: 115200 });
+			}
+			await uploadToPort(SerialState.port);
+		} else {
+			await SerialState.withPort(uploadToPort);
+		}
 	} catch (e) {
 		if (e instanceof Error && e.message === "Port already reserved") {
 			popupState.close();

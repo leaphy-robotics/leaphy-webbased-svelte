@@ -113,6 +113,8 @@ async function upload() {
 
 				arduino.program = new Uint8Array(arrayBuffer);
 				const code = arduino.workspaceToCode(BlocklyState.workspace);
+				AppState.libraries.clear();
+				AppState.libraries.install(...arduino.getDependencies());
 				arduino.program = null;
 
 				return code;

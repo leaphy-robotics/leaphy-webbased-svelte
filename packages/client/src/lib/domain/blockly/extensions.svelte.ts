@@ -31,6 +31,13 @@ export const extensions = [
 		boards: [RobotType.L_NANO_ESP32],
 	},
 	{
+		name: "TEACHABLE_MACHINE_CATEGORY",
+		description: "TEACHABLE_MACHINE_CATEGORY_DESCRIPTION",
+		style: "teachable_category",
+		id: "l_teachable_machine",
+		boards: [RobotType.L_NANO_ESP32],
+	},
+	{
 		name: "MESH_CATEGORY",
 		description: "MESH_CATEGORY_DESCRIPTION",
 		style: "mesh_category",

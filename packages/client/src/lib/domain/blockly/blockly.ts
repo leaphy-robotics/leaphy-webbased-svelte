@@ -12,6 +12,7 @@ import {
 import defaultProgram from "$assets/default-program.json?raw";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
+import TeachableMachine from "$components/core/popups/popups/teachable-machine/TeachableMachine.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import DebuggingSerializer from "$domain/blockly/debugging.svelte";
 import { explainBlockOption, PseudoSerializer } from "$domain/blockly/pseudo";
@@ -19,6 +20,7 @@ import { inFilter, type RobotDevice } from "$domain/robots";
 import { RobotType } from "$domain/robots.types";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
+import SerialState from "$state/serial.svelte";
 import { Backpack } from "./backpack";
 import { LeaphyCategory } from "./category-ui/category";
 import PinSelectorField from "./fields";
@@ -33,6 +35,7 @@ import { get } from "svelte/store";
 import { _ as translate } from "svelte-i18n";
 import bluetooth from "$domain/blockly/bluetooth";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
+import TeachableMachineState from "$state/teachableMachine.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import Extensions from "./extensions.svelte";
 
@@ -74,8 +77,40 @@ Blockly.registry.register(
 	"debugging",
 	DebuggingSerializer,
 );
+Blockly.registry.register(
+	Blockly.registry.Type.SERIALIZER,
+	"teachableMachine",
+	TeachableMachineState,
+);
 
 registerExtensions(Blockly);
+
+Blockly.Extensions.register(
+	"teachable_class_select_extension",
+	function (this: Blockly.Block) {
+		const input = this.getInput("CLASS");
+		if (!input) return;
+
+		input.appendField(
+			new Blockly.FieldDropdown(() => {
+				const options = TeachableMachineState.classes.map(
+					(item, index) =>
+						[
+							item.name ||
+								get(translate)("TEACHABLE_MACHINE_DEFAULT_CLASS", {
+									values: { number: index + 1 },
+								}),
+							String(index),
+						] as [string, string],
+				);
+				return options.length
+					? options
+					: [[get(translate)("TEACHABLE_MACHINE_NO_CLASSES"), "0"]];
+			}),
+			"CLASS",
+		);
+	},
+);
 
 Blockly.dialog.setConfirm(async (title, callback) => {
 	const confirmed = await PopupState.open({
@@ -375,6 +410,33 @@ export function setupWorkspace(
 	workspace.registerToolboxCategoryCallback("LISTS", CATEGORIES.LISTS);
 	workspace.registerToolboxCategoryCallback("MESH", CATEGORIES.MESH);
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);
+	workspace.registerToolboxCategoryCallback("TEACHABLE_MACHINE", () => [
+		{
+			kind: "button",
+			text: "%{BKY_TEACHABLE_AUDIO_OPEN}",
+			callbackkey: "teachable_machine_open",
+		},
+		...(TeachableMachineState.model
+			? [
+					{ kind: "block", type: "teachable_audio_classify" },
+					{ kind: "block", type: "teachable_audio_detected" },
+					{ kind: "block", type: "teachable_audio_confidence" },
+				]
+			: []),
+	]);
+	workspace.registerButtonCallback("teachable_machine_open", async () => {
+		try {
+			await SerialState.withPort(async () => {
+				await PopupState.open({
+					component: TeachableMachine,
+					data: {},
+					allowInteraction: true,
+				});
+			});
+		} finally {
+			workspace.refreshToolboxSelection();
+		}
+	});
 	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
 	workspace.registerToolboxCategoryCallback("BLE", bluetooth);
 	workspace.registerToolboxCategoryCallback(

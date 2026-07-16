@@ -2,8 +2,14 @@
 interface Props {
 	name: string;
 	checked: boolean;
+	mode?: "background" | "secondary";
 }
-let { name, checked = $bindable() }: Props = $props();
+let { name, checked = $bindable(), mode = "background" }: Props = $props();
+
+const modeClasses = {
+	background: "border-bg bg-bg",
+	secondary: "border-secondary bg-secondary",
+};
 
 function toggle() {
 	checked = !checked;
@@ -13,7 +19,7 @@ function toggle() {
 <div class="flex gap-2.5 items-center text-sm">
 	<button
 		type="button"
-		class="relative w-11 h-6 rounded-full border-2 border-bg bg-bg outline-none cursor-pointer"
+		class="relative w-11 h-6 rounded-full border-2 outline-none cursor-pointer {modeClasses[mode]}"
 		onclick={toggle}
 		aria-label="switch"
 	>

@@ -942,6 +942,12 @@ export default [
 		custom: "ML",
 	},
 	{
+		name: "%{BKY_TEACHABLE_AUDIO_CATEGORY}",
+		style: "teachable_category",
+		id: "l_teachable_machine",
+		custom: "TEACHABLE_MACHINE",
+	},
+	{
 		name: "Mesh",
 		style: "mesh_category",
 		id: "l_mesh",
