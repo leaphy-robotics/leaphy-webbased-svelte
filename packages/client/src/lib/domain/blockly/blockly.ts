@@ -5,7 +5,7 @@ import "@blockly/field-bitmap";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	blocks,
-	CATEGORIES,
+	CATEGORIES, PinSelectorField,
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
@@ -23,7 +23,6 @@ import PopupState from "$state/popup.svelte";
 import SerialState from "$state/serial.svelte";
 import { Backpack } from "./backpack";
 import { LeaphyCategory } from "./category-ui/category";
-import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
 import type { BlockDefinition } from "blockly/core/blocks";
@@ -385,7 +384,7 @@ export function setupWorkspace(
 	theme: Blockly.Theme,
 	content?: { [key: string]: any },
 ) {
-	PinSelectorField.processPinMappings(robot);
+	PinSelectorField.processPinMappings(robot.mapping);
 
 	const workspace = Blockly.inject(element, {
 		renderer: "zelos",

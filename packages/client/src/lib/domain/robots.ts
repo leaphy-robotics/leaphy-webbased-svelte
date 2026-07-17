@@ -15,6 +15,7 @@ import DFU from "../programmers/DFU";
 import STK500v1 from "../programmers/STK500v1/STK500v1";
 import STK500v2 from "../programmers/STK500v2";
 import { type Programmer, RobotType } from "./robots.types";
+import {PinMapping} from "@leaphy-robotics/leaphy-blocks";
 
 interface BaseRobot {
 	name: string;
@@ -38,12 +39,6 @@ interface RobotListing extends BaseRobot {
 }
 
 export type Robot = RobotListing | RobotDevice;
-
-export enum PinMapping {
-	UNIFIED = 0,
-	MEGA = 3,
-	MICROPYTHON = 4,
-}
 
 const baseUno = {
 	mapping: PinMapping.UNIFIED,

@@ -1,11 +1,11 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
 
 const stomachSensorOptions = [
 	["%{BKY_LEAPHY_STOMACH_SENSOR_TYPE1}", "1"],
 	["%{BKY_LEAPHY_STOMACH_SENSOR_TYPE2}", "2"],
 ];
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition = [
 	{
 		type: "leaphy_flitz_read_stomach_sensor",
 		message0: "%%{BKY_LEAPHY_READ_STOMACH} %1",
@@ -65,5 +65,3 @@ const blocks: BlockDefinition = [
 		aiHelp: "Set the RGB color of the RGB LED",
 	},
 ];
-
-export { blocks };

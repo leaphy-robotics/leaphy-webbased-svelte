@@ -1,4 +1,5 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
+import {testOutput, testStatement} from "../utils";
 
 const displayPinNumbers = [
 	["1", "0"],
@@ -49,6 +50,7 @@ function getLeaphyDisplayBlocks(
 			nextStatement: null,
 			style: "leaphy_blocks",
 			helpUrl: "",
+			test: testStatement(prefix),
 
 			aiHelp: `Clear the ${translatePrefix} display`,
 			relevanceKey: `${translatePrefix}_DISPLAY`,
@@ -60,6 +62,7 @@ function getLeaphyDisplayBlocks(
 			nextStatement: null,
 			style: "leaphy_blocks",
 			helpUrl: "",
+			test: testStatement(prefix),
 
 			aiHelp: `Display the changed values on the ${translatePrefix} display`,
 			relevanceKey: `${translatePrefix}_DISPLAY`,
@@ -80,8 +83,8 @@ function getLeaphyDisplayBlocks(
 			previousStatement: null,
 			nextStatement: null,
 			style: "leaphy_blocks",
-			// "extensions": "updateDisplay",
 			helpUrl: "",
+			test: testStatement(prefix),
 
 			aiHelp: `Print the value to the ${translatePrefix} display on a selected row`,
 			relevanceKey: `${translatePrefix}_DISPLAY`,
@@ -94,8 +97,8 @@ function getLeaphyDisplayBlocks(
 			previousStatement: null,
 			nextStatement: null,
 			style: "leaphy_blocks",
-			// "extensions": "updateDisplay",
 			helpUrl: "",
+			test: testStatement(prefix),
 
 			aiHelp: `Set the text size on the ${translatePrefix} display`,
 			relevanceKey: `${translatePrefix}_DISPLAY`,
@@ -118,8 +121,8 @@ function getLeaphyDisplayBlocks(
 			previousStatement: null,
 			nextStatement: null,
 			style: "leaphy_blocks",
-			// "extensions": "updateDisplay",
 			helpUrl: "",
+			test: testStatement(prefix),
 
 			aiHelp: `Print the value with name to the ${translatePrefix} display on a selected row`,
 			relevanceKey: `${translatePrefix}_DISPLAY`,
@@ -127,7 +130,7 @@ function getLeaphyDisplayBlocks(
 	];
 }
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "time_delay",
 		message0: "%{BKY_ARD_TIME_DELAY} %1 %2",
@@ -149,6 +152,7 @@ const blocks: BlockDefinition = [
 		style: "loop_blocks",
 		tooltip: "%{BKY_ARD_TIME_DELAY_TIP}",
 		helpUrl: "http://arduino.cc/en/Reference/Delay",
+		test: testStatement("general")
 	},
 	{
 		type: "leaphy_start",
@@ -168,6 +172,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 		helpUrl: "",
+		test: testStatement("general"),
 
 		aiHelp: "Print the value to the serial port",
 	},
@@ -185,6 +190,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 		helpUrl: "",
+		test: testStatement("general"),
 
 		aiHelp: "Print the value with name to the serial port",
 	},
@@ -194,6 +200,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("general"),
 
 		aiHelp: "Check if there is data available to read from on the serial port",
 	},
@@ -203,6 +210,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "String",
 		helpUrl: "",
+		test: testOutput("general"),
 
 		aiHelp: "Read a line from the serial port",
 	},
@@ -219,6 +227,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("general"),
 
 		aiHelp: "Read the RGB color from the TCS34725 sensor",
 		relevanceKey: "RGB_COLOR",
@@ -236,6 +245,7 @@ const blocks: BlockDefinition = [
 		],
 		style: "leaphy_blocks",
 		output: "Number",
+		test: testOutput("i2c_extra"),
 
 		aiHelp:
 			"Read the acceleration value from the LSM6DS3TRC accelerometer on a selected axis",
@@ -254,6 +264,7 @@ const blocks: BlockDefinition = [
 		],
 		style: "leaphy_blocks",
 		output: "Number",
+		test: testOutput("i2c_extra"),
 
 		aiHelp:
 			"Read the gyroscope value from the LSM6DS3TRC gyroscope on a selected axis",
@@ -265,6 +276,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("i2c_generic"),
 
 		aiHelp: "Read the gesture from the APDS9960 sensor",
 		relevanceKey: "RGB_I2C_COLOR",
@@ -285,6 +297,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Potmeter-,Multiple%20leds%C2%A0,-Led%20matrix%C2%A0",
+		test: testStatement("ledstrip"),
 
 		relevanceKey: "LED_STRIP",
 	},
@@ -312,6 +325,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
+		test: testStatement("ledstrip"),
 
 		relevanceKey: "LED_STRIP",
 	},
@@ -331,6 +345,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
+		test: testStatement("ledstrip"),
 
 		relevanceKey: "LED_STRIP",
 	},
@@ -347,6 +362,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 		helpUrl: "",
+		test: testStatement("lcd"),
 
 		aiHelp: "Clear the I2C LCD display",
 		relevanceKey: "LEAPHY_LCD_DISPLAY",
@@ -371,6 +387,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 		helpUrl: "",
+		test: testStatement("lcd"),
 
 		aiHelp: "Print the value to the I2C LCD display on a selected row",
 		relevanceKey: "LEAPHY_LCD_DISPLAY",
@@ -397,6 +414,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 		helpUrl: "",
+		test: testStatement("lcd"),
 
 		aiHelp:
 			"Print the value with name to the I2C LCD display on a selected row",
@@ -419,6 +437,7 @@ const blocks: BlockDefinition = [
 		nextStatement: null,
 		style: "leaphy_blocks",
 		helpUrl: "",
+		test: testStatement("lcd"),
 
 		aiHelp: "Turn the backlight of the I2C LCD display on or off",
 		relevanceKey: "LEAPHY_LCD_DISPLAY",
@@ -441,6 +460,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("i2c_extra"),
 
 		aiHelp:
 			"Read the gas value from the SGP30 gas sensor (TVOC, eCO2, Raw H2, Raw Ethanol)",
@@ -489,6 +509,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		helpUrl:
 			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Batteries%20and%20power-,I2C%20sensor%20module%C2%A0,-Sensors",
+		test: testStatement("general"),
 
 		aiHelp: "List the connected I2C devices on the multiplexer",
 	},
@@ -499,6 +520,7 @@ const blocks: BlockDefinition = [
 		message0: "%%{BKY_LEAPHY_TOF_GET_DISTANCE}",
 		style: "leaphy_blocks",
 		output: "Number",
+		test: testOutput("i2c_generic"),
 
 		aiHelp: "Read the distance from the VL53L0X ToF sensor",
 		relevanceKey: "TOF_SENSOR",
@@ -509,6 +531,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("i2c_extra"),
 
 		aiHelp: "Read the air pressure from the BMP280 sensor",
 		relevanceKey: "BMP280_SENSOR",
@@ -519,6 +542,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("i2c_generic"),
 
 		aiHelp: "Read the temperature from the TMP102 sensor",
 		relevanceKey: "TMP102_SENSOR",
@@ -536,6 +560,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		// no compile test since this sensor is only used by micropython
 
 		aiHelp: "Read the temperature from the DHT22 sensor",
 		relevanceKey: "DHT22_SENSOR",
@@ -553,6 +578,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		// no compile test since this sensor is only used by micropython
 
 		aiHelp: "Read the humidity from the DHT22 sensor",
 		relevanceKey: "DHT22_SENSOR",
@@ -572,6 +598,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("segment"),
 
 		aiHelp: "Set the value on the 4 digit segment display",
 		relevanceKey: "SEGMENT_DISPLAY",
@@ -584,6 +611,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("segment"),
 
 		aiHelp: "Clear the segment display",
 		relevanceKey: "SEGMENT_DISPLAY",
@@ -603,6 +631,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("segment"),
 
 		aiHelp: "Set the brightness of the segment display",
 		relevanceKey: "SEGMENT_DISPLAY",
@@ -633,6 +662,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("matrix"),
 
 		aiHelp: "Set a pixel on the 8x8 LED matrix at a selected position",
 		relevanceKey: "LED_MATRIX",
@@ -652,6 +682,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("matrix"),
 
 		aiHelp: "Set the brightness of the 8x8 LED matrix",
 		relevanceKey: "LED_MATRIX",
@@ -664,6 +695,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("matrix"),
 
 		aiHelp: "Clear the 8x8 LED matrix",
 		relevanceKey: "LED_MATRIX",
@@ -685,6 +717,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("matrix"),
 
 		aiHelp: "Fill the 8x8 LED matrix with a selected pattern",
 		relevanceKey: "LED_MATRIX",
@@ -705,6 +738,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("speaker"),
 
 		aiHelp: "Play a sound from the RedMP3 module",
 		relevanceKey: "REDMP3_MODULE",
@@ -717,6 +751,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("speaker"),
 
 		aiHelp: "Stop the sound from the RedMP3 module",
 		relevanceKey: "REDMP3_MODULE",
@@ -737,6 +772,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("speaker"),
 
 		aiHelp: "Set the volume of the RedMP3 module",
 		relevanceKey: "REDMP3_MODULE",
@@ -773,6 +809,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("ledstrip"),
 
 		aiHelp: "Run a demo on the LED strip",
 		relevanceKey: "LED_STRIP",
@@ -813,9 +850,8 @@ const blocks: BlockDefinition = [
 		style: "math_blocks",
 		tooltip: "%{BKY_MATH_MAP_TOOLTIP}",
 		helpUrl: "https://www.arduino.cc/reference/en/language/functions/math/map/",
+		test: testOutput("general"),
 
 		aiHelp: "Map a value from one range to another",
 	},
 ];
-
-export { blocks };

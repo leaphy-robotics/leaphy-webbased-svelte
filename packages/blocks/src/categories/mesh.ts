@@ -2,7 +2,7 @@ import { Workspace } from "blockly";
 import { Msg, Variables, type WorkspaceSvg } from "blockly/core";
 import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import type { FlyoutDefinition } from "blockly/core/utils/toolbox";
-import type { DynamicListManager } from "../blocks/extensions";
+import type { DynamicListManager } from "../extensions";
 import { listManager } from "./lists";
 
 interface Signal {
