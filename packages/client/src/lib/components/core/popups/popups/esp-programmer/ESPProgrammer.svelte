@@ -20,7 +20,7 @@ import WorkspaceState from "$state/workspace.svelte";
 import Windowed from "../../Windowed.svelte";
 import Visualization from "./Visualization.svelte";
 
-type Step = "RESET_TWICE" | "FLASHING" | "RESET";
+type Step = "RESET_TWICE" | "FLASHING" | "RESET" | "ERROR";
 
 let step = $state<Step>("RESET_TWICE");
 const popupState = getContext<PopupState>("state");
@@ -29,90 +29,123 @@ let port = $state<SerialPort | null>(null);
 let transport = $state<Transport | null>(null);
 let loader = $state<ESPLoader | null>(null);
 let progress = $state(0);
+let busy = $state(false);
+let errorDetail = $state<string | null>(null);
 
-async function fetchAsBinaryString(url: string): Promise<string> {
+function log(line: string) {
+	WorkspaceState.uploadLog.push(line);
+}
+
+function createLoader(loaderTransport: Transport): ESPLoader {
+	return new ESPLoader({
+		transport: loaderTransport,
+		baudrate: 921600,
+		romBaudrate: 921600,
+		terminal: {
+			clean: () => {},
+			writeLine: log,
+			write: log,
+		},
+		debugLogging: true,
+	});
+}
+
+function isUserCancel(e: unknown): boolean {
+	return e instanceof DOMException && e.name === "NotFoundError";
+}
+
+async function fetchFirmware(url: string): Promise<Uint8Array> {
 	const response = await fetch(url);
-	const arrayBuffer = await response.arrayBuffer();
-	const uint8Array = new Uint8Array(arrayBuffer);
-
-	// Convert to binary string
-	let binaryString = "";
-	for (let i = 0; i < uint8Array.length; i++) {
-		binaryString += String.fromCharCode(uint8Array[i]);
+	if (!response.ok) {
+		throw new Error(`Failed to download firmware (${response.status})`);
 	}
-	return binaryString;
+	return new Uint8Array(await response.arrayBuffer());
+}
+
+async function cleanup() {
+	if (transport) {
+		try {
+			await transport.disconnect();
+		} catch {
+			// Port may already be closed or gone after a reset
+		}
+	}
+	transport = null;
+	loader = null;
+	port = null;
 }
 
 async function selectPort() {
-	await SerialState.reserve();
+	if (busy) return;
+	busy = true;
+	errorDetail = null;
+
+	let reserved = false;
 	try {
-		// First request will fail, but it will create the correct port
-		const firstPort =
-			(await navigator.serial.requestPort({
-				filters: [
-					{ usbProductId: 112, usbVendorId: 9025 },
-					{ usbProductId: 0x1001, usbVendorId: 0x303a },
-				],
-			})) || null;
+		await SerialState.reserve();
+		reserved = true;
+
+		const firstPort = await navigator.serial.requestPort({
+			filters: [
+				{ usbProductId: 112, usbVendorId: 9025 },
+				{ usbProductId: 0x1001, usbVendorId: 0x303a },
+			],
+		});
 
 		if (firstPort.getInfo().usbVendorId === 9025) {
-			try {
-				await firstPort.close();
-			} catch (e) {
-				console.error(e);
+			// Arduino Nano ESP32: this first connection attempt kicks the board
+			// into the ROM bootloader. The board re-enumerates as a different
+			// USB device, so this attempt is expected to fail.
+			if (firstPort.readable) {
+				try {
+					await firstPort.close();
+				} catch {
+					// Already closed
+				}
 			}
 			const firstTransport = new Transport(firstPort, true);
-			const firstLoader = new ESPLoader({
-				transport: firstTransport,
-				baudrate: 921600,
-				romBaudrate: 921600,
-				terminal: {
-					clean: () => {},
-					writeLine: (line: string) => {
-						WorkspaceState.uploadLog.push(line);
-					},
-					write: (data: string) => {
-						WorkspaceState.uploadLog.push(data);
-					},
-				},
-				debugLogging: true,
-			});
+			const firstLoader = createLoader(firstTransport);
 			try {
 				await firstLoader.main();
 			} catch (e) {
-				console.error(e);
+				log(`Expected disconnect while entering bootloader: ${e}`);
+			} finally {
+				try {
+					await firstTransport.disconnect();
+				} catch {
+					// Device is gone after re-enumeration
+				}
 			}
 
-			port =
-				(await navigator.serial.requestPort({
-					filters: [{ usbProductId: 4097, usbVendorId: 12346 }],
-				})) || null;
+			port = await navigator.serial.requestPort({
+				filters: [{ usbProductId: 4097, usbVendorId: 12346 }],
+			});
 		} else {
 			port = firstPort;
 		}
 
-		if (port) {
-			transport = new Transport(port, true);
-			loader = new ESPLoader({
-				transport,
-				baudrate: 921600,
-				romBaudrate: 921600,
-				terminal: {
-					clean: () => {},
-					writeLine: (line: string) => {
-						WorkspaceState.uploadLog.push(line);
-					},
-					write: (data: string) => {
-						WorkspaceState.uploadLog.push(data);
-					},
-				},
-				debugLogging: true,
-			});
-			await loader.main();
-			await flash();
+		transport = new Transport(port, true);
+		loader = createLoader(transport);
+		await loader.main();
+		await flash();
+	} catch (e) {
+		if (isUserCancel(e)) {
+			// User closed the port chooser; go back to the start silently
+			step = "RESET_TWICE";
+		} else {
+			console.error(e);
+			log(`ESP recovery failed: ${e}`);
+			errorDetail = e instanceof Error ? e.message : String(e);
+			step = "ERROR";
 		}
 	} finally {
-		SerialState.release();
+		await cleanup();
+		if (reserved) {
+			SerialState.release();
+			// Restart the read loop so the serial monitor keeps receiving data
+			SerialState.initPort().catch(() => {});
+		}
+		busy = false;
 	}
 }
 
@@ -120,6 +153,7 @@ async function flash() {
 	if (!loader) return;
 
 	step = "FLASHING";
+	progress = 0;
 	const fileUrls = [
 		{ url: BlinkInoBootloaderBin, offset: 0x0 },
 		{ url: BlinkInoPartitionsBin, offset: 0x8000 },
@@ -130,7 +164,7 @@ async function flash() {
 	const files = await Promise.all(
 		fileUrls.map(async (file) => {
 			return {
-				data: await fetchAsBinaryString(file.url),
+				data: await fetchFirmware(file.url),
 				address: file.offset,
 			};
 		}),
@@ -149,6 +183,12 @@ async function flash() {
 	});
 	step = "RESET";
 }
+
+function retry() {
+	errorDetail = null;
+	progress = 0;
+	step = "RESET_TWICE";
+}
 </script>
 
 <Windowed title={$_("ESP_PROGRAMMER")}>
@@ -157,7 +197,7 @@ async function flash() {
 		<span>{$_(`ESP_PROGRAMMER_${step}_DESCRIPTION`)}</span>
 		{#if step === "RESET_TWICE"}
 			<Visualization program="RESET_TWICE" />
-			<Button name={$_("CHOOSE_ROBOT")} mode="primary" onclick={() => selectPort()} />
+			<Button name={$_("CHOOSE_ROBOT")} mode="primary" disabled={busy} onclick={() => selectPort()} />
 		{/if}
 		{#if step === "FLASHING"}
 			<ProgressBar {progress} />
@@ -165,6 +205,12 @@ async function flash() {
 		{#if step === "RESET"}
 			<Visualization program="RESET" />
 			<Button name={$_("DONE")} mode="primary" onclick={() => popupState.close()} />
+		{/if}
+		{#if step === "ERROR"}
+			{#if errorDetail}
+				<code class="text-sm text-red-600 break-words max-w-full">{errorDetail}</code>
+			{/if}
+			<Button name={$_("ESP_PROGRAMMER_TRY_AGAIN")} mode="primary" onclick={retry} />
 		{/if}
 	</div>
 </Windowed>
