@@ -349,6 +349,9 @@
 	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Flashing the board...",
 	"ESP_PROGRAMMER_RESET": "Almost there!",
 	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Press the reset button to complete the process",
+	"ESP_PROGRAMMER_ERROR": "Something went wrong",
+	"ESP_PROGRAMMER_ERROR_DESCRIPTION": "The connection with the board was lost or flashing failed. Unplug the USB cable, plug it back in, press the reset button twice in quick succession and try again. Make sure no other program or browser tab is using the board.",
+	"ESP_PROGRAMMER_TRY_AGAIN": "Try again",
 
 	"PRESS_ANY_KEY": "Press any key",
 	"UNASSIGNED": "Unassigned",
