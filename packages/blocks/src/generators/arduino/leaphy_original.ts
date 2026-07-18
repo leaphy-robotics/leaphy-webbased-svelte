@@ -1,9 +1,4 @@
-import {
-	LightSensor,
-	LineSensor,
-	RGBFlitz,
-	WireColor,
-} from "@leaphy-robotics/schemas/src";
+import { RGBFlitz, WireColor } from "@leaphy-robotics/schemas/src";
 import Servo from "@leaphy-robotics/schemas/src/components/servo";
 import type { Block } from "blockly/core";
 import { MotorDirection } from "../../blocks/leaphy_original";
@@ -181,76 +176,6 @@ function getCodeGenerators(arduino: Arduino) {
 		}
 
 		return `moveMotors(${direction}, ${speed});\n`;
-	};
-
-	arduino.forBlock.digital_read = (block) => {
-		const dropdown_pin = arduino.getPinMapping(block, "PIN");
-
-		if (arduino.builder) {
-			const sensor = arduino.builder.add(`digital-${dropdown_pin}`, LineSensor);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(dropdown_pin),
-				sensor.port("Out"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${dropdown_pin}.3V3`),
-				sensor.port("3V3"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${dropdown_pin}.GND`),
-				sensor.port("GND"),
-				WireColor.GND,
-			);
-		}
-
-		arduino.setups_[`setup_input_${dropdown_pin}`] =
-			`pinMode(${dropdown_pin}, INPUT);`;
-
-		const debug = arduino.createDebug(`digital-input-${dropdown_pin}`, {
-			type: "basic",
-			name: `Digital input ${dropdown_pin}`,
-			values: 1,
-		});
-
-		const code = debug(`digitalRead(${dropdown_pin})`);
-		return [code, arduino.ORDER_ATOMIC];
-	};
-
-	arduino.forBlock.analog_read = (block) => {
-		const dropdown_pin = arduino.getPinMapping(block, "PIN");
-
-		if (arduino.builder) {
-			const lightSensor = arduino.builder.add(
-				`analog-${dropdown_pin}`,
-				LightSensor,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(dropdown_pin),
-				lightSensor.port("Out"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${dropdown_pin}.3V3`),
-				lightSensor.port("VCC"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${dropdown_pin}.GND`),
-				lightSensor.port("GND"),
-				WireColor.GND,
-			);
-		}
-
-		const debug = arduino.createDebug(`analog-input-${dropdown_pin}`, {
-			type: "basic",
-			name: `Analog input ${dropdown_pin}`,
-			values: 1,
-		});
-
-		const code = debug(`analogRead(${dropdown_pin})`);
-		return [code, arduino.ORDER_ATOMIC];
 	};
 
 	arduino.forBlock.leaphy_original_buzz = (block) => {

@@ -1,12 +1,17 @@
 import { type FieldConfig, FieldDropdown } from "blockly";
-import { PinMapping, type RobotDevice } from "../robots";
+
+export enum PinMapping {
+	UNIFIED = 0,
+	MEGA = 3,
+	MICROPYTHON = 4,
+}
 
 interface PinSelectorOptions extends FieldConfig {
 	mode: "digital" | "analog" | "pwm";
 	includeDefault?: boolean;
 }
 
-export default class PinSelectorField extends FieldDropdown {
+export class PinSelectorField extends FieldDropdown {
 	static digitalPinOptions: [string, string][];
 	static analogPinOptions: [string, string][];
 	static pwmPinOptions: [string, string][];
@@ -29,8 +34,8 @@ export default class PinSelectorField extends FieldDropdown {
 		return result;
 	}
 
-	static processPinMappings(board: RobotDevice) {
-		switch (board.mapping) {
+	static processPinMappings(mapping: PinMapping) {
+		switch (mapping) {
 			case PinMapping.UNIFIED: {
 				PinSelectorField.digitalPinOptions = PinSelectorField.generatePinRange(
 					2,

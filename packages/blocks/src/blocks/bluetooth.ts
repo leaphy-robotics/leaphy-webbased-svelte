@@ -1,4 +1,5 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
+import { testBoards, testOutput, testStatement } from "../utils";
 
 const rawKeys = "abcdefghijklmnopqrstuvwxyz";
 const keys = [
@@ -11,7 +12,8 @@ const keys = [
 	...new Array(10).fill(0).map((_, digit) => [`${digit}`, `Digit${digit}`]),
 ];
 
-const blocks: BlockDefinition = [
+export const testConfig = testBoards({ bluetooth: ["l_nano_esp32"] });
+export const blocks: BlockDefinition[] = [
 	{
 		type: "ble_setup",
 		style: "ble_blocks",
@@ -26,6 +28,7 @@ const blocks: BlockDefinition = [
 		],
 		previousStatement: null,
 		nextStatement: null,
+		test: testStatement("bluetooth"),
 
 		aiHelp: "Setup the Bluetooth module for connecting to the users laptop",
 		relevanceKey: "BLUETOOTH",
@@ -36,6 +39,7 @@ const blocks: BlockDefinition = [
 		message0: "%{BKY_LEAPHY_BLE_UPDATE}",
 		previousStatement: null,
 		nextStatement: null,
+		test: testStatement("bluetooth"),
 
 		aiHelp:
 			"Update the Bluetooth connection (required to always run in loop if bluetooth is used)",
@@ -54,10 +58,9 @@ const blocks: BlockDefinition = [
 		],
 		style: "ble_blocks",
 		output: "Boolean",
+		test: testOutput("bluetooth"),
 
 		aiHelp: "Check if a key is pressed on the Bluetooth connection",
 		relevanceKey: "BLUETOOTH",
 	},
 ];
-
-export { blocks };

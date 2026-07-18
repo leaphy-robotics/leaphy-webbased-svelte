@@ -6,6 +6,7 @@ import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	blocks,
 	CATEGORIES,
+	PinSelectorField,
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
@@ -23,7 +24,6 @@ import PopupState from "$state/popup.svelte";
 import SerialState from "$state/serial.svelte";
 import { Backpack } from "./backpack";
 import { LeaphyCategory } from "./category-ui/category";
-import PinSelectorField from "./fields";
 import toolbox from "./toolbox";
 import "@blockly/toolbox-search";
 import type { BlockDefinition } from "blockly/core/blocks";
@@ -34,6 +34,7 @@ import type {
 import { get } from "svelte/store";
 import { _ as translate } from "svelte-i18n";
 import bluetooth from "$domain/blockly/bluetooth";
+import search from "$domain/blockly/category-ui/search";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import TeachableMachineState from "$state/teachableMachine.svelte";
 import WorkspaceState from "$state/workspace.svelte";
@@ -144,43 +145,6 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 
 	play.call(this, name, opt_volume);
 };
-
-export function getAllBlocks() {
-	const contents = toolbox
-		.filter((category) => category.id !== "l_search")
-		.filter(({ robots }) =>
-			robots ? inFilter(WorkspaceState.robot, robots) : true,
-		)
-		.filter((category) => Extensions.isEnabled(category.id))
-		.flatMap((category) => {
-			if (category.custom) {
-				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
-					category.custom,
-				);
-				if (!callback) return null;
-
-				return callback(
-					BlocklyState.workspace,
-				) as utils.toolbox.FlyoutItemInfoArray;
-			}
-			if (!category.groups) return null;
-			return category.groups.flatMap((group) =>
-				group.blocks.map((block) => ({
-					kind: "block",
-					...block,
-				})),
-			);
-		})
-		.filter((block) => block.kind === "block" && "type" in block);
-
-	// Add blocks to a map to avoid duplicates
-	const blocks = new Map<string, BlockDefinition>();
-	for (const block of contents) {
-		blocks.set(block.type, block);
-	}
-
-	return Array.from(blocks.values());
-}
 
 export function loadToolbox(robot: RobotDevice): utils.toolbox.ToolboxInfo {
 	const contents = toolbox
@@ -385,7 +349,7 @@ export function setupWorkspace(
 	theme: Blockly.Theme,
 	content?: { [key: string]: any },
 ) {
-	PinSelectorField.processPinMappings(robot);
+	PinSelectorField.processPinMappings(robot.mapping);
 
 	const workspace = Blockly.inject(element, {
 		renderer: "zelos",
@@ -437,7 +401,7 @@ export function setupWorkspace(
 			workspace.refreshToolboxSelection();
 		}
 	});
-	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
+	workspace.registerToolboxCategoryCallback("SEARCH", search);
 	workspace.registerToolboxCategoryCallback("BLE", bluetooth);
 	workspace.registerToolboxCategoryCallback(
 		"PYTHON_PROCEDURE",
@@ -464,3 +428,5 @@ export function setupWorkspace(
 }
 
 ContextMenuRegistry.registry.register(explainBlockOption);
+
+export { getAllBlocks } from "$domain/blockly/category-ui/search";

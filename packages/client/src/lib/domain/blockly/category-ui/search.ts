@@ -1,19 +1,54 @@
+import type { utils } from "blockly";
 import {
 	BlockSvg,
 	getMainWorkspace,
 	Msg,
-	type Toolbox,
-	type ToolboxCategory,
 	type WorkspaceSvg,
 } from "blockly/core";
 import type { BlockDefinition } from "blockly/core/blocks";
-import type {
-	FlyoutDefinition,
-	FlyoutItemInfoArray,
-} from "blockly/core/utils/toolbox";
-import { getAllBlocks } from "../../../client/src/lib/domain/blockly/blockly";
-import Extensions from "../../../client/src/lib/domain/blockly/extensions.svelte";
-import { serializeBlock } from "../../../client/src/lib/domain/blockly/pseudo";
+import Extensions from "$domain/blockly/extensions.svelte";
+import { serializeBlock } from "$domain/blockly/pseudo";
+import toolbox from "$domain/blockly/toolbox";
+import { inFilter } from "$domain/robots";
+import BlocklyState from "$state/blockly.svelte";
+import WorkspaceState from "$state/workspace.svelte";
+
+export function getAllBlocks() {
+	const contents = toolbox
+		.filter((category) => category.id !== "l_search")
+		.filter(({ robots }) =>
+			robots ? inFilter(WorkspaceState.robot, robots) : true,
+		)
+		.filter((category) => Extensions.isEnabled(category.id))
+		.flatMap((category) => {
+			if (category.custom) {
+				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
+					category.custom,
+				);
+				if (!callback) return null;
+
+				return callback(
+					BlocklyState.workspace,
+				) as utils.toolbox.FlyoutItemInfoArray;
+			}
+			if (!category.groups) return null;
+			return category.groups.flatMap((group) =>
+				group.blocks.map((block) => ({
+					kind: "block",
+					...block,
+				})),
+			);
+		})
+		.filter((block) => block.kind === "block" && "type" in block);
+
+	// Add blocks to a map to avoid duplicates
+	const blocks = new Map<string, BlockDefinition>();
+	for (const block of contents) {
+		blocks.set(block.type, block);
+	}
+
+	return Array.from(blocks.values());
+}
 
 const input = document.createElement("input");
 input.type = "text";

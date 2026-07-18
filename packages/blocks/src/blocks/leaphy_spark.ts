@@ -1,4 +1,5 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
+import { testOutput, testStatement } from "../utils";
 
 const sparkSensorOptions = [
 	["%{BKY_LEAPHY_SPARK_LEFT_LINE_SENSOR}", "left_line_sensor"],
@@ -11,7 +12,7 @@ const sparkSensorOptions = [
 	["%{BKY_LEAPHY_SPARK_BUTTON} 3", "button_3"],
 ];
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_spark_read",
 		message0: "%{BKY_LEAPHY_SPARK_READ}",
@@ -25,6 +26,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "Number",
 		helpUrl: "",
+		test: testOutput("spark"),
 
 		aiHelp: `Read the sensor values of sensors on the Leaphy spark shield (options: ${sparkSensorOptions.map(([_name, id]) => id).join(", ")})`,
 		relevanceKey: "SPARK",
@@ -41,10 +43,9 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("spark"),
 
 		aiHelp: "Set the RGB color of the RGB LED on the Spark shield",
 		relevanceKey: "SPARK",
 	},
 ];
-
-export { blocks };

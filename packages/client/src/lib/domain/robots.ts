@@ -1,3 +1,4 @@
+import { PinMapping } from "@leaphy-robotics/leaphy-blocks";
 import defaultCPP from "$assets/default-program.ino?raw";
 import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
 import originalBackground from "$assets/robots/backgrounds/original.svg";
@@ -38,12 +39,6 @@ interface RobotListing extends BaseRobot {
 }
 
 export type Robot = RobotListing | RobotDevice;
-
-export enum PinMapping {
-	UNIFIED = 0,
-	MEGA = 3,
-	MICROPYTHON = 4,
-}
 
 const baseUno = {
 	mapping: PinMapping.UNIFIED,
