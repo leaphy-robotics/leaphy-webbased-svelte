@@ -349,6 +349,9 @@
 	"ESP_PROGRAMMER_FLASHING_DESCRIPTION": "Nieuwe firmware wordt geflashed...",
 	"ESP_PROGRAMMER_RESET": "Bijna klaar!",
 	"ESP_PROGRAMMER_RESET_DESCRIPTION": "Druk op de reset knop om het proces te voltooien",
+	"ESP_PROGRAMMER_ERROR": "Er ging iets mis",
+	"ESP_PROGRAMMER_ERROR_DESCRIPTION": "De verbinding met de robot is verbroken of het flashen is mislukt. Haal de USB-kabel los, sluit deze opnieuw aan, druk twee keer snel achter elkaar op de reset knop en probeer het opnieuw. Zorg dat geen ander programma of tabblad de robot gebruikt.",
+	"ESP_PROGRAMMER_TRY_AGAIN": "Probeer opnieuw",
 
 	"PRESS_ANY_KEY": "Druk op een toets",
 	"UNASSIGNED": "Niet toegewezen",
