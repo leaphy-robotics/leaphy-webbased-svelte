@@ -1,6 +1,7 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
+import {testOutput, testStatement} from "../utils";
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_i2c_rtc_get",
 		message0: "%{BKY_LEAPHY_RTC_GET}",
@@ -21,6 +22,7 @@ const blocks: BlockDefinition = [
 		],
 		style: "leaphy_blocks",
 		output: "Number",
+		test: testOutput("rtc"),
 
 		aiHelp: "RTC: Get the current time",
 		relevanceKey: "RTC",
@@ -39,6 +41,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("rtc"),
 
 		aiHelp: "RTC: Set the current time",
 		relevanceKey: "RTC",
@@ -49,6 +52,7 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 		output: "String",
 		mutator: "l_format_date_mutator",
+		test: testOutput("rtc"),
 
 		aiHelp: "RTC: Format the current time",
 		relevanceKey: "RTC",
@@ -414,5 +418,3 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 	},
 ];
-
-export { blocks };

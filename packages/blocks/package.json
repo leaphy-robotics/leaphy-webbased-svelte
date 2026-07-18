@@ -4,7 +4,7 @@
 	"scripts": {
 		"build": "tsup",
 		"watch": "tsup --watch --ignore-watch tmp",
-		"test": "vitest run"
+		"test": "vitest run --testTimeout=128000"
 	},
 	"dependencies": {
 		"@leaphy-robotics/schemas": "workspace:*",

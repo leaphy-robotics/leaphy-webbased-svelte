@@ -280,6 +280,101 @@ function getCodeGenerators(arduino: Arduino) {
 		const code = `map(${value}, ${fromLow}, ${fromHigh}, ${toLow}, ${toHigh})`;
 		return [code, arduino.ORDER_UNARY_POSTFIX];
 	};
+
+	arduino.forBlock.logic_compare = (block) => {
+		const operators: Record<string, string> = {
+			EQ: "==",
+			NEQ: "!=",
+			LT: "<",
+			LTE: "<=",
+			GT: ">",
+			GTE: ">=",
+		};
+		const operator = operators[block.getFieldValue("OP")];
+		const order =
+			operator === "==" || operator === "!="
+				? arduino.ORDER_EQUALITY
+				: arduino.ORDER_RELATIONAL;
+		const left = arduino.valueToCode(block, "A", order) || "0";
+		const right = arduino.valueToCode(block, "B", order) || "0";
+		return [`${left} ${operator} ${right}`, order];
+	};
+
+	arduino.forBlock.logic_operation = (block) => {
+		const operator = block.getFieldValue("OP") === "AND" ? "&&" : "||";
+		const order =
+			operator === "&&" ? arduino.ORDER_LOGICAL_AND : arduino.ORDER_LOGICAL_OR;
+		let left = arduino.valueToCode(block, "A", order) || "false";
+		let right = arduino.valueToCode(block, "B", order) || "false";
+		if (!left && !right) {
+			left = "false";
+			right = "false";
+		} else {
+			const defaultArgument = operator === "&&" ? "true" : "false";
+			if (!left) left = defaultArgument;
+			if (!right) right = defaultArgument;
+		}
+		return [`${left} ${operator} ${right}`, order];
+	};
+
+	arduino.forBlock.logic_negate = (block) => {
+		const argument =
+			arduino.valueToCode(block, "BOOL", arduino.ORDER_UNARY_PREFIX) || "false";
+		return [`!${argument}`, arduino.ORDER_UNARY_PREFIX];
+	};
+
+	arduino.forBlock.logic_boolean = (block) => [
+		block.getFieldValue("BOOL") === "TRUE" ? "true" : "false",
+		arduino.ORDER_ATOMIC,
+	];
+
+	arduino.forBlock.logic_null = () => ["NULL", arduino.ORDER_ATOMIC];
+
+	arduino.forBlock.logic_ternary = (block) => {
+		const condition =
+			arduino.valueToCode(block, "IF", arduino.ORDER_CONDITIONAL) || "false";
+		const thenValue =
+			arduino.valueToCode(block, "THEN", arduino.ORDER_CONDITIONAL) || "null";
+		const elseValue =
+			arduino.valueToCode(block, "ELSE", arduino.ORDER_CONDITIONAL) || "null";
+		return [
+			`${condition} ? ${thenValue} : ${elseValue}`,
+			arduino.ORDER_CONDITIONAL,
+		];
+	};
+
+	arduino.forBlock.text = (block) => [
+		arduino.quote_(block.getFieldValue("TEXT")),
+		arduino.ORDER_ATOMIC,
+	];
+
+	arduino.forBlock.text_join = (block) => {
+		const left = arduino.valueToCode(block, "ADD0", arduino.ORDER_NONE);
+		const right = arduino.valueToCode(block, "ADD1", arduino.ORDER_NONE);
+		return [`String(${left}) + String(${right})`, arduino.ORDER_ATOMIC];
+	};
+
+	arduino.forBlock.text_length = (block) => {
+		const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE);
+		return [`String(${value}).length()`, arduino.ORDER_ATOMIC];
+	};
+
+	arduino.forBlock.text_charAt = (block) => {
+		const at = arduino.valueToCode(block, "AT", arduino.ORDER_NONE);
+		const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE);
+		return [`String(${value}[${at}])`, arduino.ORDER_ATOMIC];
+	};
+
+	arduino.forBlock.text_includes = (block) => {
+		const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE);
+		const check = arduino.valueToCode(block, "CHECK", arduino.ORDER_NONE);
+		return [`String(${value}).indexOf(${check}) != -1`, arduino.ORDER_ATOMIC];
+	};
+
+	arduino.forBlock.text_to_double = (block) => {
+		const value = arduino.valueToCode(block, "VALUE", arduino.ORDER_NONE);
+		return [`${value}.toDouble()`, arduino.ORDER_ATOMIC];
+	};
 }
 
 export default getCodeGenerators;

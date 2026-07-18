@@ -37,6 +37,7 @@ import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import TeachableMachineState from "$state/teachableMachine.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import Extensions from "./extensions.svelte";
+import search from "$domain/blockly/category-ui/search";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -143,43 +144,6 @@ Blockly.WorkspaceAudio.prototype.play = function (name, opt_volume) {
 
 	play.call(this, name, opt_volume);
 };
-
-export function getAllBlocks() {
-	const contents = toolbox
-		.filter((category) => category.id !== "l_search")
-		.filter(({ robots }) =>
-			robots ? inFilter(WorkspaceState.robot, robots) : true,
-		)
-		.filter((category) => Extensions.isEnabled(category.id))
-		.flatMap((category) => {
-			if (category.custom) {
-				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
-					category.custom,
-				);
-				if (!callback) return null;
-
-				return callback(
-					BlocklyState.workspace,
-				) as utils.toolbox.FlyoutItemInfoArray;
-			}
-			if (!category.groups) return null;
-			return category.groups.flatMap((group) =>
-				group.blocks.map((block) => ({
-					kind: "block",
-					...block,
-				})),
-			);
-		})
-		.filter((block) => block.kind === "block" && "type" in block);
-
-	// Add blocks to a map to avoid duplicates
-	const blocks = new Map<string, BlockDefinition>();
-	for (const block of contents) {
-		blocks.set(block.type, block);
-	}
-
-	return Array.from(blocks.values());
-}
 
 export function loadToolbox(robot: RobotDevice): utils.toolbox.ToolboxInfo {
 	const contents = toolbox
@@ -436,7 +400,7 @@ export function setupWorkspace(
 			workspace.refreshToolboxSelection();
 		}
 	});
-	workspace.registerToolboxCategoryCallback("SEARCH", CATEGORIES.SEARCH);
+	workspace.registerToolboxCategoryCallback("SEARCH", search);
 	workspace.registerToolboxCategoryCallback("BLE", bluetooth);
 	workspace.registerToolboxCategoryCallback(
 		"PYTHON_PROCEDURE",
@@ -463,3 +427,4 @@ export function setupWorkspace(
 }
 
 ContextMenuRegistry.registry.register(explainBlockOption);
+export { getAllBlocks } from "$domain/blockly/category-ui/search"

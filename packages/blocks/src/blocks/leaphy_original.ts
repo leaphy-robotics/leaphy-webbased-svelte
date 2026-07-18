@@ -1,4 +1,5 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
+import {testOutput, testStatement} from "../utils";
 
 const motorLeftRightDropdown = [
 	["%{BKY_LEAPHY_MOTOR_LEFT_DROPDOWN}", "9"],
@@ -19,7 +20,7 @@ const motorForwardBackwardDropdown = [
 	["%{BKY_LEAPHY_MOTOR_RIGHT}", MotorDirection.RIGHT],
 ];
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_original_set_led",
 		helpUrl:
@@ -36,6 +37,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("original"),
 
 		aiHelp: "Set the RGB color of the RGB LED",
 	},
@@ -57,6 +59,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("original"),
 
 		aiHelp:
 			"Set the speed of a selected motor (two wheel differential drive motors)",
@@ -79,6 +82,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("original"),
 
 		aiHelp:
 			"Move the robot in a selected direction (two wheel differential drive motors)",
@@ -95,6 +99,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("original"),
 
 		aiHelp: "Make a sound from the buzzer",
 	},
@@ -122,6 +127,7 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("original"),
 
 		aiHelp:
 			"Set the speed of a selected motor (two wheel differential drive motors)",
@@ -152,10 +158,9 @@ const blocks: BlockDefinition = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		test: testStatement("original"),
 
 		aiHelp:
 			"Move the robot in a selected direction (two wheel differential drive motors)",
 	},
 ];
-
-export { blocks };

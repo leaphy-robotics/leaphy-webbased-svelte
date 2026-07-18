@@ -1,7 +1,22 @@
 import * as Blockly from "blockly/core";
 import type { Arduino } from "../arduino";
 
-function getCodeGenerators(arduino: Arduino) {
+export default function getCodeGenerators(arduino: Arduino) {
+	arduino.forBlock.time_delay = (block) => {
+		const delayTime =
+			arduino.valueToCode(block, "DELAY_TIME_MILI", arduino.ORDER_ATOMIC) ||
+			"0";
+
+		switch (block.getFieldValue("UNIT")) {
+			case "ms":
+				return `delay(${delayTime});\n`;
+			case "s":
+				return `delay(${delayTime} * 1000);\n`;
+			default:
+				return `delayMicroseconds(${delayTime});\n`;
+		}
+	};
+
 	arduino.forBlock.controls_repeat = (block) => {
 		const repeats = Number(block.getFieldValue("TIMES"));
 		let branch = arduino.statementToCode(block, "DO");
@@ -42,10 +57,30 @@ function getCodeGenerators(arduino: Arduino) {
 		return `while (true) {\n${branch}}\n`;
 	};
 
+	arduino.forBlock.controls_if = (block) => {
+		let n = 0;
+		let argument =
+			arduino.valueToCode(block, `IF${n}`, arduino.ORDER_NONE) || "false";
+		let branch = arduino.statementToCode(block, `DO${n}`);
+		let code = `if (${argument}) {\n${branch}}`;
+
+		const blockProps = block as unknown as Record<string, number>;
+		for (n = 1; n <= blockProps.elseifCount_; n++) {
+			argument =
+				arduino.valueToCode(block, `IF${n}`, arduino.ORDER_NONE) || "false";
+			branch = arduino.statementToCode(block, `DO${n}`);
+			code += ` else if (${argument}) {\n${branch}}`;
+		}
+		if (blockProps.elseCount_) {
+			branch = arduino.statementToCode(block, "ELSE");
+			code += ` else {\n${branch}}`;
+		}
+		return `${code}\n`;
+	};
+
 	arduino.forBlock.controls_whileUntil = (block) => {
-		// Do while/until loop.
 		const until = block.getFieldValue("MODE") === "UNTIL";
-		let argument0 =
+		let argument =
 			arduino.valueToCode(
 				block,
 				"BOOL",
@@ -54,86 +89,69 @@ function getCodeGenerators(arduino: Arduino) {
 		let branch = arduino.statementToCode(block, "DO");
 		branch = arduino.addLoopTrap(branch, block);
 		if (until) {
-			if (!argument0.match(/^\w+$/)) {
-				argument0 = `(${argument0})`;
-			}
-			argument0 = `!${argument0}`;
+			if (!argument.match(/^\w+$/)) argument = `(${argument})`;
+			argument = `!${argument}`;
 		}
-		return `while (${argument0}) {\n${branch}}\n`;
+		return `while (${argument}) {\n${branch}}\n`;
 	};
 
 	arduino.forBlock.controls_for = (block) => {
-		const variable0 = arduino.nameDB_?.getName(
+		const variable = arduino.nameDB_?.getName(
 			block.getFieldValue("VAR"),
 			Blockly.Names.NameType.VARIABLE,
 		);
-		const argument0 =
+		const from =
 			arduino.valueToCode(block, "FROM", arduino.ORDER_ASSIGNMENT) || "0";
-		const argument1 =
+		const to =
 			arduino.valueToCode(block, "TO", arduino.ORDER_ASSIGNMENT) || "0";
 		const increment =
 			arduino.valueToCode(block, "BY", arduino.ORDER_ASSIGNMENT) || "1";
 		let branch = arduino.statementToCode(block, "DO");
 		branch = arduino.addLoopTrap(branch, block);
 		let code: string;
+
 		if (
-			Blockly.utils.string.isNumber(argument0) &&
-			Blockly.utils.string.isNumber(argument1) &&
+			Blockly.utils.string.isNumber(from) &&
+			Blockly.utils.string.isNumber(to) &&
 			Blockly.utils.string.isNumber(increment)
 		) {
-			// All arguments are simple numbers.
-			const up = Number.parseFloat(argument0) <= Number.parseFloat(argument1);
-			code = `for (${variable0} = ${argument0}; ${variable0}${up ? " <= " : " >= "}${argument1}; ${variable0}`;
+			const up = Number.parseFloat(from) <= Number.parseFloat(to);
+			code = `for (${variable} = ${from}; ${variable}${up ? " <= " : " >= "}${to}; ${variable}`;
 			const step = Math.abs(Number.parseFloat(increment));
-			if (step === 1) {
-				code += up ? "++" : "--";
-			} else {
-				code += (up ? " += " : " -= ") + step;
-			}
+			code += step === 1 ? (up ? "++" : "--") : (up ? " += " : " -= ") + step;
 			code += `) {\n${branch}}\n`;
 		} else {
 			code = "";
-			// Cache non-trivial values to variables to prevent repeated look-ups.
-			let startVar = argument0;
-			if (
-				!argument0.match(/^\w+$/) &&
-				!Blockly.utils.string.isNumber(argument0)
-			) {
+			let startVar = from;
+			if (!from.match(/^\w+$/) && !Blockly.utils.string.isNumber(from)) {
 				startVar =
 					arduino.nameDB_?.getDistinctName(
-						`${variable0}_start`,
+						`${variable}_start`,
 						Blockly.Names.NameType.VARIABLE,
-					) || argument0;
-				code += `int ${startVar} = ${argument0};\n`;
+					) || from;
+				code += `int ${startVar} = ${from};\n`;
 			}
-			let endVar = argument1;
-			if (
-				!argument1.match(/^\w+$/) &&
-				!Blockly.utils.string.isNumber(argument1)
-			) {
+			let endVar = to;
+			if (!to.match(/^\w+$/) && !Blockly.utils.string.isNumber(to)) {
 				endVar =
 					arduino.nameDB_?.getDistinctName(
-						`${variable0}_end`,
+						`${variable}_end`,
 						Blockly.Names.NameType.VARIABLE,
-					) || argument1;
-				code += `int ${endVar} = ${argument1};\n`;
+					) || to;
+				code += `int ${endVar} = ${to};\n`;
 			}
-			// Determine loop direction at start, in case one of the bounds
-			// changes during loop execution.
 			const incVar = arduino.nameDB_?.getDistinctName(
-				`${variable0}_inc`,
+				`${variable}_inc`,
 				Blockly.Names.NameType.VARIABLE,
 			);
 			code += `int ${incVar} = `;
-			if (Blockly.utils.string.isNumber(increment)) {
-				code += `${Math.abs(Number(increment))};\n`;
-			} else {
-				code += `abs(${increment});\n`;
-			}
+			code += Blockly.utils.string.isNumber(increment)
+				? `${Math.abs(Number(increment))};\n`
+				: `abs(${increment});\n`;
 			code += `if (${startVar} > ${endVar}) {\n`;
 			code += `${arduino.INDENT + incVar} = -${incVar};\n`;
 			code += "}\n";
-			code += `for (${variable0} = ${startVar};\n     ${incVar} >= 0 ? ${variable0} <= ${endVar} : ${variable0} >= ${endVar};\n     ${variable0} += ${incVar}) {\n${branch}}\n`;
+			code += `for (${variable} = ${startVar};\n     ${incVar} >= 0 ? ${variable} <= ${endVar} : ${variable} >= ${endVar};\n     ${variable} += ${incVar}) {\n${branch}}\n`;
 		}
 		return code;
 	};
@@ -144,9 +162,16 @@ function getCodeGenerators(arduino: Arduino) {
 				return "break;\n";
 			case "CONTINUE":
 				return "continue;\n";
+			default:
+				throw "Unknown flow statement.";
 		}
-		throw "Unknown flow statement.";
+	};
+
+	arduino.forBlock.leaphy_start = (block) => {
+		let branch = arduino.statementToCode(block, "STACK");
+		branch = arduino.addLoopTrap(branch, block);
+		const code = `void leaphyProgram() {\n${branch}}\n`;
+		arduino.addSetup("userSetupCode", "leaphyProgram();", false);
+		return code;
 	};
 }
-
-export default getCodeGenerators;

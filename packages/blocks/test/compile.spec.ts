@@ -5,7 +5,7 @@ import arduino from "../src/generators/arduino"
 import registerExtensions from "../src/extensions"
 import {PinSelectorField, PinMapping} from "../src/fields/pinSelector";
 import translations from "../src/msg/translations";
-import {describe, it} from "vitest";
+import {describe, expect, it} from "vitest";
 import {TestConfig} from "../src/utils";
 import "@blockly/field-bitmap";
 import SerialState from "../../client/src/lib/state/serial.svelte";
@@ -19,12 +19,37 @@ registerExtensions(Blockly);
 Blockly.common.defineBlocksWithJsonArray(Object.values(blocklyBlocks))
 Blockly.common.defineBlocksWithJsonArray(blocks)
 
+function getInputBlock(check: "String"|"Number"|"Boolean") {
+	switch (check) {
+		case 'Number': {
+			return {
+				type: "math_number",
+				fields: { NUM: 0 },
+			}
+		}
+		case 'String': {
+			return {
+				type: "text",
+				fields: { TEXT: '' },
+			}
+		}
+		case 'Boolean': {
+			return {
+				type: "logic_boolean",
+			}
+		}
+	}
+}
+
 interface TestBlock {
 	type: string;
 	test: TestConfig;
+	args0: {
+		type: string,
+		name: string,
+		check?: "String"|"Number"|"Boolean",
+	}[],
 }
-
-console.log(testConfig)
 
 describe("compile tests", () => {
 	const testBlocks = blocks.filter(b => 'test' in b) as TestBlock[]
@@ -42,13 +67,29 @@ describe("compile tests", () => {
 		const architectures = testConfig[group] || ['l_nano', 'l_nano_esp32']
 
 		architectures.forEach(architecture => {
-			it(`${group} blocks should compile on ${architecture}`, async () => {
+			it.concurrent(`${group} blocks should compile on ${architecture}`, async () => {
 				const workspace = new Blockly.Workspace()
 				const startBlock = workspace.newBlock("leaphy_start")
 				const content = startBlock.getInput("STACK") as Blockly.Input
 
 				blocks.forEach((blockDef) => {
 					const block = workspace.newBlock(blockDef.type);
+					if (blockDef.args0) {
+						blockDef.args0.forEach(arg => {
+							if (arg.type !== "input_value" || !arg.check) return
+
+							const blockType = getInputBlock(arg.check)
+							const valueBlock = workspace.newBlock(blockType.type)
+							if (blockType.fields) {
+								Object.entries(blockType.fields).forEach(([key, value]) => {
+									valueBlock.setFieldValue(value, key)
+								})
+							}
+
+							block.getInput(arg.name)!.connection!.connect(valueBlock.outputConnection!)
+						})
+					}
+
 					block.initModel()
 					if (blockDef.test.type === "statement") {
 						content.connection!.connect(block.previousConnection!)
@@ -75,9 +116,8 @@ describe("compile tests", () => {
 						libraries: dependencies
 					}),
 				});
-				if (!res.ok) {
-					console.log(code, (await res.json()).detail, dependencies);
-				}
+
+				expect(res.ok, `${code}\nlibraries: ${dependencies}\n ${(await res.json()).detail}`).toBe(true)
 			})
 		})
 	})

@@ -1,5 +1,5 @@
 import type { BlockDefinition } from "../types";
-import {testOutput, testStatement, testBoards} from "../utils";
+import { testBoards, testOutput, testStatement } from "../utils";
 
 const rawKeys = "abcdefghijklmnopqrstuvwxyz";
 const keys = [
@@ -12,8 +12,8 @@ const keys = [
 	...new Array(10).fill(0).map((_, digit) => [`${digit}`, `Digit${digit}`]),
 ];
 
-export const testConfig = testBoards({ bluetooth: ["l_nano_esp32"] })
-export const blocks: BlockDefinition = [
+export const testConfig = testBoards({ bluetooth: ["l_nano_esp32"] });
+export const blocks: BlockDefinition[] = [
 	{
 		type: "ble_setup",
 		style: "ble_blocks",

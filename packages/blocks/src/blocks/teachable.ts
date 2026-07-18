@@ -1,6 +1,6 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "teachable_audio_classify",
 		message0: "%{BKY_TEACHABLE_AUDIO_CLASSIFY}",
@@ -36,5 +36,3 @@ const blocks: BlockDefinition = [
 		relevanceKey: "ML",
 	},
 ];
-
-export { blocks };
