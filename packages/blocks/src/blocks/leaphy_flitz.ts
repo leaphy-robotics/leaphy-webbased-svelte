@@ -1,12 +1,12 @@
 import type { BlockDefinition } from "../types";
-import {testBoards, testOutput, testStatement} from "../utils";
+import { testBoards, testOutput, testStatement } from "../utils";
 
 const stomachSensorOptions = [
 	["%{BKY_LEAPHY_STOMACH_SENSOR_TYPE1}", "1"],
 	["%{BKY_LEAPHY_STOMACH_SENSOR_TYPE2}", "2"],
 ];
 
-export const testConfig = testBoards({ flitz: ['l_nano'] })
+export const testConfig = testBoards({ flitz: ["l_nano"] });
 export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_flitz_read_stomach_sensor",

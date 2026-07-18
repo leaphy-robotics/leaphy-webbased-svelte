@@ -9,8 +9,8 @@ import {
 	Msg,
 	type WorkspaceSvg,
 } from "blockly/core";
-import { meshSignals } from "./categories/mesh";
 import { listManager } from "./categories/lists";
+import { meshSignals } from "./categories/mesh";
 import { ml } from "./categories/ml";
 import type { DateItem } from "./generators/arduino/rtc";
 import { after } from "./utils";

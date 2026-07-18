@@ -5,7 +5,8 @@ import "@blockly/field-bitmap";
 import { BackpackChange } from "@blockly/workspace-backpack";
 import {
 	blocks,
-	CATEGORIES, PinSelectorField,
+	CATEGORIES,
+	PinSelectorField,
 	registerExtensions,
 	translations,
 } from "@leaphy-robotics/leaphy-blocks";
@@ -33,11 +34,11 @@ import type {
 import { get } from "svelte/store";
 import { _ as translate } from "svelte-i18n";
 import bluetooth from "$domain/blockly/bluetooth";
+import search from "$domain/blockly/category-ui/search";
 import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import TeachableMachineState from "$state/teachableMachine.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import Extensions from "./extensions.svelte";
-import search from "$domain/blockly/category-ui/search";
 
 Blockly.defineBlocksWithJsonArray(blocks);
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
@@ -427,4 +428,5 @@ export function setupWorkspace(
 }
 
 ContextMenuRegistry.registry.register(explainBlockOption);
-export { getAllBlocks } from "$domain/blockly/category-ui/search"
+
+export { getAllBlocks } from "$domain/blockly/category-ui/search";

@@ -1,5 +1,5 @@
 import type { BlockDefinition } from "../types";
-import {testOutput, testStatement} from "../utils";
+import { testOutput, testStatement } from "../utils";
 
 const accelerometerAxis = [
 	["%{BKY_LEAPHY_ACCELEROMETER_AXIS_X}", "0"],

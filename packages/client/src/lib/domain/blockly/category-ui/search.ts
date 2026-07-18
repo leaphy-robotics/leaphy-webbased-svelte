@@ -1,17 +1,17 @@
+import type { utils } from "blockly";
 import {
 	BlockSvg,
 	getMainWorkspace,
 	Msg,
 	type WorkspaceSvg,
 } from "blockly/core";
-import toolbox from "$domain/blockly/toolbox";
-import {inFilter} from "$domain/robots";
-import WorkspaceState from "$state/workspace.svelte";
+import type { BlockDefinition } from "blockly/core/blocks";
 import Extensions from "$domain/blockly/extensions.svelte";
+import { serializeBlock } from "$domain/blockly/pseudo";
+import toolbox from "$domain/blockly/toolbox";
+import { inFilter } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
-import type {utils} from "blockly";
-import type {BlockDefinition} from "blockly/core/blocks";
-import {serializeBlock} from "$domain/blockly/pseudo";
+import WorkspaceState from "$state/workspace.svelte";
 
 export function getAllBlocks() {
 	const contents = toolbox

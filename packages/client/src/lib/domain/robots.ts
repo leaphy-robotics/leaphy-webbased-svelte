@@ -1,3 +1,4 @@
+import { PinMapping } from "@leaphy-robotics/leaphy-blocks";
 import defaultCPP from "$assets/default-program.ino?raw";
 import flitzNanoBackground from "$assets/robots/backgrounds/flitz_nano.svg";
 import originalBackground from "$assets/robots/backgrounds/original.svg";
@@ -15,7 +16,6 @@ import DFU from "../programmers/DFU";
 import STK500v1 from "../programmers/STK500v1/STK500v1";
 import STK500v2 from "../programmers/STK500v2";
 import { type Programmer, RobotType } from "./robots.types";
-import {PinMapping} from "@leaphy-robotics/leaphy-blocks";
 
 interface BaseRobot {
 	name: string;

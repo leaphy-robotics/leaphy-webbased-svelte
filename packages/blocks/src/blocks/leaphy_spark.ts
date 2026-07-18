@@ -1,5 +1,5 @@
 import type { BlockDefinition } from "../types";
-import {testOutput, testStatement} from "../utils";
+import { testOutput, testStatement } from "../utils";
 
 const sparkSensorOptions = [
 	["%{BKY_LEAPHY_SPARK_LEFT_LINE_SENSOR}", "left_line_sensor"],

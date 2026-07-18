@@ -1,5 +1,5 @@
 import type { BlockDefinition } from "../types";
-import {testBoards, testStatement} from "../utils";
+import { testBoards, testStatement } from "../utils";
 
 const ledstripDemoOptions = [
 	["%{BKY_LEAPHY_LED_STRIP_LIGHTBANK}", "0"],
@@ -101,7 +101,7 @@ function getDisplayBlocks(
 	];
 }
 
-export const testConfig = testBoards({ sd: ['l_nano'] })
+export const testConfig = testBoards({ sd: ["l_nano"] });
 export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_io_digitalwrite",
@@ -118,7 +118,7 @@ export const blocks: BlockDefinition[] = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
-		test: testStatement('general'),
+		test: testStatement("general"),
 		helpUrl: "http://arduino.cc/en/Reference/DigitalWrite",
 		aiHelp: "Write the digital value to a selected pin (automatic mode select)",
 	},
@@ -133,7 +133,7 @@ export const blocks: BlockDefinition[] = [
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
-		test: testStatement('general'),
+		test: testStatement("general"),
 		helpUrl: "http://arduino.cc/en/Reference/AnalogWrite",
 		aiHelp:
 			"Write the analog value (pwm) to a selected pin (automatic mode select)",

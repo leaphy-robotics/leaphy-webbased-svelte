@@ -1,5 +1,5 @@
 import type { BlockDefinition } from "../types";
-import {testOutput, testStatement} from "../utils";
+import { testOutput, testStatement } from "../utils";
 
 const motorLeftRightDropdown = [
 	["%{BKY_LEAPHY_MOTOR_LEFT_DROPDOWN}", "9"],
