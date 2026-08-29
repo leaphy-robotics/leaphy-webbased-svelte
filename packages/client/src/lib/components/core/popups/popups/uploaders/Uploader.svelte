@@ -18,6 +18,8 @@ import SerialState, {
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../../../drivers";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import Fa from "svelte-fa";
 
 interface Props {
 	getCode?: () => Promise<string> | string;
@@ -186,15 +188,27 @@ async function connectUSB() {
 }
 </script>
 
-<div class="flex flex-col p-5 gap-5 justify-center items-center min-w-[400px] max-w-[80vw] min-h-[200px] max-h-[80vh]">
+<div class="flex flex-col p-5 gap-5 justify-center items-center min-w-[25vw] max-w-[80vw] h-max">
 	{#if USBRequestState.respond}
 		<h2 class="m-0 font-bold">{$_("RECONNECT")}</h2>
 		<div>{$_("RECONNECT_INFO")}</div>
-		<Button name={"Reconnect"} mode={"primary"} onclick={connectUSB} />
+		<Button name={$_("RECONNECT")} mode={"primary"} onclick={connectUSB} />
 	{:else}
 		<StarlingRobot state={robotState} />
 		<h2 class="m-0 font-bold {failed ? 'text-red-500' : ''}">{$_(currentState)}</h2>
 
+		{#if failed && navigator.platform.startsWith("Linux") }
+			{@const command = `curl ${new URL(`/fix-linux/${$_("COUNTRY_CODE")}.sh`, window.location.origin)} | bash`}
+			<div class="bg-secondary rounded-lg px-2.5 py-2.5 w-full flex justify-between items-center">
+				<code class="text-xs">{command}</code>
+				<button
+						class="cursor-pointer bg-primary p-2.5 text-white rounded-lg"
+						onclick={() => navigator.clipboard.writeText(command)}
+				><Fa icon={faCopy} /></button>
+			</div>
+			<i onclick={() => navigator.clipboard.writeText(command)} class="fa-regular fa-copy"></i>
+			<div>{$_("FIX_LINUX_INFO")}</div>
+		{/if}
 		{#if error}
 			<code class="bg-secondary rounded-lg px-2.5 py-2.5 overflow-auto text-red-500 w-full">{error}</code>
 		{/if}

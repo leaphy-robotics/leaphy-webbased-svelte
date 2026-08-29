@@ -1,4 +1,5 @@
 {
+	"COUNTRY_CODE": "en",
 	"CANCEL": "Cancel",
 	"REFRESH": "Refresh",
 	"CLOSE": "Close",
@@ -317,6 +318,7 @@
 	"BLE_CATEGORY_DESCRIPTION": "Control your robot using your keyboard remotely",
 	"OR_SELECT": "Or select a board",
 	"SELECT": "Select",
+	"FIX_LINUX_INFO": "If you are having any problems with connecting or uploading to your robot, please run the above command in a terminal",
 
 	"IO_SECTION": "I/O",
 	"DISTANCE_MOTION_SECTION": "Distance & Motion",
