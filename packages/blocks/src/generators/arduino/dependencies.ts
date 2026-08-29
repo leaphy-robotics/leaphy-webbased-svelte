@@ -1,10 +1,10 @@
 export enum Dependencies {
 	LEAPHY_EXTENSIONS = "Leaphy Extensions@1.2.3",
-	ARDUINO_BLE = "ArduinoBLE@1.4.0",
+	ARDUINO_BLE = "ArduinoBLE@2.1.0",
 	LIST = "List@3.0.1",
 
 	SERVO = "Servo@1.2.2",
-	ESP_SERVO = "ESP32Servo@3.0.7",
+	ESP_SERVO = "ESP32Servo@3.2.1",
 
 	ADAFRUIT_SSD1306_OLED = "Adafruit SSD1306@2.5",
 	LIQUIDCRYSTAL_PCF8574 = "LiquidCrystal_PCF8574@2.3.0",
