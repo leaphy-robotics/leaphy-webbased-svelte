@@ -1,6 +1,8 @@
 <script lang="ts">
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { arduino, Dependencies } from "@leaphy-robotics/leaphy-blocks";
 import { getContext, onMount } from "svelte";
+import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import { getRobotState } from "$components/core/popups/popups/uploaders/animationMapping";
@@ -18,8 +20,6 @@ import SerialState, {
 import USBRequestState from "$state/upload.svelte";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../../../drivers";
-import { faCopy } from "@fortawesome/free-solid-svg-icons";
-import Fa from "svelte-fa";
 
 interface Props {
 	getCode?: () => Promise<string> | string;
