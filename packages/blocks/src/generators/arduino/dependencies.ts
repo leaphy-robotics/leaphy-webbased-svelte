@@ -1,6 +1,6 @@
 export enum Dependencies {
 	LEAPHY_EXTENSIONS = "Leaphy Extensions@1.2.3",
-	ARDUINO_BLE = "ArduinoBLE@1.4.0",
+	ARDUINO_BLE = "ArduinoBLE@2.1.0",
 	LIST = "List@3.0.1",
 
 	SERVO = "Servo@1.2.2",
