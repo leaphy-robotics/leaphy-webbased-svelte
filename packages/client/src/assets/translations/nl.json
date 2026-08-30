@@ -1,4 +1,5 @@
 {
+	"COUNTRY_CODE": "nl",
 	"CANCEL": "Annuleer",
 	"REFRESH": "Ververs",
 	"CLOSE": "Sluiten",
@@ -317,6 +318,7 @@
 	"BLE_CATEGORY_DESCRIPTION": "Stuur je robot op afstand aan met je toetsenbord",
 	"OR_SELECT": "Of selecteer een bord",
 	"SELECT": "Selecteer",
+	"FIX_LINUX_INFO": "Voer het bovenstaande commando uit in je terminal als je problemen hebt met verbinden en uploaden.",
 
 	"IO_SECTION": "I/O",
 	"DISTANCE_MOTION_SECTION": "Afstand & beweging",
