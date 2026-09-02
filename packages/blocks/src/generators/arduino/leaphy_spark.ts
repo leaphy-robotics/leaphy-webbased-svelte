@@ -1,4 +1,5 @@
 import type { Arduino } from "../arduino";
+import { spark_sensor_config } from "../utils";
 import { Dependencies } from "./dependencies";
 
 export default function getCodeGenerators(arduino: Arduino) {
@@ -36,42 +37,10 @@ export default function getCodeGenerators(arduino: Arduino) {
 
 		return `sparkGPIO.output(2, ${debug(`(${red}) ? 255 : 0`, 0)});
 sparkGPIO.output(1, ${debug(`(${green}) ? 255 : 0`, 1)});
-sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});`;
+sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});\n`;
 	};
 
 	arduino.forBlock.leaphy_spark_read = (block) => {
-		interface SensorConfig {
-			pin: number;
-			name: string;
-			type: "digital" | "analog";
-		}
-		const spark_sensor_config: Record<string, SensorConfig> = {
-			left_line_sensor: {
-				name: "Spark left line sensor",
-				type: "digital",
-				pin: 3,
-			},
-			right_line_sensor: {
-				name: "Spark right line sensor",
-				type: "digital",
-				pin: 4,
-			},
-			button_1: { name: "Spark button 1", type: "digital", pin: 7 },
-			button_2: { name: "Spark button 2", type: "digital", pin: 6 },
-			button_3: { name: "Spark button 3", type: "digital", pin: 5 },
-			left_ambient: {
-				name: "Spark left ambient light",
-				type: "analog",
-				pin: 1,
-			},
-			right_ambient: {
-				name: "Spark right ambient light",
-				type: "analog",
-				pin: 0,
-			},
-			potentiometer: { name: "Spark potentiometer", type: "analog", pin: 2 },
-		};
-
 		const sensorType = block.getFieldValue("SPARK_SENSOR");
 		const sensor = spark_sensor_config[sensorType];
 		const debug = arduino.createDebug(`spark-${sensorType}`, {
@@ -96,7 +65,7 @@ sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});`;
 
 		if (sensor.type === "analog") {
 			arduino.addDependency(Dependencies.ADS1X15_ADS);
-			arduino.addInclude("s", "#include <Adafruit_ADS1X15.h>");
+			arduino.addInclude("ADS1X15", "#include <Adafruit_ADS1X15.h>");
 			arduino.addDefinition("spark-analog", "Adafruit_ADS1115 ads;\n");
 			arduino.addSetup(
 				"spark-analog",
