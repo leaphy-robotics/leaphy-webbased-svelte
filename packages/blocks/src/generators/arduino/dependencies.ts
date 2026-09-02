@@ -1,10 +1,10 @@
 export enum Dependencies {
 	LEAPHY_EXTENSIONS = "Leaphy Extensions@1.2.3",
-	ARDUINO_BLE = "ArduinoBLE@1.4.0",
+	ARDUINO_BLE = "ArduinoBLE@2.1.0",
 	LIST = "List@3.0.1",
 
 	SERVO = "Servo@1.2.2",
-	ESP_SERVO = "ESP32Servo@3",
+	ESP_SERVO = "https://github.com/madhephaestus/ESP32Servo#3.0.7",
 
 	ADAFRUIT_SSD1306_OLED = "Adafruit SSD1306@2.5",
 	LIQUIDCRYSTAL_PCF8574 = "LiquidCrystal_PCF8574@2.3.0",
@@ -27,5 +27,6 @@ export enum Dependencies {
 	ADS1X15_ADS = "Adafruit ADS1X15@2.6.2",
 
 	TENSORFLOW_ESP32 = "TensorFlowLite_ESP32@1.0.0",
+	TEACHABLE_AUDIO = "TeachableAudio@1.0.1",
 	SD = "SD@1.3.0",
 }
