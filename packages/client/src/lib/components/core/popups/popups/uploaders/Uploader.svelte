@@ -63,7 +63,7 @@ async function compile() {
 						? [Dependencies.LEAPHY_EXTENSIONS]
 						: []),
 					...AppState.libraries.installed.map(([name, version]) =>
-						version !== undefined ? `${name}@${version}` : name,
+						version === undefined ? name : `${name}@${version}`,
 					),
 				],
 			}),
