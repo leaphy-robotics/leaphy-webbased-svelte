@@ -188,7 +188,7 @@ async function connectUSB() {
 }
 </script>
 
-<div class="flex flex-col p-5 gap-5 justify-center items-center min-w-[25vw] max-w-[80vw] min-h-[25vh] max-h-[80vh]">
+<div class="flex flex-col p-5 gap-5 justify-center items-center min-w-[25vw] max-w-[80vw] max-h-[80vh]">
 	{#if USBRequestState.respond}
 		<h2 class="m-0 font-bold">{$_("RECONNECT")}</h2>
 		<div>{$_("RECONNECT_INFO")}</div>
