@@ -1,5 +1,5 @@
 import type { Block } from "blockly";
-import { meshSignals } from "../../categories/all";
+import { meshSignals } from "../../categories/mesh";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
 

@@ -130,8 +130,6 @@ async function testCppExtension(page: Page, extension: string) {
 		await testLibraries(postData.libraries as string[], workspace_file);
 		await testCode(await downloadCode(page), workspace_file);
 	}
-
-	expect(num_tests).toBeGreaterThan(0);
 }
 
 const CppRobotTypes = [

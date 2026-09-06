@@ -1,6 +1,6 @@
 import { dialog } from "blockly";
 import { Msg } from "blockly/core";
-import type { DynamicListManager } from "../../blocks/extensions";
+import type { DynamicListManager } from "../../extensions";
 import type { ML } from "../ml";
 
 export class Class {

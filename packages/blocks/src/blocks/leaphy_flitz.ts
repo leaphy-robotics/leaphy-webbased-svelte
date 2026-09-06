@@ -1,11 +1,13 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
+import { testBoards, testOutput, testStatement } from "../utils";
 
 const stomachSensorOptions = [
 	["%{BKY_LEAPHY_STOMACH_SENSOR_TYPE1}", "1"],
 	["%{BKY_LEAPHY_STOMACH_SENSOR_TYPE2}", "2"],
 ];
 
-const blocks: BlockDefinition = [
+export const testConfig = testBoards({ flitz: ["l_nano"] });
+export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_flitz_read_stomach_sensor",
 		message0: "%%{BKY_LEAPHY_READ_STOMACH} %1",
@@ -20,6 +22,7 @@ const blocks: BlockDefinition = [
 			"https://www.leaphy.nl/leaphy-flitz.html#:~:text=het%20licht%20wordt.-,Bouwfilmpjes%20Leaphy%20Flitz,-Software%20Leaphy%20Flitz",
 		output: "Number",
 		style: "leaphy_blocks",
+		test: testOutput("flitz"),
 	},
 	{
 		type: "leaphy_flitz_nano_read_stomach_sensor",
@@ -28,6 +31,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphy.nl/leaphy-flitz.html#:~:text=het%20licht%20wordt.-,Bouwfilmpjes%20Leaphy%20Flitz,-Software%20Leaphy%20Flitz",
 		style: "leaphy_blocks",
+		test: testOutput("flitz"),
 	},
 	{
 		type: "leaphy_flitz_read_hand_sensor",
@@ -36,6 +40,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphy.nl/leaphy-flitz.html#:~:text=het%20licht%20wordt.-,Bouwfilmpjes%20Leaphy%20Flitz,-Software%20Leaphy%20Flitz",
 		style: "leaphy_blocks",
+		test: testOutput("flitz"),
 	},
 	{
 		type: "leaphy_flitz_nano_read_hand_sensor",
@@ -44,6 +49,7 @@ const blocks: BlockDefinition = [
 		helpUrl:
 			"https://www.leaphy.nl/leaphy-flitz.html#:~:text=het%20licht%20wordt.-,Bouwfilmpjes%20Leaphy%20Flitz,-Software%20Leaphy%20Flitz",
 		style: "leaphy_blocks",
+		test: testOutput("flitz"),
 	},
 	{
 		type: "leaphy_flitz_led",
@@ -63,7 +69,6 @@ const blocks: BlockDefinition = [
 		style: "leaphy_blocks",
 
 		aiHelp: "Set the RGB color of the RGB LED",
+		test: testStatement("flitz"),
 	},
 ];
-
-export { blocks };

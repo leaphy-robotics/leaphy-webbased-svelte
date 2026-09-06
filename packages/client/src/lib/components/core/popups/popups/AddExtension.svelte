@@ -42,7 +42,6 @@ let incompatibleExtensions = $derived(
 );
 
 function getColor(theme: string) {
-	console.log(theme);
 	return (getMainWorkspace() as WorkspaceSvg).getTheme().categoryStyles[theme]
 		.colour;
 }

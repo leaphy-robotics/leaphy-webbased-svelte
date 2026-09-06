@@ -1,6 +1,6 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "mesh_setup",
 		style: "mesh_blocks",
@@ -99,5 +99,3 @@ const blocks: BlockDefinition = [
 		relevanceKey: "MESH",
 	},
 ];
-
-export { blocks };

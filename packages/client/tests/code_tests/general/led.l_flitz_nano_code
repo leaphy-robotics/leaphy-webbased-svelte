@@ -1,3 +1,0 @@
-analogWrite(11, 52);
-analogWrite(10, 92);
-analogWrite(9, 229);

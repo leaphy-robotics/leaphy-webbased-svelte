@@ -333,7 +333,6 @@ class SerialState {
 		this.port = this.getLeaphyPort(port);
 		if ("addEventListener" in this.port) {
 			this.port.addEventListener("disconnect", async () => {
-				this.reserved = false;
 				this.port = undefined;
 				this.board = undefined;
 				this.status = "disconnected";

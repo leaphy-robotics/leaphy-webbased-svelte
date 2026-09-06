@@ -1,6 +1,6 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "lists_add",
 		style: "list_blocks",
@@ -126,5 +126,3 @@ const blocks: BlockDefinition = [
 		output: "Number",
 	},
 ];
-
-export { blocks };

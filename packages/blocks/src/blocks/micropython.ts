@@ -1,6 +1,6 @@
-import type { BlockDefinition } from "blockly/core/blocks";
+import type { BlockDefinition } from "../types";
 
-const blocks: BlockDefinition = [
+export const blocks: BlockDefinition[] = [
 	{
 		type: "raw_code_line",
 		tooltip: "",
@@ -24,5 +24,3 @@ const blocks: BlockDefinition = [
 		inputsInline: true,
 	},
 ];
-
-export { blocks };

@@ -3,7 +3,8 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"build": "tsup",
-		"watch": "tsup --watch --ignore-watch tmp"
+		"watch": "tsup --watch --ignore-watch tmp",
+		"test": "vitest run --testTimeout=128000"
 	},
 	"dependencies": {
 		"@leaphy-robotics/schemas": "workspace:*",
@@ -12,13 +13,16 @@
 	"devDependencies": {
 		"@babel/core": "^8.0.1",
 		"@babel/preset-env": "^8.0.2",
+		"@blockly/field-bitmap": "^6.0.9",
 		"@eslint/js": "^10.0.1",
 		"babel-loader": "^10.1.1",
 		"eslint": "^10.2.1",
 		"prettier": "3.8.4",
 		"tsup": "^8.5.1",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.58.2"
+		"typescript-eslint": "^8.58.2",
+		"vite": "^8.0.16",
+		"vitest": "^4.1.10"
 	},
 	"repository": {
 		"type": "git",
