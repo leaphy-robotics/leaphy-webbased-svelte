@@ -217,6 +217,7 @@ Object.entries(pythonGenerator).forEach((fieldValue) => {
 
 import type { Workspace } from "blockly";
 import * as actuators from "./python/actuators";
+import * as leaphy_spark from "./python/leaphy_spark";
 import * as operators from "./python/operators";
 import * as python_blocks from "./python/python";
 import * as sensors from "./python/sensors";
@@ -227,5 +228,6 @@ operators.default(microPythonGenerator);
 python_blocks.default(microPythonGenerator);
 sensors.default(microPythonGenerator);
 situation.default(microPythonGenerator);
+leaphy_spark.default(microPythonGenerator);
 
 export default microPythonGenerator;
