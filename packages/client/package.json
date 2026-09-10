@@ -34,7 +34,7 @@
 		"@blockly/field-bitmap": "^6.0.9",
 		"@blockly/toolbox-search": "^3.1.9",
 		"@blockly/workspace-backpack": "^7.0.11",
-		"@floating-ui/dom": "^1.7.6",
+		"@floating-ui/dom": "^1.8.0",
 		"@fortawesome/free-brands-svg-icons": "^7.2.0",
 		"@fortawesome/free-solid-svg-icons": "^7.3.0",
 		"@leaphy-robotics/leaphy-blocks": "workspace:*",
