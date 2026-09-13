@@ -27,8 +27,8 @@ const [blockStyles, categoryStyles] = [
 		ble_category: { colour: "#0082fc" },
 		ml_category: { colour: "#2e8b57" },
 		teachable_category: { colour: "#1d6c37" },
-	}
-]
+	},
+];
 
 export const dark = Theme.defineTheme("leaphy-dark", {
 	name: "leaphy-dark",
