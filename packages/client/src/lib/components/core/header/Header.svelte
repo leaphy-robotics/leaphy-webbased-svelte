@@ -188,10 +188,29 @@ async function saveProjectAs() {
 }
 
 async function openProject() {
-	const [file] = await window.showOpenFilePicker();
-	if (!file) return;
+	if (navigator.userAgent.includes("Chrome")) {
+		const [file] = await window.showOpenFilePicker();
+		if (!file) return;
 
-	await WorkspaceState.openFileHandle(file);
+		await WorkspaceState.openFileHandle(file);
+	} else {
+		const file = await new Promise<File>((res) => {
+			const input = document.createElement("input");
+			input.style.display = "none";
+			input.type = "file";
+			input.addEventListener("cancel", () => res(null));
+			input.addEventListener("change", () => {
+				if (input.files.length === 1) {
+					console.log("File selected: ", input.files[0]);
+					res(input.files[0]);
+				}
+			});
+			input.click();
+		});
+
+		if (!file) return;
+		WorkspaceState.open(file.name, await file.text());
+	}
 }
 
 async function saveProject() {
