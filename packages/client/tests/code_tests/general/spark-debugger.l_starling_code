@@ -26,13 +26,15 @@ void leaphyProgram() {
         servo_right.write(90 + 90*DEBUG_VAL(2, 1, 100*-1)/100);
         sparkGPIO.output(2, DEBUG_VAL(3, 0, (true) ? 255 : 0));
         sparkGPIO.output(1, DEBUG_VAL(3, 1, (false) ? 255 : 0));
-        sparkGPIO.output(0, DEBUG_VAL(3, 2, (false) ? 255 : 0));} else {
+        sparkGPIO.output(0, DEBUG_VAL(3, 2, (false) ? 255 : 0));
+        } else {
         if (DEBUG_VAL(4, 0, (sparkGPIO.input(4) ? 1 : 0)) == 1) {
           servo_left.write(90 + 90*DEBUG_VAL(2, 0, 100*1)/100);
           servo_right.write(90 + 90*DEBUG_VAL(2, 1, 100*1)/100);
           sparkGPIO.output(2, DEBUG_VAL(3, 0, (true) ? 255 : 0));
           sparkGPIO.output(1, DEBUG_VAL(3, 1, (false) ? 255 : 0));
-          sparkGPIO.output(0, DEBUG_VAL(3, 2, (false) ? 255 : 0));} else {
+          sparkGPIO.output(0, DEBUG_VAL(3, 2, (false) ? 255 : 0));
+          } else {
           servo_left.write(90 + 90*DEBUG_VAL(2, 0, 100*1)/100);
           servo_right.write(90 + 90*DEBUG_VAL(2, 1, 100*-1)/100);
         }
