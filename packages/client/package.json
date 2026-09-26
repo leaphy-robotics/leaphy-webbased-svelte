@@ -53,7 +53,7 @@
 		"chart.js": "^4.5.1",
 		"chartjs-adapter-date-fns": "^3.0.0",
 		"date-fns": "^4.1.0",
-		"dexie": "^4.4.2",
+		"dexie": "^4.4.6",
 		"esbuild": "^0.28.2",
 		"esptool-js": "^0.6.0",
 		"intel-hex": "^0.2.0",
