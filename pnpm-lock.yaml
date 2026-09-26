@@ -161,8 +161,8 @@ importers:
         specifier: ^0.5.5
         version: 0.5.5(overlayscrollbars@2.16.0)(svelte@5.56.3(@typescript-eslint/types@8.58.2))
       rrweb:
-        specifier: 2.1.1
-        version: 2.1.1
+        specifier: 2.1.4
+        version: 2.1.4
       socket.io-client:
         specifier: ^4.8.3
         version: 4.8.3
@@ -1765,11 +1765,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@rrweb/types@2.1.1':
-    resolution: {integrity: sha512-g0I3nCNL1S7slDXwhunxOuOoswkY8WVZJQrPFiwixOc6xoD514d1JLTuyAzCKIox8g/PaLKtV5g31Uk42inQSQ==}
+  '@rrweb/types@2.1.4':
+    resolution: {integrity: sha512-nl0u9wkOkvfegSgjUSqIQhBUPm+JtA3T6GC4UlhZkg/FY/PWCJDtxCSp4nNHIuGvw6G/JTg8c0SoJkG9pwf+tQ==}
 
-  '@rrweb/utils@2.1.1':
-    resolution: {integrity: sha512-x2SgJAD3YJ9eVcLZ5l6OqWMtczdA3VfS5XqPeqpZdQgV9oh6Id5GK2cDN4bimnkqryOcIJdz8cTvV0yNvqQ+nA==}
+  '@rrweb/utils@2.1.4':
+    resolution: {integrity: sha512-MSsJflObnJDwtSe9LPrwevf56xi4sVaranlpgXUhooQUf07/Dm8bs/55LETHzDxCjAzkyTgcpm8nOLS72RWNKw==}
 
   '@sentry/babel-plugin-component-annotate@5.3.0':
     resolution: {integrity: sha512-p4q8gn8wcFqZGP/s2MnJCAAd8fTikaU6A0mM97RDHQgStcrYiaS0Sc5zUNfb1V+UOLPuvdEdL6MwyxfzjYJQTA==}
@@ -3649,6 +3649,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.19:
+    resolution: {integrity: sha512-Y2tUNy4ouw6tq5oDSKeQYGOyhkUBhNOcGV/02KC+6kd9eDGqdZd++mjMiIDilrBYvjEnCYvVtsuHCuP+okSfug==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -3983,17 +3988,17 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rrdom@2.1.1:
-    resolution: {integrity: sha512-VBkTF3bGNqcZjqnbo/gKi9GVQPIxiG0dofw7CQdAZQFQ2juJdt2YKIf3oS9QudL8HTpGh9bz5TUN+3amBn1Geg==}
+  rrdom@2.1.4:
+    resolution: {integrity: sha512-YfEqKcmZHI20HJDZvA9a8XQVl0qMtodrz5BRZgj2H46ZnvwZEejASlwwWuyrzWdlsUPEFYrUqbA7lCkiePnpZg==}
 
   rrweb-cssom@0.8.0:
     resolution: {integrity: sha512-guoltQEx+9aMf2gDZ0s62EcV8lsXR+0w8915TC3ITdn2YueuNjdAYh/levpU9nFaoChh9RUS5ZdQMrKfVEN9tw==}
 
-  rrweb-snapshot@2.1.1:
-    resolution: {integrity: sha512-al4Kx7Am7YlIn/5Yb2EMr7cdmjGiK+cLhdilJEXqkFXgpnys8t/yMJumXy2Ormgirpg3MBnFha0GTgny+iIL2w==}
+  rrweb-snapshot@2.1.4:
+    resolution: {integrity: sha512-Yo5H9PrvsC2roBaDWpb6d9aOridpUndS0eEhLQC7sbrL2Ie/l98d9bhAm7e+ZOHgdIweIqndS0R1Omz+i68Osw==}
 
-  rrweb@2.1.1:
-    resolution: {integrity: sha512-ToxhJg3SsrAhw+/DPhI/2iiwZQIrGK5BGkZ0kHn4qUExcvQYRaolkciD1FWX2+r6vf1IxFyhsoRY18h3D+XoCg==}
+  rrweb@2.1.4:
+    resolution: {integrity: sha512-aIV2O6f4nGfNFGXsNgYc+JEhtPd8o65NkYMdzk/yZgOxSjYc2Y3Df8zUCxyJc/G12BzoXN0iOLsmr9J857U0SA==}
 
   sade@1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
@@ -5865,9 +5870,9 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.60.1':
     optional: true
 
-  '@rrweb/types@2.1.1': {}
+  '@rrweb/types@2.1.4': {}
 
-  '@rrweb/utils@2.1.1': {}
+  '@rrweb/utils@2.1.4': {}
 
   '@sentry/babel-plugin-component-annotate@5.3.0': {}
 
@@ -7763,6 +7768,8 @@ snapshots:
 
   nanoid@3.3.18: {}
 
+  nanoid@3.3.19: {}
+
   natural-compare@1.4.0: {}
 
   neo-async@2.6.2: {}
@@ -7943,7 +7950,7 @@ snapshots:
 
   postcss@8.5.28:
     dependencies:
-      nanoid: 3.3.18
+      nanoid: 3.3.19
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -8095,26 +8102,26 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.60.1
       fsevents: 2.3.3
 
-  rrdom@2.1.1:
+  rrdom@2.1.4:
     dependencies:
-      rrweb-snapshot: 2.1.1
+      rrweb-snapshot: 2.1.4
 
   rrweb-cssom@0.8.0: {}
 
-  rrweb-snapshot@2.1.1:
+  rrweb-snapshot@2.1.4:
     dependencies:
       postcss: 8.5.28
 
-  rrweb@2.1.1:
+  rrweb@2.1.4:
     dependencies:
-      '@rrweb/types': 2.1.1
-      '@rrweb/utils': 2.1.1
+      '@rrweb/types': 2.1.4
+      '@rrweb/utils': 2.1.4
       '@types/css-font-loading-module': 0.0.7
       '@xstate/fsm': 1.6.5
       base64-arraybuffer: 1.0.2
       mitt: 3.0.1
-      rrdom: 2.1.1
-      rrweb-snapshot: 2.1.1
+      rrdom: 2.1.4
+      rrweb-snapshot: 2.1.4
 
   sade@1.8.1:
     dependencies:
