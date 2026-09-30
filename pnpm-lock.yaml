@@ -74,8 +74,8 @@ importers:
         specifier: ^6.0.9
         version: 6.0.9(blockly@12.5.1)
       '@blockly/toolbox-search':
-        specifier: ^3.1.9
-        version: 3.1.9(blockly@12.5.1)
+        specifier: ^13.3.0
+        version: 13.3.0(blockly@12.5.1)
       '@blockly/workspace-backpack':
         specifier: ^7.0.11
         version: 7.0.11(blockly@12.5.1)
@@ -895,10 +895,10 @@ packages:
     peerDependencies:
       blockly: ^12.0.0
 
-  '@blockly/toolbox-search@3.1.9':
-    resolution: {integrity: sha512-bX3uCU2jIea+0R7ckrnNpIHtxKMPoLfoTTel5cYBahliZJBjUIHSWqmY28Y8/Dlbd7xZV/4SJZ5eiBSNAPEohA==}
+  '@blockly/toolbox-search@13.3.0':
+    resolution: {integrity: sha512-6h9z3C+2kBNUj/wiytqjXOuwpwFEvA+ag4L1BUlrM0CxSJnhzKwxRpOCxXT4kVfpyo78AR8Cl8ifwsEWJUNxqw==}
     peerDependencies:
-      blockly: ^12.0.0
+      blockly: ^13.2.0
 
   '@blockly/workspace-backpack@7.0.11':
     resolution: {integrity: sha512-VKxkk7SEIWkqEwZ8OueuDipw4+28dNKM16/JJRN8Vwhmjdt5uU/rWNB+3L0qD+woIAdUFbHYw/oA3quFGID6XQ==}
@@ -5391,7 +5391,7 @@ snapshots:
     dependencies:
       blockly: 12.5.1
 
-  '@blockly/toolbox-search@3.1.9(blockly@12.5.1)':
+  '@blockly/toolbox-search@13.3.0(blockly@12.5.1)':
     dependencies:
       blockly: 12.5.1
 
