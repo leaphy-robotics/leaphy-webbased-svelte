@@ -105,6 +105,15 @@ export default class MicroPythonIO {
 		await SerialState.ready;
 
 		return SerialState.withPort(async (port) => {
+			if (!port.readable || !port.writable) {
+				//Port must be in use by some external program.
+				throw {
+					name: "ROBOT_IN_USE",
+					message:
+						"The connection with the robot seems to be in use already. If the robot is connected to Thonny or a similar program, disconnect it from there and try again.",
+				};
+			}
+
 			this.port = port;
 			this.reader = this.port.readable.getReader();
 			this.writer = this.port.writable.getWriter();

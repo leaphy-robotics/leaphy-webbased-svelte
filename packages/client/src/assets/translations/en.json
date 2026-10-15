@@ -385,5 +385,6 @@
 	"DEBUGGING_OFF": "Debugging is disabled",
 	"DEBUGGING_OFF_DESC": "Enable debugging to see live sensor and actuator values. The program will be re-uploaded.",
 	"ENABLE_DEBUGGING": "Enable debugging",
-	"DEBUG": "Open debugger"
+	"DEBUG": "Open debugger",
+	"ROBOT_IN_USE": "Connection to robot failed"
 }

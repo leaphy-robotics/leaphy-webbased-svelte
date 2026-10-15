@@ -385,5 +385,6 @@
 	"DEBUGGING_OFF": "Debuggen is uitgeschakeld",
 	"DEBUGGING_OFF_DESC": "Schakel debuggen in om live sensor- en actuatorwaarden te zien. Het programma wordt opnieuw geüpload.",
 	"ENABLE_DEBUGGING": "Debuggen inschakelen",
-	"DEBUG": "Open debugger"
+	"DEBUG": "Open debugger",
+	"ROBOT_IN_USE": "Verbinding met robot onderbroken"
 }
