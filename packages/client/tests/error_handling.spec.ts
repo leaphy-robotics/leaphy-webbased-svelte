@@ -338,3 +338,33 @@ for (const [name, content] of [
 		expect(await savedFileCount(page)).toBe(0);
 	});
 }
+
+test("denying access to a saved file keeps the restore popup open", async ({
+	page,
+}) => {
+	await page.addInitScript(() => {
+		FileSystemFileHandle.prototype.requestPermission = async () => "denied";
+	});
+	await page.evaluate(async () => {
+		const root = await navigator.storage.getDirectory();
+		const fileHandle = await root.getFileHandle("project.l_original", {
+			create: true,
+		});
+		const { projectDB } = await import("/src/lib/domain/storage.ts");
+		await projectDB.saves.add({
+			mode: "BLOCKS",
+			robot: "l_original",
+			date: Date.now(),
+			fileHandle,
+		});
+	});
+
+	await page.reload();
+	await page.getByText("project.l_original").click();
+	await page.getByRole("button", { name: "Continue" }).click();
+
+	await expect(page.getByText("No access to file")).toBeVisible();
+	await expect(
+		page.getByRole("heading", { name: "Continue working" }),
+	).toBeVisible();
+});
