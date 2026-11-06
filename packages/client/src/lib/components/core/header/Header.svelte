@@ -43,6 +43,7 @@ import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
+import { isUserCancel } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
@@ -192,8 +193,13 @@ async function saveProjectAs() {
 
 async function openProject() {
 	if (navigator.userAgent.includes("Chrome")) {
-		const [file] = await window.showOpenFilePicker();
-		if (!file) return;
+		let file: FileSystemFileHandle;
+		try {
+			[file] = await window.showOpenFilePicker();
+		} catch (e) {
+			if (isUserCancel(e)) return;
+			throw e;
+		}
 
 		await WorkspaceState.openFileHandle(file);
 	} else {

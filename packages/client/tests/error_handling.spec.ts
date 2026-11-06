@@ -116,3 +116,13 @@ test("a serial port that fails to open shows a popup", async ({ page }) => {
 	expect(connected).toBe(false);
 	await expect(page.getByText("Unable to connect to robot")).toBeVisible();
 });
+
+test("cancelling the file picker", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await page.evaluate(() => {
+		window.showOpenFilePicker = async () => {
+			throw new DOMException("The user aborted a request.", "AbortError");
+		};
+	});
+	await openProjectFile(page);
+});
