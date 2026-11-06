@@ -32,7 +32,10 @@ class EmbedState {
 	exports: Exports = null;
 	previousUpdate: NodeJS.Timeout | null = null;
 
+	/** Returns null if the board has no circuit, as only Nano boards do. */
 	async getCircuit() {
+		if (!arduino.builder) return null;
+
 		const canvas = document.createElement("canvas");
 		await layoutComponents(canvas, arduino.builder);
 		return canvas.toDataURL();

@@ -511,3 +511,8 @@ test("embed export of an empty workspace", async ({ page }) => {
 	});
 	expect(content).toEqual({ workspaceSvg: null });
 });
+
+test("embed circuit export for a board without a circuit", async ({ page }) => {
+	const content = await embedExports(page, "project.l_uno", { circuit: true });
+	expect(content).toEqual({ circuit: null });
+});
