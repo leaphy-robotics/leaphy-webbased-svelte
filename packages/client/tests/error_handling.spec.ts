@@ -43,3 +43,9 @@ async function savedFileCount(page: Page) {
 test("closing the tab on the start screen", async ({ page }) => {
 	await page.evaluate(() => window.dispatchEvent(new Event("beforeunload")));
 });
+
+test("new project in C++ mode", async ({ page }) => {
+	await selectRobot(page, "Leaphy C++");
+	await page.getByRole("button", { name: "My projects" }).click();
+	await page.getByText("New", { exact: true }).click();
+});

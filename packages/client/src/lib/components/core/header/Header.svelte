@@ -151,10 +151,13 @@ async function newProject() {
 	WorkspaceState.handleSave = undefined;
 
 	WorkspaceState.code = "";
-	serialization.workspaces.load(
-		JSON.parse(defaultProgram),
-		BlocklyState.workspace,
-	);
+	// C++ and Python projects can be open without a Blockly workspace
+	if (BlocklyState.workspace) {
+		serialization.workspaces.load(
+			JSON.parse(defaultProgram),
+			BlocklyState.workspace,
+		);
+	}
 }
 
 async function saveProjectAs() {
