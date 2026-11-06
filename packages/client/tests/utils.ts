@@ -96,6 +96,7 @@ export async function mockShowOpenFilePicker(
 				getFile: async () => file,
 				name: path,
 				createWritable,
+				queryPermission: async () => "granted",
 			};
 
 			(window as any).showOpenFilePicker = async () => {

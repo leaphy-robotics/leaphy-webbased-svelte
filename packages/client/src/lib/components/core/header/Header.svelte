@@ -35,6 +35,7 @@ import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
+import { PermissionDeniedError } from "$domain/handles";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
@@ -225,7 +226,23 @@ async function openProject() {
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
-	await WorkspaceState.handle.write(WorkspaceState.serialize());
+	try {
+		await WorkspaceState.handle.write(WorkspaceState.serialize());
+	} catch (e) {
+		if (!(e instanceof PermissionDeniedError)) throw e;
+
+		// Give the user another way to keep their work
+		await PopupState.open({
+			component: ErrorPopup,
+			data: {
+				title: "FILE_ACCESS_DENIED_TITLE",
+				message: "FILE_ACCESS_DENIED_MESSAGE",
+			},
+			allowInteraction: false,
+		});
+		return saveProjectAs();
+	}
+
 	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }

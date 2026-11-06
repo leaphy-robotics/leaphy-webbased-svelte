@@ -368,3 +368,27 @@ test("denying access to a saved file keeps the restore popup open", async ({
 		page.getByRole("heading", { name: "Continue working" }),
 	).toBeVisible();
 });
+
+test("refusing write access offers Save as", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await page.evaluate(() => {
+		const file = new File(["{}"], "project.l_original");
+		const handle = {
+			name: file.name,
+			getFile: async () => file,
+			queryPermission: async () => "prompt",
+			requestPermission: async () => "denied",
+		};
+		window.showOpenFilePicker = async () => [handle] as never;
+	});
+	await openProjectFile(page);
+
+	await page.getByRole("button", { name: "My projects" }).click();
+	await page.getByText("Save", { exact: true }).first().click();
+
+	await expect(page.getByText("No access to file")).toBeVisible();
+	await page.getByRole("button", { name: "Ok", exact: true }).click();
+	await expect(
+		page.getByPlaceholder("Give your download a name"),
+	).toBeVisible();
+});
