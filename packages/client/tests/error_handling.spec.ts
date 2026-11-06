@@ -421,3 +421,24 @@ for (const [name, replace] of [
 		await page.keyboard.press("Control+z");
 	});
 }
+
+test("disabling an extension with no category selected", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	const enabled = await page.evaluate(
+		async ({ extensionsPath, blocklyPath }) => {
+			const { default: extensions } = await import(extensionsPath);
+			const { default: blockly } = await import(blocklyPath);
+
+			extensions.toggle("l_lists");
+			blockly.workspace.getToolbox().clearSelection();
+			extensions.toggle("l_lists");
+			return extensions.enabled.includes("l_lists");
+		},
+		{
+			extensionsPath: "/src/lib/domain/blockly/extensions.svelte.ts",
+			blocklyPath: BLOCKLY,
+		},
+	);
+
+	expect(enabled).toBe(false);
+});
