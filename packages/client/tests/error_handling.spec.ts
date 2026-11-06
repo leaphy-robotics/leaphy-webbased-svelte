@@ -392,3 +392,32 @@ test("refusing write access offers Save as", async ({ page }) => {
 		page.getByPlaceholder("Give your download a name"),
 	).toBeVisible();
 });
+
+for (const [name, replace] of [
+	[
+		"a new project",
+		async (page: Page) => {
+			await page.getByRole("button", { name: "My projects" }).click();
+			await page.getByText("New", { exact: true }).click();
+		},
+	],
+	["an example", (page: Page) => openExample(page, "Blink")],
+] as const) {
+	test(`undo history is cleared by ${name}`, async ({ page }) => {
+		await selectRobot(page, "Leaphy Original");
+		await openExample(page, "Blink");
+		await page.getByText("repeat forever").click();
+		await page
+			.locator("svg")
+			.filter({ hasText: "Leaphy", hasNotText: "Spark" })
+			.press("Delete");
+		await expect(page.getByText("repeat forever")).toBeHidden();
+
+		const undo = page.locator("div:nth-child(2) > button").first();
+		await expect(undo).toBeEnabled();
+
+		await replace(page);
+		await expect(undo).toBeDisabled();
+		await page.keyboard.press("Control+z");
+	});
+}

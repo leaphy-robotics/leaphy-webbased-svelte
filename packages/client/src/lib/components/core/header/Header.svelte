@@ -35,6 +35,7 @@ import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
+import { replaceWorkspace } from "$domain/blockly/blockly";
 import { PermissionDeniedError } from "$domain/handles";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
@@ -155,10 +156,7 @@ async function newProject() {
 	WorkspaceState.code = "";
 	// C++ and Python projects can be open without a Blockly workspace
 	if (BlocklyState.workspace) {
-		serialization.workspaces.load(
-			JSON.parse(defaultProgram),
-			BlocklyState.workspace,
-		);
+		replaceWorkspace(JSON.parse(defaultProgram), BlocklyState.workspace);
 	}
 }
 

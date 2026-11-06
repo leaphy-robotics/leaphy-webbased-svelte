@@ -302,16 +302,29 @@ export function setLocale(robot: RobotDevice, locale: string) {
 }
 
 // Load a workspace from a JSON or XML string
+/**
+ * Replaces the workspace's contents. The undo history is cleared because it refers
+ * to blocks that no longer exist.
+ */
+export function replaceWorkspace(
+	content: Record<string, any>,
+	workspace: Workspace,
+) {
+	serialization.workspaces.load(content, workspace);
+	workspace.clearUndo();
+}
+
 export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 	try {
 		const json = JSON.parse(content);
-		serialization.workspaces.load(json, workspace);
+		replaceWorkspace(json, workspace);
 	} catch {
 		try {
 			// It's not JSON, maybe it's XML
 			const xml = Blockly.utils.xml.textToDom(content);
 			workspace.clear();
 			Blockly.Xml.domToWorkspace(xml, workspace);
+			workspace.clearUndo();
 		} catch {
 			PopupState.open({
 				component: ErrorPopup,
