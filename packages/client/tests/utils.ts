@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import setupPlaywrightArduino from "@leaphy-robotics/playwright-arduino";
 import {
 	type Download,
+	expect,
 	type Page,
 	type PlaywrightTestArgs,
 	test,
@@ -14,6 +15,20 @@ test.beforeEach(async ({ context }) => {
 			status: 200,
 		});
 	});
+});
+
+// Fails the test if the page throws an uncaught error or unhandled rejection
+export const strictTest = test.extend<{ pageErrors: string[] }>({
+	pageErrors: [
+		async ({ page }, use) => {
+			const errors: string[] = [];
+			page.on("pageerror", (error) => errors.push(error.message));
+			await use(errors);
+			await page.waitForTimeout(100);
+			expect(errors).toEqual([]);
+		},
+		{ auto: true },
+	],
 });
 
 export async function selectRobot(page: Page, tile: string, robot?: string) {
