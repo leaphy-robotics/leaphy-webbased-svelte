@@ -30,7 +30,9 @@ export enum Prompt {
 	ALWAYS = 2,
 }
 
-export class ConnectionFailedError {}
+export class ConnectionFailedError extends Error {
+	name = "ConnectionFailedError";
+}
 
 export const SUPPORTED_VENDOR_IDS = [
 	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
