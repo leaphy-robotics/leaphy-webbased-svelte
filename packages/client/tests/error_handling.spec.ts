@@ -126,3 +126,16 @@ test("cancelling the file picker", async ({ page }) => {
 	});
 	await openProjectFile(page);
 });
+
+test("opening a file when the browser has no file picker API", async ({
+	page,
+}) => {
+	await selectRobot(page, "Leaphy Original");
+	await page.evaluate(() => {
+		delete (window as Partial<Window>).showOpenFilePicker;
+	});
+
+	const chooser = page.waitForEvent("filechooser");
+	await openProjectFile(page);
+	await chooser;
+});

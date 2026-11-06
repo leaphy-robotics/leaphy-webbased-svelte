@@ -192,7 +192,7 @@ async function saveProjectAs() {
 }
 
 async function openProject() {
-	if (navigator.userAgent.includes("Chrome")) {
+	if ("showOpenFilePicker" in window) {
 		let file: FileSystemFileHandle;
 		try {
 			[file] = await window.showOpenFilePicker();
