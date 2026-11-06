@@ -216,21 +216,53 @@ class SerialState {
 	}
 
 	private async runReadLoop() {
-		while (this.port?.readable && this.port?.writable) {
-			const { done, value } = await this.reader.read();
-			if (done) break;
+		const reader = this.reader;
+		let connectionLost = false;
 
-			this.log.enqueue(value);
+		try {
+			while (this.port?.readable && this.port?.writable) {
+				const { done, value } = await reader.read();
+				if (done) break;
+
+				this.log.enqueue(value);
+			}
+		} catch (e) {
+			// While reserved, a programmer owns the port and may reset the board on purpose
+			if (!this.reserved) {
+				console.warn("Serial connection lost", e);
+				connectionLost = true;
+			}
 		}
 
 		// Clean up reader when stream ends
-		if (this.reader) {
-			try {
-				this.reader.releaseLock();
-			} catch (e) {
-				// Reader may have already been released
-			}
-			this.reader = undefined;
+		try {
+			reader.releaseLock();
+		} catch (e) {
+			// Reader may have already been released
+		}
+		if (this.reader === reader) this.reader = undefined;
+
+		if (connectionLost) await this.handleDisconnect();
+	}
+
+	private async handleDisconnect() {
+		const port = this.port;
+
+		this.port = undefined;
+		this.board = undefined;
+		this.status = "disconnected";
+
+		try {
+			this.writer?.releaseLock();
+		} catch (e) {
+			// Writer may have already been released
+		}
+		this.writer = undefined;
+
+		try {
+			await port?.close();
+		} catch (e) {
+			// The device may already be gone
 		}
 	}
 
@@ -332,11 +364,7 @@ class SerialState {
 
 		this.port = this.getLeaphyPort(port);
 		if ("addEventListener" in this.port) {
-			this.port.addEventListener("disconnect", async () => {
-				this.port = undefined;
-				this.board = undefined;
-				this.status = "disconnected";
-			});
+			this.port.addEventListener("disconnect", () => this.handleDisconnect());
 		}
 
 		this.board = this.detectBoard(port);

@@ -58,3 +58,23 @@ test("switching from C++ to blocks without saved blocks", async ({ page }) => {
 
 	await expect(page.locator(".injectionDiv")).toBeVisible();
 });
+
+test("losing the serial connection resets the connection state", async ({
+	page,
+}) => {
+	const state = await page.evaluate(async (path) => {
+		const { default: serial } = await import(path);
+		serial.port = { readable: {}, writable: {}, close: async () => {} };
+		serial.status = "ready";
+		serial.reader = {
+			read: async () => {
+				throw new DOMException("The device has been lost.", "NetworkError");
+			},
+			releaseLock() {},
+		};
+		await serial.runReadLoop();
+		return { status: serial.status, hasPort: !!serial.port };
+	}, SERIAL);
+
+	expect(state).toEqual({ status: "disconnected", hasPort: false });
+});
