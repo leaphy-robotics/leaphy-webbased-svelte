@@ -153,7 +153,7 @@ class WorkspacePersistenceState {
 			.and((save) => save.robot === robotId)
 			.first();
 
-		return fetchedSave.content || null;
+		return fetchedSave?.content || null;
 	}
 }
 

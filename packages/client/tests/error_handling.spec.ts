@@ -49,3 +49,12 @@ test("new project in C++ mode", async ({ page }) => {
 	await page.getByRole("button", { name: "My projects" }).click();
 	await page.getByText("New", { exact: true }).click();
 });
+
+test("switching from C++ to blocks without saved blocks", async ({ page }) => {
+	await selectRobot(page, "Leaphy C++");
+	await page.getByRole("button", { name: "Blocks", exact: true }).click();
+
+	await page.getByRole("button", { name: "Ok", exact: true }).click();
+
+	await expect(page.locator(".injectionDiv")).toBeVisible();
+});
