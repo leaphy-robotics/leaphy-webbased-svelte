@@ -464,3 +464,17 @@ test("code hints without iterator helpers", async ({ page }) => {
 	await expect(page.locator(".injectionDiv")).toBeVisible();
 	await page.waitForTimeout(500);
 });
+
+test("code hints for a block without a rendered path", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await expect(page.locator(".injectionDiv")).toBeVisible();
+
+	await page.evaluate(async (path) => {
+		const { default: blockly } = await import(path);
+		for (const block of blockly.workspace.getAllBlocks(false)) {
+			block.pathObject.svgPath.getAttribute = () => null;
+		}
+		blockly.workspace.fireChangeListener({ type: "test" });
+	}, BLOCKLY);
+	await page.waitForTimeout(100);
+});
