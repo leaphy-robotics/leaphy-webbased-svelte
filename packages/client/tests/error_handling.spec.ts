@@ -139,3 +139,87 @@ test("opening a file when the browser has no file picker API", async ({
 	await openProjectFile(page);
 	await chooser;
 });
+
+async function connectBluetooth(page: Page, failure: [string, string]) {
+	return page.evaluate(
+		async ({ path, failure: [message, name] }) => {
+			const error = new DOMException(message, name);
+			Object.defineProperty(navigator, "bluetooth", {
+				configurable: true,
+				value: { requestDevice: async () => Promise.reject(error) },
+			});
+
+			const { default: bluetooth } = await import(path);
+			await bluetooth.connect();
+		},
+		{ path: BLUETOOTH, failure },
+	);
+}
+
+test("cancelling the Bluetooth chooser", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await connectBluetooth(page, [
+		"User cancelled the requestDevice() chooser.",
+		"NotFoundError",
+	]);
+	await expect(page.getByText("Unable to connect over Bluetooth")).toBeHidden();
+});
+
+test("a Bluetooth adapter problem shows a popup", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await connectBluetooth(page, [
+		"Bluetooth adapter not available.",
+		"NotFoundError",
+	]);
+	await expect(
+		page.getByText("Unable to connect over Bluetooth"),
+	).toBeVisible();
+});
+
+test("a failed Bluetooth connection shows a popup", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await page.evaluate(async (path) => {
+		const device = {
+			addEventListener() {},
+			gatt: {
+				connect: async () => {
+					throw new DOMException("Connection attempt failed.", "NetworkError");
+				},
+			},
+		};
+		Object.defineProperty(navigator, "bluetooth", {
+			configurable: true,
+			value: { requestDevice: async () => device },
+		});
+
+		const { default: bluetooth } = await import(path);
+		await bluetooth.connect();
+	}, BLUETOOTH);
+
+	await expect(
+		page.getByText("Unable to connect over Bluetooth"),
+	).toBeVisible();
+});
+
+test("Bluetooth reconnecting stops after a few attempts", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	const attempts = await page.evaluate(async (path) => {
+		let attempts = 0;
+		const { default: bluetooth } = await import(path);
+		// A class instance, because $state would wrap a plain object in a proxy
+		class FakeDevice {
+			gatt = {
+				connect: async () => {
+					attempts++;
+					throw new DOMException("Connection attempt failed.", "NetworkError");
+				},
+			};
+		}
+		const device = new FakeDevice();
+		bluetooth.device = device;
+		await bluetooth.handleDisconnect(device);
+		return attempts;
+	}, BLUETOOTH);
+
+	expect(attempts).toBe(3);
+});

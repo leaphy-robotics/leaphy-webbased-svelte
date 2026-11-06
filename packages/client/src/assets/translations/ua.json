@@ -239,6 +239,8 @@
 	"BLUETOOTH_CONTROL_DESCRIPTION": "Використовуйте клавіатуру для керування роботом",
 	"NO_BLUETOOTH_TITLE": "Bluetooth не знайдено",
 	"NO_BLUETOOTH_MESSAGE": "Bluetooth не знайдено, перевірте, чи використовуєте ви браузер на базі Chromium; на Linux увімкніть chrome://flags/#enable-web-bluetooth",
+	"BLUETOOTH_CONNECT_FAILED_TITLE": "Не вдалося підключитися через Bluetooth",
+	"BLUETOOTH_CONNECT_FAILED_MESSAGE": "Не вдалося підключитися до робота через Bluetooth. Переконайтеся, що робота увімкнено і він поруч, та спробуйте ще раз.",
 	"BACK": "Назад",
 	"ADD_EXTENSION": "Додати розширення",
 	"REMOVE_EXTENSION": "Видалити розширення",

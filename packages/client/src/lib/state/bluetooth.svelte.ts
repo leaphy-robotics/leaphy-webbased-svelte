@@ -5,12 +5,14 @@ import {
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import PopupState from "$state/popup.svelte";
-import { track } from "$state/utils";
+import { isBluetoothCancel, track } from "$state/utils";
 
 interface QueueItem {
 	characteristic: BluetoothRemoteGATTCharacteristic;
 	value: Uint8Array;
 }
+
+const RECONNECT_DELAYS = [500, 1000, 2000];
 
 export class BluetoothWriteQueue {
 	queue: QueueItem[] = [];
@@ -83,6 +85,37 @@ class BluetoothState {
 		this.updateSelection();
 	}
 
+	private async handleDisconnect(device: BluetoothDevice) {
+		this.connected = false;
+		this.server = null;
+		this.controlService = null;
+		this.updateSelection();
+
+		// Stop after a few attempts. The connect button stays available to try again.
+		for (const delay of RECONNECT_DELAYS) {
+			await new Promise((resolve) => setTimeout(resolve, delay));
+			if (this.device !== device) return;
+
+			try {
+				await this.setup();
+				return;
+			} catch (e) {
+				console.warn("Bluetooth reconnect failed", e);
+			}
+		}
+	}
+
+	private showConnectionError() {
+		PopupState.open({
+			component: ErrorPopup,
+			data: {
+				title: "BLUETOOTH_CONNECT_FAILED_TITLE",
+				message: "BLUETOOTH_CONNECT_FAILED_MESSAGE",
+			},
+			allowInteraction: false,
+		});
+	}
+
 	async connect() {
 		this.connected = false;
 		if (!("bluetooth" in navigator)) {
@@ -97,19 +130,22 @@ class BluetoothState {
 			return;
 		}
 
-		this.device = await navigator.bluetooth.requestDevice({
-			filters: [{ services: [SERVICE_UUID] }],
-		});
-		this.device.addEventListener("gattserverdisconnected", async () => {
-			this.connected = false;
-			this.server = null;
-			this.controlService = null;
+		try {
+			const device = await navigator.bluetooth.requestDevice({
+				filters: [{ services: [SERVICE_UUID] }],
+			});
+			this.device = device;
+			device.addEventListener("gattserverdisconnected", () =>
+				this.handleDisconnect(device),
+			);
 
-			this.updateSelection();
 			await this.setup();
-		});
+		} catch (e) {
+			if (isBluetoothCancel(e)) return;
 
-		await this.setup();
+			console.warn("Unable to connect over Bluetooth", e);
+			this.showConnectionError();
+		}
 	}
 }
 
