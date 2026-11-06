@@ -442,3 +442,13 @@ test("disabling an extension with no category selected", async ({ page }) => {
 
 	expect(enabled).toBe(false);
 });
+
+test("setting up the workspace when the search box has text", async ({
+	page,
+}) => {
+	await page.evaluate(() => {
+		document.querySelector<HTMLInputElement>(".search-input").value = "led";
+	});
+	await selectRobot(page, "Leaphy Original");
+	await expect(page.locator(".injectionDiv")).toBeVisible();
+});
