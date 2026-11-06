@@ -70,7 +70,9 @@ $effect(() => {
 		generator.STATEMENT_PREFIX = "";
 		generator.STATEMENT_SUFFIX = "";
 
-		program.matchAll(/BLOCK_'(.*)'\n((.|\n)*?)END_BLOCK/gm).forEach((match) => {
+		for (const match of program.matchAll(
+			/BLOCK_'(.*)'\n((.|\n)*?)END_BLOCK/gm,
+		)) {
 			const [section, block, code] = match;
 			if (!blocks[block]) {
 				blocks[block] = [];
@@ -85,7 +87,7 @@ $effect(() => {
 				trimmedCode,
 				getLines(program, match.index, match.index + section.length),
 			]);
-		});
+		}
 
 		hints = Object.entries(blocks).map(([blockId, statements]) => {
 			const block = BlocklyState.workspace.getBlockById(blockId);

@@ -452,3 +452,15 @@ test("setting up the workspace when the search box has text", async ({
 	await selectRobot(page, "Leaphy Original");
 	await expect(page.locator(".injectionDiv")).toBeVisible();
 });
+
+test("code hints without iterator helpers", async ({ page }) => {
+	await page.addInitScript(() => {
+		const iterator = Object.getPrototypeOf([][Symbol.iterator]());
+		delete Object.getPrototypeOf(iterator).forEach;
+	});
+	await page.reload();
+	await page.getByRole("button", { name: "Cancel" }).click();
+	await selectRobot(page, "Leaphy Original");
+	await expect(page.locator(".injectionDiv")).toBeVisible();
+	await page.waitForTimeout(500);
+});
