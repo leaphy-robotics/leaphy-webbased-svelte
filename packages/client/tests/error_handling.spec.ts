@@ -39,3 +39,7 @@ async function savedFileCount(page: Page) {
 		return projectDB.saves.count();
 	});
 }
+
+test("closing the tab on the start screen", async ({ page }) => {
+	await page.evaluate(() => window.dispatchEvent(new Event("beforeunload")));
+});

@@ -112,6 +112,9 @@ class WorkspacePersistenceState {
 		let content = this.ui.code;
 
 		if (mode === "BLOCKS") {
+			// No workspace exists yet on the start screen, so there is nothing to save
+			if (!BlocklyState.workspace) return;
+
 			content = JSON.stringify(
 				serialization.workspaces.save(BlocklyState.workspace),
 			);
