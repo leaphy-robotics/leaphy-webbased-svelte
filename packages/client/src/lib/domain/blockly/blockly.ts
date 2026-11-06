@@ -356,6 +356,17 @@ function pythonProcedureCategory(workspace: WorkspaceSvg) {
 	return blockList;
 }
 
+// Blockly preloads its sounds without handling failures. A failed download only means
+// that the sound doesn't play, so it shouldn't become an unhandled rejection.
+const loadSound = Blockly.WorkspaceAudio.prototype.load;
+Blockly.WorkspaceAudio.prototype.load = async function (filenames, name) {
+	try {
+		await loadSound.call(this, filenames, name);
+	} catch (e) {
+		console.warn(`Unable to load sound ${name}`, e);
+	}
+};
+
 export function setupWorkspace(
 	robot: RobotDevice,
 	element: HTMLDivElement,

@@ -516,3 +516,12 @@ test("embed circuit export for a board without a circuit", async ({ page }) => {
 	const content = await embedExports(page, "project.l_uno", { circuit: true });
 	expect(content).toEqual({ circuit: null });
 });
+
+test("workspace setup when sounds fail to download", async ({ page }) => {
+	await page.route(/blockly-assets\/.*\.(mp3|ogg|wav)$/, (route) =>
+		route.abort(),
+	);
+	await selectRobot(page, "Leaphy Original");
+	await expect(page.locator(".injectionDiv")).toBeVisible();
+	await page.waitForTimeout(500);
+});
