@@ -478,3 +478,36 @@ test("code hints for a block without a rendered path", async ({ page }) => {
 	}, BLOCKLY);
 	await page.waitForTimeout(100);
 });
+
+async function embedExports(page: Page, name: string, exports: object) {
+	await page.goto("/?embed=1");
+	await page.locator("header").waitFor();
+
+	return page.evaluate(
+		({ name, exports }) =>
+			new Promise((resolve) => {
+				window.addEventListener("message", ({ data }) => {
+					if (data.type === "change") resolve(data.content);
+				});
+				window.postMessage(
+					{
+						type: "open",
+						name,
+						content: JSON.stringify({
+							blocks: { languageVersion: 0, blocks: [] },
+						}),
+						exports,
+					},
+					"*",
+				);
+			}),
+		{ name, exports },
+	);
+}
+
+test("embed export of an empty workspace", async ({ page }) => {
+	const content = await embedExports(page, "project.l_original", {
+		workspaceSvg: true,
+	});
+	expect(content).toEqual({ workspaceSvg: null });
+});

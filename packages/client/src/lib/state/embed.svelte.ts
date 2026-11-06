@@ -45,12 +45,14 @@ class EmbedState {
 		}
 
 		this.previousUpdate = setTimeout(async () => {
-			let data: Record<string, string> = {};
+			let data: Record<string, string | null> = {};
 
 			if (this.exports.workspace) data.workspace = WorkspaceState.serialize();
 			if (this.exports.pseudo) data.pseudo = pseudo(BlocklyState.workspace);
-			if (this.exports.workspaceSvg)
-				data.workspaceSvg = encodeSvg(BlocklyState.getSvg());
+			if (this.exports.workspaceSvg) {
+				const svg = BlocklyState.getSvg();
+				data.workspaceSvg = svg && encodeSvg(svg);
+			}
 			if (this.exports.circuit) data.circuit = await this.getCircuit();
 
 			parent.postMessage(
