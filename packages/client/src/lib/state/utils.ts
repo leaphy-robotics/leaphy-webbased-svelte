@@ -3,6 +3,14 @@ export function track(state: any) {
 	}
 }
 
+/** True when the user closed a browser port, device or file chooser. */
+export function isUserCancel(error: unknown) {
+	return (
+		error instanceof DOMException &&
+		(error.name === "NotFoundError" || error.name === "AbortError")
+	);
+}
+
 export async function findAsync<Type>(
 	arr: Type[],
 	asyncCallback: (item: Type) => Promise<boolean>,

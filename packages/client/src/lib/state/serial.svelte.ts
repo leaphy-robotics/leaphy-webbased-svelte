@@ -4,6 +4,7 @@ import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
+import { isUserCancel } from "$state/utils";
 import { clearReadBuffer, delay } from "../programmers/utils";
 
 interface ActiveDebugger {
@@ -267,7 +268,6 @@ class SerialState {
 	}
 
 	async requestPort(prompt: Prompt): Promise<SerialPort | USBDevice> {
-		this.showFeedback = prompt === Prompt.ALWAYS;
 		if (navigator.serial && !navigator.userAgent.includes("Android")) {
 			if (prompt !== Prompt.ALWAYS) {
 				const [port] = await navigator.serial.getPorts();
@@ -353,10 +353,18 @@ class SerialState {
 		return new MockedCDCSerialPort(port);
 	}
 
-	async connect(prompt: Prompt) {
+	async connect(prompt: Prompt, showFeedback = prompt === Prompt.ALWAYS) {
+		this.showFeedback = showFeedback;
 		this.status = "connecting";
 
-		const port = await this.requestPort(prompt);
+		let port: SerialPort | USBDevice;
+		try {
+			port = await this.requestPort(prompt);
+		} catch (e) {
+			this.status = this.port ? "ready" : "disconnected";
+			throw e;
+		}
+
 		if (this.port === port) {
 			this.status = "ready";
 			return port;
@@ -372,6 +380,22 @@ class SerialState {
 		await this.initPort();
 
 		return port;
+	}
+
+	/**
+	 * Connects after a user action. Closing the chooser is not an error, and a port
+	 * that fails to open shows a popup. Returns whether the robot is connected.
+	 */
+	async connectWithFeedback(prompt: Prompt) {
+		try {
+			await this.connect(prompt, true);
+			return true;
+		} catch (e) {
+			if (!isUserCancel(e)) console.warn("Unable to connect to robot", e);
+			return false;
+		} finally {
+			this.showFeedback = prompt === Prompt.ALWAYS;
+		}
 	}
 
 	reconnect(): Promise<SerialPort> {

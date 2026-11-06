@@ -78,3 +78,41 @@ test("losing the serial connection resets the connection state", async ({
 
 	expect(state).toEqual({ status: "disconnected", hasPort: false });
 });
+
+test("cancelling the serial port chooser", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	await page.evaluate(() => {
+		navigator.serial.requestPort = async () => {
+			throw new DOMException("No port selected by the user.", "NotFoundError");
+		};
+	});
+	await page.getByRole("button", { name: "Connect", exact: true }).click();
+
+	await expect
+		.poll(() =>
+			page.evaluate(async (path) => {
+				const { default: serial } = await import(path);
+				return serial.status;
+			}, SERIAL),
+		)
+		.toBe("disconnected");
+});
+
+test("a serial port that fails to open shows a popup", async ({ page }) => {
+	await selectRobot(page, "Leaphy Original");
+	const connected = await page.evaluate(async (path) => {
+		const { default: serial, Prompt } = await import(path);
+		serial.requestPort = async () => ({
+			readable: null,
+			writable: null,
+			getInfo: () => ({}),
+			open: async () => {
+				throw new DOMException("Failed to open serial port.", "NetworkError");
+			},
+		});
+		return serial.connectWithFeedback(Prompt.MAYBE);
+	}, SERIAL);
+
+	expect(connected).toBe(false);
+	await expect(page.getByText("Unable to connect to robot")).toBeVisible();
+});

@@ -131,7 +131,7 @@ async function connect() {
 			data: {},
 			allowInteraction: false,
 		});
-	else SerialState.connect(Prompt.ALWAYS);
+	else await SerialState.connectWithFeedback(Prompt.ALWAYS);
 }
 
 async function changeRobot() {

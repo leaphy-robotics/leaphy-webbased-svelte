@@ -98,7 +98,7 @@ async function disabledSelect() {
 </script>
 
 <div class="p-5 flex flex-col min-w-[400px] text-center gap-4">
-	<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
+	<Button onclick={() => SerialState.connectWithFeedback(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
 	{#if categories.length > 1}
 		<ChipSelect options={categoriesFilter} bind:value={category} />
 	{/if}
