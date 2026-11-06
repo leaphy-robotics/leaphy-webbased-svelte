@@ -223,3 +223,17 @@ test("Bluetooth reconnecting stops after a few attempts", async ({ page }) => {
 
 	expect(attempts).toBe(3);
 });
+
+test("a Bluetooth service without characteristics", async ({ page }) => {
+	await page.evaluate(async (path) => {
+		const { default: bluetooth } = await import(path);
+		bluetooth.controlService = {
+			getCharacteristics: async () => {
+				throw new DOMException(
+					"No Characteristics found in service.",
+					"NotFoundError",
+				);
+			},
+		};
+	}, BLUETOOTH);
+});

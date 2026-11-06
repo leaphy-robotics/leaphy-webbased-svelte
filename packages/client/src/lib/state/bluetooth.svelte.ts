@@ -50,14 +50,20 @@ class BluetoothState {
 				this.keys.clear();
 
 				if (!this.controlService) return;
-				this.controlService.getCharacteristics().then((characteristics) => {
-					characteristics.forEach((characteristic) => {
-						this.keys.set(
-							decodeUUIDToString(characteristic.uuid),
-							characteristic,
-						);
+				this.controlService
+					.getCharacteristics()
+					.then((characteristics) => {
+						characteristics.forEach((characteristic) => {
+							this.keys.set(
+								decodeUUIDToString(characteristic.uuid),
+								characteristic,
+							);
+						});
+					})
+					.catch((e) => {
+						// A program without Bluetooth keys has no characteristics
+						if (e.name !== "NotFoundError") console.warn(e);
 					});
-				});
 			});
 		});
 	}
