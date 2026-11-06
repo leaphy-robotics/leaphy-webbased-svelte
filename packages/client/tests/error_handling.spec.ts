@@ -525,3 +525,21 @@ test("workspace setup when sounds fail to download", async ({ page }) => {
 	await expect(page.locator(".injectionDiv")).toBeVisible();
 	await page.waitForTimeout(500);
 });
+
+test("sending feedback without a connection keeps the form open", async ({
+	page,
+}) => {
+	await selectRobot(page, "Leaphy Starling");
+	await page.getByRole("button", { name: "Tips" }).click();
+	await page.getByText("Suggestion / Feedback").click();
+	await page.getByPlaceholder("Your name...").fill("test");
+	await page.getByPlaceholder("Email").fill("test@ing");
+	await page.locator("textarea").fill("test123");
+
+	await page.route("**/feedback", (route) => route.abort());
+	await page.getByRole("button", { name: "Send" }).click();
+
+	await expect(page.getByText("No internet")).toBeVisible();
+	await page.getByRole("button", { name: "Ok", exact: true }).click();
+	await expect(page.locator("textarea")).toHaveValue("test123");
+});
