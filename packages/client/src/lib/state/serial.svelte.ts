@@ -176,6 +176,7 @@ class SerialState {
 	}
 
 	reserved = $state(false);
+	private opening: Promise<unknown> | undefined;
 	reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
 	writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 
@@ -188,7 +189,8 @@ class SerialState {
 
 		if (!this.port.readable || !this.port.writable) {
 			try {
-				await this.port.open({ baudRate: 115200 });
+				this.opening = this.port.open({ baudRate: 115200 });
+				await this.opening;
 			} catch (e) {
 				this.port = undefined;
 				if (this.showFeedback) {
@@ -204,6 +206,8 @@ class SerialState {
 
 				this.status = "failed";
 				throw e;
+			} finally {
+				this.opening = undefined;
 			}
 		}
 		if (this.port.readable.locked || this.port.writable.locked) return;
@@ -366,7 +370,14 @@ class SerialState {
 		}
 
 		if (this.port === port) {
-			this.status = "ready";
+			// Another connect() call may still be opening this port
+			await this.opening;
+			if (this.reserved || (this.port?.readable && this.port?.writable)) {
+				this.status = "ready";
+				return port;
+			}
+
+			await this.initPort();
 			return port;
 		}
 

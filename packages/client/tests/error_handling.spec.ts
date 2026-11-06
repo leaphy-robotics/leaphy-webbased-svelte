@@ -237,3 +237,90 @@ test("a Bluetooth service without characteristics", async ({ page }) => {
 		};
 	}, BLUETOOTH);
 });
+
+test("the program check handles a port that isn't open", async ({ page }) => {
+	const program = await page.evaluate(
+		async ({ serialPath, restorePath }) => {
+			const { default: serial, Prompt } = await import(serialPath);
+			const { default: restore } = await import(restorePath);
+			let reached = false;
+			serial.connect = async () => {};
+			serial.initPort = async () => {};
+			serial.port = {
+				get readable() {
+					reached = true;
+					return null;
+				},
+				writable: null,
+			};
+			restore.program = null;
+			const program = (await restore.getProgram(Prompt.NEVER)) ?? "none";
+			return { program, reached };
+		},
+		{ serialPath: SERIAL, restorePath: RESTORE },
+	);
+
+	expect(program).toEqual({ program: "none", reached: true });
+});
+
+test("the program check handles setSignals failing", async ({ page }) => {
+	const result = await page.evaluate(
+		async ({ serialPath, restorePath }) => {
+			const { default: serial, Prompt } = await import(serialPath);
+			const { default: restore } = await import(restorePath);
+			let attempted = false;
+			serial.connect = async () => {};
+			serial.initPort = async () => {};
+			serial.port = {
+				readable: new ReadableStream(),
+				writable: new WritableStream(),
+				setSignals: async () => {
+					attempted = true;
+					throw new DOMException("Failed to set signals.", "NetworkError");
+				},
+			};
+			restore.program = null;
+			const program = (await restore.getProgram(Prompt.NEVER)) ?? "none";
+			return { program, attempted };
+		},
+		{ serialPath: SERIAL, restorePath: RESTORE },
+	);
+
+	expect(result).toEqual({ program: "none", attempted: true });
+});
+
+test("concurrent serial connections wait for the port to open", async ({
+	page,
+}) => {
+	const result = await page.evaluate(async (path) => {
+		const { default: serial, Prompt } = await import(path);
+
+		class SlowPort {
+			readable: ReadableStream | null = null;
+			writable: WritableStream | null = null;
+			opens = 0;
+			getInfo = () => ({});
+			async open() {
+				this.opens++;
+				await new Promise((resolve) => setTimeout(resolve, 100));
+				this.readable = new ReadableStream();
+				this.writable = new WritableStream();
+			}
+		}
+		const port = new SlowPort();
+		serial.requestPort = async () => port;
+
+		const first = serial.connect(Prompt.MAYBE);
+		await serial.connect(Prompt.MAYBE);
+		const openAfterSecondCall = !!port.readable;
+		await first;
+
+		return { opens: port.opens, openAfterSecondCall, status: serial.status };
+	}, SERIAL);
+
+	expect(result).toEqual({
+		opens: 1,
+		openAfterSecondCall: true,
+		status: "ready",
+	});
+});
