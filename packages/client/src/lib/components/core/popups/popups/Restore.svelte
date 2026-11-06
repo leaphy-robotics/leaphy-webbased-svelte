@@ -87,7 +87,7 @@ async function open() {
 		}
 	} else {
 		await value.fileHandle.requestPermission();
-		await WorkspaceState.openFileHandle(value.fileHandle);
+		if (!(await WorkspaceState.openFileHandle(value.fileHandle))) return;
 	}
 
 	WorkspaceState.saveState = true;

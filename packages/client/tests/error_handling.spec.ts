@@ -324,3 +324,17 @@ test("concurrent serial connections wait for the port to open", async ({
 		status: "ready",
 	});
 });
+
+for (const [name, content] of [
+	["program.txt", "// Definieer pinnen"],
+	["archive.zip", "PK\u0003\u0004"],
+]) {
+	test(`opening ${name} from C++ mode`, async ({ page }) => {
+		await selectRobot(page, "Leaphy C++");
+		await stubPickerWithFile(page, name, content);
+		await openProjectFile(page);
+
+		await expect(page.getByText("Invalid project")).toBeVisible();
+		expect(await savedFileCount(page)).toBe(0);
+	});
+}
