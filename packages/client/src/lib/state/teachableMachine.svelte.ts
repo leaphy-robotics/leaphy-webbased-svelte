@@ -15,7 +15,9 @@ import type { ISerializer } from "blockly/core/interfaces/i_serializer";
 import { get } from "svelte/store";
 import { _ } from "svelte-i18n";
 import Uploader from "$components/core/popups/popups/uploaders/Uploader.svelte";
+import { afterPaint } from "$domain/paint";
 import { robots } from "$domain/robots";
+import { useTrainingBackend } from "$domain/tensorflow";
 import PopupState from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import trainerFirmwareUrl from "../../assets/firmware/TeachableTrainingRecorder.bin?url";
@@ -25,11 +27,45 @@ const SPECTROGRAM_SIZE = 49 * 40;
 const MIN_CLASS_SAMPLES = 8;
 const MIN_BACKGROUND_SAMPLES = 20;
 
+const DEFAULT_SETTINGS: TeachableTrainingSettings = {
+	epochs: 60,
+	learningRate: 0.05,
+	l2: 0.0001,
+	batchSize: 16,
+	variationsPerSample: 4,
+	noiseLayering: false,
+};
+
 function translate(
 	key: string,
 	values: Record<string, string | number> = {},
 ): string {
 	return get(_)(key, { values });
+}
+
+// The trainer package reports errors in English, map the known ones to an explanation the user can act on
+const knownErrors: [RegExp, string][] = [
+	[/handshake timed out/i, "TEACHABLE_MACHINE_ERROR_HANDSHAKE"],
+	[/expected trainer protocol/i, "TEACHABLE_MACHINE_ERROR_PROTOCOL"],
+	[/serial port is not (writable|readable)/i, "TEACHABLE_MACHINE_ERROR_PORT"],
+	[
+		/missing spectrogram|invalid .* values|embedding|mismatch|non-finite|numClasses/i,
+		"TEACHABLE_MACHINE_ERROR_DATA",
+	],
+];
+
+function describeError(error: unknown, fallback: string): string {
+	if (!(error instanceof Error) || !error.message) return translate(fallback);
+
+	const known = knownErrors.find(([pattern]) => pattern.test(error.message));
+	if (known) return translate(known[1]);
+
+	return `${translate(fallback)}: ${error.message}`;
+}
+
+export interface NextStep {
+	key: string;
+	values?: Record<string, string | number>;
 }
 
 export interface TeachableSample {
@@ -104,8 +140,29 @@ function createClass(name: string, isBackground = false): TeachableClass {
 	return { id: id("class"), name, isBackground, samples: [] };
 }
 
+// Translations may not be loaded yet when the state is first created, localizeDefaultClasses fixes the names later
+function translateOr(
+	key: string,
+	fallback: string,
+	values: Record<string, string | number> = {},
+): string {
+	try {
+		return translate(key, values);
+	} catch {
+		return fallback;
+	}
+}
+
 function defaultClasses(): TeachableClass[] {
-	return [createClass("Class 1"), createClass("Background noise", true)];
+	return [
+		createClass(
+			translateOr("TEACHABLE_MACHINE_DEFAULT_CLASS", "Class 1", { number: 1 }),
+		),
+		createClass(
+			translateOr("TEACHABLE_MACHINE_BACKGROUND_NOISE", "Background noise"),
+			true,
+		),
+	];
 }
 
 function encodeFloats(values: Float32Array): string {
@@ -132,18 +189,13 @@ class TeachableMachineState implements ISerializer {
 	priority = 100;
 
 	classes = $state<TeachableClass[]>(defaultClasses());
-	settings = $state<TeachableTrainingSettings>({
-		epochs: 60,
-		learningRate: 0.05,
-		l2: 0.0001,
-		batchSize: 16,
-		variationsPerSample: 4,
-		noiseLayering: false,
-	});
+	settings = $state<TeachableTrainingSettings>({ ...DEFAULT_SETTINGS });
 	model = $state<TrainedAudioModel | null>(null);
 
 	deviceStatus = $state<DeviceStatus>("disconnected");
 	deviceError = $state<string | null>(null);
+	// Set when a saved project could not be restored
+	loadError = $state(false);
 	recordingClassId = $state<string | null>(null);
 	recordingMessage = $state("");
 	recordingTotal = $state(0);
@@ -161,6 +213,36 @@ class TeachableMachineState implements ISerializer {
 
 	get connected(): boolean {
 		return this.deviceStatus === "ready";
+	}
+
+	get deviceBusy(): boolean {
+		return (
+			this.deviceStatus !== "disconnected" && this.deviceStatus !== "ready"
+		);
+	}
+
+	// Tells the user what to do next, based on how far they are
+	get nextStep(): NextStep {
+		if (!this.connected) return { key: "TEACHABLE_MACHINE_NEXT_CONNECT" };
+		if (this.recordingClassId)
+			return { key: "TEACHABLE_MACHINE_NEXT_RECORDING" };
+
+		const missing = this.classes.find(
+			(item) => item.samples.length < this.minimumSamples(item),
+		);
+		if (missing) {
+			return {
+				key: "TEACHABLE_MACHINE_NEXT_RECORD",
+				values: {
+					count: this.minimumSamples(missing) - missing.samples.length,
+					name: missing.name,
+				},
+			};
+		}
+		if (this.training) return { key: "TEACHABLE_MACHINE_NEXT_TRAINING" };
+		if (!this.model) return { key: "TEACHABLE_MACHINE_NEXT_TRAIN" };
+		if (!this.listening) return { key: "TEACHABLE_MACHINE_NEXT_TEST" };
+		return { key: "TEACHABLE_MACHINE_NEXT_USE" };
 	}
 
 	get backgroundClass(): TeachableClass {
@@ -267,10 +349,10 @@ class TeachableMachineState implements ISerializer {
 
 			this.deviceStatus = "ready";
 		} catch (error) {
-			this.deviceError =
-				error instanceof Error
-					? error.message
-					: translate("TEACHABLE_MACHINE_COULD_NOT_CONNECT_NANO");
+			this.deviceError = describeError(
+				error,
+				"TEACHABLE_MACHINE_COULD_NOT_CONNECT_NANO",
+			);
 			await this.disposeDevice();
 		}
 	}
@@ -337,10 +419,10 @@ class TeachableMachineState implements ISerializer {
 				},
 			});
 		} catch (error) {
-			this.deviceError =
-				error instanceof Error
-					? error.message
-					: translate("TEACHABLE_MACHINE_RECORDING_FAILED");
+			this.deviceError = describeError(
+				error,
+				"TEACHABLE_MACHINE_RECORDING_FAILED",
+			);
 		} finally {
 			this.clearRecordingProgress();
 			this.recordingClassId = null;
@@ -354,6 +436,9 @@ class TeachableMachineState implements ISerializer {
 		this.training = true;
 		this.lossHistory = [];
 		this.deviceError = null;
+		// Show the training state before the synchronous data augmentation starts
+		await afterPaint();
+		await useTrainingBackend();
 
 		const samples: TrainingSample[] = this.classes.flatMap((item, label) =>
 			item.samples.map((sample) => ({
@@ -386,10 +471,10 @@ class TeachableMachineState implements ISerializer {
 			});
 			this.setModel(model);
 		} catch (error) {
-			this.deviceError =
-				error instanceof Error
-					? error.message
-					: translate("TEACHABLE_MACHINE_TRAINING_FAILED");
+			this.deviceError = describeError(
+				error,
+				"TEACHABLE_MACHINE_TRAINING_FAILED",
+			);
 		} finally {
 			this.training = false;
 		}
@@ -408,10 +493,10 @@ class TeachableMachineState implements ISerializer {
 			});
 			this.listening = true;
 		} catch (error) {
-			this.deviceError =
-				error instanceof Error
-					? error.message
-					: translate("TEACHABLE_MACHINE_LISTENING_FAILED");
+			this.deviceError = describeError(
+				error,
+				"TEACHABLE_MACHINE_LISTENING_FAILED",
+			);
 		}
 	}
 
@@ -449,6 +534,7 @@ class TeachableMachineState implements ISerializer {
 	}
 
 	load(state: object): void {
+		this.loadError = false;
 		try {
 			const saved = state as Partial<SerializedState>;
 			if (saved.version !== 1 || !Array.isArray(saved.classes)) return;
@@ -482,12 +568,21 @@ class TeachableMachineState implements ISerializer {
 
 			const settings = saved.settings ?? ({} as TeachableTrainingSettings);
 			this.settings = {
-				epochs: finiteNumber(settings.epochs, 100),
-				learningRate: finiteNumber(settings.learningRate, 0.05),
-				l2: finiteNumber(settings.l2, 0.0001),
-				batchSize: finiteNumber(settings.batchSize, 16),
-				variationsPerSample: finiteNumber(settings.variationsPerSample, 3),
-				noiseLayering: settings.noiseLayering !== false,
+				epochs: finiteNumber(settings.epochs, DEFAULT_SETTINGS.epochs),
+				learningRate: finiteNumber(
+					settings.learningRate,
+					DEFAULT_SETTINGS.learningRate,
+				),
+				l2: finiteNumber(settings.l2, DEFAULT_SETTINGS.l2),
+				batchSize: finiteNumber(settings.batchSize, DEFAULT_SETTINGS.batchSize),
+				variationsPerSample: finiteNumber(
+					settings.variationsPerSample,
+					DEFAULT_SETTINGS.variationsPerSample,
+				),
+				noiseLayering:
+					typeof settings.noiseLayering === "boolean"
+						? settings.noiseLayering
+						: DEFAULT_SETTINGS.noiseLayering,
 			};
 
 			const model = saved.model;
@@ -508,19 +603,14 @@ class TeachableMachineState implements ISerializer {
 		} catch (error) {
 			console.warn("Could not restore Teachable Machine state", error);
 			this.clear();
+			this.loadError = true;
 		}
 	}
 
 	clear(): void {
 		this.classes = defaultClasses();
-		this.settings = {
-			epochs: 60,
-			learningRate: 0.05,
-			l2: 0.0001,
-			batchSize: 16,
-			variationsPerSample: 4,
-			noiseLayering: false,
-		};
+		this.settings = { ...DEFAULT_SETTINGS };
+		this.loadError = false;
 		this.setModel(null);
 		this.lossHistory = [];
 		this.activations = [];
@@ -609,7 +699,7 @@ class TeachableMachineState implements ISerializer {
 		if (!response.ok)
 			throw new Error(translate("TEACHABLE_MACHINE_FIRMWARE_LOAD_FAILED"));
 		const firmware = new Uint8Array(await response.arrayBuffer());
-		await PopupState.open({
+		const success = await PopupState.open({
 			component: Uploader,
 			data: {
 				program: { sketch: base64.fromByteArray(firmware) },
@@ -617,6 +707,8 @@ class TeachableMachineState implements ISerializer {
 			},
 			allowInteraction: false,
 		});
+		if (success !== true)
+			throw new Error(translate("TEACHABLE_MACHINE_FIRMWARE_FLASH_FAILED"));
 	}
 }
 

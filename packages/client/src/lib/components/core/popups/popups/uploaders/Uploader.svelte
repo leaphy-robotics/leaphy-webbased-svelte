@@ -94,7 +94,7 @@ async function upload(res: Record<string, string>) {
 			await programmer.upload(port, res);
 		};
 		if (useReservedPort) {
-			if (!SerialState.port) throw new Error("Serial port was disconnected");
+			if (!SerialState.port) throw new Error($_("SERIAL_PORT_DISCONNECTED"));
 			if (!SerialState.port.readable || !SerialState.port.writable) {
 				await SerialState.port.open({ baudRate: 115200 });
 			}
@@ -143,7 +143,7 @@ onMount(async () => {
 							board: board.name,
 							extension:
 								extensions.find((ext) => ext.id === incompatibleExtension)
-									?.name || "Unknown",
+									?.name || $_("UNKNOWN"),
 						},
 					}),
 					showCancel: true,
@@ -170,8 +170,9 @@ onMount(async () => {
 
 const robotState = $derived(getRobotState(failed, done, currentState));
 
+// Resolves the popup with whether the upload succeeded, so callers can react to failures
 function close() {
-	popupState.close();
+	popupState.close(!failed);
 }
 
 async function connectUSB() {

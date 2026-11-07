@@ -1,77 +1,146 @@
 <script lang="ts">
 import { faBluetooth } from "@fortawesome/free-brands-svg-icons";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faRotateRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ml } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
-import type { Snippet } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
+import Locked from "$components/ui/Locked.svelte";
+import StatusBanner from "$components/ui/StatusBanner.svelte";
 import Switch from "$components/ui/Switch.svelte";
 import AssignKey from "$components/workspace/ml/AssignKey.svelte";
-import RobotStatus from "$components/workspace/ml/RobotStatus.svelte";
-import MLState from "$state/ml.svelte";
+import StepIntro from "$components/workspace/ml/StepIntro.svelte";
+import MLState, { MIN_SAMPLES_PER_CLASS } from "$state/ml.svelte";
+
+const hasKeys = $derived(MLState.classes.some((classData) => !!classData.key));
+
+function count(index: number, classId: string) {
+	return (
+		(MLState.available[index] ?? 0) + (MLState.sessionCounts[classId] ?? 0)
+	);
+}
 </script>
 
-{#if !MLState.connected}
-	<div class="absolute top-0 left-0 right-0 bottom-0">
-		<div class="flex justify-between items-center bg-primary text-on-primary px-10 py-5 text-left">
-			<div class="flex flex-col gap-2.5">
-				<div class="font-bold text-xl">{$_("ML_NOT_CONNECTED")}</div>
-				<div>{$_("ML_NOT_CONNECTED_DESC")}</div>
-			</div>
-			<Button mode="accent" name={$_("ML_CONNECT")} icon={faBluetooth} onclick={() => MLState.connect()} />
-		</div>
-	</div>
-{/if}
+<div class="flex flex-col gap-5">
+	<StepIntro title={$_("ML_COLLECT_TITLE")} description={$_("ML_COLLECT_DESC")} />
 
-<div class="{!MLState.connected ? 'pt-16 opacity-40 pointer-events-none' : ''}">
-	<div class="flex gap-10">
-		<RobotStatus />
-		<div class="flex flex-col items-center justify-center gap-8">
-			<div class="flex flex-col gap-5">
-				<h1 class="m-0">{$_("ML_COLLECT_TITLE")}</h1>
-				<span>{$_("ML_COLLECT_DESC")}</span>
-			</div>
-
-			{#snippet tableRow(children: Snippet)}
-				<div class="flex justify-between items-center border-b-2 border-black/15 px-5 py-2.5 first:pt-4 last:pb-4 last:border-b-0">
-					{@render children()}
-				</div>
+	{#if MLState.connectionState === "connecting"}
+		<StatusBanner kind="loading" title={$_("ML_CONNECTING")} message={$_("ML_CONNECTING_DESC")} />
+	{:else if MLState.connectionState === "lost"}
+		<StatusBanner kind="warning" title={$_("ML_CONNECTION_LOST")} message={$_("ML_CONNECTION_LOST_DESC")}>
+			{#snippet actions()}
+				<Button mode="secondary" icon={faBluetooth} name={$_("ML_RECONNECT")} onclick={() => MLState.connect()} />
 			{/snippet}
+		</StatusBanner>
+	{:else if MLState.connectionState === "error"}
+		<StatusBanner kind="error" title={$_("ML_CONNECTION_FAILED")} message={MLState.connectionError ?? undefined}>
+			{#snippet actions()}
+				<Button mode="secondary" icon={faRotateRight} name={$_("TRY_AGAIN")} onclick={() => MLState.connect()} />
+			{/snippet}
+		</StatusBanner>
+	{:else if MLState.connectionState === "disconnected"}
+		<StatusBanner kind="info" title={$_("ML_NOT_CONNECTED")} message={$_("ML_NOT_CONNECTED_DESC")}>
+			{#snippet actions()}
+				<Button mode="accent" icon={faBluetooth} name={$_("ML_CONNECT")} onclick={() => MLState.connect()} />
+			{/snippet}
+		</StatusBanner>
+	{:else}
+		<StatusBanner kind="success" compact title={$_("ML_CONNECTED")} />
+	{/if}
 
-			<div class="flex flex-col gap-0.5 bg-secondary rounded-2xl overflow-hidden w-full">
-				{#each MLState.classes as classData (classData.id)}
-					{#snippet classRowContent()}<div class="font-bold">{classData.name}</div><AssignKey {classData} />{/snippet}
-					{@render tableRow(classRowContent)}
-				{/each}
-			</div>
+	<Locked locked={!MLState.connected} reason={$_("ML_LOCKED_NOT_CONNECTED")}>
+		<div class="flex flex-col gap-5">
+			<section class="flex flex-col gap-3 text-left">
+				<div class="flex flex-col">
+					<h2 class="m-0 text-base!">{$_("ML_YOUR_CLASSES")}</h2>
+					<span class="text-sm text-on-secondary-muted">{$_("ML_YOUR_CLASSES_DESC")}</span>
+				</div>
+				<div class="flex flex-col overflow-hidden rounded-2xl bg-bg-tint">
+					{#each MLState.classes as classData, index (classData.id)}
+						{@const examples = count(index, classData.id)}
+						<div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(120px,200px)] items-center gap-4 border-b-2 border-secondary px-4 py-2 last:border-b-0
+							{MLState.classification === classData.id ? 'bg-primary/15' : ''}">
+							<div class="truncate font-bold">{classData.name}</div>
+							<AssignKey {classData} />
+							<div class="flex flex-col gap-1">
+								<span class="text-right text-sm tabular-nums text-on-secondary-muted">{$_("ML_EXAMPLES", { values: { count: examples } })}</span>
+								<div class="h-1.5 overflow-hidden rounded-full bg-secondary">
+									<div class="h-full rounded-full transition-[width] {examples >= MIN_SAMPLES_PER_CLASS ? 'bg-success' : 'bg-accent'}" style:width={`${Math.min(100, (examples / MIN_SAMPLES_PER_CLASS) * 100)}%`}></div>
+								</div>
+							</div>
+						</div>
+					{/each}
+				</div>
+			</section>
 
-			<div class="flex flex-col gap-0.5 bg-secondary rounded-2xl overflow-hidden w-full">
-				{#snippet recordRowContent()}
-					<div class="flex flex-col text-left gap-2.5">
-						<div class="font-bold">{MLState.learning ? MLState.classification ? $_("ML_RECORDING_FOR", { values: { target: ml.classes.getItem(MLState.classification).name } }) : $_("ML_RECORDING") : $_("ML_RECORD")}</div>
-						<Switch name={$_("ML_MANUAL")} bind:checked={MLState.manual} />
+			<section class="flex flex-col gap-3 text-left">
+				<div class="flex items-center gap-4 rounded-2xl bg-bg-tint p-4">
+					<button
+						onclick={() => MLState.learn()}
+						disabled={!hasKeys && !MLState.learning}
+						class="record {MLState.learning ? 'recording' : ''} disabled:cursor-not-allowed disabled:opacity-50"
+						aria-label={MLState.learning ? $_("ML_STOP_RECORDING") : $_("ML_RECORD")}
+					></button>
+					<div class="flex min-w-0 flex-1 flex-col gap-1" aria-live="polite">
+						<div class="text-base font-bold">
+							{#if !MLState.learning}
+								{$_("ML_RECORD")}
+							{:else if MLState.classification}
+								{$_("ML_RECORDING_FOR", { values: { target: ml.classes.getItem(MLState.classification).name } })}
+							{:else}
+								<span class="inline-flex items-center gap-2"><span class="rec-dot"></span>{$_("ML_RECORDING")}</span>
+							{/if}
+						</div>
+						<div class="text-sm text-on-secondary-muted">
+							{#if !hasKeys}
+								{$_("ML_RECORD_NEEDS_KEYS")}
+							{:else if MLState.learning}
+								{$_("ML_RECORDING_HINT")}
+							{:else}
+								{$_("ML_RECORD_HINT")}
+							{/if}
+						</div>
 					</div>
-					<button onclick={() => MLState.learn()} class="record {MLState.learning ? 'recording' : ''}" aria-label="record"></button>
-				{/snippet}
-				{@render tableRow(recordRowContent)}
+				</div>
+				{#if MLState.recordingNotice && !MLState.learning}
+					<StatusBanner
+						compact
+						kind={MLState.recordingNotice.key === "ML_NOTHING_RECORDED" ? "warning" : "success"}
+						title={$_(MLState.recordingNotice.key, { values: MLState.recordingNotice.values })}
+					/>
+				{/if}
+				<div class="flex flex-col gap-1">
+					<Switch name={$_("ML_MANUAL")} bind:checked={MLState.manual} mode="secondary" />
+					<span class="text-sm text-on-secondary-muted">{$_("ML_MANUAL_HINT")}</span>
+				</div>
+			</section>
 
-				{#each MLState.datasets.toReversed() as dataset (dataset.id)}
-					{#snippet datasetRowContent()}
-						<div>Dataset {dataset.date.toLocaleString()}</div>
-						<button onclick={() => ml.datasets.deleteItem(dataset.id)} class="bg-none border-none outline-none text-[salmon] text-xl aspect-square flex items-center justify-center cursor-pointer"><Fa icon={faTrash} /></button>
-					{/snippet}
-					{@render tableRow(datasetRowContent)}
-				{/each}
-			</div>
+			{#if MLState.datasets.length > 0}
+				<section class="flex flex-col gap-3 text-left">
+					<h2 class="m-0 text-base!">{$_("ML_RECORDINGS")}</h2>
+					<div class="flex flex-col overflow-hidden rounded-2xl bg-bg-tint">
+						{#each MLState.datasets.toReversed() as dataset (dataset.id)}
+							<div class="flex items-center justify-between border-b-2 border-secondary px-5 py-2 last:border-b-0">
+								<div>{$_("ML_RECORDING_ITEM", { values: { date: dataset.date.toLocaleString(), count: dataset.data.length } })}</div>
+								<button
+									onclick={() => ml.datasets.deleteItem(dataset.id)}
+									class="grid size-8 cursor-pointer place-items-center rounded-full border-none bg-transparent text-danger hover:bg-secondary"
+									aria-label={$_("ML_DELETE_RECORDING")}
+								><Fa icon={faTrash} /></button>
+							</div>
+						{/each}
+					</div>
+				</section>
+			{/if}
 		</div>
-	</div>
+	</Locked>
 </div>
 
 <style>
 	.record {
-		--size: 40px;
+		--size: 44px;
 		position: relative;
+		flex-shrink: 0;
 		border: none;
 		background: var(--background);
 		border-radius: 100%;
@@ -85,15 +154,27 @@ import MLState from "$state/ml.svelte";
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		width: calc(var(--size) - 6px);
-		height: calc(var(--size) - 6px);
+		width: calc(var(--size) - 8px);
+		height: calc(var(--size) - 8px);
 		border-radius: 50%;
-		background: salmon;
+		background: var(--danger);
 		transition: 0.2s ease;
 	}
 	.record.recording:before {
 		width: calc(var(--size) / 2);
 		height: calc(var(--size) / 2);
 		border-radius: 5px;
+	}
+	.rec-dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--danger);
+		animation: pulse 1s ease-in-out infinite;
+	}
+	@keyframes pulse {
+		50% {
+			opacity: 0.2;
+		}
 	}
 </style>

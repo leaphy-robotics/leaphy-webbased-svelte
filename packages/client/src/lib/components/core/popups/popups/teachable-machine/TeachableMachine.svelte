@@ -1,10 +1,13 @@
 <script lang="ts">
+import { faUsb } from "@fortawesome/free-brands-svg-icons";
 import {
 	faCircleStop,
+	faEarListen,
 	faGear,
 	faMicrophone,
 	faPlay,
 	faPlus,
+	faRotateRight,
 	faTrash,
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -13,8 +16,16 @@ import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Windowed from "$components/core/popups/Windowed.svelte";
 import Button from "$components/ui/Button.svelte";
+import Disclosure from "$components/ui/Disclosure.svelte";
+import Field from "$components/ui/Field.svelte";
+import LineChart from "$components/ui/LineChart.svelte";
+import Locked from "$components/ui/Locked.svelte";
+import ProgressBar from "$components/ui/ProgressBar.svelte";
+import StatusBanner from "$components/ui/StatusBanner.svelte";
+import StepNumber from "$components/ui/StepNumber.svelte";
 import Switch from "$components/ui/Switch.svelte";
 import TextInput from "$components/ui/TextInput.svelte";
+import TipCard from "$components/ui/TipCard.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import TeachableMachineState, {
 	type TeachableClass,
@@ -42,27 +53,30 @@ const lastLoss = $derived(
 	],
 );
 
-const lossPath = $derived.by(() => {
-	const points = TeachableMachineState.lossHistory;
-	if (!points.length) return "";
-	const width = 330;
-	const height = 170;
-	const padding = 12;
-	const losses = points.map((point) => point.loss);
-	const min = Math.min(...losses);
-	const max = Math.max(...losses);
-	const span = Math.max(0.000001, max - min);
-	return points
-		.map((point, index) => {
-			const x =
-				padding +
-				(index / Math.max(1, points.length - 1)) * (width - padding * 2);
-			const y =
-				height - padding - ((point.loss - min) / span) * (height - padding * 2);
-			return `${index === 0 ? "M" : "L"} ${x.toFixed(2)} ${y.toFixed(2)}`;
-		})
-		.join(" ");
-});
+const recorded = $derived(
+	TeachableMachineState.classes.every(
+		(item) => item.samples.length >= TeachableMachineState.minimumSamples(item),
+	),
+);
+
+const deviceMessages = {
+	connecting: [
+		"TEACHABLE_MACHINE_STATUS_PROBING",
+		"TEACHABLE_MACHINE_STATUS_PROBING_DESC",
+	],
+	probing: [
+		"TEACHABLE_MACHINE_STATUS_PROBING",
+		"TEACHABLE_MACHINE_STATUS_PROBING_DESC",
+	],
+	flashing: [
+		"TEACHABLE_MACHINE_STATUS_FLASHING",
+		"TEACHABLE_MACHINE_STATUS_FLASHING_DESC",
+	],
+	reconnecting: [
+		"TEACHABLE_MACHINE_STATUS_RECONNECTING",
+		"TEACHABLE_MACHINE_STATUS_RECONNECTING_DESC",
+	],
+};
 
 function suggestedBatch(item: TeachableClass): number {
 	return Math.max(
@@ -94,7 +108,14 @@ function toggleBatchSettings(classId: string): void {
 }
 
 async function connect(): Promise<void> {
-	if (!SerialState.port) await SerialState.connect(Prompt.MAYBE);
+	if (!SerialState.port) {
+		try {
+			await SerialState.connect(Prompt.MAYBE);
+		} catch {
+			// The user closed the port chooser, the connect banner stays visible so they can try again
+			return;
+		}
+	}
 	await TeachableMachineState.connectDevice();
 }
 
@@ -178,24 +199,44 @@ onDestroy(() => {
 	title={$_("TEACHABLE_MACHINE_TITLE")}
 	onclose={() => TeachableMachineState.disposeDevice()}
 >
-	{#if !TeachableMachineState.connected}
-		<div class="flex w-full items-center justify-between bg-primary px-2.5 py-1.5 pl-2.5 text-on-primary">
-			<div>
-				<div class="text-lg font-bold">{$_("NOT_CONNECTED")}</div>
-				<div class="text-sm opacity-80">{$_("TEACHABLE_MACHINE_NOT_CONNECTED_DESC")}</div>
-			</div>
-			<Button mode="accent" name={$_("CHOOSE_ROBOT")} onclick={connect} />
+	<div class="relative flex h-[min(820px,90vh)] w-[min(1480px,96vw)] flex-col overflow-auto rounded-b-xl bg-bg-tint text-on-bg">
+		<div class="flex flex-col gap-2 px-8 pt-5">
+			{#if TeachableMachineState.loadError}
+				<StatusBanner compact kind="warning" title={$_("TEACHABLE_MACHINE_LOAD_FAILED")} />
+			{/if}
+			{#if TeachableMachineState.deviceError}
+				<StatusBanner kind="error" title={TeachableMachineState.deviceError}>
+					{#snippet actions()}
+						{#if !TeachableMachineState.connected}
+							<Button mode="secondary" icon={faRotateRight} name={$_("TRY_AGAIN")} disabled={TeachableMachineState.deviceBusy} onclick={connect} />
+						{:else}
+							<Button mode="secondary" icon={faXmark} name={$_("CLOSE")} onclick={() => TeachableMachineState.deviceError = null} />
+						{/if}
+					{/snippet}
+				</StatusBanner>
+			{/if}
+			{#if TeachableMachineState.deviceBusy}
+				{@const [title, message] = deviceMessages[TeachableMachineState.deviceStatus]}
+				<StatusBanner kind="loading" title={$_(title)} message={$_(message)} />
+			{:else if !TeachableMachineState.connected}
+				{#if !TeachableMachineState.deviceError}
+					<StatusBanner kind="info" title={$_("TEACHABLE_MACHINE_CONNECT_TITLE")} message={$_("TEACHABLE_MACHINE_NOT_CONNECTED_DESC")}>
+						{#snippet actions()}
+							<Button mode="accent" bold icon={faUsb} name={$_("CHOOSE_ROBOT")} onclick={connect} />
+						{/snippet}
+					</StatusBanner>
+				{/if}
+			{:else}
+				<StatusBanner
+					kind={TeachableMachineState.recordingClassId || TeachableMachineState.training ? "loading" : "info"}
+					title={$_("TEACHABLE_MACHINE_NEXT_STEP")}
+					message={$_(TeachableMachineState.nextStep.key, { values: TeachableMachineState.nextStep.values })}
+				/>
+			{/if}
 		</div>
-	{/if}
-	<div class="relative flex w-[min(1480px,96vw)] flex-col overflow-auto rounded-b-xl bg-bg-tint text-on-bg {TeachableMachineState.connected ? 'h-[min(780px,88vh)]' : 'h-[min(720px,calc(88vh-58px))]'}">
-		{#if TeachableMachineState.deviceError}
-			<div class="absolute left-1/2 top-3 z-30 max-w-[700px] -translate-x-1/2 rounded-xl bg-red-600 px-4 py-2 text-sm text-white shadow-card" role="alert">
-				{TeachableMachineState.deviceError}
-			</div>
-		{/if}
 
 		<div
-			class="relative isolate grid min-h-0 flex-1 grid-cols-[minmax(360px,1.15fr)_minmax(330px,.9fr)_minmax(310px,.8fr)] items-center gap-[clamp(55px,6vw,100px)] overflow-hidden px-8 py-6 max-[1050px]:min-w-[1160px]"
+			class="relative isolate grid min-h-0 flex-1 grid-cols-[minmax(320px,1.15fr)_minmax(300px,.9fr)_minmax(280px,.8fr)] grid-rows-[minmax(0,1fr)] items-center gap-[clamp(40px,5vw,100px)] overflow-hidden px-8 py-5 max-[1050px]:min-w-[1000px]"
 			bind:this={workflow}
 		>
 			<svg class="pointer-events-none absolute inset-0 -z-10 size-full overflow-visible" aria-hidden="true">
@@ -207,11 +248,13 @@ onDestroy(() => {
 				{/if}
 			</svg>
 
-			<section class="relative z-10 flex max-h-full min-w-0 flex-col items-stretch gap-4 overflow-hidden rounded-2xl border border-secondary bg-bg p-4">
+			<section class="relative z-10 flex max-h-full min-h-0 min-w-0 flex-col items-stretch gap-4 overflow-hidden rounded-2xl border border-secondary bg-bg p-4">
 				<div class="flex items-center gap-3">
-					<span class="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-extrabold text-on-primary">1</span>
-					<div><h2 class="m-0 text-xl">{$_("TEACHABLE_MACHINE_RECORD_TITLE")}</h2><p class="mt-0.5 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_RECORD_DESC")}</p></div>
+					<StepNumber number={1} state={recorded ? "done" : "active"} />
+					<div><h2 class="m-0 text-xl!">{$_("TEACHABLE_MACHINE_RECORD_TITLE")}</h2><p class="mt-0.5 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_RECORD_DESC")}</p></div>
 				</div>
+
+				<TipCard title={$_("TEACHABLE_MACHINE_TIP_RECORD_TITLE")} text={$_("TEACHABLE_MACHINE_TIP_RECORD_TEXT")} />
 
 				<div class="flex min-h-0 flex-1 flex-col gap-3 overflow-auto p-0.5 pr-2" data-class-list>
 					{#each TeachableMachineState.classes as item (item.id)}
@@ -246,6 +289,10 @@ onDestroy(() => {
 									<i class="block h-full rounded-full bg-accent transition-[width] duration-300" style:width={`${Math.min(100, (item.samples.length / TeachableMachineState.minimumSamples(item)) * 100)}%`}></i>
 								</div>
 							</div>
+
+							{#if item.isBackground}
+								<p class="m-0 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_BACKGROUND_HINT")}</p>
+							{/if}
 
 							{#if item.samples.length}
 								<div class="flex w-full gap-2 overflow-x-auto pb-1" aria-label={$_("TEACHABLE_MACHINE_CLASS_SAMPLES", { values: { name: item.name } })}>
@@ -310,92 +357,114 @@ onDestroy(() => {
 				<Button name={$_("TEACHABLE_MACHINE_ADD_CLASS")} icon={faPlus} mode="secondary" onclick={addClass} />
 			</section>
 
-			<section class="relative z-10 flex min-w-0 flex-col items-stretch gap-4 rounded-2xl border border-secondary bg-bg p-4" data-stage="train">
+			<section class="relative z-10 flex max-h-full min-w-0 flex-col items-stretch gap-4 overflow-y-auto rounded-2xl border border-secondary bg-bg p-4" data-stage="train">
 				<div class="flex items-center gap-3">
-					<span class="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-extrabold text-on-primary">2</span>
-					<div><h2 class="m-0 text-xl">{$_("TEACHABLE_MACHINE_TRAIN_TITLE")}</h2><p class="mt-0.5 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_TRAIN_DESC")}</p></div>
+					<StepNumber number={2} state={!TeachableMachineState.canTrain ? "locked" : TeachableMachineState.model ? "done" : "active"} />
+					<div><h2 class="m-0 text-xl!">{$_("TEACHABLE_MACHINE_TRAIN_TITLE")}</h2><p class="mt-0.5 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_TRAIN_DESC")}</p></div>
 				</div>
 
-				<Button
-					name={TeachableMachineState.training ? $_("TEACHABLE_MACHINE_TRAINING") : $_("TEACHABLE_MACHINE_TRAIN_MODEL")}
-					icon={faPlay}
-					mode="accent"
-					bold={true}
-					disabled={!TeachableMachineState.canTrain || TeachableMachineState.training || TeachableMachineState.recordingClassId !== null}
-					onclick={() => TeachableMachineState.train()}
-				/>
+				<Locked locked={!TeachableMachineState.canTrain} reason={$_("TEACHABLE_MACHINE_MINIMUM_SAMPLES")}>
+					<div class="flex flex-col gap-4">
+						<TipCard title={$_("TEACHABLE_MACHINE_TIP_TRAIN_TITLE")} text={$_("TEACHABLE_MACHINE_TIP_TRAIN_TEXT")} />
 
-				{#if !TeachableMachineState.canTrain}
-					<p class="-mt-2 text-xs leading-5 text-on-secondary-muted">{$_("TEACHABLE_MACHINE_MINIMUM_SAMPLES")}</p>
-				{/if}
+						<Button
+							name={TeachableMachineState.training ? $_("TEACHABLE_MACHINE_TRAINING") : TeachableMachineState.model ? $_("TEACHABLE_MACHINE_TRAIN_AGAIN") : $_("TEACHABLE_MACHINE_TRAIN_MODEL")}
+							icon={faPlay}
+							mode="accent"
+							bold={true}
+							disabled={!TeachableMachineState.canTrain || TeachableMachineState.training || TeachableMachineState.recordingClassId !== null}
+							onclick={() => TeachableMachineState.train()}
+						/>
 
-				<div class="relative rounded-xl bg-bg-tint p-3">
-					<div class="flex justify-between gap-2 text-xs">
-						<strong>{$_("TEACHABLE_MACHINE_TRAINING_LOSS")}</strong>
-						{#if lastLoss}<span class="text-on-secondary-muted">{$_("TEACHABLE_MACHINE_EPOCH_LOSS", { values: { epoch: lastLoss.epoch, loss: lastLoss.loss.toFixed(4) } })}</span>{/if}
+						{#if TeachableMachineState.training}
+							<div class="flex flex-col gap-1 text-xs">
+								<span>{$_("TEACHABLE_MACHINE_TRAINING_PROGRESS", { values: { epoch: lastLoss?.epoch ?? 0, total: TeachableMachineState.settings.epochs } })}</span>
+								<ProgressBar progress={((lastLoss?.epoch ?? 0) / TeachableMachineState.settings.epochs) * 100} />
+							</div>
+						{/if}
+
+						<div class="rounded-xl bg-bg-tint p-3">
+							<div class="flex justify-between gap-2 text-xs">
+								<strong>{$_("TEACHABLE_MACHINE_TRAINING_LOSS")}</strong>
+								{#if lastLoss}<span class="text-on-secondary-muted">{$_("TEACHABLE_MACHINE_EPOCH_LOSS", { values: { epoch: lastLoss.epoch, loss: lastLoss.loss.toFixed(4) } })}</span>{/if}
+							</div>
+							<p class="m-0 mt-0.5 text-[11px] text-on-secondary-muted">{$_("TEACHABLE_MACHINE_TRAINING_LOSS_DESC")}</p>
+							<LineChart
+								values={TeachableMachineState.lossHistory.map((point) => point.loss)}
+								label={$_("TEACHABLE_MACHINE_TRAINING_LOSS_GRAPH")}
+								placeholder={$_("TEACHABLE_MACHINE_LOSS_PLACEHOLDER")}
+							/>
+						</div>
+
+						{#if TeachableMachineState.model}
+							<div class="flex flex-col gap-1 rounded-xl bg-success/15 px-3 py-2 text-xs">
+								<strong>{$_("TEACHABLE_MACHINE_FINAL_ACCURACY", { values: { accuracy: (TeachableMachineState.model.finalAccuracy * 100).toFixed(1) } })}</strong>
+								<span>{$_("TEACHABLE_MACHINE_FINAL_ACCURACY_DESC")}</span>
+								<span>{$_("TEACHABLE_MACHINE_TRAINED_SAMPLE_SUMMARY", { values: { recorded: TeachableMachineState.model.realSamples, augmented: TeachableMachineState.model.generatedSamples } })}</span>
+							</div>
+						{/if}
+
+						<Disclosure title={$_("TEACHABLE_MACHINE_ADVANCED_SETTINGS")} bind:open={advanced}>
+							<div class="flex flex-col gap-3 text-sm">
+								<Field label={$_("TEACHABLE_MACHINE_EPOCHS")} hint={$_("TEACHABLE_MACHINE_EPOCHS_HINT")}>
+									<TextInput type="number" min={1} max={1000} bind:value={TeachableMachineState.settings.epochs} mode="secondary" rounded={true} />
+								</Field>
+								<Field label={$_("TEACHABLE_MACHINE_LEARNING_RATE")} hint={$_("TEACHABLE_MACHINE_LEARNING_RATE_HINT")}>
+									<TextInput type="number" min={0.000001} max={1} step={0.001} bind:value={TeachableMachineState.settings.learningRate} mode="secondary" rounded={true} />
+								</Field>
+								<Field label={$_("TEACHABLE_MACHINE_BATCH_SIZE")} hint={$_("TEACHABLE_MACHINE_BATCH_SIZE_HINT")}>
+									<TextInput type="number" min={1} max={256} bind:value={TeachableMachineState.settings.batchSize} mode="secondary" rounded={true} />
+								</Field>
+								<Field label={$_("TEACHABLE_MACHINE_L2_REGULARIZATION")} hint={$_("TEACHABLE_MACHINE_L2_REGULARIZATION_HINT")}>
+									<TextInput type="number" min={0} max={1} step={0.0001} bind:value={TeachableMachineState.settings.l2} mode="secondary" rounded={true} />
+								</Field>
+								<Field label={$_("TEACHABLE_MACHINE_VARIATIONS_PER_SAMPLE")} hint={$_("TEACHABLE_MACHINE_VARIATIONS_PER_SAMPLE_HINT")}>
+									<TextInput type="number" min={0} max={12} bind:value={TeachableMachineState.settings.variationsPerSample} mode="secondary" rounded={true} />
+								</Field>
+								<Field label={$_("TEACHABLE_MACHINE_LAYER_BACKGROUND_NOISE")} hint={$_("TEACHABLE_MACHINE_LAYER_BACKGROUND_NOISE_HINT")}>
+									<Switch name="" mode="secondary" bind:checked={TeachableMachineState.settings.noiseLayering} />
+								</Field>
+							</div>
+						</Disclosure>
 					</div>
-					<svg class="mt-1 block w-full" viewBox="0 0 330 170" role="img" aria-label={$_("TEACHABLE_MACHINE_TRAINING_LOSS_GRAPH")}>
-						<line class="stroke-secondary stroke-1" x1="12" y1="158" x2="318" y2="158"></line>
-						<line class="stroke-secondary stroke-1" x1="12" y1="12" x2="12" y2="158"></line>
-						{#if lossPath}<path class="fill-none stroke-accent stroke-[3]" stroke-linecap="round" stroke-linejoin="round" d={lossPath}></path>{/if}
-					</svg>
-					{#if !TeachableMachineState.lossHistory.length}
-						<span class="absolute inset-x-0 top-1/2 text-center text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_LOSS_PLACEHOLDER")}</span>
-					{/if}
-				</div>
-
-				{#if TeachableMachineState.model}
-					<div class="flex flex-col gap-1 rounded-xl bg-accent/15 px-3 py-2 text-xs">
-						<strong>{$_("TEACHABLE_MACHINE_FINAL_ACCURACY", { values: { accuracy: (TeachableMachineState.model.finalAccuracy * 100).toFixed(1) } })}</strong>
-						<span>{$_("TEACHABLE_MACHINE_TRAINED_SAMPLE_SUMMARY", { values: { recorded: TeachableMachineState.model.realSamples, augmented: TeachableMachineState.model.generatedSamples } })}</span>
-					</div>
-				{/if}
-
-				<details class="border-t border-secondary pt-3" bind:open={advanced}>
-					<summary class="cursor-pointer text-xs font-bold text-on-secondary-muted">{$_("TEACHABLE_MACHINE_ADVANCED_SETTINGS")}</summary>
-					<div class="mt-3 grid grid-cols-2 gap-2.5">
-						<label class="flex flex-col gap-1 text-[11px] text-on-secondary-muted">{$_("TEACHABLE_MACHINE_EPOCHS")} <TextInput type="number" min={1} max={1000} bind:value={TeachableMachineState.settings.epochs} mode="secondary" rounded={true} /></label>
-						<label class="flex flex-col gap-1 text-[11px] text-on-secondary-muted">{$_("TEACHABLE_MACHINE_LEARNING_RATE")} <TextInput type="number" min={0.000001} max={1} step={0.001} bind:value={TeachableMachineState.settings.learningRate} mode="secondary" rounded={true} /></label>
-						<label class="flex flex-col gap-1 text-[11px] text-on-secondary-muted">{$_("TEACHABLE_MACHINE_BATCH_SIZE")} <TextInput type="number" min={1} max={256} bind:value={TeachableMachineState.settings.batchSize} mode="secondary" rounded={true} /></label>
-						<label class="flex flex-col gap-1 text-[11px] text-on-secondary-muted">{$_("TEACHABLE_MACHINE_L2_REGULARIZATION")} <TextInput type="number" min={0} max={1} step={0.0001} bind:value={TeachableMachineState.settings.l2} mode="secondary" rounded={true} /></label>
-						<label class="flex flex-col gap-1 text-[11px] text-on-secondary-muted">{$_("TEACHABLE_MACHINE_VARIATIONS_PER_SAMPLE")} <TextInput type="number" min={0} max={12} bind:value={TeachableMachineState.settings.variationsPerSample} mode="secondary" rounded={true} /></label>
-						<div class="col-span-2"><Switch name={$_("TEACHABLE_MACHINE_LAYER_BACKGROUND_NOISE")} mode="secondary" bind:checked={TeachableMachineState.settings.noiseLayering} /></div>
-					</div>
-				</details>
+				</Locked>
 			</section>
 
-			<section class="relative z-10 flex min-w-0 flex-col items-stretch gap-4 rounded-2xl border border-secondary bg-bg p-4" data-stage="test">
+			<section class="relative z-10 flex max-h-full min-w-0 flex-col items-stretch gap-4 overflow-y-auto rounded-2xl border border-secondary bg-bg p-4" data-stage="test">
 				<div class="flex items-center gap-3">
-					<span class="grid size-9 shrink-0 place-items-center rounded-full bg-primary font-extrabold text-on-primary">3</span>
-					<div><h2 class="m-0 text-xl">{$_("TEACHABLE_MACHINE_TEST_TITLE")}</h2><p class="mt-0.5 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_TEST_DESC")}</p></div>
+					<StepNumber number={3} state={!TeachableMachineState.model ? "locked" : "active"} />
+					<div><h2 class="m-0 text-xl!">{$_("TEACHABLE_MACHINE_TEST_TITLE")}</h2><p class="mt-0.5 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_TEST_DESC")}</p></div>
 				</div>
 
-				<Button
-					name={TeachableMachineState.listening ? $_("TEACHABLE_MACHINE_STOP_LISTENING") : $_("TEACHABLE_MACHINE_START_LISTENING")}
-					icon={TeachableMachineState.listening ? faCircleStop : faMicrophone}
-					mode={TeachableMachineState.listening ? "secondary" : "accent"}
-					bold={true}
-					disabled={!TeachableMachineState.model || !TeachableMachineState.connected || TeachableMachineState.recordingClassId !== null}
-					onclick={() => TeachableMachineState.listening ? TeachableMachineState.stopListening() : TeachableMachineState.startListening()}
-				/>
+				<Locked locked={!TeachableMachineState.model} reason={$_("TEACHABLE_MACHINE_TRAIN_TO_TEST")}>
+					<div class="flex flex-col gap-4">
+						<TipCard icon={faEarListen} title={$_("TEACHABLE_MACHINE_TIP_TEST_TITLE")} text={$_("TEACHABLE_MACHINE_TIP_TEST_TEXT")} />
 
-				{#if !TeachableMachineState.model}
-					<div class="grid min-h-52 place-content-center justify-items-center text-center text-4xl text-on-secondary-muted">
-						<Fa icon={faPlay} />
-						<p class="text-xs">{$_("TEACHABLE_MACHINE_TRAIN_TO_TEST")}</p>
-					</div>
-				{:else}
-					<div class="mt-2 flex max-h-80 flex-col gap-4 overflow-auto">
-						{#each TeachableMachineState.classes as item, index (item.id)}
-							<div>
-								<div class="mb-1.5 flex justify-between gap-2 text-xs"><strong>{item.name}</strong><span class="tabular-nums text-on-secondary-muted">{Math.round((TeachableMachineState.activations[index] ?? 0) * 100)}%</span></div>
-								<div class="h-[18px] overflow-hidden rounded-full bg-bg-tint">
-									<i class="block h-full rounded-full bg-gradient-to-r from-primary to-accent transition-[width] duration-100" style:width={`${(TeachableMachineState.activations[index] ?? 0) * 100}%`}></i>
+						<Button
+							name={TeachableMachineState.listening ? $_("TEACHABLE_MACHINE_STOP_LISTENING") : $_("TEACHABLE_MACHINE_START_LISTENING")}
+							icon={TeachableMachineState.listening ? faCircleStop : faMicrophone}
+							mode={TeachableMachineState.listening ? "secondary" : "accent"}
+							bold={true}
+							disabled={!TeachableMachineState.model || !TeachableMachineState.connected || TeachableMachineState.recordingClassId !== null}
+							onclick={() => TeachableMachineState.listening ? TeachableMachineState.stopListening() : TeachableMachineState.startListening()}
+						/>
+
+						<div class="flex max-h-80 flex-col gap-4 overflow-auto">
+							{#each TeachableMachineState.classes as item, index (item.id)}
+								<div>
+									<div class="mb-1.5 flex justify-between gap-2 text-xs"><strong>{item.name}</strong><span class="tabular-nums text-on-secondary-muted">{Math.round((TeachableMachineState.activations[index] ?? 0) * 100)}%</span></div>
+									<div class="h-[18px] overflow-hidden rounded-full bg-bg-tint">
+										<i class="block h-full rounded-full bg-gradient-to-r from-primary to-accent transition-[width] duration-100" style:width={`${(TeachableMachineState.activations[index] ?? 0) * 100}%`}></i>
+									</div>
 								</div>
-							</div>
-						{/each}
+							{/each}
+						</div>
+
+						{#if TeachableMachineState.model}
+							<p class="m-0 text-xs text-on-secondary-muted">{$_("TEACHABLE_MACHINE_USE_HINT")}</p>
+						{/if}
 					</div>
-				{/if}
+				</Locked>
 			</section>
 		</div>
 	</div>

@@ -86,7 +86,7 @@ onMount(() => {
 			contents: [
 				{
 					kind: "category",
-					name: "Machine Learning",
+					name: $_("ML_CATEGORY"),
 					categorystyle: "ml_category",
 					toolboxitemid: "l_ml",
 					contents: [

@@ -936,7 +936,7 @@ export default [
 		robots: [RobotType.L_MICROPYTHON],
 	},
 	{
-		name: "Machine learning",
+		name: "%{BKY_ML_CATEGORY}",
 		style: "ml_category",
 		id: "l_ml",
 		custom: "ML",
@@ -948,7 +948,7 @@ export default [
 		custom: "TEACHABLE_MACHINE",
 	},
 	{
-		name: "Mesh",
+		name: "%{BKY_LEAPHY_MESH_CATEGORY}",
 		style: "mesh_category",
 		id: "l_mesh",
 		custom: "MESH",
