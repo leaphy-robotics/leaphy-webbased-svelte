@@ -90,8 +90,14 @@ export const blocks: BlockDefinition[] = [
 	{
 		type: "leaphy_original_buzz",
 		message0:
-			"%%{BKY_LEAPHY_BUZZ_BUZZ} %1 %%{BKY_LEAPHY_BUZZ_HERTZ} %2 %%{BKY_LEAPHY_BUZZ_MS}",
+			"%%{BKY_LEAPHY_BUZZ_BUZZ} %1 %2 %%{BKY_LEAPHY_BUZZ_HERTZ} %3 %%{BKY_LEAPHY_BUZZ_MS}",
 		args0: [
+			{
+				type: "field_pin_selector",
+				name: "PIN",
+				mode: "digital",
+				includeDefault: true,
+			},
 			{ type: "input_value", name: "FREQUENCY", check: "Number" },
 			{ type: "input_value", name: "DURATION", check: "Number" },
 		],
@@ -101,7 +107,7 @@ export const blocks: BlockDefinition[] = [
 		style: "leaphy_blocks",
 		test: testStatement("original"),
 
-		aiHelp: "Make a sound from the buzzer",
+		aiHelp: "Make a sound from the buzzer on a selected pin",
 	},
 	{
 		type: "leaphy_original_servo_set",

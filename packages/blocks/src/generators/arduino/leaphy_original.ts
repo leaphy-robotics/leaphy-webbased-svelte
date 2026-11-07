@@ -180,12 +180,14 @@ function getCodeGenerators(arduino: Arduino) {
 
 	arduino.forBlock.leaphy_original_buzz = (block) => {
 		arduino.addInclude("arduino", "#include <Arduino.h>");
-		arduino.addSetup("tone", "pinMode(4, OUTPUT);", false);
+		const pin = arduino.getPinMapping(block, "PIN", "4");
+		arduino.reservePin(block, pin, arduino.PinTypes.OUTPUT, "Buzzer");
+		arduino.addSetup(`io_${pin}`, `pinMode(${pin}, OUTPUT);`, false);
 		const frequency =
 			arduino.valueToCode(block, "FREQUENCY", arduino.ORDER_ATOMIC) || "0";
 		const duration =
 			arduino.valueToCode(block, "DURATION", arduino.ORDER_ATOMIC) || "0";
-		return `tone(4, ${frequency}, ${duration});\n`;
+		return `tone(${pin}, ${frequency}, ${duration});\n`;
 	};
 
 	arduino.forBlock.leaphy_original_servo_set = (block) => {
