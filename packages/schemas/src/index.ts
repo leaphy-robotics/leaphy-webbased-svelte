@@ -1,4 +1,5 @@
 import ELK, { type ElkNode, type ElkPort } from "elkjs";
+import { CABLE_SPACING, type Point, routeCable, wirePath } from "./cable";
 import { type Component, MurphyI2C } from "./components";
 import Murphy from "./components/murphy";
 
@@ -13,6 +14,8 @@ interface LoadedComponent {
 
 interface Wire {
 	id: string;
+	/** Wires with the same cable are in the same connector */
+	cable: string;
 
 	componentA: string;
 	portA: string;
@@ -24,48 +27,23 @@ interface Wire {
 
 const componentCache = {} as Record<string, LoadedComponent>;
 
+/** The colors of the wires in Leaphy cables */
 const WireColor = {
-	// Power lines
-	GND: "#000000", // Black - Ground (standard)
-	VCC: "#dc2626", // Red - Positive voltage (standard)
-	VDD: "#dc2626", // Red - Positive supply voltage (standard)
-	VSS: "#000000", // Black - Negative supply voltage (standard)
+	BLACK: "#000000",
+	RED: "#dc2626",
+	YELLOW: "#facc15",
+	ORANGE: "#f59e0b",
+	WHITE: "#ffffff",
+};
 
-	// Data lines
-	DATA_1: "#16a34a", // Green - Primary data line
-	DATA_2: "#2563eb", // Blue - Secondary data line
-	DATA_3: "#ca8a04", // Dark Yellow - Tertiary data line
-	DATA_4: "#c026d3", // Magenta - Quaternary data line
+/** A white wire can't be seen on a white background without this outline */
+const WHITE_WIRE_OUTLINE = "#9ca3af";
 
-	// Communication protocols
-	SDA: "#0891b2", // Cyan - I2C Data
-	SCL: "#eab308", // Yellow - I2C Clock
-	TX: "#15803d", // Dark Green - UART Transmit
-	RX: "#7c3aed", // Purple - UART Receive
-	MOSI: "#22c55e", // Green - SPI Master Out Slave In
-	MISO: "#3b82f6", // Blue - SPI Master In Slave Out
-	SCK: "#eab308", // Yellow/Gold - SPI Clock
-	CS: "#a855f7", // Purple - SPI Chip Select
-
-	// Control signals
-	RESET: "#991b1b", // Dark Red - Reset signal
-	ENABLE: "#166534", // Dark Green - Enable signal
-	INTERRUPT: "#6b21a8", // Indigo - Interrupt signal
-	CLOCK: "#d97706", // Orange - Clock signal
-
-	// Analog signals
-	ANALOG_1: "#ec4899", // Pink - Primary analog
-	ANALOG_2: "#06b6d4", // Cyan - Secondary analog
-	ANALOG_3: "#b45309", // Brown - Tertiary analog
-
-	// PWM signals
-	PWM_1: "#8b5cf6", // Purple - Primary PWM
-	PWM_2: "#10b981", // Emerald - Secondary PWM
-	PWM_3: "#f59e0b", // Amber - Tertiary PWM
-
-	// Shield and reference
-	SHIELD: "#6b7280", // Gray - Shield/Screen
-	REF: "#4b5563", // Dark Gray - Reference voltage
+/** The wires of the Leaphy cables, in the order that they are in their connector */
+const Cables: Record<number, string[]> = {
+	2: [WireColor.RED, WireColor.BLACK],
+	3: [WireColor.RED, WireColor.BLACK, WireColor.YELLOW],
+	4: [WireColor.ORANGE, WireColor.WHITE, WireColor.RED, WireColor.BLACK],
 };
 
 interface VisiblePort {
@@ -136,9 +114,29 @@ class ComponentBuilder {
 		this.components.push(new JoinedComponent(components));
 	}
 
-	connect(portA: VisiblePort, portB: VisiblePort, color: string) {
+	private connect(
+		cable: string,
+		portA: VisiblePort,
+		portB: VisiblePort,
+		color: string,
+	) {
+		const connects = (wire: Wire, a: VisiblePort, b: VisiblePort) =>
+			wire.componentA === a.component &&
+			wire.portA === a.port &&
+			wire.componentB === b.component &&
+			wire.portB === b.port;
+		// Generators run for every block, which can be many for the same component
+		if (
+			this.wires.some(
+				(wire) => connects(wire, portA, portB) || connects(wire, portB, portA),
+			)
+		) {
+			return;
+		}
+
 		this.wires.push({
 			id: crypto.randomUUID(),
+			cable,
 			color,
 
 			componentA: portA.component,
@@ -148,39 +146,53 @@ class ComponentBuilder {
 		});
 	}
 
+	/**
+	 * Connects the pins of a connector using a single cable, list the pins in the
+	 * order they are in on the connector. A cable can't be split, so its colors can
+	 * only be flipped around, they won't always match the function of a pin:
+	 * - GND is black on 2 and 4 pin cables, the other pins take the wire that's next
+	 * - 3 pin cables have black in the middle, where our connectors have VCC. Their
+	 *   red wire goes on GND, which puts the yellow wire on the signal pin
+	 */
+	connectCable(...pins: [VisiblePort, VisiblePort][]) {
+		const cable = Cables[pins.length];
+		if (!cable) throw Error(`There is no cable with ${pins.length} pins`);
+
+		const ground = pins.findIndex((ports) =>
+			ports.some(({ port }) => /gnd/i.test(port)),
+		);
+		const groundWire = pins.length === 3 ? WireColor.RED : WireColor.BLACK;
+		const colors =
+			ground === -1 || cable[ground] === groundWire
+				? cable
+				: [...cable].reverse();
+
+		const id = crypto.randomUUID();
+		pins.forEach(([portA, portB], index) => {
+			this.connect(id, portA, portB, colors[index]);
+		});
+	}
+
 	connectI2C(
 		I2C: VisibleComponent,
 		component: VisibleComponent,
 		channel?: number,
 	) {
 		const channelPrefix = typeof channel === "undefined" ? "" : `C${channel}.`;
+		const onChannel = typeof channel === "number";
 
-		this.connect(
-			component.port("SDA"),
-			I2C.port(`${channelPrefix}SDA`),
-			WireColor.SDA,
-		);
-		this.connect(
-			component.port("SCL"),
-			I2C.port(`${channelPrefix}SCL`),
-			WireColor.SCL,
-		);
-
-		if (typeof channel === "number") {
-			this.connect(
+		this.connectCable(
+			[component.port("SDA"), I2C.port(`${channelPrefix}SDA`)],
+			[component.port("SCL"), I2C.port(`${channelPrefix}SCL`)],
+			[
 				component.port("VCC"),
-				I2C.port(`${channelPrefix}VCC`),
-				WireColor.VCC,
-			);
-			this.connect(
+				I2C.port(onChannel ? `${channelPrefix}VCC` : "SDA.3V3"),
+			],
+			[
 				component.port("GND"),
-				I2C.port(`${channelPrefix}GND`),
-				WireColor.GND,
-			);
-		} else {
-			this.connect(component.port("VCC"), I2C.port("SDA.3V3"), WireColor.VCC);
-			this.connect(component.port("GND"), I2C.port("SDA.GND"), WireColor.GND);
-		}
+				I2C.port(onChannel ? `${channelPrefix}GND` : "SDA.GND"),
+			],
+		);
 	}
 
 	clear() {
@@ -296,23 +308,71 @@ async function layoutComponents(
 ) {
 	const loadedComponents = await getLoadedComponents(builder);
 
+	// Pins are in the coordinates of the component they're on
+	const pins = new Map(
+		loadedComponents.flatMap((node) =>
+			node.ports.map((port) => [
+				port.id,
+				{ node, x: port.x ?? 0, y: port.y ?? 0 },
+			]),
+		),
+	);
+
+	const wiresByCable = new Map<string, Wire[]>();
+	for (const wire of builder.wires) {
+		wiresByCable.set(wire.cable, [
+			...(wiresByCable.get(wire.cable) ?? []),
+			wire,
+		]);
+	}
+
+	const cables = [...wiresByCable.values()].map((wires) => ({
+		id: wires[0].cable,
+		wires,
+		pinsA: wires.map((wire) => pins.get(`${wire.componentA}.${wire.portA}`)),
+		pinsB: wires.map((wire) => pins.get(`${wire.componentB}.${wire.portB}`)),
+	}));
+
+	// A cable is routed as a single line from the middle of its pins on each side
+	const portsOf = (
+		end: string,
+		cablePins: (typeof cables)[number]["pinsA"],
+	) => ({
+		id: end,
+		node: cablePins[0].node,
+		x: cablePins.reduce((total, { x }) => total + x, 0) / cablePins.length,
+		y: cablePins.reduce((total, { y }) => total + y, 0) / cablePins.length,
+	});
+	const cablePorts = cables.flatMap((cable) => [
+		portsOf(`${cable.id}.a`, cable.pinsA),
+		portsOf(`${cable.id}.b`, cable.pinsB),
+	]);
+
 	const layout = await elk.layout(
 		{
 			id: "root",
 			layoutOptions: {
 				"elk.algorithm": "layered",
 			},
-			children: loadedComponents,
-			edges: builder.wires.map((wire) => ({
-				id: wire.id,
-				sources: [`${wire.componentA}.${wire.portA}`],
-				targets: [`${wire.componentB}.${wire.portB}`],
+			children: loadedComponents.map((node) => ({
+				...node,
+				ports: cablePorts
+					.filter((port) => port.node === node)
+					.map(({ id, x, y }) => ({ id, x, y })),
+			})),
+			edges: cables.map(({ id }) => ({
+				id,
+				sources: [`${id}.a`],
+				targets: [`${id}.b`],
 			})),
 		},
 		{
 			layoutOptions: {
 				"elk.portConstraints": "FIXED_POS",
-				"elk.spacing.edgeEdge": "5",
+				"elk.spacing.edgeEdge": String(CABLE_SPACING),
+				"elk.spacing.edgeNode": String(CABLE_SPACING),
+				"elk.layered.spacing.edgeEdgeBetweenLayers": String(CABLE_SPACING),
+				"elk.layered.spacing.edgeNodeBetweenLayers": String(CABLE_SPACING),
 			},
 		},
 	);
@@ -366,114 +426,68 @@ async function layoutComponents(
 
 	await renderLayout(layout.children);
 
+	const nodePositions = new Map(
+		layout.children.map(({ id, x, y }) => [id, { x: x ?? 0, y: y ?? 0 }]),
+	);
+	const onCanvas = ({
+		node,
+		x,
+		y,
+	}: (typeof cables)[number]["pinsA"][number]) => {
+		const position = nodePositions.get(node.id);
+		return { x: x + position.x, y: y + position.y };
+	};
+
+	ctx.lineCap = "round";
 	layout.edges.forEach((edge) => {
-		const { color } = builder.wires.find(({ id }) => id === edge.id);
+		const cable = cables.find(({ id }) => id === edge.id);
 		const { sections } = edge as unknown as {
-			sections: {
-				startPoint: { x: number; y: number };
-				endPoint: { x: number; y: number };
-				bendPoints: { x: number; y: number }[];
+			sections?: {
+				startPoint: Point;
+				endPoint: Point;
+				bendPoints?: Point[];
 			}[];
 		};
 
-		ctx.lineCap = "round";
+		const pinsA = cable.pinsA.map(onCanvas);
+		const pinsB = cable.pinsB.map(onCanvas);
+		const route = (sections ?? []).flatMap((section) => [
+			section.startPoint,
+			...(section.bendPoints ?? []),
+			section.endPoint,
+		]);
+		const paths = routeCable(route, pinsA, pinsB).map((wire) =>
+			wirePath(wire, scale),
+		);
+
+		// Outlines go first, between other wires they'd only be in the way
+		ctx.strokeStyle = WHITE_WIRE_OUTLINE;
+		ctx.lineWidth = 5 * scale;
+		cable.wires.forEach(({ color }, index) => {
+			if (color === WireColor.WHITE) ctx.stroke(paths[index]);
+		});
+
 		ctx.lineWidth = 4 * scale;
-		ctx.strokeStyle = color;
-		ctx.fillStyle = color;
-		sections?.forEach((section) => {
-			ctx.fillRect(
-				(section.startPoint.x - 4) * scale,
-				(section.startPoint.y - 4) * scale,
-				8 * scale,
-				8 * scale,
-			);
-			ctx.fillRect(
-				(section.endPoint.x - 4) * scale,
-				(section.endPoint.y - 4) * scale,
-				8 * scale,
-				8 * scale,
-			);
+		cable.wires.forEach(({ color }, index) => {
+			ctx.strokeStyle = color;
+			ctx.stroke(paths[index]);
+		});
 
-			const path = new Path2D();
-			const cornerRadius = 10; // Adjust this value to control the roundness
-
-			// Start at the first point
-			path.moveTo(section.startPoint.x * scale, section.startPoint.y * scale);
-
-			if (section.bendPoints && section.bendPoints.length > 0) {
-				const allPoints = [
-					section.startPoint,
-					...section.bendPoints,
-					section.endPoint,
-				];
-
-				for (let i = 1; i < allPoints.length - 1; i++) {
-					const prevPoint = allPoints[i - 1];
-					const currentPoint = allPoints[i];
-					const nextPoint = allPoints[i + 1];
-
-					// Calculate vectors from current point to previous and next
-					const toPrev = {
-						x: prevPoint.x - currentPoint.x,
-						y: prevPoint.y - currentPoint.y,
-					};
-					const toNext = {
-						x: nextPoint.x - currentPoint.x,
-						y: nextPoint.y - currentPoint.y,
-					};
-
-					// Normalize the vectors
-					const prevLength = Math.sqrt(
-						toPrev.x * toPrev.x + toPrev.y * toPrev.y,
-					);
-					const nextLength = Math.sqrt(
-						toNext.x * toNext.x + toNext.y * toNext.y,
-					);
-
-					const toPrevNorm = {
-						x: toPrev.x / prevLength,
-						y: toPrev.y / prevLength,
-					};
-					const toNextNorm = {
-						x: toNext.x / nextLength,
-						y: toNext.y / nextLength,
-					};
-
-					// Calculate the actual radius (limited by segment length)
-					const maxRadius = Math.min(
-						cornerRadius,
-						prevLength / 2,
-						nextLength / 2,
-					);
-
-					// Calculate the start and end points of the curve
-					const curveStart = {
-						x: (currentPoint.x + toPrevNorm.x * maxRadius) * scale,
-						y: (currentPoint.y + toPrevNorm.y * maxRadius) * scale,
-					};
-					const curveEnd = {
-						x: (currentPoint.x + toNextNorm.x * maxRadius) * scale,
-						y: (currentPoint.y + toNextNorm.y * maxRadius) * scale,
-					};
-
-					// Draw line to curve start, then curve to curve end
-					path.lineTo(curveStart.x, curveStart.y);
-					path.quadraticCurveTo(
-						currentPoint.x * scale,
-						currentPoint.y * scale,
-						curveEnd.x,
-						curveEnd.y,
+		cable.wires.forEach(({ color }, index) => {
+			for (const { x, y } of [pinsA[index], pinsB[index]]) {
+				ctx.fillStyle = color;
+				ctx.fillRect((x - 4) * scale, (y - 4) * scale, 8 * scale, 8 * scale);
+				if (color === WireColor.WHITE) {
+					ctx.strokeStyle = WHITE_WIRE_OUTLINE;
+					ctx.lineWidth = 0.5 * scale;
+					ctx.strokeRect(
+						(x - 4) * scale,
+						(y - 4) * scale,
+						8 * scale,
+						8 * scale,
 					);
 				}
-
-				// Draw final line to end point
-				path.lineTo(section.endPoint.x * scale, section.endPoint.y * scale);
-			} else {
-				// No bend points, just draw straight line
-				path.lineTo(section.endPoint.x * scale, section.endPoint.y * scale);
 			}
-
-			ctx.stroke(path);
 		});
 	});
 }

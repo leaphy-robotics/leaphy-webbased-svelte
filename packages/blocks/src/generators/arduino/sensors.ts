@@ -1,10 +1,11 @@
 import { Gas } from "@leaphy-robotics/schemas";
 import {
+	GestureLight,
 	LightSensor,
 	LineSensor,
+	Temperature,
 	ToF,
 	Ultrasonic,
-	WireColor,
 } from "@leaphy-robotics/schemas/src";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
@@ -35,25 +36,11 @@ export function getDistanceSonar(arduino: Arduino, trig: string, echo: string) {
 		const useAddon =
 			(trig === "17" && echo === "16") || (trig === "A3" && echo === "A2");
 		const source = useAddon ? arduino.builder.i2c : arduino.builder.murphy;
-		arduino.builder.connect(
-			source.port(useAddon ? "VCC" : `${trig}.3V3`),
-			sensor.port("VCC"),
-			WireColor.VCC,
-		);
-		arduino.builder.connect(
-			source.port(useAddon ? "TRIG" : trig),
-			sensor.port("TRIG"),
-			WireColor.TX,
-		);
-		arduino.builder.connect(
-			source.port(useAddon ? "ECHO" : echo),
-			sensor.port("ECHO"),
-			WireColor.RX,
-		);
-		arduino.builder.connect(
-			source.port(useAddon ? "GND" : `${trig}.GND`),
-			sensor.port("GND"),
-			WireColor.GND,
+		arduino.builder.connectCable(
+			[source.port(useAddon ? "VCC" : `${trig}.3V3`), sensor.port("VCC")],
+			[source.port(useAddon ? "TRIG" : trig), sensor.port("TRIG")],
+			[source.port(useAddon ? "ECHO" : echo), sensor.port("ECHO")],
+			[source.port(useAddon ? "GND" : `${trig}.GND`), sensor.port("GND")],
 		);
 	}
 
@@ -123,20 +110,10 @@ export default function getCodeGenerators(arduino: Arduino) {
 		const pin = arduino.getPinMapping(block, "PIN");
 		if (arduino.builder) {
 			const sensor = arduino.builder.add(`digital-${pin}`, LineSensor);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(pin),
-				sensor.port("Out"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${pin}.3V3`),
-				sensor.port("3V3"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${pin}.GND`),
-				sensor.port("GND"),
-				WireColor.GND,
+			arduino.builder.connectCable(
+				[arduino.builder.murphy.port(`${pin}.GND`), sensor.port("GND")],
+				[arduino.builder.murphy.port(`${pin}.3V3`), sensor.port("3V3")],
+				[arduino.builder.murphy.port(pin), sensor.port("Out")],
 			);
 		}
 		arduino.setups_[`setup_input_${pin}`] = `pinMode(${pin}, INPUT);`;
@@ -152,20 +129,10 @@ export default function getCodeGenerators(arduino: Arduino) {
 		const pin = arduino.getPinMapping(block, "PIN");
 		if (arduino.builder) {
 			const sensor = arduino.builder.add(`analog-${pin}`, LightSensor);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(pin),
-				sensor.port("Out"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${pin}.3V3`),
-				sensor.port("VCC"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${pin}.GND`),
-				sensor.port("GND"),
-				WireColor.GND,
+			arduino.builder.connectCable(
+				[arduino.builder.murphy.port(pin), sensor.port("Out")],
+				[arduino.builder.murphy.port(`${pin}.3V3`), sensor.port("VCC")],
+				[arduino.builder.murphy.port(`${pin}.GND`), sensor.port("GND")],
 			);
 		}
 		const debug = arduino.createDebug(`analog-input-${pin}`, {
@@ -223,7 +190,8 @@ export default function getCodeGenerators(arduino: Arduino) {
 		];
 	};
 
-	arduino.forBlock.leaphy_i2c_gesture = () => {
+	arduino.forBlock.leaphy_i2c_gesture = (block) => {
+		arduino.addI2CDeviceToSchema("gesture", block, GestureLight);
 		const setup = arduino.addI2CSetup("apds9960", "APDS.begin();\n");
 		arduino.addDependency(Dependencies.APDS9960_RGB);
 		arduino.addInclude("apds9960", "#include <Arduino_APDS9960.h>");
@@ -234,7 +202,8 @@ export default function getCodeGenerators(arduino: Arduino) {
 		return ["getAPDS9960Gesture()", arduino.ORDER_ATOMIC];
 	};
 
-	arduino.forBlock.leaphy_tmp102_read_temperature = () => {
+	arduino.forBlock.leaphy_tmp102_read_temperature = (block) => {
+		arduino.addI2CDeviceToSchema("temperature", block, Temperature);
 		arduino.addDependency(Dependencies.SPARKFUN_TMP102);
 		arduino.addInclude("tmp102", "#include <SparkFunTMP102.h>");
 		arduino.addDeclaration("tmp102", "TMP102 tmp102;");

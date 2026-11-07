@@ -96,7 +96,6 @@ export const blocks: BlockDefinition[] = [
 				type: "field_pin_selector",
 				name: "PIN",
 				mode: "digital",
-				includeDefault: true,
 			},
 			{ type: "input_value", name: "FREQUENCY", check: "Number" },
 			{ type: "input_value", name: "DURATION", check: "Number" },
