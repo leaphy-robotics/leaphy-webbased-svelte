@@ -22,25 +22,27 @@ let circuitCanvas = $state<HTMLCanvasElement>();
 let showCircuit = $state(false);
 
 async function calculatePosition() {
-	position = await computePosition(
-		AIState.block.getSvgRoot().querySelector(".blocklyPath"),
-		element,
-		{
-			placement: "right-start",
-			strategy: "fixed",
-			middleware: [
-				autoPlacement(),
-				size({
-					apply({ availableWidth, availableHeight, elements }) {
-						Object.assign(elements.floating.style, {
-							maxWidth: `${Math.max(0, availableWidth)}px`,
-							maxHeight: `${Math.max(0, availableHeight)}px`,
-						});
-					},
-				}),
-			],
-		},
-	);
+	const blockPath = AIState.block.getSvgRoot().querySelector(".blocklyPath");
+	if (!blockPath) {
+		AIState.visible = false;
+		return;
+	}
+
+	position = await computePosition(blockPath, element, {
+		placement: "right-start",
+		strategy: "fixed",
+		middleware: [
+			autoPlacement(),
+			size({
+				apply({ availableWidth, availableHeight, elements }) {
+					Object.assign(elements.floating.style, {
+						maxWidth: `${Math.max(0, availableWidth)}px`,
+						maxHeight: `${Math.max(0, availableHeight)}px`,
+					});
+				},
+			}),
+		],
+	});
 }
 
 $effect(() => {

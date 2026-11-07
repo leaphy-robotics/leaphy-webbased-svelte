@@ -1,10 +1,15 @@
 <script lang="ts">
 import defaultProgram from "$assets/default-program.py?raw";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Prompt from "$components/core/popups/popups/Prompt.svelte";
 import CodeEditor from "$components/ui/CodeEditor.svelte";
 import Tree from "$components/ui/Tree.svelte";
 import type { Tree as TreeType } from "$components/ui/Tree.types";
-import { FileHandle, PythonHandle } from "$domain/handles";
+import {
+	FileHandle,
+	PermissionDeniedError,
+	PythonHandle,
+} from "$domain/handles";
 import PopupState from "$state/popup.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import type MicroPythonIO from "../../../micropython";
@@ -63,10 +68,30 @@ $effect(() => {
 	tree = undefined;
 });
 
+/** Returns false if the current file couldn't be saved. */
+async function saveCurrentFile() {
+	try {
+		await WorkspaceState.handle?.write(WorkspaceState.code);
+		return true;
+	} catch (e) {
+		if (!(e instanceof PermissionDeniedError)) throw e;
+
+		PopupState.open({
+			component: ErrorPopup,
+			data: {
+				title: "FILE_ACCESS_DENIED_TITLE",
+				message: "FILE_ACCESS_DENIED_MESSAGE",
+			},
+			allowInteraction: false,
+		});
+		return false;
+	}
+}
+
 async function select(tree: string[]) {
+	if (!(await saveCurrentFile())) return;
 	selected = tree;
 
-	await WorkspaceState.handle?.write(WorkspaceState.code);
 	const data = await WorkspaceState.microPythonIO.fs.read(tree.join("/"));
 	WorkspaceState.code = data.replaceAll("\r\n", "\n");
 	console.log(data);
@@ -99,7 +124,7 @@ async function create(path: string[], type: "file" | "folder") {
 		});
 	}
 	if (type === "file") {
-		await WorkspaceState.handle?.write(WorkspaceState.code);
+		if (!(await saveCurrentFile())) return;
 		io.fs.write(`${path.join("/")}/${name}.py`, defaultProgram);
 
 		parent.contents.push(`${name}.py`);

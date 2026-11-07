@@ -114,7 +114,7 @@ function toggle(extension: string) {
 				</div>
 
 				<div class="flex flex-col gap-5">
-					<Button onclick={() => SerialState.connect(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
+					<Button onclick={() => SerialState.connectWithFeedback(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
 					<div class="flex flex-col gap-2.5">
 						<span class="text-center text-on-secondary text-sm">{$_("OR_SELECT")}</span>
 						<div class="flex gap-2.5 items-center">

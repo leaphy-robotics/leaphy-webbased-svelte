@@ -84,7 +84,7 @@ function download() {
 }
 
 async function connect() {
-	await SerialState.connect(Prompt.MAYBE);
+	await SerialState.connectWithFeedback(Prompt.MAYBE);
 }
 
 function switchMode() {

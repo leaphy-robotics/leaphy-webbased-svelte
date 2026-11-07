@@ -18,6 +18,7 @@ import SerialState, {
 	SUPPORTED_VENDOR_IDS,
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
+import { isUserCancel } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../../../drivers";
 
@@ -179,13 +180,18 @@ async function connectUSB() {
 	const [device] = await navigator.usb.getDevices();
 	if (device) return USBRequestState.respond(device);
 
-	USBRequestState.respond(
-		await navigator.usb.requestDevice({
-			filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
-				vendorId: vendor,
-			})),
-		}),
-	);
+	try {
+		USBRequestState.respond(
+			await navigator.usb.requestDevice({
+				filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
+					vendorId: vendor,
+				})),
+			}),
+		);
+	} catch (e) {
+		// Leave the reconnect button visible so that the user can try again
+		if (!isUserCancel(e)) throw e;
+	}
 }
 </script>
 

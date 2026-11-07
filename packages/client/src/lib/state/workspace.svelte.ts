@@ -112,6 +112,9 @@ class WorkspacePersistenceState {
 		let content = this.ui.code;
 
 		if (mode === "BLOCKS") {
+			// No workspace exists yet on the start screen, so there is nothing to save
+			if (!BlocklyState.workspace) return;
+
 			content = JSON.stringify(
 				serialization.workspaces.save(BlocklyState.workspace),
 			);
@@ -150,7 +153,7 @@ class WorkspacePersistenceState {
 			.and((save) => save.robot === robotId)
 			.first();
 
-		return fetchedSave.content || null;
+		return fetchedSave?.content || null;
 	}
 }
 
@@ -162,12 +165,15 @@ class WorkspaceFileState {
 		private ui: WorkspaceUIState,
 		private persistence: WorkspacePersistenceState,
 		private robotRef: () => RobotDevice,
-		private openFn: (name: string, content: string) => void,
+		private openFn: (name: string, content: string) => boolean,
 	) {}
 
+	/** Returns false, without remembering the file, if it isn't a valid project. */
 	async openFileHandle(file: FileSystemFileHandle) {
+		const content = await (await file.getFile()).text();
+		if (!this.openFn(file.name, content)) return false;
+
 		this.handle = new FileHandle(file);
-		const content = await file.getFile();
 
 		const existingSaves = await projectDB.saves.toArray();
 		const existingSave = await findAsync(existingSaves, (save) =>
@@ -190,7 +196,7 @@ class WorkspaceFileState {
 			// this will fail in tests because of the fake filesystemfilehandle
 		}
 
-		this.openFn(file.name, await content.text());
+		return true;
 	}
 
 	serialize() {
@@ -308,6 +314,7 @@ class WorkspaceState {
 	}
 
 	// --- open() lives on the facade as it touches both UI and robot state ---
+	/** Returns false if the content isn't a valid project. */
 	open(name: string, content: string) {
 		if (name.endsWith(".ino")) {
 			this._ui.Mode = Mode.ADVANCED;
@@ -319,10 +326,22 @@ class WorkspaceState {
 		} else {
 			if (this._ui.Mode === Mode.BLOCKS && BlocklyState.workspace) {
 				if (!loadWorkspaceFromString(content, BlocklyState.workspace)) {
-					return;
+					return false;
 				}
 			} else {
-				BlocklyState.restore = JSON.parse(content);
+				try {
+					BlocklyState.restore = JSON.parse(content);
+				} catch {
+					PopupState.open({
+						component: ErrorPopup,
+						data: {
+							title: "INVALID_WORKSPACE",
+							message: "INVALID_WORKSPACE_MESSAGE",
+						},
+						allowInteraction: false,
+					});
+					return false;
+				}
 				this._ui.Mode = Mode.BLOCKS;
 			}
 
@@ -337,11 +356,13 @@ class WorkspaceState {
 					},
 					allowInteraction: false,
 				});
-				return;
+				return true;
 			}
 
 			this.robot = Object.values(robots).find((r) => r.type === robot);
 		}
+
+		return true;
 	}
 }
 

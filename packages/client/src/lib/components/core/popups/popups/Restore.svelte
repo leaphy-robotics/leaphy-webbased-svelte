@@ -86,8 +86,18 @@ async function open() {
 			WorkspaceState.code = value.content;
 		}
 	} else {
-		await value.fileHandle.requestPermission();
-		await WorkspaceState.openFileHandle(value.fileHandle);
+		if ((await value.fileHandle.requestPermission()) !== "granted") {
+			return PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "FILE_ACCESS_DENIED_TITLE",
+					message: "FILE_ACCESS_DENIED_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+		}
+
+		if (!(await WorkspaceState.openFileHandle(value.fileHandle))) return;
 	}
 
 	WorkspaceState.saveState = true;

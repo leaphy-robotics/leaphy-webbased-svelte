@@ -13,7 +13,7 @@ import { inFilter } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 
-export function getAllBlocks() {
+export function getAllBlocks(workspace = BlocklyState.workspace) {
 	const contents = toolbox
 		.filter((category) => category.id !== "l_search")
 		.filter(({ robots }) =>
@@ -22,14 +22,10 @@ export function getAllBlocks() {
 		.filter((category) => Extensions.isEnabled(category.id))
 		.flatMap((category) => {
 			if (category.custom) {
-				const callback = BlocklyState.workspace.getToolboxCategoryCallback(
-					category.custom,
-				);
+				const callback = workspace.getToolboxCategoryCallback(category.custom);
 				if (!callback) return null;
 
-				return callback(
-					BlocklyState.workspace,
-				) as utils.toolbox.FlyoutItemInfoArray;
+				return callback(workspace) as utils.toolbox.FlyoutItemInfoArray;
 			}
 			if (!category.groups) return null;
 			return category.groups.flatMap((group) =>
@@ -52,6 +48,7 @@ export function getAllBlocks() {
 
 const input = document.createElement("input");
 input.type = "text";
+input.autocomplete = "off";
 
 input.placeholder = "🔎 Start typing to search...";
 input.style.position = "fixed";
@@ -91,7 +88,7 @@ export default function (workspace: WorkspaceSvg) {
 	];
 
 	if (input.value) {
-		const blocks = getAllBlocks();
+		const blocks = getAllBlocks(workspace);
 		blocks.forEach((blockDef) => {
 			const block = new BlockSvg(workspace, blockDef.type);
 			const message = serializeBlock(block);

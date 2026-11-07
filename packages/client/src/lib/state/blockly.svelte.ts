@@ -19,10 +19,11 @@ class BlocklyState {
 		});
 	}
 
+	/** Returns null if the workspace has no blocks to draw. */
 	getSvg() {
 		const workspace = this.workspace;
 		const canvas = workspace.svgBlockCanvas_.cloneNode(true) as SVGElement;
-		if (canvas.children[0] === undefined) throw "Couldn't find Blockly canvas.";
+		if (canvas.children[0] === undefined) return null;
 
 		canvas.removeAttribute("transform");
 

@@ -7,7 +7,9 @@ import AppState from "$state/app.svelte";
 
 let filter = $state("");
 onMount(() => {
-	AppState.libraries.query();
+	AppState.libraries.query().catch((e) => {
+		console.warn("Unable to load the library index", e);
+	});
 });
 
 const visible = $derived(

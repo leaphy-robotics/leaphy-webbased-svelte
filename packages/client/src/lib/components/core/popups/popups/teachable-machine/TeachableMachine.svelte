@@ -108,14 +108,11 @@ function toggleBatchSettings(classId: string): void {
 }
 
 async function connect(): Promise<void> {
-	if (!SerialState.port) {
-		try {
-			await SerialState.connect(Prompt.MAYBE);
-		} catch {
-			// The user closed the port chooser, the connect banner stays visible so they can try again
-			return;
-		}
-	}
+	if (
+		!SerialState.port &&
+		!(await SerialState.connectWithFeedback(Prompt.MAYBE))
+	)
+		return;
 	await TeachableMachineState.connectDevice();
 }
 

@@ -20,6 +20,7 @@ import { useTrainingBackend } from "$domain/tensorflow";
 import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
+import { isBluetoothCancel } from "$state/utils";
 import WorkspaceState from "$state/workspace.svelte";
 import Uploader from "../components/core/popups/popups/uploaders/Uploader.svelte";
 import PopupState from "./popup.svelte";
@@ -337,7 +338,7 @@ class MLState {
 			await this.inputCharacteristic.startNotifications();
 		} catch (e) {
 			// The user closed the device chooser, this is not an error
-			if (e instanceof DOMException && e.name === "NotFoundError") {
+			if (isBluetoothCancel(e)) {
 				this.connectionState = "disconnected";
 				return;
 			}
