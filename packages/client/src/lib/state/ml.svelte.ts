@@ -309,8 +309,34 @@ class MLState {
 			return;
 		}
 
-		this.connectionState = "connecting";
-		this.connectionError = null;
+		try {
+			const device = await navigator.bluetooth.requestDevice({
+				filters: [
+					{
+						services: [ml.trainingID],
+					},
+				],
+			});
+			await this.setupDevice(device);
+		} catch (e) {
+			if (isBluetoothCancel(e)) return;
+
+			console.warn("Unable to connect over Bluetooth", e);
+			PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "BLUETOOTH_CONNECT_FAILED_TITLE",
+					message: "BLUETOOTH_CONNECT_FAILED_MESSAGE",
+				},
+				allowInteraction: false,
+			});
+		}
+	}
+
+	private async setupDevice(device: BluetoothDevice) {
+		device.addEventListener("gattserverdisconnected", () => {
+			this.connected = false;
+		});
 
 		try {
 			const device = await navigator.bluetooth.requestDevice({
