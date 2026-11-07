@@ -94,7 +94,11 @@ function toggleBatchSettings(classId: string): void {
 }
 
 async function connect(): Promise<void> {
-	if (!SerialState.port) await SerialState.connect(Prompt.MAYBE);
+	if (
+		!SerialState.port &&
+		!(await SerialState.connectWithFeedback(Prompt.MAYBE))
+	)
+		return;
 	await TeachableMachineState.connectDevice();
 }
 

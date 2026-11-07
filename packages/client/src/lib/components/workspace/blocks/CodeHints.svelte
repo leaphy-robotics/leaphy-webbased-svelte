@@ -70,7 +70,9 @@ $effect(() => {
 		generator.STATEMENT_PREFIX = "";
 		generator.STATEMENT_SUFFIX = "";
 
-		program.matchAll(/BLOCK_'(.*)'\n((.|\n)*?)END_BLOCK/gm).forEach((match) => {
+		for (const match of program.matchAll(
+			/BLOCK_'(.*)'\n((.|\n)*?)END_BLOCK/gm,
+		)) {
 			const [section, block, code] = match;
 			if (!blocks[block]) {
 				blocks[block] = [];
@@ -85,20 +87,22 @@ $effect(() => {
 				trimmedCode,
 				getLines(program, match.index, match.index + section.length),
 			]);
-		});
+		}
 
 		hints = Object.entries(blocks).map(([blockId, statements]) => {
 			const block = BlocklyState.workspace.getBlockById(blockId);
-			if (!block.isEnabled()) return [];
+			if (!block?.isEnabled()) return [];
+
+			// A block has no path until Blockly has rendered it
+			const path = block.pathObject.svgPath.getAttribute("d");
+			if (!path) return [];
 
 			const rect = block.pathObject.svgPath.getBoundingClientRect();
 			const parentRect = block
 				.getRootBlock()
 				.getSvgRoot()
 				.getBoundingClientRect();
-			const statementPositions = findStatementPositions(
-				block.pathObject.svgPath.getAttribute("d"),
-			);
+			const statementPositions = findStatementPositions(path);
 			const color = block.getColour();
 
 			return statements

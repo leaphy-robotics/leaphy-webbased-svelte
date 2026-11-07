@@ -3,6 +3,7 @@ import * as Sentry from "@sentry/browser";
 import { serialization } from "blockly";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
+import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import TextArea from "$components/ui/TextArea.svelte";
@@ -31,25 +32,41 @@ async function save() {
 			? JSON.stringify(serialization.workspaces.save(BlocklyState.workspace))
 			: WorkspaceState.code;
 
-	await fetch(`${import.meta.env.VITE_BACKEND_URL}/feedback`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			name: senderName,
-			email: senderEmail,
-			message: message,
-			robot: WorkspaceState.robot.id,
-			board: SerialState.board?.id,
-			libraries: AppState.libraries.installed.map(
-				(library) => `${library[0]}@${library[1]}`,
-			),
-			uploadLogs: uploadLogs ? WorkspaceState.uploadLog.join("\n") : undefined,
-			sketch: workspace ? workspaceContent : undefined,
-			platform: `${navigator.userAgentData?.platform || $_("UNKNOWN")}, ${navigator.userAgentData?.brands[0].brand || $_("UNKNOWN")} (${navigator.userAgentData?.brands[0].version || $_("UNKNOWN")}), ${"serial" in navigator ? $_("WEB_SERIAL_SUPPORTED") : $_("WEB_SERIAL_NOT_SUPPORTED")}`,
-		}),
-	});
+	try {
+		await fetch(`${import.meta.env.VITE_BACKEND_URL}/feedback`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: senderName,
+				email: senderEmail,
+				message: message,
+				robot: WorkspaceState.robot.id,
+				board: SerialState.board?.id,
+				libraries: AppState.libraries.installed.map(
+					(library) => `${library[0]}@${library[1]}`,
+				),
+				uploadLogs: uploadLogs
+					? WorkspaceState.uploadLog.join("\n")
+					: undefined,
+				sketch: workspace ? workspaceContent : undefined,
+				platform: `${navigator.userAgentData?.platform || $_("UNKNOWN")}, ${navigator.userAgentData?.brands[0].brand || $_("UNKNOWN")} (${navigator.userAgentData?.brands[0].version || $_("UNKNOWN")}), ${"serial" in navigator ? $_("WEB_SERIAL_SUPPORTED") : $_("WEB_SERIAL_NOT_SUPPORTED")}`,
+			}),
+		});
+	} catch (e) {
+		console.warn("Unable to send feedback", e);
+		// Keep the form open so that the message isn't lost
+		await PopupsState.open({
+			component: ErrorPopup,
+			data: {
+				title: "FEEDBACK",
+				message: "NO_INTERNET",
+			},
+			allowInteraction: false,
+		});
+		return;
+	}
 
 	await PopupsState.open({
 		component: Warning,

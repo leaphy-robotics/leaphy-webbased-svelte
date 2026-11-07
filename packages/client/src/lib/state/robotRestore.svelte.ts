@@ -88,6 +88,8 @@ class RobotRestoreState {
 		if (!SerialState.port) return;
 
 		return SerialState.withPort(async (port) => {
+			if (!port.readable || !port.writable) return undefined;
+
 			const reader = port.readable.getReader();
 			const writer = port.writable.getWriter();
 
@@ -124,7 +126,11 @@ class RobotRestoreState {
 		}
 
 		// Set this.program before awaiting so concurrent calls hit the guard
-		this.program = this.checkProgram();
+		// This is a best-effort check, so any failure means that no program was found
+		this.program = this.checkProgram().catch((e) => {
+			console.warn("Unable to read the program from the robot", e);
+			return undefined;
+		});
 		return this.program;
 	}
 }
