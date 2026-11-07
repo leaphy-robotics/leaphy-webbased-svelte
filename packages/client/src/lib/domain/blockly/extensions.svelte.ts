@@ -155,7 +155,7 @@ class Extensions implements ISerializer {
 		this.enabled.splice(this.enabled.indexOf(id), 1);
 		if (extension.inactiveId) {
 			this.selectCategory(extension.inactiveId);
-		} else if (toolbox.getSelectedItem().getId() === id) {
+		} else if (toolbox.getSelectedItem()?.getId() === id) {
 			toolbox.selectItemByPosition(1);
 		}
 	}

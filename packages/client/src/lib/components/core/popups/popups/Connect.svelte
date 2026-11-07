@@ -1,6 +1,5 @@
 <script lang="ts">
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
-import * as Blockly from "blockly";
 import { getContext } from "svelte";
 import { _ } from "svelte-i18n";
 import defaultProgram from "$assets/default-program.json?raw";
@@ -8,7 +7,7 @@ import Warning from "$components/core/popups/popups/Warning.svelte";
 import Button from "$components/ui/Button.svelte";
 import ChipSelect from "$components/ui/ChipSelect.svelte";
 import ListSelect from "$components/ui/ListSelect.svelte";
-import { isCompatible } from "$domain/blockly/blockly";
+import { isCompatible, replaceWorkspace } from "$domain/blockly/blockly";
 import { getSelector, type RobotDevice, type Selector } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import PopupsState, { type PopupState } from "$state/popup.svelte";
@@ -87,10 +86,7 @@ async function disabledSelect() {
 	});
 	if (!value) return false;
 
-	Blockly.serialization.workspaces.load(
-		JSON.parse(defaultProgram),
-		BlocklyState.workspace,
-	);
+	replaceWorkspace(JSON.parse(defaultProgram), BlocklyState.workspace);
 	WorkspaceState.handle = undefined;
 	WorkspaceState.handleSave = undefined;
 	return true;
@@ -98,7 +94,7 @@ async function disabledSelect() {
 </script>
 
 <div class="p-5 flex flex-col min-w-[400px] text-center gap-4">
-	<Button onclick={() => SerialState.connect(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
+	<Button onclick={() => SerialState.connectWithFeedback(Prompt.ALWAYS)} mode="secondary" icon={faUsb} name={SerialState.port ? SerialState.board?.name || $_("UNKNOWN_BOARD") : $_("NOT_CONNECTED")} bold={!!SerialState.port} large />
 	{#if categories.length > 1}
 		<ChipSelect options={categoriesFilter} bind:value={category} />
 	{/if}

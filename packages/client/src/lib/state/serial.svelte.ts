@@ -4,6 +4,7 @@ import { SerialPort as MockedCDCSerialPort } from "web-serial-polyfill";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import { type RobotDevice, robots } from "$domain/robots";
 import PopupState from "$state/popup.svelte";
+import { isUserCancel } from "$state/utils";
 import { clearReadBuffer, delay } from "../programmers/utils";
 
 interface ActiveDebugger {
@@ -29,7 +30,9 @@ export enum Prompt {
 	ALWAYS = 2,
 }
 
-export class ConnectionFailedError {}
+export class ConnectionFailedError extends Error {
+	name = "ConnectionFailedError";
+}
 
 export const SUPPORTED_VENDOR_IDS = [
 	0x1a86, 9025, 2341, 0x0403, 0x2e8a, 0x303a,
@@ -175,6 +178,7 @@ class SerialState {
 	}
 
 	reserved = $state(false);
+	private opening: Promise<unknown> | undefined;
 	reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
 	writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 
@@ -187,7 +191,8 @@ class SerialState {
 
 		if (!this.port.readable || !this.port.writable) {
 			try {
-				await this.port.open({ baudRate: 115200 });
+				this.opening = this.port.open({ baudRate: 115200 });
+				await this.opening;
 			} catch (e) {
 				this.port = undefined;
 				if (this.showFeedback) {
@@ -203,6 +208,8 @@ class SerialState {
 
 				this.status = "failed";
 				throw e;
+			} finally {
+				this.opening = undefined;
 			}
 		}
 		if (this.port.readable.locked || this.port.writable.locked) return;
@@ -216,26 +223,57 @@ class SerialState {
 	}
 
 	private async runReadLoop() {
-		while (this.port?.readable && this.port?.writable) {
-			const { done, value } = await this.reader.read();
-			if (done) break;
+		const reader = this.reader;
+		let connectionLost = false;
 
-			this.log.enqueue(value);
+		try {
+			while (this.port?.readable && this.port?.writable) {
+				const { done, value } = await reader.read();
+				if (done) break;
+
+				this.log.enqueue(value);
+			}
+		} catch (e) {
+			// While reserved, a programmer owns the port and may reset the board on purpose
+			if (!this.reserved) {
+				console.warn("Serial connection lost", e);
+				connectionLost = true;
+			}
 		}
 
 		// Clean up reader when stream ends
-		if (this.reader) {
-			try {
-				this.reader.releaseLock();
-			} catch (e) {
-				// Reader may have already been released
-			}
-			this.reader = undefined;
+		try {
+			reader.releaseLock();
+		} catch (e) {
+			// Reader may have already been released
+		}
+		if (this.reader === reader) this.reader = undefined;
+
+		if (connectionLost) await this.handleDisconnect();
+	}
+
+	private async handleDisconnect() {
+		const port = this.port;
+
+		this.port = undefined;
+		this.board = undefined;
+		this.status = "disconnected";
+
+		try {
+			this.writer?.releaseLock();
+		} catch (e) {
+			// Writer may have already been released
+		}
+		this.writer = undefined;
+
+		try {
+			await port?.close();
+		} catch (e) {
+			// The device may already be gone
 		}
 	}
 
 	async requestPort(prompt: Prompt): Promise<SerialPort | USBDevice> {
-		this.showFeedback = prompt === Prompt.ALWAYS;
 		if (navigator.serial && !navigator.userAgent.includes("Android")) {
 			if (prompt !== Prompt.ALWAYS) {
 				const [port] = await navigator.serial.getPorts();
@@ -321,22 +359,33 @@ class SerialState {
 		return new MockedCDCSerialPort(port);
 	}
 
-	async connect(prompt: Prompt) {
+	async connect(prompt: Prompt, showFeedback = prompt === Prompt.ALWAYS) {
+		this.showFeedback = showFeedback;
 		this.status = "connecting";
 
-		const port = await this.requestPort(prompt);
+		let port: SerialPort | USBDevice;
+		try {
+			port = await this.requestPort(prompt);
+		} catch (e) {
+			this.status = this.port ? "ready" : "disconnected";
+			throw e;
+		}
+
 		if (this.port === port) {
-			this.status = "ready";
+			// Another connect() call may still be opening this port
+			await this.opening;
+			if (this.reserved || (this.port?.readable && this.port?.writable)) {
+				this.status = "ready";
+				return port;
+			}
+
+			await this.initPort();
 			return port;
 		}
 
 		this.port = this.getLeaphyPort(port);
 		if ("addEventListener" in this.port) {
-			this.port.addEventListener("disconnect", async () => {
-				this.port = undefined;
-				this.board = undefined;
-				this.status = "disconnected";
-			});
+			this.port.addEventListener("disconnect", () => this.handleDisconnect());
 		}
 
 		this.board = this.detectBoard(port);
@@ -344,6 +393,22 @@ class SerialState {
 		await this.initPort();
 
 		return port;
+	}
+
+	/**
+	 * Connects after a user action. Closing the chooser is not an error, and a port
+	 * that fails to open shows a popup. Returns whether the robot is connected.
+	 */
+	async connectWithFeedback(prompt: Prompt) {
+		try {
+			await this.connect(prompt, true);
+			return true;
+		} catch (e) {
+			if (!isUserCancel(e)) console.warn("Unable to connect to robot", e);
+			return false;
+		} finally {
+			this.showFeedback = prompt === Prompt.ALWAYS;
+		}
 	}
 
 	reconnect(): Promise<SerialPort> {

@@ -59,7 +59,7 @@ async function connect() {
 		return;
 	}
 
-	await SerialState.connect(Prompt.MAYBE);
+	await SerialState.connectWithFeedback(Prompt.MAYBE);
 }
 
 function uploadCode() {

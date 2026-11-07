@@ -35,6 +35,8 @@ import DriverInstall from "$components/core/popups/popups/DriverInstall.svelte";
 import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
+import { replaceWorkspace } from "$domain/blockly/blockly";
+import { PermissionDeniedError } from "$domain/handles";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
@@ -43,6 +45,7 @@ import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
 import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
+import { isUserCancel } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../drivers";
 import MicroPythonIO from "../../../micropython";
@@ -131,7 +134,7 @@ async function connect() {
 			data: {},
 			allowInteraction: false,
 		});
-	else SerialState.connect(Prompt.ALWAYS);
+	else await SerialState.connectWithFeedback(Prompt.ALWAYS);
 }
 
 async function changeRobot() {
@@ -151,10 +154,10 @@ async function newProject() {
 	WorkspaceState.handleSave = undefined;
 
 	WorkspaceState.code = "";
-	serialization.workspaces.load(
-		JSON.parse(defaultProgram),
-		BlocklyState.workspace,
-	);
+	// C++ and Python projects can be open without a Blockly workspace
+	if (BlocklyState.workspace) {
+		replaceWorkspace(JSON.parse(defaultProgram), BlocklyState.workspace);
+	}
 }
 
 async function saveProjectAs() {
@@ -188,9 +191,14 @@ async function saveProjectAs() {
 }
 
 async function openProject() {
-	if (navigator.userAgent.includes("Chrome")) {
-		const [file] = await window.showOpenFilePicker();
-		if (!file) return;
+	if ("showOpenFilePicker" in window) {
+		let file: FileSystemFileHandle;
+		try {
+			[file] = await window.showOpenFilePicker();
+		} catch (e) {
+			if (isUserCancel(e)) return;
+			throw e;
+		}
 
 		await WorkspaceState.openFileHandle(file);
 	} else {
@@ -216,7 +224,23 @@ async function openProject() {
 async function saveProject() {
 	if (!WorkspaceState.handle) return;
 
-	await WorkspaceState.handle.write(WorkspaceState.serialize());
+	try {
+		await WorkspaceState.handle.write(WorkspaceState.serialize());
+	} catch (e) {
+		if (!(e instanceof PermissionDeniedError)) throw e;
+
+		// Give the user another way to keep their work
+		await PopupState.open({
+			component: ErrorPopup,
+			data: {
+				title: "FILE_ACCESS_DENIED_TITLE",
+				message: "FILE_ACCESS_DENIED_MESSAGE",
+			},
+			allowInteraction: false,
+		});
+		return saveProjectAs();
+	}
+
 	await WorkspaceState.updateFileHandle();
 	WorkspaceState.saveState = true;
 }

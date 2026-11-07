@@ -5,6 +5,8 @@ function initSentry() {
 
 	Sentry.init({
 		dsn: import.meta.env.VITE_SENTRY_DSN,
+		// Monaco cancels its own pending clipboard writes on WebKit and doesn't handle the rejection
+		ignoreErrors: [/^Canceled: Canceled$/],
 		integrations: [
 			Sentry.browserTracingIntegration(),
 			Sentry.replayIntegration({
