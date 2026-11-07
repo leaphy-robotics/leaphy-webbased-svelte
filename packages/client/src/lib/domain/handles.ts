@@ -4,10 +4,23 @@ export interface Handle {
 	write: (content: string) => Promise<void>;
 }
 
+export class PermissionDeniedError extends Error {
+	name = "PermissionDeniedError";
+}
+
 export class FileHandle implements Handle {
 	constructor(private handle: FileSystemFileHandle) {}
 
 	async write(content: string) {
+		// A file from the open picker starts with read access only
+		const descriptor = { mode: "readwrite" } as const;
+		if (
+			(await this.handle.queryPermission(descriptor)) !== "granted" &&
+			(await this.handle.requestPermission(descriptor)) !== "granted"
+		) {
+			throw new PermissionDeniedError();
+		}
+
 		const writable = await this.handle.createWritable();
 		await writable.write({
 			type: "write",

@@ -1,7 +1,7 @@
 <script lang="ts">
-import { serialization } from "blockly";
 import { getContext, onMount } from "svelte";
 import { _ } from "svelte-i18n";
+import { replaceWorkspace } from "$domain/blockly/blockly";
 import { inFilter } from "$domain/robots";
 import BlocklyState from "$state/blockly.svelte";
 import type { PopupState } from "$state/popup.svelte";
@@ -36,7 +36,7 @@ const popupState = getContext<PopupState>("state");
 async function loadExample(example: Example) {
 	popupState.close();
 	const sketch = await example.sketch();
-	serialization.workspaces.load(sketch.default, BlocklyState.workspace);
+	replaceWorkspace(sketch.default, BlocklyState.workspace);
 }
 </script>
 

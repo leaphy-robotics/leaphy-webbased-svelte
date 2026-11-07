@@ -20,6 +20,7 @@ import ExtensionState from "$domain/blockly/extensions.svelte";
 import AppState from "$state/app.svelte";
 import BlocklyState from "$state/blockly.svelte";
 import { BluetoothWriteQueue } from "$state/bluetooth.svelte";
+import { isBluetoothCancel } from "$state/utils";
 import WorkspaceState from "$state/workspace.svelte";
 import Uploader from "../components/core/popups/popups/uploaders/Uploader.svelte";
 import PopupState from "./popup.svelte";
@@ -219,13 +220,31 @@ class MLState {
 			return;
 		}
 
-		const device = await navigator.bluetooth.requestDevice({
-			filters: [
-				{
-					services: [ml.trainingID],
+		try {
+			const device = await navigator.bluetooth.requestDevice({
+				filters: [
+					{
+						services: [ml.trainingID],
+					},
+				],
+			});
+			await this.setupDevice(device);
+		} catch (e) {
+			if (isBluetoothCancel(e)) return;
+
+			console.warn("Unable to connect over Bluetooth", e);
+			PopupState.open({
+				component: ErrorPopup,
+				data: {
+					title: "BLUETOOTH_CONNECT_FAILED_TITLE",
+					message: "BLUETOOTH_CONNECT_FAILED_MESSAGE",
 				},
-			],
-		});
+				allowInteraction: false,
+			});
+		}
+	}
+
+	private async setupDevice(device: BluetoothDevice) {
 		device.addEventListener("gattserverdisconnected", () => {
 			this.connected = false;
 		});

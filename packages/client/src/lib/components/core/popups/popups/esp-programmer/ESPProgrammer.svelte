@@ -16,6 +16,7 @@ import Button from "$components/ui/Button.svelte";
 import ProgressBar from "$components/ui/ProgressBar.svelte";
 import type { PopupState } from "$state/popup.svelte";
 import SerialState from "$state/serial.svelte";
+import { isUserCancel } from "$state/utils";
 import WorkspaceState from "$state/workspace.svelte";
 import Windowed from "../../Windowed.svelte";
 import Visualization from "./Visualization.svelte";
@@ -48,10 +49,6 @@ function createLoader(loaderTransport: Transport): ESPLoader {
 		},
 		debugLogging: true,
 	});
-}
-
-function isUserCancel(e: unknown): boolean {
-	return e instanceof DOMException && e.name === "NotFoundError";
 }
 
 async function fetchFirmware(url: string): Promise<Uint8Array> {
