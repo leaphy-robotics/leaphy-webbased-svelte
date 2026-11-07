@@ -74,8 +74,8 @@ importers:
         specifier: ^6.0.9
         version: 6.0.9(blockly@12.5.1)
       '@blockly/toolbox-search':
-        specifier: ^3.1.9
-        version: 3.1.9(blockly@12.5.1)
+        specifier: ^13.3.0
+        version: 13.3.0(blockly@12.5.1)
       '@blockly/workspace-backpack':
         specifier: ^7.0.11
         version: 7.0.11(blockly@12.5.1)
@@ -132,10 +132,10 @@ importers:
         version: 4.5.1
       chartjs-adapter-date-fns:
         specifier: ^3.0.0
-        version: 3.0.0(chart.js@4.5.1)(date-fns@4.1.0)
+        version: 3.0.0(chart.js@4.5.1)(date-fns@4.4.0)
       date-fns:
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^4.4.0
+        version: 4.4.0
       dexie:
         specifier: ^4.4.6
         version: 4.4.6
@@ -898,10 +898,10 @@ packages:
     peerDependencies:
       blockly: ^12.0.0
 
-  '@blockly/toolbox-search@3.1.9':
-    resolution: {integrity: sha512-bX3uCU2jIea+0R7ckrnNpIHtxKMPoLfoTTel5cYBahliZJBjUIHSWqmY28Y8/Dlbd7xZV/4SJZ5eiBSNAPEohA==}
+  '@blockly/toolbox-search@13.3.0':
+    resolution: {integrity: sha512-6h9z3C+2kBNUj/wiytqjXOuwpwFEvA+ag4L1BUlrM0CxSJnhzKwxRpOCxXT4kVfpyo78AR8Cl8ifwsEWJUNxqw==}
     peerDependencies:
-      blockly: ^12.0.0
+      blockly: ^13.2.0
 
   '@blockly/workspace-backpack@7.0.11':
     resolution: {integrity: sha512-VKxkk7SEIWkqEwZ8OueuDipw4+28dNKM16/JJRN8Vwhmjdt5uU/rWNB+3L0qD+woIAdUFbHYw/oA3quFGID6XQ==}
@@ -2743,8 +2743,8 @@ packages:
     resolution: {integrity: sha512-ZYP5VBHshaDAiVZxjbRVcFJpc+4xGgT0bK3vzy1HLN8jTO975HEbuYzZJcHoQEY5K1a0z8YayJkyVETa08eNTg==}
     engines: {node: '>=18'}
 
-  date-fns@4.1.0:
-    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+  date-fns@4.4.0:
+    resolution: {integrity: sha512-+1UMbeh68lH1SegH83CGWwpb6OHHbpSgr3+s5Eww5M4CAgswBpoWS0AjTOfEJ33HiYKz1hdj/KTFprzXHmq/6w==}
 
   dateformat@3.0.3:
     resolution: {integrity: sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==}
@@ -5373,7 +5373,7 @@ snapshots:
     dependencies:
       blockly: 12.5.1
 
-  '@blockly/toolbox-search@3.1.9(blockly@12.5.1)':
+  '@blockly/toolbox-search@13.3.0(blockly@12.5.1)':
     dependencies:
       blockly: 12.5.1
 
@@ -6638,10 +6638,10 @@ snapshots:
     dependencies:
       '@kurkle/color': 0.3.4
 
-  chartjs-adapter-date-fns@3.0.0(chart.js@4.5.1)(date-fns@4.1.0):
+  chartjs-adapter-date-fns@3.0.0(chart.js@4.5.1)(date-fns@4.4.0):
     dependencies:
       chart.js: 4.5.1
-      date-fns: 4.1.0
+      date-fns: 4.4.0
 
   chokidar@4.0.3:
     dependencies:
@@ -6847,7 +6847,7 @@ snapshots:
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.2.0
 
-  date-fns@4.1.0: {}
+  date-fns@4.4.0: {}
 
   dateformat@3.0.3: {}
 
