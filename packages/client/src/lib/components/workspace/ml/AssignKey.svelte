@@ -1,5 +1,8 @@
 <script lang="ts">
-import type { Class } from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
+import {
+	type Class,
+	ml,
+} from "@leaphy-robotics/leaphy-blocks/src/categories/ml";
 import { _ } from "svelte-i18n";
 
 interface Props {
@@ -18,7 +21,7 @@ function onKey(e: KeyboardEvent) {
 	if (!binding) return;
 
 	key = e.code;
-	classData.key = e.code;
+	ml.classes.setKey(classData.id, e.code);
 	binding = false;
 }
 
@@ -46,4 +49,9 @@ let values = $derived(label[1]);
 </script>
 
 <svelte:document onkeyup={onKey} onmousedown={abort} />
-<button onclick={assign} class="bg-bg border-none p-1.5 rounded-md cursor-pointer {binding ? 'opacity-70' : ''}">{binding ? $_("PRESS_ANY_KEY") : $_(translation, { values })}</button>
+<button
+	onclick={assign}
+	class="min-w-24 cursor-pointer rounded-md border-2 px-2.5 py-1.5 font-mono text-sm
+		{binding ? 'border-primary bg-bg animate-pulse' : key ? 'border-secondary bg-bg' : 'border-dashed border-primary bg-bg text-primary'}"
+	aria-label={$_("ML_ASSIGN_KEY", { values: { name: classData.name } })}
+>{binding ? $_("PRESS_ANY_KEY") : $_(translation, { values, default: key })}</button>

@@ -84,7 +84,7 @@ function openAssignment() {
 			{#if WorkspaceState.Mode === Mode.BLOCKS}
 				<SideButton icon={faCode} action="CODE" onclick={openCode} />
 			{/if}
-			{#if WorkspaceState.Mode !== Mode.PYTHON}
+			{#if WorkspaceState.Mode !== Mode.PYTHON && WorkspaceState.Mode !== Mode.ML}
 				<SideButton icon={faSquarePollHorizontal} action="SERIAL_OUTPUT" onclick={WorkspaceState.robot.type === RobotType.L_MICROPYTHON ? openPythonTerminal : openSerial} />
 			{/if}
 			{#if WorkspaceState.Mode === Mode.ADVANCED}

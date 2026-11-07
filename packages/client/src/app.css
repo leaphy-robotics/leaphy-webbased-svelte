@@ -29,6 +29,8 @@ body {
 	--on-accent: #fff;
 	--text-muted: #d3d3d3;
 	--warning: #ffcc00;
+	--success: #23845a;
+	--danger: #d43c3c;
 }
 
 body[data-color-scheme="dark"] {
@@ -46,6 +48,8 @@ body[data-color-scheme="dark"] {
 	--on-accent: #fff;
 	--text-muted: #535361;
 	--warning: #ffcc00;
+	--success: #3fb47e;
+	--danger: #ef6464;
 }
 
 @theme inline {
@@ -62,6 +66,8 @@ body[data-color-scheme="dark"] {
 	--color-on-bg: var(--on-background);
 	--color-text-muted: var(--text-muted);
 	--color-warning: var(--warning);
+	--color-success: var(--success);
+	--color-danger: var(--danger);
 	--color-robot: var(--robot);
 
 	--shadow-card: var(--shadow-el1);
