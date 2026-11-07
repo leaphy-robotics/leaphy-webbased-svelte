@@ -1,4 +1,4 @@
-import { RGBFlitz, WireColor } from "@leaphy-robotics/schemas/src";
+import { RGBFlitz } from "@leaphy-robotics/schemas/src";
 import Servo from "@leaphy-robotics/schemas/src/components/servo";
 import type { Block } from "blockly/core";
 import { MotorDirection } from "../../blocks/leaphy_original";
@@ -17,36 +17,16 @@ function getCodeGenerators(arduino: Arduino) {
 
 		if (arduino.builder) {
 			const servoLeft = arduino.builder.add("servo_left", Servo);
-			arduino.builder.connect(
-				arduino.builder.murphy.port("D12"),
-				servoLeft.port("pulse"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port("D12.3V3"),
-				servoLeft?.port("vcc"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port("D12.GND"),
-				servoLeft.port("gnd"),
-				WireColor.GND,
+			arduino.builder.connectCable(
+				[arduino.builder.murphy.port("D12"), servoLeft.port("pulse")],
+				[arduino.builder.murphy.port("D12.3V3"), servoLeft.port("vcc")],
+				[arduino.builder.murphy.port("D12.GND"), servoLeft.port("gnd")],
 			);
 			const servoRight = arduino.builder.add("servo_right", Servo);
-			arduino.builder.connect(
-				arduino.builder.murphy.port("D13"),
-				servoRight.port("pulse"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port("D13.3V3"),
-				servoRight.port("vcc"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port("D13.GND"),
-				servoRight.port("gnd"),
-				WireColor.GND,
+			arduino.builder.connectCable(
+				[arduino.builder.murphy.port("D13"), servoRight.port("pulse")],
+				[arduino.builder.murphy.port("D13.3V3"), servoRight.port("vcc")],
+				[arduino.builder.murphy.port("D13.GND"), servoRight.port("gnd")],
 			);
 		}
 	}
@@ -76,25 +56,11 @@ function getCodeGenerators(arduino: Arduino) {
 
 			if (arduino.builder) {
 				const led = arduino.builder.add("rgb", RGBFlitz);
-				arduino.builder.connect(
-					arduino.builder.murphy.port(pin_red.toString()),
-					led.port("R"),
-					WireColor.DATA_1,
-				);
-				arduino.builder.connect(
-					arduino.builder.murphy.port(pin_green.toString()),
-					led.port("G"),
-					WireColor.DATA_2,
-				);
-				arduino.builder.connect(
-					arduino.builder.murphy.port(pin_blue.toString()),
-					led.port("B"),
-					WireColor.DATA_3,
-				);
-				arduino.builder.connect(
-					arduino.builder.murphy.port("D8"),
-					led.port("GND"),
-					WireColor.GND,
+				arduino.builder.connectCable(
+					[arduino.builder.murphy.port(pin_red.toString()), led.port("R")],
+					[arduino.builder.murphy.port(pin_green.toString()), led.port("G")],
+					[arduino.builder.murphy.port(pin_blue.toString()), led.port("B")],
+					[arduino.builder.murphy.port("D8"), led.port("GND")],
 				);
 			}
 
@@ -180,12 +146,14 @@ function getCodeGenerators(arduino: Arduino) {
 
 	arduino.forBlock.leaphy_original_buzz = (block) => {
 		arduino.addInclude("arduino", "#include <Arduino.h>");
-		arduino.addSetup("tone", "pinMode(4, OUTPUT);", false);
+		const pin = arduino.getPinMapping(block, "PIN", "4");
+		arduino.reservePin(block, pin, arduino.PinTypes.OUTPUT, "Buzzer");
+		arduino.addSetup(`io_${pin}`, `pinMode(${pin}, OUTPUT);`, false);
 		const frequency =
 			arduino.valueToCode(block, "FREQUENCY", arduino.ORDER_ATOMIC) || "0";
 		const duration =
 			arduino.valueToCode(block, "DURATION", arduino.ORDER_ATOMIC) || "0";
-		return `tone(4, ${frequency}, ${duration});\n`;
+		return `tone(${pin}, ${frequency}, ${duration});\n`;
 	};
 
 	arduino.forBlock.leaphy_original_servo_set = (block) => {
