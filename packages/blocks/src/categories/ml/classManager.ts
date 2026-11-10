@@ -45,6 +45,11 @@ export class ClassManager implements DynamicListManager {
 		return true;
 	}
 
+	setKey(id: string, key: string | null) {
+		this.classes[id].key = key;
+		this.ml.dispatchEvent(new Event("updateClasses"));
+	}
+
 	renameItem(id: string, name: string) {
 		this.classes[id].name = name;
 		this.ml.dispatchEvent(new Event("updateClasses"));

@@ -18,6 +18,7 @@ import SerialState, {
 	SUPPORTED_VENDOR_IDS,
 } from "$state/serial.svelte";
 import USBRequestState from "$state/upload.svelte";
+import { isUserCancel } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
 import { downloadDrivers } from "../../../../../drivers";
 
@@ -94,7 +95,7 @@ async function upload(res: Record<string, string>) {
 			await programmer.upload(port, res);
 		};
 		if (useReservedPort) {
-			if (!SerialState.port) throw new Error("Serial port was disconnected");
+			if (!SerialState.port) throw new Error($_("SERIAL_PORT_DISCONNECTED"));
 			if (!SerialState.port.readable || !SerialState.port.writable) {
 				await SerialState.port.open({ baudRate: 115200 });
 			}
@@ -143,7 +144,7 @@ onMount(async () => {
 							board: board.name,
 							extension:
 								extensions.find((ext) => ext.id === incompatibleExtension)
-									?.name || "Unknown",
+									?.name || $_("UNKNOWN"),
 						},
 					}),
 					showCancel: true,
@@ -170,21 +171,27 @@ onMount(async () => {
 
 const robotState = $derived(getRobotState(failed, done, currentState));
 
+// Resolves the popup with whether the upload succeeded, so callers can react to failures
 function close() {
-	popupState.close();
+	popupState.close(!failed);
 }
 
 async function connectUSB() {
 	const [device] = await navigator.usb.getDevices();
 	if (device) return USBRequestState.respond(device);
 
-	USBRequestState.respond(
-		await navigator.usb.requestDevice({
-			filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
-				vendorId: vendor,
-			})),
-		}),
-	);
+	try {
+		USBRequestState.respond(
+			await navigator.usb.requestDevice({
+				filters: SUPPORTED_VENDOR_IDS.map((vendor) => ({
+					vendorId: vendor,
+				})),
+			}),
+		);
+	} catch (e) {
+		// Leave the reconnect button visible so that the user can try again
+		if (!isUserCancel(e)) throw e;
+	}
 }
 </script>
 

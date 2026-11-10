@@ -302,16 +302,29 @@ export function setLocale(robot: RobotDevice, locale: string) {
 }
 
 // Load a workspace from a JSON or XML string
+/**
+ * Replaces the workspace's contents. The undo history is cleared because it refers
+ * to blocks that no longer exist.
+ */
+export function replaceWorkspace(
+	content: Record<string, any>,
+	workspace: Workspace,
+) {
+	serialization.workspaces.load(content, workspace);
+	workspace.clearUndo();
+}
+
 export function loadWorkspaceFromString(content: string, workspace: Workspace) {
 	try {
 		const json = JSON.parse(content);
-		serialization.workspaces.load(json, workspace);
+		replaceWorkspace(json, workspace);
 	} catch {
 		try {
 			// It's not JSON, maybe it's XML
 			const xml = Blockly.utils.xml.textToDom(content);
 			workspace.clear();
 			Blockly.Xml.domToWorkspace(xml, workspace);
+			workspace.clearUndo();
 		} catch {
 			PopupState.open({
 				component: ErrorPopup,
@@ -342,6 +355,17 @@ function pythonProcedureCategory(workspace: WorkspaceSvg) {
 
 	return blockList;
 }
+
+// Blockly preloads its sounds without handling failures. A failed download only means
+// that the sound doesn't play, so it shouldn't become an unhandled rejection.
+const loadSound = Blockly.WorkspaceAudio.prototype.load;
+Blockly.WorkspaceAudio.prototype.load = async function (filenames, name) {
+	try {
+		await loadSound.call(this, filenames, name);
+	} catch (e) {
+		console.warn(`Unable to load sound ${name}`, e);
+	}
+};
 
 export function setupWorkspace(
 	robot: RobotDevice,

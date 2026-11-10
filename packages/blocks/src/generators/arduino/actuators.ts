@@ -1,4 +1,4 @@
-import { WireColor } from "@leaphy-robotics/schemas";
+import { Led } from "@leaphy-robotics/schemas";
 import Servo from "@leaphy-robotics/schemas/src/components/servo";
 import type { Arduino } from "../arduino";
 import { Dependencies } from "./dependencies";
@@ -160,6 +160,14 @@ function getCodeGenerators(arduino: Arduino) {
 		const pin = arduino.getPinMapping(block, "PIN");
 		const state =
 			arduino.valueToCode(block, "STATE", arduino.ORDER_ATOMIC) || "false";
+		if (arduino.builder) {
+			// The LED sinks into the pin, so it's powered by the rail and lights up on LOW
+			const led = arduino.builder.add(`led-${pin}`, Led);
+			arduino.builder.connectCable(
+				[arduino.builder.murphy.port(pin), led.port("GND")],
+				[arduino.builder.murphy.port(`${pin}.3V3`), led.port("VCC")],
+			);
+		}
 		arduino.reservePin(block, pin, arduino.PinTypes.OUTPUT, "Digital Write");
 		arduino.addSetup(`io_${pin}`, `pinMode(${pin}, OUTPUT);`, false);
 		const debug = arduino.createDebug(`digital-output-${pin}`, {
@@ -213,20 +221,10 @@ function getCodeGenerators(arduino: Arduino) {
 		const servoName = `myServo${pin}`;
 		if (arduino.builder) {
 			const servo = arduino.builder.add(`servo-${pin}`, Servo);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(pin),
-				servo.port("pulse"),
-				WireColor.DATA_1,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${pin}.3V3`),
-				servo.port("vcc"),
-				WireColor.VCC,
-			);
-			arduino.builder.connect(
-				arduino.builder.murphy.port(`${pin}.GND`),
-				servo.port("gnd"),
-				WireColor.GND,
+			arduino.builder.connectCable(
+				[arduino.builder.murphy.port(pin), servo.port("pulse")],
+				[arduino.builder.murphy.port(`${pin}.3V3`), servo.port("vcc")],
+				[arduino.builder.murphy.port(`${pin}.GND`), servo.port("gnd")],
 			);
 		}
 		arduino.reservePin(block, pin, arduino.PinTypes.SERVO, "Servo Write");

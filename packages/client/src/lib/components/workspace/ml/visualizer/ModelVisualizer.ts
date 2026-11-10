@@ -1,5 +1,7 @@
 import * as tf from "@tensorflow/tfjs";
 import "./ModelVisualizer.css";
+import { get } from "svelte/store";
+import { _ } from "svelte-i18n";
 
 // --- Type Definitions ---
 interface NodePosition {
@@ -290,7 +292,9 @@ export class ModelVisualizer {
 
 			const label = document.createElement("label");
 			// Use custom input label if provided, otherwise default
-			label.innerText = this.config.inputLabels?.[i] || `Input ${i + 1}`;
+			label.innerText =
+				this.config.inputLabels?.[i] ||
+				get(_)("ML_PLAYGROUND_INPUT", { values: { number: i + 1 } });
 
 			const slider = document.createElement("input");
 			slider.type = "range";
@@ -335,7 +339,7 @@ export class ModelVisualizer {
 				conn.setAttribute("stroke-width", "1");
 			});
 		});
-		this.outputContainer.innerText = "Output: ...";
+		this.outputContainer.innerText = get(_)("ML_PLAYGROUND_CALCULATING");
 
 		const inputValues = this.inputSliders.map((s) =>
 			Number.parseFloat(s.value),
@@ -394,15 +398,17 @@ export class ModelVisualizer {
 			const labeledOutputs = Array.from(currentActivations)
 				.map((v, i) => `${this.config.outputLabels?.[i]}: ${v.toFixed(3)}`)
 				.join(", ");
-			outputText = `Output: {${labeledOutputs}}`;
+			outputText = labeledOutputs;
 		} else {
 			const finalOutput = Array.from(currentActivations)
 				.map((v) => v.toFixed(3))
 				.join(", ");
-			outputText = `Output: [${finalOutput}]`;
+			outputText = finalOutput;
 		}
 
-		this.outputContainer.innerText = outputText;
+		this.outputContainer.innerText = get(_)("ML_PLAYGROUND_OUTPUT", {
+			values: { output: outputText },
+		});
 		tf.dispose(inputTensor);
 	}
 }

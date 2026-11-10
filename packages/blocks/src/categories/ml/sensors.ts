@@ -1,6 +1,11 @@
 import type { Arduino } from "../../generators/arduino";
 import { Dependencies } from "../../generators/arduino/dependencies";
 import {
+	readSparkSensor,
+	SPARK_ANALOG_MAX,
+	sparkSensors,
+} from "../../generators/arduino/leaphy_spark";
+import {
 	getDistanceSonar,
 	getLidarValue,
 	getTOF,
@@ -11,13 +16,20 @@ import {
 	pinSetting,
 	type Setting,
 	type SettingsToObject,
+	selectSetting,
 } from "./settings";
 
 type SetNode = (node: number, value: string) => string;
 
+export type SensorGroup = "spark" | "pins" | "i2c";
+
 export abstract class Sensor {
 	abstract type: string;
 	abstract values: number;
+
+	// Used to group sensors in the UI and explain them to the user
+	abstract group: SensorGroup;
+	abstract description: string;
 
 	abstract name: string;
 	renderName(_settings: unknown): {
@@ -39,6 +51,8 @@ export abstract class Sensor {
 class ToFSensor extends Sensor {
 	type = "ToF";
 	values = 1;
+	group: SensorGroup = "i2c";
+	description = "ML_SENSOR_TOF_DESCRIPTION";
 
 	name = "TIME_OF_FLIGHT_SENSOR";
 
@@ -70,6 +84,8 @@ class ToFSensor extends Sensor {
 class DigitalSensor extends Sensor {
 	type = "digital";
 	values = 1;
+	group: SensorGroup = "pins";
+	description = "ML_SENSOR_DIGITAL_DESCRIPTION";
 
 	name = "DIGITAL_PIN_NAME";
 
@@ -77,19 +93,25 @@ class DigitalSensor extends Sensor {
 		return { translation: "DIGITAL_PIN", values: { pin: `${settings.pin}` } };
 	}
 
-	settings = [pinSetting("pin", "digital", "Pin", "Select the pin to use")];
+	settings = [
+		pinSetting(
+			"pin",
+			"digital",
+			"ML_SETTING_PIN",
+			"ML_SETTING_PIN_DESCRIPTION",
+		),
+	];
 
 	getValues(
 		arduino: Arduino,
 		setNode: SetNode,
 		settings: SettingsToObject<typeof this.settings>,
 	) {
-		arduino.addSetup(
-			`setup_input_${settings.pin}`,
-			`pinMode(${settings.pin}, INPUT);`,
-		);
+		// Analog pins used as digital pins (14+) need to be remapped on some boards, e.g. the ESP32
+		const pin = arduino.getRawPinMapping(settings.pin);
+		arduino.addSetup(`setup_input_${pin}`, `pinMode(${pin}, INPUT);`);
 
-		return setNode(0, `digitalRead(${settings.pin})`);
+		return setNode(0, `digitalRead(${pin})`);
 	}
 }
 
@@ -97,6 +119,8 @@ class DigitalSensor extends Sensor {
 class AnalogSensor extends Sensor {
 	type = "analog";
 	values = 1;
+	group: SensorGroup = "pins";
+	description = "ML_SENSOR_ANALOG_DESCRIPTION";
 
 	name = "ANALOG_PIN_NAME";
 
@@ -104,7 +128,9 @@ class AnalogSensor extends Sensor {
 		return { translation: "ANALOG_PIN", values: { pin: `${settings.pin}` } };
 	}
 
-	settings = [pinSetting("pin", "analog", "Pin", "Select the pin to use")];
+	settings = [
+		pinSetting("pin", "analog", "ML_SETTING_PIN", "ML_SETTING_PIN_DESCRIPTION"),
+	];
 
 	getValues(
 		_arduino: Arduino,
@@ -119,6 +145,8 @@ class AnalogSensor extends Sensor {
 class UltrasonicSensor extends Sensor {
 	type = "ultrasonic";
 	values = 1;
+	group: SensorGroup = "pins";
+	description = "ML_SENSOR_ULTRASONIC_DESCRIPTION";
 
 	name = "ULTRASONIC_SENSOR_NAME";
 
@@ -130,8 +158,20 @@ class UltrasonicSensor extends Sensor {
 	}
 
 	settings = [
-		pinSetting("trig", "digital", "Trig", "", "17"),
-		pinSetting("echo", "digital", "Echo", "", "16"),
+		pinSetting(
+			"trig",
+			"digital",
+			"ML_SETTING_TRIG",
+			"ML_SETTING_TRIG_DESCRIPTION",
+			"17",
+		),
+		pinSetting(
+			"echo",
+			"digital",
+			"ML_SETTING_ECHO",
+			"ML_SETTING_ECHO_DESCRIPTION",
+			"16",
+		),
 	];
 
 	getValues(
@@ -149,6 +189,8 @@ class UltrasonicSensor extends Sensor {
 class LidarSensor extends Sensor {
 	type = "lidar";
 	values = 64;
+	group: SensorGroup = "i2c";
+	description = "ML_SENSOR_LIDAR_DESCRIPTION";
 
 	name = "LIDAR_SENSOR";
 
@@ -180,7 +222,62 @@ class LidarSensor extends Sensor {
 	}
 }
 
+const sparkSensorNames: Record<string, string> = {
+	left_line_sensor: "ML_SPARK_LEFT_LINE_SENSOR",
+	right_line_sensor: "ML_SPARK_RIGHT_LINE_SENSOR",
+	left_ambient: "ML_SPARK_LEFT_LIGHT_SENSOR",
+	right_ambient: "ML_SPARK_RIGHT_LIGHT_SENSOR",
+	potentiometer: "ML_SPARK_POTENTIOMETER",
+	button_1: "ML_SPARK_BUTTON_1",
+	button_2: "ML_SPARK_BUTTON_2",
+	button_3: "ML_SPARK_BUTTON_3",
+};
+
+// Sensors on the Leaphy Spark shield, normalized to 0-1
+class SparkSensor extends Sensor {
+	type = "spark";
+	values = 1;
+	group: SensorGroup = "spark";
+	description = "ML_SENSOR_SPARK_DESCRIPTION";
+
+	name = "ML_SPARK_SENSOR";
+
+	renderName(settings: SettingsToObject<typeof this.settings>) {
+		return {
+			translation: sparkSensorNames[settings.sensor] ?? this.name,
+		};
+	}
+
+	settings = [
+		selectSetting(
+			"sensor",
+			"ML_SETTING_SPARK_SENSOR",
+			"ML_SETTING_SPARK_SENSOR_DESCRIPTION",
+			Object.entries(sparkSensorNames).map(
+				([id, name]) => [name, id] as [string, string],
+			),
+		),
+	];
+
+	getValues(
+		arduino: Arduino,
+		setNode: SetNode,
+		settings: SettingsToObject<typeof this.settings>,
+	) {
+		const value = readSparkSensor(arduino, settings.sensor);
+		if (sparkSensors[settings.sensor]?.type === "analog") {
+			return setNode(
+				0,
+				`max(0.0f, min(1.0f, ${value} / ${SPARK_ANALOG_MAX}.0f))`,
+			);
+		}
+
+		return setNode(0, value);
+	}
+}
+
 export const sensors: Sensor[] = [
+	new SparkSensor(),
 	new DigitalSensor(),
 	new AnalogSensor(),
 	new ToFSensor(),
