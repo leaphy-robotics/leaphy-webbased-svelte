@@ -390,6 +390,7 @@
 	"DEBUGGING_OFF_DESC": "Schakel debuggen in om live sensor- en actuatorwaarden te zien. Het programma wordt opnieuw geüpload.",
 	"ENABLE_DEBUGGING": "Debuggen inschakelen",
 	"DEBUG": "Open debugger",
+	"ROBOT_IN_USE": "Verbinding met robot onderbroken",
 	"ML_NO_SENSORS_HINT": "Voeg de sensoren toe die het verschil tussen je klassen kunnen merken.",
 	"ML_STEP_PREPARE": "Robot voorbereiden",
 	"ML_STEP_COLLECT": "Voorbeelden laten zien",

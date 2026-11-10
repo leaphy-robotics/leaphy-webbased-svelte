@@ -390,6 +390,7 @@
 	"DEBUGGING_OFF_DESC": "Enable debugging to see live sensor and actuator values. The program will be re-uploaded.",
 	"ENABLE_DEBUGGING": "Enable debugging",
 	"DEBUG": "Open debugger",
+	"ROBOT_IN_USE": "Connection to robot failed",
 	"ML_NO_SENSORS_HINT": "Add the sensors that can notice the difference between your classes.",
 	"ML_STEP_PREPARE": "Prepare robot",
 	"ML_STEP_COLLECT": "Show examples",
