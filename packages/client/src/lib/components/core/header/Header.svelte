@@ -43,7 +43,6 @@ import BlocklyState from "$state/blockly.svelte";
 import EmbedState from "$state/embed.svelte";
 import MLState from "$state/ml.svelte";
 import PopupState from "$state/popup.svelte";
-import RecordingsState from "$state/recordings.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 import { isUserCancel } from "$state/utils";
 import WorkspaceState, { Mode } from "$state/workspace.svelte";
@@ -362,20 +361,6 @@ function runPython() {
 	WorkspaceState.microPythonRun = io.runCode(WorkspaceState.code);
 }
 
-async function submit() {
-	const ok = await PopupState.open({
-		component: Warning,
-		data: {
-			title: "CONFIRMSUBMIT_TITLE",
-			message: "CONFIRMSUBMIT_MESSAGE",
-		},
-		allowInteraction: false,
-	});
-	if (!ok) return;
-
-	await RecordingsState.submit();
-}
-
 async function openCircuitPopup() {
 	await PopupState.open({
 		component: Circuit,
@@ -466,9 +451,6 @@ function openESPProgrammerPopup() {
 			{/if}
 
 			<Button icon={faSave} name={$_("SAVE")} mode={"outlined"} onclick={saveDynamic} />
-			{#if RecordingsState.project?.testMode && RecordingsState.selectedAssignment}
-				<Button icon={faCircleCheck} name={$_("SUBMIT")} mode="tint" onclick={submit} />
-			{/if}
 
 			{#if WorkspaceState.Mode === Mode.PYTHON || (WorkspaceState.Mode === Mode.BLOCKS && WorkspaceState.robot.type === RobotType.L_MICROPYTHON)}
 				{#if WorkspaceState.microPythonIO}
