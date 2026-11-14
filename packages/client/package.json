@@ -19,7 +19,7 @@
 		"@tsconfig/svelte": "^5.0.8",
 		"@types/chart.js": "^4.0.1",
 		"@types/node": "^25.6.0",
-		"@types/w3c-web-serial": "^1.0.8",
+		"@types/w3c-web-serial": "^1.0.9",
 		"@types/web-bluetooth": "^0.0.21",
 		"@types/wicg-file-system-access": "^2023.10.7",
 		"svelte": "^5.56.3",
