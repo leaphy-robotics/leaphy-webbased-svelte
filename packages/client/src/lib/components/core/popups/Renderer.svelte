@@ -1,7 +1,9 @@
 <script lang="ts">
 import { onMount } from "svelte";
+import ColorPicker from "$components/core/popups/popups/ColorPicker.svelte";
 import Explanation from "$components/core/popups/popups/Explanation.svelte";
 import AIState from "$state/ai.svelte";
+import ColorPickerState from "$state/colorPicker.svelte";
 import EmbedState from "$state/embed.svelte";
 import PopupState from "$state/popup.svelte";
 import Popup from "./Popup.svelte";
@@ -19,5 +21,9 @@ onMount(async () => {
 
 	{#if AIState.visible}
 		<Explanation />
+	{/if}
+
+	{#if ColorPickerState.visible}
+		<ColorPicker />
 	{/if}
 </div>

@@ -39,8 +39,10 @@ import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import TeachableMachineState from "$state/teachableMachine.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import Extensions from "./extensions.svelte";
+import { registerColorPickers } from "./fields/colorPicker";
 
 Blockly.defineBlocksWithJsonArray(blocks);
+registerColorPickers();
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
 Blockly.registry.register(
 	Blockly.registry.Type.TOOLBOX_ITEM,
