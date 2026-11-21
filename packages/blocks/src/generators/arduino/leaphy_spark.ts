@@ -1,4 +1,5 @@
 import type { Arduino } from "../arduino";
+import { spark_sensor_config } from "../utils";
 import { Dependencies } from "./dependencies";
 
 export interface SparkSensorConfig {
@@ -96,7 +97,7 @@ export default function getCodeGenerators(arduino: Arduino) {
 
 		return `sparkGPIO.output(2, ${debug(`(${red}) ? 255 : 0`, 0)});
 sparkGPIO.output(1, ${debug(`(${green}) ? 255 : 0`, 1)});
-sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});`;
+sparkGPIO.output(0, ${debug(`(${blue}) ? 255 : 0`, 2)});\n`;
 	};
 
 	arduino.forBlock.leaphy_spark_read = (block) => {
