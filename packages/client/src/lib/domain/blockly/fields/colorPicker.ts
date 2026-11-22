@@ -1,3 +1,9 @@
+import {
+	COLOR_CHANNELS,
+	COLOR_FORMAT_FIELD,
+	hsvToRgb,
+	rgbToHsv,
+} from "@leaphy-robotics/leaphy-blocks";
 import * as Blockly from "blockly";
 import ColorPickerState from "$state/colorPicker.svelte";
 
@@ -8,6 +14,8 @@ export interface ColorPickerKeys {
 	g: string;
 	/** Name of the value input holding the blue channel. */
 	b: string;
+	/** Name of the RGB/HSV dropdown, if the block has one. */
+	format?: string;
 }
 
 export type ColorPickerFieldConfig = Blockly.FieldConfig & ColorPickerKeys;
@@ -43,6 +51,7 @@ export class ColorPickerField extends Blockly.Field<string> {
 	override EDITABLE = true;
 
 	private readonly keys: string[];
+	private readonly format?: string;
 	private color = "#000000";
 	private editing = false;
 	private swatch?: SVGCircleElement;
@@ -51,6 +60,7 @@ export class ColorPickerField extends Blockly.Field<string> {
 	constructor(config: ColorPickerFieldConfig) {
 		super("", null, config);
 		this.keys = [config.r, config.g, config.b];
+		this.format = config.format;
 	}
 
 	static override fromJson(config: ColorPickerFieldConfig) {
@@ -71,6 +81,23 @@ export class ColorPickerField extends Blockly.Field<string> {
 			fields.push(field);
 		}
 		return fields;
+	}
+
+	private isHsv() {
+		return (
+			!!this.format &&
+			this.getSourceBlock()?.getFieldValue(this.format) === "HSV"
+		);
+	}
+
+	/** The color of the input values as r, g and b. */
+	private toRgb(values: number[]) {
+		return this.isHsv() ? hsvToRgb(values) : values;
+	}
+
+	/** Input values for an r, g and b color. */
+	private fromRgb(channels: number[]) {
+		return this.isHsv() ? rgbToHsv(channels) : channels;
 	}
 
 	protected override initView() {
@@ -126,20 +153,20 @@ export class ColorPickerField extends Blockly.Field<string> {
 			return;
 		}
 
-		this.color = toHex(fields.map((f) => Number(f.getValue())));
+		this.color = toHex(this.toRgb(fields.map((f) => Number(f.getValue()))));
 		if (this.swatch) this.swatch.style.fill = this.color;
 		if (this.editing) ColorPickerState.sync(this.color);
 	}
 
-	/** Write a color to the r, g and b blocks as part of an event group. */
-	private write(channels: number[], group: string) {
+	/** Write values to the r, g and b blocks as part of an event group. */
+	private write(values: number[], group: string) {
 		const fields = this.numberFields();
 		if (!fields) return;
 
 		const previous = Blockly.Events.getGroup();
 		Blockly.Events.setGroup(group);
 		fields.forEach((field, i) => {
-			field.setValue(channels[i]);
+			field.setValue(values[i]);
 		});
 		Blockly.Events.setGroup(previous);
 	}
@@ -162,12 +189,13 @@ export class ColorPickerField extends Blockly.Field<string> {
 		const block = this.getSourceBlock() as Blockly.BlockSvg;
 		const outline = block.getSvgRoot().querySelector(".blocklyPath");
 
-		ColorPickerState.open(this.swatch, this.color, hex => this.write(fromHex(hex), group))
-			.then((result) => {
-				this.editing = false;
-				// Dismissed: put the original values back.
-				if (result === undefined) this.write(original, group);
-			});
+		ColorPickerState.open(this.swatch, this.color, (hex) =>
+			this.write(this.fromRgb(fromHex(hex)), group),
+		).then((result) => {
+			this.editing = false;
+			// Dismissed: put the original values back.
+			if (result === undefined) this.write(original, group);
+		});
 	}
 
 	override dispose() {
@@ -184,19 +212,14 @@ export function addColorPicker(block: Blockly.Block, keys: ColorPickerKeys) {
 	if (block.getInput(keys.r)) block.moveInputBefore(INPUT_NAME, keys.r);
 }
 
+const [r, g, b] = COLOR_CHANNELS;
+const LED_STRIP_COLOR = { r, g, b, format: COLOR_FORMAT_FIELD };
+
 /** Blocks that get a color picker, with their r, g and b input names. */
 export const COLOR_PICKER_BLOCKS: Record<string, ColorPickerKeys> = {
 	leaphy_original_set_led: { r: "LED_RED", g: "LED_GREEN", b: "LED_BLUE" },
-	leaphy_led_set_basic: {
-		r: "LED_BASIC_RED",
-		g: "LED_BASIC_GREEN",
-		b: "LED_BASIC_BLUE",
-	},
-	leaphy_led_strip_demo: {
-		r: "LED_STRIP_DEMO_RED",
-		g: "LED_STRIP_DEMO_GREEN",
-		b: "LED_STRIP_DEMO_BLUE",
-	},
+	leaphy_led_strip_set_led: LED_STRIP_COLOR,
+	leaphy_led_strip_fill: LED_STRIP_COLOR,
 	leaphy_flitz_led: { r: "FLITZ_LED_R", g: "FLITZ_LED_G", b: "FLITZ_LED_B" },
 };
 

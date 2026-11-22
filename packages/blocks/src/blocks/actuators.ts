@@ -1,13 +1,24 @@
+import { COLOR_CHANNELS, COLOR_FORMAT_FIELD } from "../color";
 import type { BlockDefinition } from "../types";
-import { testBoards, testStatement } from "../utils";
+import { testBoards, testOutput, testStatement } from "../utils";
 
-const ledstripDemoOptions = [
-	["%{BKY_LEAPHY_LED_STRIP_LIGHTBANK}", "0"],
-	["%{BKY_LEAPHY_LED_STRIP_BREATHE}", "1"],
-	["%{BKY_LEAPHY_LED_STRIP_GULF}", "3"],
-	["%{BKY_LEAPHY_LED_STRIP_RAINBOW}", "4"],
-	["%{BKY_LEAPHY_LED_STRIP_COLORGULF}", "5"],
-];
+const LEDSTRIP_HELP_URL =
+	"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Potmeter-,Multiple%20leds%C2%A0,-Led%20matrix%C2%A0";
+
+const COLOR_FORMAT_DROPDOWN = {
+	type: "field_dropdown",
+	name: COLOR_FORMAT_FIELD,
+	options: [
+		["RGB", "RGB"],
+		["HSV", "HSV"],
+	],
+};
+
+const COLOR_CHANNEL_INPUTS = COLOR_CHANNELS.map((name) => ({
+	type: "input_value",
+	name,
+	check: "Number",
+}));
 
 function getDisplayBlocks(
 	prefix: string,
@@ -217,95 +228,95 @@ export const blocks: BlockDefinition[] = [
 	},
 
 	{
-		type: "leaphy_led_set_strip",
-		message0:
-			"%%{BKY_LEAPHY_LED_SET_STRIP} %1 %%{BKY_LEAPHY_LED_SET_PIN} %2 %%{BKY_LEAPHY_LED_SET_LEDS} %3",
+		type: "leaphy_led_strip_setup",
+		message0: "%{BKY_LEAPHY_LED_STRIP_SETUP}",
 		args0: [
+			{ type: "field_pin_selector", name: "PIN", mode: "digital" },
+			{ type: "input_value", name: "LEDS", check: "Number" },
+		],
+		inputsInline: true,
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		helpUrl: LEDSTRIP_HELP_URL,
+		test: testStatement("ledstrip"),
+		aiHelp:
+			"Set up an LED strip on the selected pin with the given number of LEDs. Must be used before the other LED strip blocks.",
+		relevanceKey: "LED_STRIP",
+	},
+	{
+		type: "leaphy_led_strip_set_led",
+		message0: "%{BKY_LEAPHY_LED_STRIP_SET_LED}",
+		args0: [
+			{ type: "input_value", name: "LED", check: "Number" },
+			COLOR_FORMAT_DROPDOWN,
 			{ type: "input_dummy" },
-			{ type: "input_value", name: "LED_SET_PIN", check: "Number" },
-			{ type: "input_value", name: "LED_SET_LEDS", check: "Number" },
+			...COLOR_CHANNEL_INPUTS,
 		],
+		extensions: ["color_format"],
 		inputsInline: true,
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
-		helpUrl:
-			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Potmeter-,Multiple%20leds%C2%A0,-Led%20matrix%C2%A0",
+		helpUrl: LEDSTRIP_HELP_URL,
 		test: testStatement("ledstrip"),
+		aiHelp:
+			"Set one LED of the strip to a color. The format is RGB (red, green, blue) or HSV (hue, saturation, value), every channel goes from 0 to 255 and the hue wraps around. LED numbers start at 0 and wrap around the strip. The color is only shown on the strip after a 'show' block.",
 		relevanceKey: "LED_STRIP",
 	},
 	{
-		type: "leaphy_led_set_basic",
-		message0:
-			"%%{BKY_LEAPHY_LED_BASIC_LED} %1 %%{BKY_LEAPHY_LED_BASIC_RED} %2 %%{BKY_LEAPHY_LED_BASIC_GREEN} %3 %%{BKY_LEAPHY_LED_BASIC_BLUE} %4",
+		type: "leaphy_led_strip_fill",
+		message0: "%{BKY_LEAPHY_LED_STRIP_FILL}",
 		args0: [
-			{ type: "input_value", name: "LED_SET_LED", check: "Number" },
-			{ type: "input_value", name: "LED_BASIC_RED", check: "Number" },
-			{ type: "input_value", name: "LED_BASIC_GREEN", check: "Number" },
-			{ type: "input_value", name: "LED_BASIC_BLUE", check: "Number" },
-		],
-		inputsInline: true,
-		previousStatement: null,
-		nextStatement: null,
-		style: "leaphy_blocks",
-		helpUrl:
-			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
-		test: testStatement("ledstrip"),
-		relevanceKey: "LED_STRIP",
-	},
-	{
-		type: "leaphy_led_strip_demo",
-		helpUrl:
-			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Potmeter-,Multiple%20leds%C2%A0,-Led%20matrix%C2%A0",
-		message0: "%%{BKY_LEAPHY_LED_STRIP_DEMO} %1 %2 %3 %4 %5",
-		args0: [
-			{
-				type: "field_dropdown",
-				name: "DEMO_TYPE",
-				options: ledstripDemoOptions,
-			},
+			COLOR_FORMAT_DROPDOWN,
 			{ type: "input_dummy" },
-			{
-				type: "input_value",
-				name: "LED_STRIP_DEMO_RED",
-				check: "Number",
-			},
-			{
-				type: "input_value",
-				name: "LED_STRIP_DEMO_GREEN",
-				check: "Number",
-			},
-			{
-				type: "input_value",
-				name: "LED_STRIP_DEMO_BLUE",
-				check: "Number",
-			},
+			...COLOR_CHANNEL_INPUTS,
 		],
+		extensions: ["color_format"],
 		inputsInline: true,
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
+		helpUrl: LEDSTRIP_HELP_URL,
 		test: testStatement("ledstrip"),
-		aiHelp: "Run a demo on the LED strip",
+		aiHelp:
+			"Set every LED of the strip to the same color, in RGB (red, green, blue) or HSV (hue, saturation, value), every channel goes from 0 to 255. The color is only shown on the strip after a 'show' block.",
 		relevanceKey: "LED_STRIP",
 	},
 	{
-		type: "leaphy_led_set_speed",
-		message0: "%%{BKY_LEAPHY_LED_SET_SPEEDVALUE} %1",
-		args0: [
-			{
-				type: "input_value",
-				name: "LED_SET_SPEEDVALUE",
-				check: "Number",
-			},
-		],
+		type: "leaphy_led_strip_brightness",
+		message0: "%{BKY_LEAPHY_LED_STRIP_BRIGHTNESS}",
+		args0: [{ type: "input_value", name: "BRIGHTNESS", check: "Number" }],
 		inputsInline: true,
 		previousStatement: null,
 		nextStatement: null,
 		style: "leaphy_blocks",
-		helpUrl:
-			"https://www.leaphyfoundation.com/tutorials-leaphy-electronics.html#:~:text=Oled%20display-,RGB%20led,-Potmeter",
+		helpUrl: LEDSTRIP_HELP_URL,
 		test: testStatement("ledstrip"),
+		aiHelp:
+			"Set the brightness of the whole LED strip (0-255) without changing the colors.",
+		relevanceKey: "LED_STRIP",
+	},
+	{
+		type: "leaphy_led_strip_show",
+		message0: "%{BKY_LEAPHY_LED_STRIP_SHOW}",
+		previousStatement: null,
+		nextStatement: null,
+		style: "leaphy_blocks",
+		helpUrl: LEDSTRIP_HELP_URL,
+		test: testStatement("ledstrip"),
+		aiHelp:
+			"Send the colors and brightness set by the other LED strip blocks to the strip. Without this block nothing changes on the strip.",
+		relevanceKey: "LED_STRIP",
+	},
+	{
+		type: "leaphy_led_strip_count",
+		message0: "%{BKY_LEAPHY_LED_STRIP_COUNT}",
+		output: "Number",
+		style: "leaphy_blocks",
+		helpUrl: LEDSTRIP_HELP_URL,
+		test: testOutput("ledstrip"),
+		aiHelp: "The number of LEDs the LED strip was set up with.",
 		relevanceKey: "LED_STRIP",
 	},
 

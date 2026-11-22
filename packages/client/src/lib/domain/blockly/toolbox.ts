@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { ledstripSubprogramCalls } from "$domain/blockly/ledstrip";
 import robotGroups from "$domain/robots.groups";
 import { RobotType } from "$domain/robots.types";
 
@@ -333,39 +334,48 @@ export default [
 				defaultExpanded: false,
 				blocks: [
 					{
-						type: "leaphy_led_set_strip",
+						type: "leaphy_led_strip_setup",
 						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+						inputs: { LEDS: number(30) },
+					},
+					{
+						type: "leaphy_led_strip_set_led",
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+						fields: { FORMAT: "RGB" },
 						inputs: {
-							LED_SET_PIN: number(0),
-							LED_SET_LEDS: number(0),
+							LED: number(0),
+							CHANNEL_1: number(255),
+							CHANNEL_2: number(0),
+							CHANNEL_3: number(0),
 						},
 					},
 					{
-						type: "leaphy_led_set_basic",
+						type: "leaphy_led_strip_fill",
 						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+						fields: { FORMAT: "RGB" },
 						inputs: {
-							LED_SET_LED: number(0),
-							LED_BASIC_RED: number(0),
-							LED_BASIC_GREEN: number(0),
-							LED_BASIC_BLUE: number(0),
+							CHANNEL_1: number(255),
+							CHANNEL_2: number(0),
+							CHANNEL_3: number(0),
 						},
 					},
 					{
-						type: "leaphy_led_strip_demo",
+						type: "leaphy_led_strip_brightness",
 						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
-						inputs: {
-							LED_STRIP_DEMO_RED: number(0),
-							LED_STRIP_DEMO_GREEN: number(0),
-							LED_STRIP_DEMO_BLUE: number(0),
-						},
+						inputs: { BRIGHTNESS: number(255) },
 					},
 					{
-						type: "leaphy_led_set_speed",
+						type: "leaphy_led_strip_show",
 						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
-						inputs: {
-							LED_SET_SPEEDVALUE: number(0),
-						},
 					},
+					{
+						type: "leaphy_led_strip_count",
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+					},
+					...ledstripSubprogramCalls.map((call) => ({
+						...call,
+						robots: [...robotGroups.ALL, -RobotType.L_FLITZ_NANO],
+					})),
 				],
 			},
 			{
@@ -713,6 +723,14 @@ export default [
 					},
 					{
 						type: "controls_whileUntil",
+					},
+					{
+						type: "controls_for",
+						inputs: {
+							FROM: number(1),
+							TO: number(10),
+							BY: number(1),
+						},
 					},
 				],
 			},
