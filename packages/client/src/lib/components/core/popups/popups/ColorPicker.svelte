@@ -160,11 +160,11 @@ async function calculatePosition() {
 
 	position = await computePosition(anchor, element, {
 		strategy: "fixed",
-		placement: 'bottom',
+		placement: "bottom",
 		middleware: [
 			offset(8),
-			autoPlacement({ allowedPlacements: ['bottom', 'top']})
-		]
+			autoPlacement({ allowedPlacements: ["bottom", "top"] }),
+		],
 	});
 }
 
