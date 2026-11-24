@@ -150,23 +150,36 @@ messages.LEAPHY_DHT22_READ_TEMPERATURE = "Зчитати температуру 
 messages.LEAPHY_DHT22_READ_HUMIDITY = "Зчитати вологість з DHT22 на піні";
 messages.LEAPHY_GET_GESTURE = "Отримати жест";
 messages.LEAPHY_LED = "Світлодіод";
-messages.LEAPHY_LED_BASIC_BLUE = "B";
-messages.LEAPHY_LED_BASIC_GREEN = "G";
-messages.LEAPHY_LED_BASIC_LED = "Базова LED-стрічка - Світлодіод";
-messages.LEAPHY_LED_BASIC_RED = "R";
+messages.LEAPHY_LED_STRIP_SETUP =
+	"Налаштувати LED-стрічку на піні %1 з %2 світлодіодами";
+messages.LEAPHY_LED_STRIP_SET_LED =
+	"Встановити світлодіод %1 на колір %2 %3 %4 %5 %6";
+messages.LEAPHY_LED_STRIP_FILL =
+	"Встановити всі світлодіоди на колір %1 %2 %3 %4 %5";
+messages.LEAPHY_LED_STRIP_BRIGHTNESS =
+	"Встановити яскравість LED-стрічки на %1";
+messages.LEAPHY_LED_STRIP_SHOW = "Показати кольори на LED-стрічці";
+messages.SHOW_BLOCK_MISSING =
+	'Це стане видно лише після блоку "%1". Додайте його після цього блоку.';
+messages.SETUP_BLOCK_MISSING =
+	'Цей блок працює, лише якщо у програмі також є блок "%1".';
+messages.UPDATE_BLOCK_MISSING =
+	'Це працює, лише якщо програма постійно повторює блок "%1".';
+messages.LEAPHY_LED_STRIP_COUNT = "кількість світлодіодів";
+messages.LEAPHY_LED_STRIP_SUB_BREATHE = "дихання";
+messages.LEAPHY_LED_STRIP_SUB_RAINBOW = "веселка";
+messages.LEAPHY_LED_STRIP_SUB_COLOR_WAVE = "кольорова хвиля";
+messages.LEAPHY_LED_STRIP_SUB_RAINBOW_WAVE = "хвиля веселки";
+messages.LEAPHY_LED_STRIP_VAR_RED = "червоний";
+messages.LEAPHY_LED_STRIP_VAR_GREEN = "зелений";
+messages.LEAPHY_LED_STRIP_VAR_BLUE = "синій";
+messages.LEAPHY_LED_STRIP_VAR_BRIGHTNESS = "яскравість";
+messages.LEAPHY_LED_STRIP_VAR_HUE = "відтінок";
+messages.LEAPHY_LED_STRIP_VAR_LED = "світлодіод";
+messages.LEAPHY_LED_STRIP_VAR_STEP = "крок";
 messages.LEAPHY_LED_BLUE = "Синій";
 messages.LEAPHY_LED_GREEN = "Зелений";
 messages.LEAPHY_LED_RED = "Червоний";
-messages.LEAPHY_LED_SET_LEDS = "Світлодіоди";
-messages.LEAPHY_LED_SET_PIN = "Пін";
-messages.LEAPHY_LED_SET_SPEEDVALUE = "Демо LED-стрічки - Швидкість";
-messages.LEAPHY_LED_SET_STRIP = "Встановити LED-стрічку";
-messages.LEAPHY_LED_STRIP_BREATHE = "Дихання";
-messages.LEAPHY_LED_STRIP_COLORGULF = "Кольорова хвиля";
-messages.LEAPHY_LED_STRIP_DEMO = "Демо LED-стрічки";
-messages.LEAPHY_LED_STRIP_GULF = "Хвиля";
-messages.LEAPHY_LED_STRIP_LIGHTBANK = "Світлова панель";
-messages.LEAPHY_LED_STRIP_RAINBOW = "Веселка";
 messages.LEAPHY_MOTOR_A_DROPDOWN = "Мотор_A";
 messages.LEAPHY_MOTOR_BACKWARD = "Назад";
 messages.LEAPHY_MOTOR_B_DROPDOWN = "Мотор_B";

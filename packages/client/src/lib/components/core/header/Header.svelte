@@ -36,6 +36,8 @@ import ErrorPopup from "$components/core/popups/popups/Error.svelte";
 import Button from "$components/ui/Button.svelte";
 import ContextItem from "$components/ui/ContextItem.svelte";
 import { replaceWorkspace } from "$domain/blockly/blockly";
+import ExtensionState from "$domain/blockly/extensions.svelte";
+import { getMissingBlocks } from "$domain/blockly/requiredBlocks";
 import { PermissionDeniedError } from "$domain/handles";
 import { RobotType } from "$domain/robots.types";
 import AppState, { Screen, Theme } from "$state/app.svelte";
@@ -52,24 +54,62 @@ import About from "../popups/popups/About.svelte";
 import Examples from "../popups/popups/Examples.svelte";
 import ESPProgrammer from "../popups/popups/esp-programmer/ESPProgrammer.svelte";
 import Feedback from "../popups/popups/Feedback.svelte";
+import MissingBlocks from "../popups/popups/MissingBlocks.svelte";
 import SaveProject from "../popups/popups/Prompt.svelte";
 import UploadLog from "../popups/popups/UploadLog.svelte";
 import Uploader from "../popups/popups/uploaders/Uploader.svelte";
 import Warning from "../popups/popups/Warning.svelte";
 
-async function upload() {
-	if (MLState.enabled) {
-		if (BlocklyState.workspace.getBlocksByType("ml_classify").length === 0) {
-			return PopupState.open({
-				component: ErrorPopup,
-				data: {
-					title: "ML_MISSING_CLASSIFY_TITLE",
-					message: "ML_MISSING_CLASSIFY_DESCRIPTION",
-				},
-				allowInteraction: false,
-			});
-		}
+/**
+ * Tell the student about blocks the program needs but doesn't have. Resolves to
+ * whether to continue: never when a required block is missing.
+ */
+async function checkMissingBlocks(): Promise<boolean> {
+	if (WorkspaceState.Mode !== Mode.BLOCKS) return true;
 
+	const missing = getMissingBlocks(BlocklyState.workspace);
+	if (missing.length === 0) return true;
+
+	return !!(await PopupState.open({
+		component: MissingBlocks,
+		data: { missing },
+		allowInteraction: false,
+	}));
+}
+
+/**
+ * Some students turned on the ML extension once and never use it, so uploading asks
+ * for classes and a classify block they don't need. Offer to turn it off instead.
+ * Resolves to whether to continue uploading.
+ */
+async function checkUnusedML(): Promise<boolean> {
+	if (!MLState.enabled || WorkspaceState.Mode !== Mode.BLOCKS) return true;
+
+	const usesML =
+		BlocklyState.workspace.getBlocksByType("ml_classify").length > 0 ||
+		BlocklyState.workspace.getBlocksByType("ml_certainty").length > 0;
+	if (usesML) return true;
+
+	const turnOff = await PopupState.open({
+		component: Warning,
+		data: {
+			title: "ML_UNUSED_TITLE",
+			message: "ML_UNUSED_DESCRIPTION",
+			confirm: "ML_UNUSED_TURN_OFF",
+		},
+		allowInteraction: false,
+	});
+	if (!turnOff) return false;
+
+	ExtensionState.toggle("l_ml");
+	return true;
+}
+
+async function upload() {
+	if (!(await checkUnusedML())) return;
+	if (!(await checkMissingBlocks())) return;
+
+	if (MLState.enabled) {
 		if (MLState.classes.length < 2) {
 			return PopupState.open({
 				component: ErrorPopup,

@@ -39,8 +39,13 @@ import LeaphyToolbox from "$domain/blockly/category-ui/toolbox.svelte";
 import TeachableMachineState from "$state/teachableMachine.svelte";
 import WorkspaceState from "$state/workspace.svelte";
 import Extensions from "./extensions.svelte";
+import { registerColorPickers } from "./fields/colorPicker";
+import { addDroppedSubprograms } from "./ledstrip";
+import { resolveMessages } from "./messages";
+import { warnMissingBlocks } from "./requiredBlocks";
 
 Blockly.defineBlocksWithJsonArray(blocks);
+registerColorPickers();
 Blockly.fieldRegistry.register("field_pin_selector", PinSelectorField);
 Blockly.registry.register(
 	Blockly.registry.Type.TOOLBOX_ITEM,
@@ -211,7 +216,7 @@ function registerDynamicCategories(
 							.flatMap((item) => {
 								return [
 									{ kind: "sep", gap: "8" },
-									{ kind: "block", ...item },
+									{ kind: "block", ...resolveMessages(item) },
 								];
 							})
 							.slice(1),
@@ -395,6 +400,8 @@ export function setupWorkspace(
 
 	const toolbox = workspace.getToolbox();
 	registerDynamicCategories(robot, workspace);
+	addDroppedSubprograms(workspace);
+	warnMissingBlocks(workspace);
 	workspace.registerToolboxCategoryCallback("LISTS", CATEGORIES.LISTS);
 	workspace.registerToolboxCategoryCallback("MESH", CATEGORIES.MESH);
 	workspace.registerToolboxCategoryCallback("ML", CATEGORIES.ML);

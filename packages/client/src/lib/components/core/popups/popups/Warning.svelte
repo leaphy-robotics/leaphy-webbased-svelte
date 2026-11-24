@@ -8,9 +8,11 @@ interface Props {
 	title: string;
 	message: string;
 	showCancel: boolean;
+	/** Translation key of the confirm button */
+	confirm?: string;
 }
 
-const { title, message, showCancel = true }: Props = $props();
+const { title, message, showCancel = true, confirm = "OK" }: Props = $props();
 
 const popupState = getContext<PopupState>("state");
 
@@ -31,6 +33,6 @@ function ok() {
 			<Button name={$_("CANCEL")} mode={"secondary"} onclick={cancel}/>
 		{/if}
 		<div class="flex-1"></div>
-		<Button name={$_("OK")} mode={"primary"} onclick={ok}/>
+		<Button name={$_(confirm)} mode={"primary"} onclick={ok}/>
 	</div>
 </div>

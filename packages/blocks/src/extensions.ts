@@ -12,6 +12,13 @@ import {
 import { listManager } from "./categories/lists";
 import { meshSignals } from "./categories/mesh";
 import { ml } from "./categories/ml";
+import {
+	COLOR_CHANNEL_LABELS,
+	COLOR_CHANNELS,
+	COLOR_FORMAT_FIELD,
+	type ColorFormat,
+	convertColor,
+} from "./color";
 import type { DateItem } from "./generators/arduino/rtc";
 import { after } from "./utils";
 
@@ -251,6 +258,55 @@ export default function registerExtensions(blockly: typeof Blockly) {
 			this.refreshListeners.push(listener);
 		}
 	}
+
+	/**
+	 * Show the letters of the selected color format (R G B or H S V) in front of the
+	 * channel inputs, and convert the color when the format changes.
+	 */
+	const COLOR_FORMAT_EXTENSION = function (this: Block) {
+		const labels = COLOR_CHANNELS.map((name, i) => {
+			const label = new blockly.FieldLabel(COLOR_CHANNEL_LABELS.RGB[i]);
+			this.getInput(name)?.insertFieldAt(0, label, `${name}_LABEL`);
+			return label;
+		});
+
+		// Also runs when a saved block is loaded
+		this.getField(COLOR_FORMAT_FIELD)?.setValidator((format: ColorFormat) => {
+			labels.forEach((label, i) => {
+				label.setValue(COLOR_CHANNEL_LABELS[format][i]);
+			});
+			return format;
+		});
+
+		this.setOnChange(function (this: Block, event: Blockly.Events.Abstract) {
+			// Undo and redo restore the converted values themselves
+			if (event.type !== blockly.Events.BLOCK_CHANGE || !event.recordUndo)
+				return;
+			const change = event as Blockly.Events.BlockChange;
+			if (change.blockId !== this.id || change.name !== COLOR_FORMAT_FIELD)
+				return;
+
+			// Only plain numbers can be converted, leave calculations and variables alone
+			const fields = COLOR_CHANNELS.map((name) => {
+				const child = this.getInputTargetBlock(name);
+				return child?.type === "math_number" ? child.getField("NUM") : null;
+			});
+			if (fields.some((field) => !field)) return;
+
+			const color = convertColor(
+				fields.map((field) => Number(field?.getValue())),
+				change.newValue as ColorFormat,
+			);
+
+			const group = blockly.Events.getGroup();
+			blockly.Events.setGroup(change.group);
+			fields.forEach((field, i) => {
+				field?.setValue(color[i]);
+			});
+			blockly.Events.setGroup(group);
+		});
+	};
+	blockly.Extensions.register("color_format", COLOR_FORMAT_EXTENSION);
 
 	blockly.fieldRegistry.register("field_format", FormatField);
 	blockly.Extensions.register(

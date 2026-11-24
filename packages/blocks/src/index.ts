@@ -5,6 +5,14 @@ import python from "./generators/python";
 import translations from "./msg/translations";
 
 export * as CATEGORIES from "./categories/all";
+export {
+	COLOR_CHANNELS,
+	COLOR_FORMAT_FIELD,
+	type ColorFormat,
+	convertColor,
+	hsvToRgb,
+	rgbToHsv,
+} from "./color";
 export { PinMapping, PinSelectorField } from "./fields/pinSelector";
 export type { Debugger } from "./generators/arduino";
 export { Dependencies } from "./generators/arduino/dependencies";
