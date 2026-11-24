@@ -2,7 +2,9 @@
 import { faUsb } from "@fortawesome/free-brands-svg-icons";
 import {
 	faArrowLeft,
+	faCheck,
 	faExclamationTriangle,
+	faMicrochip,
 	faPlus,
 	faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -11,40 +13,41 @@ import { getContext } from "svelte";
 import Fa from "svelte-fa";
 import { _ } from "svelte-i18n";
 import Button from "$components/ui/Button.svelte";
-import Select from "$components/ui/Select.svelte";
+import ExtensionBanner from "$components/ui/ExtensionBanner.svelte";
 import Extensions, { extensions } from "$domain/blockly/extensions.svelte.js";
 import { inFilter, robots } from "$domain/robots";
 import type { PopupState } from "$state/popup.svelte";
 import SerialState, { Prompt } from "$state/serial.svelte";
 
-const boardOptions: [string, string][] = [
-	["Arduino Uno", robots.l_uno.id],
-	["Arduino Nano", robots.l_nano.id],
-	["Arduino Nano ESP32", robots.l_nano_esp32.id],
-];
-let selectedBoard = $state(boardOptions[1][1]);
+const boardOptions = [robots.l_nano, robots.l_nano_esp32];
 let enabled = $state(false);
 
-function selectBoard() {
-	SerialState.board = robots[selectedBoard];
+function selectBoard(id: string) {
+	SerialState.board = robots[id];
 	enabled = true;
 }
 
 let board = $derived(SerialState.board || robots.l_nano);
-let enabledExtensions = $derived(
+let availableExtensions = $derived(
 	extensions.filter((e) => inFilter(board, e.boards)),
 );
 
 let incompatibleExtensions = $derived(
 	Extensions.enabled
 		.map((e) => extensions.find((ext) => ext.id === e))
-		.filter((e) => !inFilter(board, e.boards)),
+		.filter((e) => e && !inFilter(board, e.boards)),
 );
+
+let showList = $derived(!!SerialState.port || enabled);
 
 function getColor(theme: string) {
 	return (getMainWorkspace() as WorkspaceSvg).getTheme().categoryStyles[theme]
 		.colour;
 }
+
+const primaryColor =
+	getComputedStyle(document.body).getPropertyValue("--primary").trim() ||
+	"#06778f";
 
 const popupState = getContext<PopupState>("state");
 function back() {
@@ -57,69 +60,103 @@ function toggle(extension: string) {
 }
 </script>
 
+{#snippet card(extension: (typeof extensions)[number], incompatible: boolean)}
+	{@const isEnabled = Extensions.isEnabled(extension.id)}
+	{@const color = getColor(extension.style)}
+	<div aria-label="extension" class="flex flex-col rounded-xl overflow-hidden bg-bg border border-secondary">
+		<div class="relative">
+			<ExtensionBanner id={extension.id} {color} muted={incompatible} />
+			{#if incompatible}
+				<div class="absolute right-2.5 top-2.5 flex items-center gap-1.5 rounded-full bg-white text-danger text-xs font-bold px-2.5 py-1">
+					<Fa icon={faExclamationTriangle} />
+					{$_("INCOMPATIBLE_PROJECT")}
+				</div>
+			{:else if isEnabled}
+				<div class="absolute right-2.5 top-2.5 flex items-center gap-1.5 rounded-full bg-white text-xs font-bold px-2.5 py-1" style:color={color}>
+					<Fa icon={faCheck} />
+					{$_("EXTENSION_ADDED")}
+				</div>
+			{/if}
+		</div>
+		<div class="flex-1 p-5 flex flex-col gap-1">
+			<div class="font-bold text-xl">{$_(extension.name)}</div>
+			<div class="text-sm">{$_(extension.description)}</div>
+		</div>
+		<button
+			class="p-3 border-none text-white font-bold text-sm flex items-center justify-center gap-1.5 cursor-pointer hover:brightness-110
+				{isEnabled || incompatible ? 'bg-[salmon]' : 'bg-accent'}"
+			onclick={() => toggle(extension.id)}
+		>
+			<Fa icon={isEnabled || incompatible ? faXmark : faPlus} />
+			{isEnabled || incompatible ? $_("REMOVE_EXTENSION") : $_("ADD_EXTENSION")}
+		</button>
+	</div>
+{/snippet}
+
 <div class="w-screen h-screen bg-bg-tint flex flex-col">
-	<div class="bg-primary text-on-primary p-2.5">
+	<div class="bg-primary text-on-primary p-2.5 flex items-center gap-4">
 		<Button onclick={back} mode="outlined" icon={faArrowLeft} name={$_("BACK")} />
+		<div class="text-lg font-bold flex-1">{$_("EXTENSIONS")}</div>
+		{#if showList}
+			<div class="flex items-center gap-2 text-sm opacity-90">
+				<Fa icon={faMicrochip} />
+				{board.name}
+			</div>
+		{/if}
 	</div>
 
-	{#if SerialState.port || enabled}
-		<div class="p-2.5 flex flex-wrap gap-2.5 overflow-y-auto">
-			{#each enabledExtensions as extension}
-				{@const isEnabled = Extensions.isEnabled(extension.id)}
-				<div aria-label="extension" class="max-w-75 w-full rounded-xl overflow-hidden flex flex-col bg-bg border-2 border-[lightgrey]">
-					<div class="flex justify-center items-center w-full aspect-296/183" style:background={getColor(extension.style)}>
-						<img src={`blockly-assets/${extension.id}.svg`} alt="" class="h-16">
-					</div>
-					<div class="flex-1 p-5 flex flex-col gap-2.5">
-						<div class="font-bold text-lg">{$_(extension.name)}</div>
-						<div class="text-sm">{$_(extension.description)}</div>
-					</div>
-					<button
-						class="p-2.5 border-none text-on-primary font-bold text-sm flex items-center justify-center gap-1.5 cursor-pointer"
-						style:background={isEnabled ? 'salmon' : 'var(--accent)'}
-						onclick={() => toggle(extension.id)}
-					>
-						<Fa icon={isEnabled ? faXmark : faPlus} />
-						{isEnabled ? $_("REMOVE_EXTENSION") : $_("ADD_EXTENSION")}
-					</button>
-				</div>
-			{/each}
+	{#if showList}
+		<div class="flex-1 overflow-y-auto p-2.5 flex flex-col gap-5">
+			<div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-2.5">
+				{#each availableExtensions as extension (extension.id)}
+					{@render card(extension, false)}
+				{/each}
+			</div>
 
-			{#each incompatibleExtensions as extension}
-				<div class="max-w-[300px] w-full rounded-xl overflow-hidden flex flex-col bg-bg border-2 border-[lightgrey] opacity-60">
-					<div class="flex justify-center items-center w-full aspect-[296/183] grayscale" style:background={getColor(extension.style)}>
-						<img src={`blockly-assets/${extension.id}.svg`} alt="" class="h-16">
-					</div>
-					<div class="flex-1 p-5 flex flex-col gap-2.5">
-						<div class="flex items-center gap-2.5">
-							<span class="font-bold text-lg">{$_(extension.name)}</span>
-							<span class="flex items-center gap-1.5 text-[salmon]"><Fa icon={faExclamationTriangle} /> {$_("INCOMPATIBLE_PROJECT")}</span>
+			{#if incompatibleExtensions.length > 0}
+				<div class="flex flex-col gap-2.5">
+					<div class="flex flex-col gap-1 px-1">
+						<div class="flex items-center gap-2 font-bold text-danger">
+							<Fa icon={faExclamationTriangle} />
+							{$_("INCOMPATIBLE_EXTENSIONS")}
 						</div>
-						<div class="text-sm">{$_(extension.description)}</div>
+						<div class="text-sm text-on-secondary-muted">{$_("INCOMPATIBLE_EXTENSIONS_DESC")}</div>
 					</div>
-					<button class="p-2.5 border-none text-on-primary font-bold text-sm flex items-center justify-center gap-1.5 cursor-pointer bg-[salmon]" onclick={() => toggle(extension.id)}>
-						<Fa icon={faXmark} />
-						{$_("REMOVE_EXTENSION")}
-					</button>
+					<div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-2.5">
+						{#each incompatibleExtensions as extension (extension.id)}
+							{@render card(extension, true)}
+						{/each}
+					</div>
 				</div>
-			{/each}
+			{/if}
 		</div>
 	{:else}
-		<div class="w-full h-full flex flex-col justify-center items-center">
-			<div class="p-5 pt-8 max-w-[600px] w-full bg-bg rounded-2xl flex flex-col gap-8">
-				<div class="flex flex-col items-center text-center">
-					<div class="text-3xl pb-2.5"><Fa icon={faUsb} /></div>
-					<h2 class="m-0 mb-2">{$_("EXTENSIONS_CONNECT_TITLE")}</h2>
-					<div>{$_("EXTENSIONS_CONNECT_DESC")}</div>
-				</div>
+		<div class="flex-1 flex flex-col justify-center items-center p-2.5 overflow-y-auto">
+			<div class="max-w-[600px] w-full bg-bg rounded-xl border border-secondary overflow-hidden flex flex-col">
+				<ExtensionBanner id="connect" color={primaryColor} />
+				<div class="p-6 flex flex-col gap-6">
+					<div class="flex flex-col gap-4">
+						<div class="flex flex-col gap-1">
+							<h2 class="m-0">{$_("EXTENSIONS_CONNECT_TITLE")}</h2>
+							<div class="text-on-secondary-muted">{$_("EXTENSIONS_CONNECT_DESC")}</div>
+						</div>
+						<Button onclick={() => SerialState.connectWithFeedback(Prompt.MAYBE)} mode={"primary"} icon={faUsb} large bold name={$_("CHOOSE_ROBOT")} />
+					</div>
 
-				<div class="flex flex-col gap-5">
-					<Button onclick={() => SerialState.connectWithFeedback(Prompt.MAYBE)} mode={"accent"} large bold center name={$_("CHOOSE_ROBOT")} />
+					<div class="h-px bg-secondary"></div>
+
 					<div class="flex flex-col gap-2.5">
-						<span class="text-center text-on-secondary text-sm">{$_("OR_SELECT")}</span>
-						<div class="flex gap-2.5 items-center">
-							<Select mode="secondary" full options={boardOptions} bind:value={selectedBoard} />
-							<Button onclick={selectBoard} mode={"primary"} center name={$_("SELECT")} />
+						<span class="text-sm font-bold">{$_("OR_SELECT")}</span>
+						<div class="grid grid-cols-2 gap-2.5">
+							{#each boardOptions as option (option.id)}
+								<button
+									class="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-secondary bg-bg text-on-bg cursor-pointer transition-colors hover:border-primary"
+									onclick={() => selectBoard(option.id)}
+								>
+									<img src={option.icon} alt="" class="h-9 w-6 object-contain">
+									<span class="text-sm font-bold">{option.name}</span>
+								</button>
+							{/each}
 						</div>
 					</div>
 				</div>

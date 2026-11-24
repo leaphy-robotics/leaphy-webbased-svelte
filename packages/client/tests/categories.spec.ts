@@ -15,7 +15,7 @@ async function testCategories(
 
 async function installExtension(page: Page, name: string) {
 	await page.locator(".blocklyToolboxCategoryGroup button").click();
-	await page.getByText("Select", { exact: true }).click();
+	await page.getByRole("button", { name: "Arduino Nano", exact: true }).click();
 
 	const extension = page
 		.locator("div[aria-label='extension']")
